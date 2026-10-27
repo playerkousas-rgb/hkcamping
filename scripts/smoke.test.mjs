@@ -75,8 +75,36 @@ test('data.js 載入 108 筆，前端啟動無例外', () => {
 
 test('雙版號同頁尾版權（V1 / W1）', () => {
   const { doc } = boot();
-  assert.equal(doc.getElementById('versionBadge').textContent, 'v1.0.0');
-  assert.equal(doc.getElementById('appVersion').textContent, '1.0.0');
+  assert.equal(doc.getElementById('versionBadge').textContent, 'v1.1.0');
+  assert.equal(doc.getElementById('appVersion').textContent, '1.1.0');
+});
+
+test('約數標記：44 筆有銀碼卡片顯示「約」+ 警句，免費／面議唔會', () => {
+  const { doc } = boot();
+  const cards = doc.getElementById('cardGrid').children;
+  const approx = cards.filter((c) => c.innerHTML.includes('約數 · 未逐筆核實'));
+  assert.equal(approx.length, 44);
+  assert.match(approx[0].innerHTML, /約 \$/);
+  const free = cards.filter((c) => c.innerHTML.includes('>免費<'));
+  assert.equal(free.length, 41);
+  assert.ok(free.every((c) => !c.innerHTML.includes('約數 · 未逐筆核實')));
+  const enquiry = cards.filter((c) => c.innerHTML.includes('面議／電話查詢'));
+  assert.equal(enquiry.length, 23);
+  assert.ok(enquiry.every((c) => !c.innerHTML.includes('約數 · 未逐筆核實')));
+});
+
+test('官方 CSDI 水源／營位徽章淨係出現喺 41 筆漁護署營地', () => {
+  const { sandbox, doc } = boot();
+  const cards = doc.getElementById('cardGrid').children;
+  const withBadge = cards.filter((c) => c.innerHTML.includes('prep-badge'));
+  assert.equal(withBadge.length, 41);
+  const seasonal = cards.filter((c) => c.innerHTML.includes('季節性溪澗'));
+  assert.equal(seasonal.length, 23);       // CSDI: 23 個季節性水源
+  const small = cards.filter((c) => c.innerHTML.includes('假日易滿'));
+  assert.equal(small.length, 31);          // CSDI: 31 個少於 20 營位
+  const afcd = sandbox.CAMPSITES.filter((x) => x.operator === '漁農自然護理署');
+  assert.ok(afcd.every((x) => x.waterSource && x.tentSpace && x.countryPark));
+  assert.equal(sandbox.CAMPSITES.filter((x) => x.priceSource === 'estimate').length, 44);
 });
 
 test('價格 null 顯示面議，唔會當成免費', () => {

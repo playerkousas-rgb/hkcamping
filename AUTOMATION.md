@@ -63,6 +63,7 @@ data.js                   ← 網站唯一讀取嘅合併成品
 | `.github/workflows/sync-data.yml` | 每日 00:30 HKT 跑 AFCD＋天氣同步 + rebuild，有變更先 commit，無變更靜默 |
 | `.github/workflows/sync-had.yml` | 每月 2 號 01:15 HKT 跑持牌賓館月更，只 commit `had-*` 三個檔，唔碰 data.csv |
 | `data/auto/` | 機器快照目錄（已含首次實測產出） |
+| `build-data.mjs` 官方欄位 join | v1.1.0 起：按營地名稱把 `afcd-campsites.json` 嘅 `waterSource`／`tentSpace`／`countryPark` 嵌入 41 筆營地（41/41 配對成功）；呢啲係**官方客觀數據**，同 `price` 嘅人手約數分開處理 |
 
 **2026-10-27 交接修補**：上面兩條 yml 曾經只存在於文件、repo 入面冇，現已補回。
 GitHub Actions cron 用 UTC：`30 16 * * *`＝00:30 HKT、`15 17 1 * *`＝每月 2 號 01:15 HKT。

@@ -4,7 +4,7 @@
 
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.0.0';
+  const APP_VERSION = '1.1.0';
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -218,7 +218,27 @@
   /* ---------- 卡片 ---------- */
   function priceText(s) {
     if (s.price === null || s.price === undefined) return '面議／電話查詢';
-    return s.price === 0 ? '免費' : `$${s.price} ${s.priceUnit || ''}`.trim();
+    if (s.price === 0) return '免費';
+    // priceSource = estimate 即係未逐筆核實嘅約數 → 前面加「約」
+    const approx = s.priceSource === 'estimate' ? '約 ' : '';
+    return `${approx}$${s.price} ${s.priceUnit || ''}`.trim();
+  }
+
+  /* 官方 CSDI 欄位 → 出發前準備提示（只喺漁護署營地有值） */
+  function prepBadges(s) {
+    if (!s.waterSource && !s.tentSpace) return '';
+    let water = '';
+    if (s.waterSource) {
+      const seasonal = s.waterSource.includes('季節性');
+      const label = seasonal ? '⚠️ 季節性溪澗（旱季可能無水）'
+        : s.waterSource.includes('洗手間') ? '🚻 洗手間' : '🚰 水喉';
+      water = `<span class="prep-badge ${seasonal ? 'warn' : ''}">${label}</span>`;
+    }
+    const small = s.tentSpace && s.tentSpace.includes('少於');
+    const tent = s.tentSpace
+      ? `<span class="prep-badge ${small ? 'warn' : ''}">⛺ ${s.tentSpace} 營位${small ? ' · 假日易滿' : ''}</span>`
+      : '';
+    return `<div class="prep-badges">${water}${tent}</div>`;
   }
 
   function renderCards(sites) {
@@ -245,6 +265,9 @@
           ${s.booking ? '<span class="price-unit">· 需預訂</span>'
             : `<span class="price-unit">· ${s.type === '民宿' ? '訂房請先電話查詢' : '免預訂／先到先得'}</span>`}
         </div>
+        ${s.priceSource === 'estimate'
+          ? '<div class="price-caveat">約數 · 未逐筆核實，落訂前請向場地官網／電話確認</div>' : ''}
+        ${prepBadges(s)}
         <p class="summary">${s.summary}</p>
         <div class="mini-tags">${tags.map((t) => `<span class="mini-tag">${t}</span>`).join('')}</div>
         <div class="card-actions">

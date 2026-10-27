@@ -10,22 +10,34 @@
 合共 **108 筆**（41 + 6 + 30 + 4 + 27；`data.js` 分類為露營 45、宿營 32、Glamping 4、民宿 27）。
 功能：分區地圖（Leaflet + OpenStreetMap）、類型/分區/費用/交通/設施/訊號篩選、
 全文搜尋（可搜營運機構）、價格排序、我的最愛（瀏覽器本地記錄，無須登入）、
-**週末天氣列**（天文台九天預報 PSR 降雨概率，連地圖 pin 標記；每日 Actions 自動更新）。
+**週末天氣列**（天文台九天預報 PSR 降雨概率，連地圖 pin 標記；每日 Actions 自動更新）、
+**未核實收費一律加「約」**、官方水源／營位規模徽章、同埋「訂營＋出發前準備」清單。
 
 ## 資料來源與可信度
 
 | 資料 | 來源 |
 |---|---|
 | 漁護署 41 營地名單、設施分類 | [漁護署指定露營地點官方網頁](https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html) |
+| 41 營地嘅**水源類型／營位規模／所屬郊野公園** | CSDI `afcd_rcd_1635133060194_82554`（見 `data/auto/afcd-campsites.json`，`build-data.mjs` 按名配對嵌入 `data.js`）——**官方數據，唔係估算** |
 | 康文署 4 度假營營費與地址 | [康文署度假營官方網頁](https://www.lcsd.gov.hk/tc/camp/) |
 | NGO 營舍名單、地址、設施、座標 | [康文署資助非政府機構營舍頁面](https://www.lcsd.gov.hk/tc/camp/sngocc.html) 及各機構官網 |
 | 持牌賓館/渡假屋名單、座標、牌照號碼 | [牌照事務處持牌酒店及賓館名單](https://www.hadla.gov.hk/psi/licensed-hotels-and-guesthouses/)（CSDI LLHG 圖層，月更，見 `tools-sync-had.mjs`） |
 | 絕大部分營地經緯度 | OpenStreetMap（經 Nominatim 查詢的 camp_site 點位，見 `geocache.json`） |
 | 小部分無 OSM 點位者 | 按官方地址定位（已在 `tools-geocode*.mjs` 註明），誤差約數百米 |
 
-NGO 與私人營地的收費為**約數（每人每晚起）**，實際按營期、團體人數及官網報價為準；
-漁護署營地全部免費，惟荃錦營地須於「郊野營人」系統預約。
-持牌賓館類條目價格統一標示「面議／電話查詢」，唔設虛擬報價；持牌狀態每月由 `tools-sync-had.mjs` 自動覆核。
+> ### ⚠️ 收費可信度（2026-10-27 起）
+>
+> `data.csv` 嘅 `priceSource` 欄將 108 筆分成三類，前端會直接顯示出嚟：
+>
+> | priceSource | 筆數 | 前端顯示 | 意思 |
+> |---|---:|---|---|
+> | `free` | 41 | `免費` | 漁護署官方指定營地，全部免費（惟荃錦營地須喺「郊野營人」系統預約） |
+> | `estimate` | 44 | **`約 $120 每人每晚起`** + 橙色警句 | 康文署／NGO／Glamping／分區民宿嘅收費，**未逐筆向官方核實**，落訂前必須上官網或打電話確認 |
+> | `enquiry` | 23 | `面議／電話查詢` | 持牌民宿經營者，資料庫**刻意唔報假價**；持牌狀態每月由 `tools-sync-had.mjs` 自動覆核 |
+>
+> 即使係康文署有官方收費表嘅 6 筆，喺未逐筆核實前都一律標「約」。
+> 另外 `priceUnit` 有「每人每晚起／每營位每晚／每間每晚起／每人每課程起」等唔同單位，
+> **價格排序只作粗略參考**，唔可以直接比較。核實後可把個別列嘅 `priceSource` 改成 `official`（前端唔加「約」）。
 
 ## 專案結構
 
@@ -88,8 +100,9 @@ node build-data.mjs --check   # 只驗收 data.js 同 data.csv／weather.json �
 | operator | 營運機構 | 漁農自然護理署 / 香港童軍總會 |
 | district | 香港十八區分區 | 西貢區 |
 | area | 細部地點 | 西貢海下灣仔半島 |
-| price | 每晚價格 HKD，免費填 0 | 0 / 41 / 780 |
-| priceUnit | 計價單位 | 免費 / 每人每晚起 / 每營位每晚 |
+| price | 每晚價格 HKD，免費填 0，面議留空 | 0 / 41 / 780 |
+| priceUnit | 計價單位（各列可唔同，排序只作參考） | 免費 / 每人每晚起 / 每營位每晚 |
+| priceSource | **收費可信度**：`free`＝官方免費、`estimate`＝約數未核實（前端加「約」）、`enquiry`＝面議唔報價、`official`＝已核實官方價 | estimate |
 | booking | 是否需要預訂：是 / 否 | 是 |
 | bookingUrl | 自助預訂系統網址（康體通、郊野營人等），無則留空 | https://... |
 | infoUrl | 官方資料頁（NGO 無自助系統時，預訂查詢按鈕連到此頁） | https://... |
@@ -113,9 +126,9 @@ python3 -m http.server 8000
 ## 品質守護（commit 前跑）
 
 ```bash
-npm run guard       # 8 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約
-npm test            # 模擬 DOM 執行 data.js + app.js，確認 108 筆渲染
-npm run build:site  # 產生 dist/（4 個檔，約 123KB，含嵌入天氣快照）
+npm run guard       # 9 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位
+npm test            # 7 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章
+npm run build:site  # 產生 dist/（4 個檔，約 144KB，含天氣快照 + CSDI 官方欄位）
 ```
 
 `guard.yml` 喺 push、PR 同每週一自動跑同一條；五大鐵律 S／F／A／W／V 嘅適用範圍同例外，
@@ -146,7 +159,8 @@ npm run build:site  # 產生 dist/（4 個檔，約 123KB，含嵌入天氣快�
 
 ## 後續可加強方向
 
-- [ ] 核實 NGO 營舍最新收費（目前為約數），補上電話與電郵欄位
+- [ ] **逐筆核實 44 筆 `estimate` 收費**，核實後把 `priceSource` 改成 `official`；補上電話與電郵欄位
+- [ ] 合併／改寫 5 筆「分區導覽種子列」民宿（b01–b04/b06），佢哋唔係真實單一經營者，現時嘅 $600–$850 只係區域參考價
 - [x] 對接香港天文台：每日同步 `weather.json`，build 嵌入 `data.js`，天氣列 + 地圖 pin 顯示週末 PSR 降雨概率與溫度（P3 已完成）
 - [ ] 分區實時氣溫／濕度（天文台 1 分鐘 CSV）落返每張營地卡片
 - [ ] 營地相片（注意版權，優先用官方圖片或實拍）

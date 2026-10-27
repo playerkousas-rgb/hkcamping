@@ -55,6 +55,8 @@ gh run list -R playerkousas-rgb/hkcamping --limit 5
 - 編輯源：`data.csv`（108 筆，19 欄）＋ `data/auto/weather.json` → `node build-data.mjs` → `data.js`
   （前端讀 `window.CAMPSITES` 同 `window.CAMP_WEATHER`；後者係嵌入快照，唔使 fetch）。
 - `price: null`＝面議／電話查詢（**唔係免費**；免費係 `0`）。
+- `priceSource` 係 v1.1.0 加嘅收費可信度欄：`free`（官方免費 41）／`estimate`（約數未核實 44，前端顯示「約 $」）／`enquiry`（面議 23）／`official`（已核實）。**未核實一律 `estimate`**，唔好靜靜改做 `official`。
+- `build-data.mjs` 會按營地名稱將 `data/auto/afcd-campsites.json` 嘅官方 `waterSource`／`tentSpace`／`countryPark` 嵌入 41 筆漁護署營地（其他營地為 `null`）；改 CSV 營地名時要留意配對。
 - 同步腳本只寫 `data/auto/`，**永遠唔直接改 `data.csv`**（來源隔離）。
 - 全部數據源 keyless、$0/月；日後若需要 API key，入 GitHub/Vercel Secrets，唔入庫。
 - `data.js` 係 build 產物但必須 commit（`index.html` 用 `<script>` 直接載入，`file://` 都開到）。

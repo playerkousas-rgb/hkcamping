@@ -7,7 +7,7 @@
   <meta name="description" content="香港營地、宿營營舍、Glamping 與民宿渡假屋資料庫，按分區、費用、設施、交通篩選，附地圖分布。" />
   <meta name="author" content="SCOUT SYSTEM" />
   <meta name="copyright" content="© SCOUT SYSTEM" />
-  <meta name="version" content="1.0.0" />
+  <meta name="version" content="1.1.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -16,7 +16,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <div>
-      <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.0.0</span></h1>
+      <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.1.0</span></h1>
       <p class="tagline">漁護署營地 ・ Glamping ・ 宿營營舍 ・ 離島渡假屋 — 搵營地、plan 活動一站看清</p>
     </div>
     <div class="header-stats" id="headerStats"></div>
@@ -35,6 +35,53 @@
 
 <div class="container weather-container">
   <div class="weather-bar" id="weatherBar" hidden aria-live="polite"></div>
+</div>
+
+<div class="container">
+  <details class="prep-panel" id="prepPanel">
+    <summary>🎒 訂營 ＋ 出發前準備清單 <span class="prep-hint">（撳開睇：價錢點計、邊度要預約、要帶乜）</span></summary>
+    <div class="prep-grid">
+      <section>
+        <h3>💰 價錢點睇</h3>
+        <ul>
+          <li>見到<b>「約」</b>＝收費係約數，<b>未逐筆向官方核實</b>；落訂前一定要上官網或打電話確認。</li>
+          <li><b>面議／電話查詢</b>＝持牌民宿經營者，資料庫刻意<b>唔報假價</b>，要自己問。</li>
+          <li><b>免費</b>＝漁護署 41 個指定露營地點，官方免費；惟荃錦營地須喺「郊野營人」系統預約。</li>
+          <li>計價單位有「每人每晚起／每營位每晚／每間每晚起／每人每課程起」幾種，<b>價格排序只作粗略參考</b>，唔可以直接比。</li>
+        </ul>
+      </section>
+      <section>
+        <h3>📅 訂營前要問清楚</h3>
+        <ul>
+          <li><b>係咪要預訂</b>：卡片有「需預訂」標記；冇標記嘅多數先到先得。</li>
+          <li><b>康文署度假營</b>：用 SmartPLAY 系統；交接文件記錄每月 <b>20 號 08:30</b> 放剩餘營位，實際以 SmartPLAY 公佈為準。</li>
+          <li><b>NGO 營舍</b>：唔少只接待團體／會員，散客要預先問最低人數、營期同埋有冇門檻。</li>
+          <li><b>按金／雜費</b>：清潔費、床單、燒烤爐、冷氣等未必包喺「約」價入面，要逐項問。</li>
+          <li><b>取消／改期條款</b>：尤其颱風、暴雨時點處理。</li>
+        </ul>
+      </section>
+      <section>
+        <h3>🌦 出發前 24 小時</h3>
+        <ul>
+          <li>睇上面<b>天氣列</b>嘅週末降雨概率同埋<b>生效警告</b>（暴雨／雷暴／颱風／酷熱／寒冷／火災危險）。</li>
+          <li>再上<a href="https://www.hko.gov.hk/tc/wxinfo/currwx/fnd.htm" target="_blank" rel="noopener">天文台九天預報</a>睇多次，警告可以好快改。</li>
+          <li>秋冬乾燥＋紅色火災危險警告時，<b>唔好野外生火</b>，只可用指定燒烤爐。</li>
+          <li>離島營地要查<b>尾班渡輪／街渡</b>班次，唔好預得太盡。</li>
+        </ul>
+      </section>
+      <section>
+        <h3>⛺ 去到現場</h3>
+        <ul>
+          <li>卡片有<b>「⚠️ 季節性溪澗」</b>＝旱季可能無水，<b>要自攜足夠食水</b>；「🚰 水喉」先有固定水源。</li>
+          <li><b>「少於 20 營位」</b>嘅營地假日好易爆滿，早啲到；先到先得，唔保證有位。</li>
+          <li>用卡片嘅<b>「📶 覆蓋查詢」</b>睇通訊辦覆蓋圖；緊急時冇自己台訊號都可以撥 <b>112</b>。</li>
+          <li>基本裝備：帳篷、睡袋、防潮墊、頭燈、食水、急救包、防蚊、垃圾袋（<b>自己垃圾自己帶走</b>）。</li>
+          <li>設施／開放狀況或會臨時改，<b>出發前再睇一次官方公佈</b>。</li>
+        </ul>
+      </section>
+    </div>
+    <p class="prep-disclaimer">以上係通用提醒，唔係個別場地嘅官方條款；官方水源／營位規模數據來自漁護署 CSDI 快照，其餘以場地公佈為準。</p>
+  </details>
 </div>
 
 <div class="container layout">
@@ -100,7 +147,7 @@
       </div>
     </section>
 
-    <p class="sidebar-note">漁護署 41 個指定營地及康文署營舍資料參照官方網頁，座標採用 OpenStreetMap 點位；NGO 及私人營地收費僅供參考，出發前請以官方公佈為準。「📶 覆蓋查詢」連接通訊辦郊野公園流動網絡覆蓋調查地圖，該數據版權屬政府所有，僅供個人查閱。</p>
+    <p class="sidebar-note">漁護署 41 個指定營地及康文署營舍資料參照官方網頁，座標採用 OpenStreetMap 點位；<b>標「約」嘅收費係未核實約數</b>，NGO 及私人營地收費僅供參考，出發前請以官方公佈為準。「📶 覆蓋查詢」連接通訊辦郊野公園流動網絡覆蓋調查地圖，該數據版權屬政府所有，僅供個人查閱。</p>
   </aside>
 
   <!-- 主內容 -->
@@ -109,7 +156,7 @@
       <input type="search" id="searchInput" placeholder="搜尋營地名稱、地區、設施（如：熱水淋浴、海灘、寵物）…" />
       <select id="sortSelect" aria-label="排序">
         <option value="default">預設排序</option>
-        <option value="price-asc">價格：低至高</option>
+        <option value="price-asc">價格：低至高（單位各異，僅供參考）</option>
         <option value="name">名稱</option>
       </select>
     </div>
@@ -137,7 +184,7 @@
 
 <footer class="site-footer">
   <div class="container">
-    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.0.0</span> · 資料格式：<code>data.csv</code> → <code>node build-data.mjs</code> → <code>data.js</code></p>
+    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.1.0</span> · 資料格式：<code>data.csv</code> → <code>node build-data.mjs</code> → <code>data.js</code></p>
     <p>地圖由 Leaflet + OpenStreetMap 提供 · 天氣數據由香港天文台提供 · 價格與設施資料請於正式發佈前核實</p>
   </div>
 </footer>

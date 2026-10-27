@@ -69,6 +69,33 @@ const splitList = (value) =>
     .map((s) => s.trim())
     .filter(Boolean);
 
+/**
+ * 漁護署官方快照（CSDI）→ 用營地名稱配對，補「判斷唔到」嘅客觀欄位。
+ * 呢啲係官方數據，唔係人手估算：水源類型直接影響要唔要自攜食水。
+ */
+const norm = (s) => String(s || '')
+  .replace(/[（(][^）)]*[）)]/g, '')   // 去括號，如「大浪灣營地（大嶼山）」
+  .replace(/[()\s]/g, '')
+  .replace(/營地$/, '');
+
+const AFCD_PATH = join(__dirname, 'data', 'auto', 'afcd-campsites.json');
+const afcdByName = new Map();
+if (existsSync(AFCD_PATH)) {
+  try {
+    const snap = JSON.parse(readFileSync(AFCD_PATH, 'utf8'));
+    for (const c of (snap.campsites || [])) {
+      afcdByName.set(norm(c.name), {
+        siteId: c.siteId || '',
+        countryPark: c.countryPark || '',
+        waterSource: c.waterSource || '',
+        tentSpace: String(c.tentSpace || '').replace(/\s+/g, ' ').trim(),
+      });
+    }
+  } catch (e) {
+    console.warn(`⚠ afcd-campsites.json 無法解析，跳過官方欄位：${e.message}`);
+  }
+}
+
 const raw = readFileSync(CSV_PATH, 'utf8');
 const [header, ...dataRows] = parseCSV(raw).filter((r) => r.some((c) => c.trim() !== ''));
 
@@ -89,6 +116,14 @@ const records = dataRows.map((cols) => {
     throw new Error(`「${obj.name}」經緯度無效：${obj.lat},${obj.lng}`);
   }
 
+  // priceSource：free=官方免費 / estimate=約數未核實 / enquiry=面議唔報價
+  const priceSource = obj.priceSource || 'estimate';
+  if (!['free', 'estimate', 'enquiry', 'official'].includes(priceSource)) {
+    throw new Error(`「${obj.name}」priceSource 無效：${priceSource}`);
+  }
+
+  const afcd = obj.operator === '漁農自然護理署' ? afcdByName.get(norm(obj.name)) : null;
+
   return {
     id: obj.id,
     name: obj.name,
@@ -98,6 +133,12 @@ const records = dataRows.map((cols) => {
     area: obj.area,
     price: obj.price === '' ? null : Number(obj.price) || 0,
     priceUnit: obj.priceUnit,
+    priceSource,
+    // 以下 3 個只會喺漁護署 41 個官方營地有值（CSDI 快照），其餘為 null
+    siteId: afcd?.siteId || null,
+    countryPark: afcd?.countryPark || null,
+    waterSource: afcd?.waterSource || null,
+    tentSpace: afcd?.tentSpace || null,
     booking: obj.booking === '是',
     bookingUrl: obj.bookingUrl || '',
     infoUrl: obj.infoUrl || '',

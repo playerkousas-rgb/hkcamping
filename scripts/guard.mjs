@@ -13,6 +13,7 @@ import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import vm from 'node:vm';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const results = [];
@@ -151,6 +152,33 @@ try {
   failed.length ? bad('workflow 合約', failed.join('; ')) : ok('workflow 合約', `${checks.length} 項全過`);
 } catch (e) {
   bad('workflow 合約', e.message);
+}
+
+/* ---------- 9. 約數標記 + 官方水源欄位（v1.1.0） ---------- */
+try {
+  const box = { window: {} };
+  vm.createContext(box);
+  vm.runInContext(read('data.js'), box);
+  const sites = box.window.CAMPSITES || [];
+  const app = read('app.js');
+  const html = read('index.html');
+  const counts = sites.reduce((a, x) => (a[x.priceSource] = (a[x.priceSource] || 0) + 1, a), {});
+  const paid = sites.filter((x) => typeof x.price === 'number' && x.price > 0);
+  const unmarked = paid.filter((x) => x.priceSource !== 'estimate');
+  const afcd = sites.filter((x) => x.operator === '漁農自然護理署');
+  const noWater = afcd.filter((x) => !x.waterSource || !x.tentSpace || !x.countryPark);
+  const checks = [
+    [counts.free > 0 && counts.estimate > 0 && counts.enquiry > 0, 'priceSource 三類齊全'],
+    [unmarked.length === 0, `所有 ${paid.length} 筆有銀碼資料都標咗約數`],
+    [app.includes("? '約 ' : ''"), 'app.js 會喺約數前面加「約」'],
+    [html.includes('prepPanel') && html.includes('約數'), '出發前準備清單 + 約數警句存在'],
+    [afcd.length === 41 && noWater.length === 0, `41 筆官方營地都有 CSDI 水源／營位／郊野公園`],
+  ];
+  const failed = checks.filter(([p]) => !p).map(([, n]) => n);
+  failed.length ? bad('約數 + 官方欄位', failed.join('; '))
+    : ok('約數 + 官方欄位', `free ${counts.free} / estimate ${counts.estimate} / enquiry ${counts.enquiry}；官方欄位 41/41`);
+} catch (e) {
+  bad('約數 + 官方欄位', e.message);
 }
 
 /* ---------- 總結 ---------- */

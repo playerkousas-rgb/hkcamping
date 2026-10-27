@@ -108,6 +108,56 @@ code {
 }
 .popup-weather { font-size: 0.8rem; color: var(--muted); margin: 2px 0 6px; }
 
+/* ===== 出發前準備面板（P4） ===== */
+.prep-panel {
+  margin-top: 14px; background: var(--card);
+  border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow); overflow: hidden;
+}
+.prep-panel > summary {
+  cursor: pointer; padding: 12px 16px; font-weight: 700;
+  color: var(--green-900); font-size: 0.94rem;
+  background: linear-gradient(90deg, var(--green-100), #fff);
+  list-style: none;
+}
+.prep-panel > summary::-webkit-details-marker { display: none; }
+.prep-panel > summary::before { content: '▸ '; color: var(--orange-600); }
+.prep-panel[open] > summary::before { content: '▾ '; }
+.prep-panel > summary:hover { background: var(--green-100); }
+.prep-hint { font-weight: 400; font-size: 0.8rem; color: var(--muted); }
+.prep-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px; padding: 16px 20px 6px;
+}
+.prep-grid section { border-top: 2px solid var(--green-100); padding-top: 8px; }
+.prep-grid h3 { margin: 0 0 6px; font-size: 0.88rem; color: var(--green-700); }
+.prep-grid ul { margin: 0; padding-left: 18px; font-size: 0.82rem; line-height: 1.65; }
+.prep-grid li { margin-bottom: 5px; }
+.prep-grid b { color: var(--green-900); }
+.prep-grid a { color: var(--blue-700); }
+.prep-disclaimer {
+  margin: 4px 0 0; padding: 9px 20px 14px;
+  font-size: 0.76rem; color: var(--muted); border-top: 1px dashed var(--line);
+}
+
+/* ===== 卡片：約數警句 + 官方水源／營位徽章 ===== */
+.price-caveat {
+  font-size: 0.73rem; color: #a1480a; background: var(--orange-100);
+  border-left: 3px solid var(--orange-600); border-radius: 4px;
+  padding: 4px 8px; margin-top: -2px;
+}
+.prep-badges { display: flex; flex-wrap: wrap; gap: 5px; }
+.prep-badge {
+  font-size: 0.71rem; background: var(--green-100); color: var(--green-900);
+  padding: 3px 8px; border-radius: 999px; border: 1px solid #cfe3d1;
+}
+.prep-badge.warn {
+  background: var(--orange-100); color: #8a3e05; border-color: #f0cba5;
+}
+@media (max-width: 900px) {
+  .prep-grid { grid-template-columns: 1fr; gap: 14px; padding: 14px 16px 4px; }
+}
+
 /* ===== Layout ===== */
 .layout {
   display: grid;

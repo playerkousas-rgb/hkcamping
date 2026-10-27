@@ -13,8 +13,14 @@
 | P3 | 前端食 `data/auto/weather.json`：build 嵌入 `data.js`、天氣列、地圖 pin／popup 週末 PSR 標記、過期提示 | ✅ | 本批 |
 
 **合併狀態**：PR [#1](https://github.com/playerkousas-rgb/hkcamping/pull/1) 已於 2026-10-27 合併入 `main`
-（merge commit `1727ba1`）。`gh workflow list` 確認三條 workflow 全部 `active`；
+（merge commit `1727ba1`），PR #4（文件更新）亦已合併。`gh workflow list` 確認三條 workflow 全部 `active`；
 `main` 上嘅 guard push run `40462553486` **success**。
+
+**v1.1.0（新 branch `arena/b909a4c2-hkcamping`）**：用戶質問「價錢點嚟、係咪作出嚟」→
+查證後確認 `data.csv` 由初始 commit 已有、P0–P3 完全冇改過；但有 44 筆有銀碼資料係**人手估算約數**。
+處理：`data.csv` 加 `priceSource` 欄（free 41／estimate 44／enquiry 23），前端一律加「約」+ 橙色警句；
+同時 join CSDI **官方**水源／營位規模／郊野公園落 41 筆營地；新增「訂營＋出發前準備」清單。
+詳見 `README.md`「收費可信度」一節。
 
 ## 二、舊交接文件嘅過時資料（已修正）
 
