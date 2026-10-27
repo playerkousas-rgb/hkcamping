@@ -114,9 +114,26 @@ const records = dataRows.map((cols) => {
 const banner =
   '// 此檔案由 build-data.mjs 自動產生，請勿直接編輯。\n' +
   '// 要改資料請編輯 data.csv，然後執行：node build-data.mjs\n' +
-  `// 共 ${records.length} 筆；輸出不含時間戳，確保 CI 唔會出現假變更\n\n`;
+  `// 共 ${records.length} 筆；輸出不含時間戳，確保 CI 唔會出現假變更\n` +
+  '// 天氣快照：data/auto/weather.json（每日 Actions 更新後 rebuild）\n\n';
 
-const output = banner + 'window.CAMPSITES = ' + JSON.stringify(records, null, 2) + ';\n';
+// 天文台快照（data/auto/weather.json）由 build 嵌入 data.js：
+// 前端唔使 fetch，直接雙擊 index.html（file://）都睇到週末降雨概率。
+const WEATHER_PATH = join(__dirname, 'data', 'auto', 'weather.json');
+let weather = null;
+if (existsSync(WEATHER_PATH)) {
+  try {
+    weather = JSON.parse(readFileSync(WEATHER_PATH, 'utf8'));
+  } catch (e) {
+    console.warn(`⚠ weather.json 無法解析，前端天氣列會隱藏：${e.message}`);
+  }
+}
+
+const output =
+  banner +
+  'window.CAMPSITES = ' + JSON.stringify(records, null, 2) + ';\n\n' +
+  '// 天文台快照（data/auto/weather.json），由 GitHub Actions 每日更新後 rebuild\n' +
+  'window.CAMP_WEATHER = ' + JSON.stringify(weather, null, 2) + ';\n';
 
 // --check：只比較、唔寫檔，畀 guard / CI 用（F14 / S12）
 if (process.argv.includes('--check')) {

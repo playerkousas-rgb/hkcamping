@@ -1,6 +1,7 @@
 // 此檔案由 build-data.mjs 自動產生，請勿直接編輯。
 // 要改資料請編輯 data.csv，然後執行：node build-data.mjs
 // 共 108 筆；輸出不含時間戳，確保 CI 唔會出現假變更
+// 天氣快照：data/auto/weather.json（每日 Actions 更新後 rebuild）
 
 window.CAMPSITES = [
   {
@@ -3512,3 +3513,147 @@ window.CAMPSITES = [
     "summary": "持牌營舍（旅館牌照 H/6461），位於粉嶺，由香港青年協會領袖學院營運；收費同營期請向機構查詢。電話 2169 0255。"
   }
 ];
+
+// 天文台快照（data/auto/weather.json），由 GitHub Actions 每日更新後 rebuild
+window.CAMP_WEATHER = {
+  "source": "香港天文台 open data (data.weather.gov.hk)",
+  "fetchedAt": "2026-10-27T04:58:06.066Z",
+  "hkoUpdateTime": "2026-10-27T11:30:00+08:00",
+  "activeWarnings": [],
+  "forecast": [
+    {
+      "date": "20261028",
+      "week": "星期三",
+      "weather": "部分時間有陽光，早晚有一兩陣微雨。",
+      "minTemp": 24,
+      "maxTemp": 28,
+      "minRh": 60,
+      "maxRh": 85,
+      "icon": 51,
+      "psr": "低",
+      "wind": "東風4至5級，離岸及高地間中6級。"
+    },
+    {
+      "date": "20261029",
+      "week": "星期四",
+      "weather": "初時部分時間多雲。日間大致天晴。",
+      "minTemp": 24,
+      "maxTemp": 29,
+      "minRh": 60,
+      "maxRh": 85,
+      "icon": 51,
+      "psr": "低",
+      "wind": "東風4至5級，初時離岸及高地間中6級。"
+    },
+    {
+      "date": "20261030",
+      "week": "星期五",
+      "weather": "天晴。日間乾燥。",
+      "minTemp": 25,
+      "maxTemp": 30,
+      "minRh": 50,
+      "maxRh": 85,
+      "icon": 50,
+      "psr": "低",
+      "wind": "東至東北風3至4級。"
+    },
+    {
+      "date": "20261031",
+      "week": "星期六",
+      "weather": "大致天晴。日間乾燥。",
+      "minTemp": 25,
+      "maxTemp": 30,
+      "minRh": 55,
+      "maxRh": 85,
+      "icon": 51,
+      "psr": "低",
+      "wind": "東風4級，間中5級。"
+    },
+    {
+      "date": "20261101",
+      "week": "星期日",
+      "weather": "大致多雲，初時有一兩陣雨。日間部分時間天色明朗。",
+      "minTemp": 25,
+      "maxTemp": 29,
+      "minRh": 65,
+      "maxRh": 90,
+      "icon": 52,
+      "psr": "低",
+      "wind": "東風4級，初時離岸間中5級。"
+    },
+    {
+      "date": "20261102",
+      "week": "星期一",
+      "weather": "部分時間有陽光。日間乾燥。稍後有一兩陣微雨。",
+      "minTemp": 25,
+      "maxTemp": 31,
+      "minRh": 55,
+      "maxRh": 85,
+      "icon": 51,
+      "psr": "低",
+      "wind": "東至東北風3至4級。"
+    },
+    {
+      "date": "20261103",
+      "week": "星期二",
+      "weather": "大致多雲，初時有一兩陣微雨。日間部分時間有陽光。",
+      "minTemp": 24,
+      "maxTemp": 29,
+      "minRh": 60,
+      "maxRh": 85,
+      "icon": 51,
+      "psr": "低",
+      "wind": "東至東北風4至5級，初時離岸間中6級。"
+    },
+    {
+      "date": "20261104",
+      "week": "星期三",
+      "weather": "大致多雲，日間部分時間有陽光。",
+      "minTemp": 24,
+      "maxTemp": 29,
+      "minRh": 60,
+      "maxRh": 85,
+      "icon": 51,
+      "psr": "低",
+      "wind": "東至東北風4至5級。"
+    },
+    {
+      "date": "20261105",
+      "week": "星期四",
+      "weather": "大致多雲，日間部分時間有陽光。",
+      "minTemp": 24,
+      "maxTemp": 29,
+      "minRh": 60,
+      "maxRh": 85,
+      "icon": 51,
+      "psr": "低",
+      "wind": "東至東北風4至5級。"
+    }
+  ],
+  "weekendRainRisk": [
+    {
+      "date": "20261031",
+      "week": "星期六",
+      "weather": "大致天晴。日間乾燥。",
+      "minTemp": 25,
+      "maxTemp": 30,
+      "minRh": 55,
+      "maxRh": 85,
+      "icon": 51,
+      "psr": "低",
+      "wind": "東風4級，間中5級。"
+    },
+    {
+      "date": "20261101",
+      "week": "星期日",
+      "weather": "大致多雲，初時有一兩陣雨。日間部分時間天色明朗。",
+      "minTemp": 25,
+      "maxTemp": 29,
+      "minRh": 65,
+      "maxRh": 90,
+      "icon": 52,
+      "psr": "低",
+      "wind": "東風4級，初時離岸間中5級。"
+    }
+  ]
+};

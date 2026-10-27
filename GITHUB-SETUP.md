@@ -47,7 +47,8 @@ gh run list -R playerkousas-rgb/hkcamping --limit 5
 
 ## 三、專案關鍵合約（改動前必讀）
 
-- 編輯源：`data.csv`（108 筆，19 欄）→ `node build-data.mjs` → `data.js`（前端唯一讀 `window.CAMPSITES`）。
+- 編輯源：`data.csv`（108 筆，19 欄）＋ `data/auto/weather.json` → `node build-data.mjs` → `data.js`
+  （前端讀 `window.CAMPSITES` 同 `window.CAMP_WEATHER`；後者係嵌入快照，唔使 fetch）。
 - `price: null`＝面議／電話查詢（**唔係免費**；免費係 `0`）。
 - 同步腳本只寫 `data/auto/`，**永遠唔直接改 `data.csv`**（來源隔離）。
 - 全部數據源 keyless、$0/月；日後若需要 API key，入 GitHub/Vercel Secrets，唔入庫。
@@ -59,7 +60,7 @@ gh run list -R playerkousas-rgb/hkcamping --limit 5
 `vercel.json` 已定案：`framework: null`、`buildCommand: node build-site.mjs`、
 `outputDirectory: dist`、`cleanUrls: true`、`regions: ["hkg1"]`、保安 headers。
 `build-site.mjs` 會 rebuild `data.js` 再把 **4 個檔**（index／styles／app／data）抄入 `dist/`，
-輸出約 113KB；`.vercelignore` 擋 `.git/`、`.github/`、`scripts/`、`*.md`、`tools-*.mjs`、
+輸出約 123KB（含嵌入天氣快照）；`.vercelignore` 擋 `.git/`、`.github/`、`scripts/`、`*.md`、`tools-*.mjs`、
 `geocache.json` 同兩份大 HAD 快照 → 只保留 build 需要嘅 `data/auto/weather.json`。
 
 **Dashboard / Git Import 設定**（Framework Preset 選 **Other** 時覆寫）：

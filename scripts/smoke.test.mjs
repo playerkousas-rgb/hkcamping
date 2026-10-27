@@ -87,3 +87,34 @@ test('價格 null 顯示面議，唔會當成免費', () => {
   assert.ok(free.length > 0);
   assert.notDeepEqual(nullPrice[0].price, free[0].price);
 });
+
+test('天氣列：嵌入嘅天文台快照會渲染週末 PSR', () => {
+  const { sandbox, doc } = boot();
+  assert.ok(sandbox.CAMP_WEATHER, 'data.js 應嵌入 window.CAMP_WEATHER');
+  assert.ok(Array.isArray(sandbox.CAMP_WEATHER.weekendRainRisk));
+  const bar = doc.getElementById('weatherBar');
+  assert.equal(bar.hidden, false);
+  assert.match(bar.className, /weather-bar psr-(low|mid|high)/);
+  const texts = bar.children.map((c) => c.textContent).join(' | ');
+  assert.match(texts, /週末天氣/);
+  assert.match(texts, /降雨概率/);
+  assert.match(texts, /天文台更新/);
+  assert.ok(bar.children.length >= 5);
+});
+
+test('無天氣快照時天氣列自動隱藏（fail-closed）', () => {
+  const doc = new FakeDoc();
+  const store = new Map();
+  const sandbox = {
+    console,
+    document: doc,
+    localStorage: { getItem: (k) => store.get(k) ?? null, setItem: () => {}, removeItem: () => {} },
+  };
+  vm.createContext(sandbox);
+  vm.runInContext('var window = globalThis;', sandbox);
+  vm.runInContext(readFileSync(join(ROOT, 'data.js'), 'utf8'), sandbox, { filename: 'data.js' });
+  vm.runInContext('window.CAMP_WEATHER = null;', sandbox);
+  vm.runInContext(readFileSync(join(ROOT, 'app.js'), 'utf8'), sandbox, { filename: 'app.js' });
+  assert.equal(doc.getElementById('weatherBar').hidden, true);
+  assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>108<\/b> 個結果/);
+});

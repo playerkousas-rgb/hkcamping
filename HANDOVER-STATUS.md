@@ -9,8 +9,8 @@
 |---|---|---|---|
 | P0 | 補回 `.github/workflows/sync-data.yml`／`sync-had.yml`；`build-data.mjs` 去時間戳 + `--check`；文件更正 | ✅ | `2869237` |
 | P1 | `vercel.json`／`.vercelignore`／`build-site.mjs`（dist 四檔）／部署文件 | ✅ 設定完成；⚠️ 實際 deployment 被 Vercel token 權限擋住 | `1e11acd` |
-| P2 | `scripts/guard.mjs` + `guard.yml` + PR template + dependabot + `© SCOUT SYSTEM` + 雙版號 + smoke test | ✅ | 本批 |
-| P3 | 前端食 `data/auto/weather.json`：天氣列 + 地圖 pin 週末 PSR 標記 | 🚧 進行中 | 下一批 |
+| P2 | `scripts/guard.mjs` + `guard.yml` + PR template + dependabot + `© SCOUT SYSTEM` + 雙版號 + smoke test | ✅ | `0fe6154` |
+| P3 | 前端食 `data/auto/weather.json`：build 嵌入 `data.js`、天氣列、地圖 pin／popup 週末 PSR 標記、過期提示 | ✅ | 本批 |
 
 ## 二、舊交接文件嘅過時資料（已修正）
 
@@ -26,7 +26,7 @@
 
 | 鐵律 | 本專案點做 | 狀態 |
 |---|---|---|
-| **S 瘦身** | 零 runtime dependencies；`dist/` 只 4 檔 ≈113KB；`.vercelignore` 擋大快照／工具／文件；`regions: ["hkg1"]`；單檔全數 <1MB（最大 784KB） | ✅ |
+| **S 瘦身** | 零 runtime dependencies；`dist/` 只 4 檔 ≈123KB（含嵌入天氣快照）；`.vercelignore` 擋大快照／工具／文件；`regions: ["hkg1"]`；單檔全數 <1MB（最大 784KB） | ✅ |
 | **F 防呆** | `build-data.mjs` 查 id 重複／經緯度；`--check` 可執行驗收；同步腳本 fail-closed 保留舊快照；workflow 有變更先 commit；`guard.mjs` 本機＋CI 同一條 | ✅ |
 | **A 安全** | 純靜態、無登入、無寫入面、無 server、零 secret；`vercel.json` 加 nosniff／frame／referrer／permissions headers。**例外**：A3–A10（session／RLS／超管／限流）唔適用，因為冇身份同可寫 API；已喺本檔寫明 | ✅（例外已申報） |
 | **W 版權** | `index.html` meta `copyright` ＋頁尾 `© SCOUT SYSTEM`。**例外**：本專案無 AI 生成圖，W2/W3 隱形水印唔適用；OSM／天文台／通訊辦數據只做連結同署名，不轉載版權圖層 | ✅（例外已申報） |
@@ -39,9 +39,11 @@
 
 ```bash
 npm run guard     # 8 項全綠（必要檔／版號／版權／data.js／dist／單檔／secret／workflow）
-npm test          # smoke test：模擬 DOM 載入 data.js + app.js，確認 108 筆渲染
-npm run build:site  # dist/ 4 檔 ≈113KB
-npm run dev       # http://localhost:8000 本機預覽（Arena 會提供 live preview URL）
+npm test          # 5 個 smoke test 全綠：模擬 DOM 載入 data.js + app.js，108 筆渲染、雙版號、price null、天氣列、無快照 fail-closed
+npm run build:site  # dist/ 4 檔 ≈123KB
+npm run dev       # http://localhost:8000 本機預覽
+# Arena live preview：python3 -m http.server 8000 --bind 0.0.0.0 --directory dist/
+# 實測 HTTP：/ /index.html /styles.css /app.js /data.js 全部 200，data.js 含 CAMP_WEATHER
 ```
 
 > **網絡限制**：Arena sandbox 只可以連 github／npm／pypi，`tools-sync-*.mjs` 喺本機實測係

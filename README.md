@@ -9,7 +9,8 @@
 
 合共 **108 筆**（41 + 6 + 30 + 4 + 27；`data.js` 分類為露營 45、宿營 32、Glamping 4、民宿 27）。
 功能：分區地圖（Leaflet + OpenStreetMap）、類型/分區/費用/交通/設施/訊號篩選、
-全文搜尋（可搜營運機構）、價格排序、我的最愛（瀏覽器本地記錄，無須登入）。
+全文搜尋（可搜營運機構）、價格排序、我的最愛（瀏覽器本地記錄，無須登入）、
+**週末天氣列**（天文台九天預報 PSR 降雨概率，連地圖 pin 標記；每日 Actions 自動更新）。
 
 ## 資料來源與可信度
 
@@ -31,7 +32,7 @@ NGO 與私人營地的收費為**約數（每人每晚起）**，實際按營期
 ```
 hk-camp-database/
 ├── data.csv              # 人工策展層（摘要、標籤、收費、訊號、NGO/民宿）
-├── build-data.mjs        # CSV → data.js 轉換腳本（零依賴，支援 --check）
+├── build-data.mjs        # CSV ＋ weather.json → data.js（零依賴，支援 --check）
 ├── build-site.mjs        # 部署 build：rebuild data.js + 只抄 4 個檔入 dist/
 ├── data.js               # 自動產生，網站實際讀取的資料
 ├── vercel.json / .vercelignore / .gitignore  # 部署與 Git 衛生設定
@@ -71,8 +72,8 @@ hk-camp-database/
 3. 執行：
 
 ```bash
-node build-data.mjs           # 產生 data.js（輸出不含時間戳，可重複執行）
-node build-data.mjs --check   # 只驗收 data.js 是否同 data.csv 同步，唔寫檔
+node build-data.mjs           # 產生 data.js（CAMPSITES ＋ CAMP_WEATHER；不含時間戳，可重複執行）
+node build-data.mjs --check   # 只驗收 data.js 同 data.csv／weather.json 是否同步，唔寫檔
 ```
 
 4. 把 `data.csv` 與重新產生的 `data.js` 一併 commit，push 後 Vercel 自動部署
@@ -114,7 +115,7 @@ python3 -m http.server 8000
 ```bash
 npm run guard       # 8 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約
 npm test            # 模擬 DOM 執行 data.js + app.js，確認 108 筆渲染
-npm run build:site  # 產生 dist/（4 個檔，約 113KB）
+npm run build:site  # 產生 dist/（4 個檔，約 123KB，含嵌入天氣快照）
 ```
 
 `guard.yml` 喺 push、PR 同每週一自動跑同一條；五大鐵律 S／F／A／W／V 嘅適用範圍同例外，
@@ -146,7 +147,8 @@ npm run build:site  # 產生 dist/（4 個檔，約 113KB）
 ## 後續可加強方向
 
 - [ ] 核實 NGO 營舍最新收費（目前為約數），補上電話與電郵欄位
-- [ ] 對接香港天文台 / OpenWeather，顯示各營地週末降雨與溫度
+- [x] 對接香港天文台：每日同步 `weather.json`，build 嵌入 `data.js`，天氣列 + 地圖 pin 顯示週末 PSR 降雨概率與溫度（P3 已完成）
+- [ ] 分區實時氣溫／濕度（天文台 1 分鐘 CSV）落返每張營地卡片
 - [ ] 營地相片（注意版權，優先用官方圖片或實拍）
 - [ ] 空位/預訂日曆（康文署康體通、郊野營人、私人營地）
 - [ ] 活動專頁：把營地與附近行山徑、水上活動、餐廳串成行程

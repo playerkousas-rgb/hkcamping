@@ -20,6 +20,32 @@
   // 地理資訊地圖座標深鏈（政府官方地圖，營地位置一按即達）
   const geoInfoUrl = (s) => `https://www.map.gov.hk/gm/geo:${s.lat},${s.lng}?lg=tc`;
 
+  /* ---------- 天氣（天文台快照，由 build-data.mjs 嵌入 data.js） ---------- */
+  // 來源：data/auto/weather.json（每日 GitHub Actions 更新）。冇快照就自動隱藏天氣功能。
+  const WEATHER = (window.CAMP_WEATHER && typeof window.CAMP_WEATHER === 'object')
+    ? window.CAMP_WEATHER : null;
+  const PSR_RANK = { '低': 1, '中': 2, '高': 3 };
+
+  function weekendForecast() {
+    if (!WEATHER) return [];
+    const risk = Array.isArray(WEATHER.weekendRainRisk) ? WEATHER.weekendRainRisk : [];
+    const days = risk.length
+      ? risk
+      : (Array.isArray(WEATHER.forecast) ? WEATHER.forecast : [])
+          .filter((d) => d.week === '星期六' || d.week === '星期日');
+    return days.slice(0, 4);
+  }
+
+  const psrLevel = (days) =>
+    days.reduce((max, d) => Math.max(max, PSR_RANK[d.psr] || 0), 0);
+
+  const WEEKEND_DAYS = weekendForecast();
+  const WEEKEND_LEVEL = psrLevel(WEEKEND_DAYS);
+  const WEEKEND_PSR_CLASS =
+    WEEKEND_LEVEL >= 3 ? 'psr-high' : WEEKEND_LEVEL === 2 ? 'psr-mid' : WEEKEND_LEVEL === 1 ? 'psr-low' : '';
+  const WEEKEND_PSR_TEXT =
+    WEEKEND_LEVEL >= 3 ? '高' : WEEKEND_LEVEL === 2 ? '中' : WEEKEND_LEVEL === 1 ? '低' : '不詳';
+
   /* ---------- 狀態 ---------- */
   const state = {
     types: new Set(),
@@ -137,9 +163,13 @@
 
   function pinIcon(site) {
     const meta = TYPE_META[site.type] || { color: '#555', short: '?' };
+    // 週末降雨概率係全港預測，用右上角一點標示（唔係逐營地實測）
+    const dot = WEEKEND_PSR_CLASS
+      ? `<i class="weather-dot ${WEEKEND_PSR_CLASS}" title="週末降雨概率（全港）：${WEEKEND_PSR_TEXT}"></i>`
+      : '';
     return L.divIcon({
       className: '',
-      html: `<div class="map-pin" style="background:${meta.color}"><span>${meta.short}</span></div>`,
+      html: `<div class="pin-wrap"><div class="map-pin" style="background:${meta.color}"><span>${meta.short}</span></div>${dot}</div>`,
       iconSize: [26, 26],
       iconAnchor: [13, 26],
       popupAnchor: [0, -24],
@@ -159,9 +189,13 @@
         ? `<br><a class="popup-link" href="${s.bookingUrl}" target="_blank" rel="noopener">前往預訂頁面 ↗</a>` : '';
       const info = (!s.bookingUrl && s.infoUrl)
         ? `<br><a class="popup-link" href="${s.infoUrl}" target="_blank" rel="noopener">${s.booking ? '預訂查詢（官網）' : '官方資料'} ↗</a>` : '';
+      const weatherLine = WEEKEND_PSR_CLASS
+        ? `<div class="popup-weather"><i class="weather-dot ${WEEKEND_PSR_CLASS}"></i> 週末降雨概率（全港預測）：${WEEKEND_PSR_TEXT}</div>`
+        : '';
       marker.bindPopup(
         `<div class="popup-title">${s.name}</div>
          <div class="popup-meta">${s.type} · ${s.operator || ''} · ${s.district} ${s.area} · ${priceText(s)}</div>
+         ${weatherLine}
          <a class="popup-link" href="https://www.google.com/maps?q=${s.lat},${s.lng}" target="_blank" rel="noopener">Google 地圖導航 ↗</a><br><a class="popup-link" href="${OFCA_COVERAGE_URL}" target="_blank" rel="noopener">📶 通訊辦覆蓋地圖 ↗</a>${booking}${info}`
       );
       markerLayer.addLayer(marker);
@@ -345,6 +379,63 @@
     host.appendChild(free);
   }
 
+  /* ---------- 天氣列（P3：前端食 data/auto/weather.json） ---------- */
+  const fmtDay = (s) => {
+    const v = String(s || '');
+    return v.length === 8 ? `${v.slice(4, 6)}/${v.slice(6, 8)}` : v;
+  };
+  const fmtStamp = (iso) => {
+    const d = new Date(iso || '');
+    return Number.isFinite(d.getTime())
+      ? `${d.toISOString().slice(0, 16).replace('T', ' ')} UTC` : '時間不詳';
+  };
+
+  function renderWeather() {
+    const bar = document.getElementById('weatherBar');
+    if (!bar) return;
+    if (!WEATHER || !WEEKEND_DAYS.length) { bar.hidden = true; return; }
+
+    const warnings = Array.isArray(WEATHER.activeWarnings) ? WEATHER.activeWarnings : [];
+    const lows = WEEKEND_DAYS.map((d) => Number(d.minTemp)).filter(Number.isFinite);
+    const highs = WEEKEND_DAYS.map((d) => Number(d.maxTemp)).filter(Number.isFinite);
+    const temp = lows.length && highs.length
+      ? ` · ${Math.min(...lows)}–${Math.max(...highs)}°C` : '';
+    const first = WEEKEND_DAYS[0];
+    const last = WEEKEND_DAYS[WEEKEND_DAYS.length - 1];
+    const range = first.date === last.date
+      ? fmtDay(first.date) : `${fmtDay(first.date)}–${fmtDay(last.date)}`;
+    const fetched = Date.parse(WEATHER.fetchedAt || '');
+    const stale = !Number.isFinite(fetched) || Date.now() - fetched > 36 * 3600 * 1000;
+
+    bar.hidden = false;
+    bar.className = `weather-bar ${WEEKEND_PSR_CLASS}`;
+    bar.replaceChildren();
+
+    // 全部用 textContent，唔用 innerHTML：天文台資料屬外部輸入（A11 輸入消毒）
+    const add = (tag, cls, text) => {
+      const el = document.createElement(tag);
+      if (cls) el.className = cls;
+      el.textContent = text;
+      bar.appendChild(el);
+      return el;
+    };
+
+    add('span', 'weather-lead', '🌦 週末天氣（全港預測）');
+    add('span', 'psr-badge', `降雨概率 ${WEEKEND_PSR_TEXT}`);
+    add('span', 'weather-detail',
+      `${range} · ${WEEKEND_DAYS.map((d) => `${d.week} ${d.psr}`).join('／')}${temp}`);
+    if (warnings.length) {
+      add('span', 'weather-warn', `⚠ 生效警告：${warnings.map((w) => w.name).join('、')}`);
+    }
+    add('span', 'weather-meta',
+      `${stale ? '⚠ 快照可能過期 · ' : ''}天文台更新 ${WEATHER.hkoUpdateTime || fmtStamp(WEATHER.fetchedAt)}（抓取 ${fmtStamp(WEATHER.fetchedAt)}）`);
+
+    const link = add('a', 'weather-link', '九天預報 ↗');
+    link.href = 'https://www.hko.gov.hk/tc/wxinfo/currwx/fnd.htm';
+    link.target = '_blank';
+    link.rel = 'noopener';
+  }
+
   /* ---------- 版號顯示（W1 / V1） ---------- */
   function renderVersion() {
     const badge = document.getElementById('versionBadge');
@@ -355,6 +446,7 @@
 
   /* ---------- 啟動 ---------- */
   renderVersion();
+  renderWeather();
   if (!SITES.length) {
     document.getElementById('resultCount').textContent = '⚠ 未能載入 data.js，請先執行 node build-data.mjs';
   } else {
