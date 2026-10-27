@@ -1,0 +1,43 @@
+name: HAD Guesthouse Sync
+
+# 每月 2 號 01:15 HKT = 每月 1 號 17:15 UTC；GitHub Actions cron 一律用 UTC
+# 只寫 data/auto/had-*，永遠唔改 data.csv（來源隔離原則）
+on:
+  schedule:
+    - cron: '15 17 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: had-guesthouse-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 持牌賓館快照 + 候選 + 合規報告（CSDI LLHG ＋ HAD CSV）
+        run: node tools-sync-had.mjs
+
+      - name: 只 commit had-* 快照，無變更靜默
+        run: |
+          git add data/auto/had-guesthouses.json data/auto/had-candidates.json data/auto/had-diff-report.md
+          if git diff --cached --quiet; then
+            echo "✅ 持牌賓館名單無變更，跳過 commit"
+            exit 0
+          fi
+          git config user.name "hk-camp-bot"
+          git config user.email "hk-camp-bot@users.noreply.github.com"
+          git commit -m "chore(data): 每月持牌賓館名單同步"
+          git push

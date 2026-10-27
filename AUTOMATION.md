@@ -64,6 +64,13 @@ data.js                   ← 網站唯一讀取嘅合併成品
 | `.github/workflows/sync-had.yml` | 每月 2 號 01:15 HKT 跑持牌賓館月更，只 commit `had-*` 三個檔，唔碰 data.csv |
 | `data/auto/` | 機器快照目錄（已含首次實測產出） |
 
+**2026-10-27 交接修補**：上面兩條 yml 曾經只存在於文件、repo 入面冇，現已補回。
+GitHub Actions cron 用 UTC：`30 16 * * *`＝00:30 HKT、`15 17 1 * *`＝每月 2 號 01:15 HKT。
+`build-data.mjs` 輸出已改為**不含時間戳**，並新增 `--check`，確保每日 rebuild 唔會製造假 commit。
+`build-data.mjs` 而家會同時讀 `data/auto/weather.json`，輸出 `window.CAMP_WEATHER` 一齊嵌入 `data.js`
+（前端唔使 fetch）；所以每日 workflow 嘅順序係「先同步 → 再 rebuild → 有變更先 commit」。
+兩條 workflow 只喺 default branch（`main`）生效；合併後可手動 `workflow_dispatch` 驗收。
+
 本機手動跑：`npm run sync`（全套）或 `npm run sync:had`（單跑賓館）
 
 **首次運行已揪出並修正 3 項真錯誤**：涌背營地座標偏差 3.2 公里、白臘→白腊及大網仔一號→大網仔嘅官方用字、大浪灣/南山座標微調。
@@ -96,12 +103,16 @@ data.js                   ← 網站唯一讀取嘅合併成品
 
 ## 五、建議路線圖
 
-1. **即時**：推送現有專案上 GitHub，開啟 Actions —— 41 個官方營地 + 天氣 + 持牌賓館即刻進入自動更新
+1. **即時**：推送現有專案上 GitHub，開啟 Actions —— 41 個官方營地 + 天氣 + 持牌賓館即刻進入自動更新（兩條 workflow 已補回，見第三節）
 2. **每月**：睇 `had-diff-report.md`，把合適嘅 `had-candidates.json` 候選提升入 data.csv（座標電話牌號都齊），並處理坪洲條目改寫
-3. **第 2 步**：前端食 `weather.json`，地圖 pin 加週末 PSR 降雨標記（台灣網站嘅賣點功能，數據現成）
+3. **✅ 第 2 步（2026-10-27 完成）**：前端食 `weather.json` — `build-data.mjs` 把快照嵌入 `data.js`
+   成為 `window.CAMP_WEATHER`（唔使 fetch，`file://` 都用得）；`app.js` 渲染天氣列（週末 PSR、
+   溫度、生效警告、過期提示）同地圖 pin／popup 嘅降雨圓點；`sync-data.yml` 每日 rebuild 後自動更新。
+   PSR 係**全港預測**，唔係逐營地實測，UI 已寫明避免誤導。
 4. **第 3 步**：寫 NGO 改動偵測 workflow + Telegram/ntfy 通知
 5. **第 4 步**：CSDI 關閉設施新 dataset ID 補回後，營地卡片加「臨時關閉」徽章；持牌營舍卡片加旅館牌號徽章
-6. **第 5 步**：若將來資料量再膨脹或要多人編修，先將 data.csv 搬上 Supabase（你已連接）或 Google Sheets，前端合約 `window.CAMPSITES` 唔變
+6. **第 5 步**：分區實時氣溫／濕度（天文台 1 分鐘 CSV）落返每張營地卡片
+7. **第 6 步**：若將來資料量再膨脹或要多人編修，先將 data.csv 搬上 Supabase（你已連接）或 Google Sheets，前端合約 `window.CAMPSITES` 唔變
 
 ## 六、成本
 

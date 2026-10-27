@@ -1,0 +1,30 @@
+name: guard
+
+# 本機同 CI 跑同一條：node scripts/guard.mjs（S12 / F14）
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '17 3 * * 1'   # 每週一 HKT 11:17 定時掃，防止「靜靜變肥」
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Guard（S / F / A / W / V / G）
+        run: node scripts/guard.mjs --ci
+
+      - name: 前端 smoke test（無瀏覽器模擬 DOM）
+        run: node --test scripts/smoke.test.mjs

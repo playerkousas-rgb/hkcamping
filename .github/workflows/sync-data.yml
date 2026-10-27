@@ -1,0 +1,50 @@
+name: Camp Data Sync
+
+# 每日 00:30 HKT = 16:30 UTC（前一日）；GitHub Actions cron 一律用 UTC
+# 手動觸發：Actions → Camp Data Sync → Run workflow
+on:
+  schedule:
+    - cron: '30 16 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: camp-data-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 任一步 fetch 失敗都會 exit 1（工具本身 fail-closed，保留舊快照）
+      - name: 漁護署 41 營地快照 + 差異報告（CSDI）
+        run: node tools-sync-afcd.mjs
+
+      - name: 天文台警告 + 九天預報快照
+        run: node tools-sync-weather.mjs
+
+      - name: 重建 data.js（data.csv → data.js）
+        run: node build-data.mjs
+
+      - name: 有變更先 commit，無變更靜默
+        run: |
+          git add data/auto/afcd-campsites.json data/auto/afcd-diff-report.md data/auto/weather.json data.js
+          if git diff --cached --quiet; then
+            echo "✅ 官方數據與天氣無實質變更，跳過 commit"
+            exit 0
+          fi
+          git config user.name "hk-camp-bot"
+          git config user.email "hk-camp-bot@users.noreply.github.com"
+          git commit -m "chore(data): 每日官方營地／天氣快照同步"
+          git push

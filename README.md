@@ -4,11 +4,13 @@
 
 - ⛺ **漁農自然護理署（漁護署）41 個郊野公園指定露營地點**（官方完整名單，全部免費）
 - 🏛 **康樂及文化事務署（康文署）6 個場地**：4 個度假營（麥理浩夫人度假村、鯉魚門公園、西貢戶外康樂中心、曹公潭戶外康樂中心）+ 貝澳營地 + 創興水上活動中心露營區
-- 🤝 **28 個 NGO 營舍**：保良局、救世軍、青年會（YMCA/YWCA）、青協、童軍、女童軍、明愛、小童群益會、傷健協會、遊樂場協會、青年獎勵計劃、浸信會、神託會、突破、紅十字會、外展訓練學校等
+- 🤝 **30 個 NGO 營地／營舍**（28 列宿營 + 基維爾營地、女童軍博康營地 2 列露營）：保良局、救世軍、青年會（YMCA/YWCA）、青協、童軍、女童軍、明愛、小童群益會、傷健協會、遊樂場協會、青年獎勵計劃、浸信會、神託會、突破、紅十字會、外展訓練學校等
 - 🏕 **4 個私人 Glamping** 及 🛖 **27 列民宿/渡假屋**：21 個持牌賓館經營者（牌照事務處名單，含牌照號碼）、5 個分區導覽列，及 1 個坪洲合規提示列
 
-合共 **108 筆**。功能：分區地圖（Leaflet + OpenStreetMap）、類型/分區/費用/交通/設施/訊號篩選、
-全文搜尋（可搜營運機構）、價格排序、我的最愛（瀏覽器本地記錄，無須登入）。
+合共 **108 筆**（41 + 6 + 30 + 4 + 27；`data.js` 分類為露營 45、宿營 32、Glamping 4、民宿 27）。
+功能：分區地圖（Leaflet + OpenStreetMap）、類型/分區/費用/交通/設施/訊號篩選、
+全文搜尋（可搜營運機構）、價格排序、我的最愛（瀏覽器本地記錄，無須登入）、
+**週末天氣列**（天文台九天預報 PSR 降雨概率，連地圖 pin 標記；每日 Actions 自動更新）。
 
 ## 資料來源與可信度
 
@@ -30,8 +32,10 @@ NGO 與私人營地的收費為**約數（每人每晚起）**，實際按營期
 ```
 hk-camp-database/
 ├── data.csv              # 人工策展層（摘要、標籤、收費、訊號、NGO/民宿）
-├── build-data.mjs        # CSV → data.js 轉換腳本（零依賴）
+├── build-data.mjs        # CSV ＋ weather.json → data.js（零依賴，支援 --check）
+├── build-site.mjs        # 部署 build：rebuild data.js + 只抄 4 個檔入 dist/
 ├── data.js               # 自動產生，網站實際讀取的資料
+├── vercel.json / .vercelignore / .gitignore  # 部署與 Git 衛生設定
 ├── data/auto/            # 機器快照層（GitHub Actions 定時更新，勿手改）
 │   ├── afcd-campsites.json   漁護署 41 營地官方數據（CSDI，連水源/營位規模）
 │   ├── afcd-diff-report.md   官方數據與 data.csv 嘅差異報告
@@ -42,8 +46,14 @@ hk-camp-database/
 ├── tools-sync-afcd.mjs  # CSDI 營地同步 + 差異檢查
 ├── tools-sync-weather.mjs # 天文台天氣快照
 ├── tools-sync-had.mjs   # 持牌賓館月更同步（CSDI＋HAD CSV，只出快照唔改 data.csv）
-├── .github/workflows/sync-data.yml # 每日 00:30 HKT 自動同步
-├── .github/workflows/sync-had.yml  # 每月 2 號 01:15 HKT 持牌賓館月更
+├── .github/workflows/sync-data.yml # 每日 00:30 HKT 自動同步（cron '30 16 * * *' UTC）
+├── .github/workflows/sync-had.yml  # 每月 2 號 01:15 HKT 月更（cron '15 17 1 * *' UTC）
+├── .github/workflows/guard.yml # push / PR / 每週一跑 guard（S12 / F14）
+├── .github/PULL_REQUEST_TEMPLATE.md / .github/dependabot.yml
+├── scripts/guard.mjs     # 本機 + CI 同一條守護檢查（S/F/A/W/V/G）
+├── scripts/smoke.test.mjs # 模擬 DOM 前端啟動測試（零依賴）
+├── VERSIONS.md           # 雙版號登記表
+├── HANDOVER-STATUS.md    # 交接體檢對照
 ├── tools-geocode*.mjs    # Nominatim 地理編碼腳本（三個批次，建檔時用）
 ├── geocache.json         # 地理編碼快取（含 OSM 點位來源）
 ├── index.html / styles.css / app.js
@@ -52,6 +62,8 @@ hk-camp-database/
 
 > **恆常化更新策略見 [AUTOMATION.md](AUTOMATION.md)**：邊啲數據全自動、邊啲要半自動改動偵測、
 > 邊啲只能人工，以及零成本 GitHub Actions 架構。
+> `schedule` 同 `workflow_dispatch` 只會喺 **default branch（main）** 上嘅 workflow 生效，
+> 所以兩條 yml 合併入 main 之後先至會真正每日／每月跑；可喺 Actions 分頁手動 Run workflow 驗收。
 
 ## 如何新增 / 修改營地資料
 
@@ -60,7 +72,8 @@ hk-camp-database/
 3. 執行：
 
 ```bash
-node build-data.mjs
+node build-data.mjs           # 產生 data.js（CAMPSITES ＋ CAMP_WEATHER；不含時間戳，可重複執行）
+node build-data.mjs --check   # 只驗收 data.js 同 data.csv／weather.json 是否同步，唔寫檔
 ```
 
 4. 把 `data.csv` 與重新產生的 `data.js` 一併 commit，push 後 Vercel 自動部署
@@ -97,12 +110,28 @@ python3 -m http.server 8000
 
 然後瀏覽器開 `http://localhost:8000`（直接雙擊 index.html 也可以，資料走 data.js 而非 fetch）。
 
+## 品質守護（commit 前跑）
+
+```bash
+npm run guard       # 8 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約
+npm test            # 模擬 DOM 執行 data.js + app.js，確認 108 筆渲染
+npm run build:site  # 產生 dist/（4 個檔，約 123KB，含嵌入天氣快照）
+```
+
+`guard.yml` 喺 push、PR 同每週一自動跑同一條；五大鐵律 S／F／A／W／V 嘅適用範圍同例外，
+見 [HANDOVER-STATUS.md](HANDOVER-STATUS.md)。
+
 ## 部署到 Vercel（Git + Vercel + Script 方案）
 
-1. 把整個資料夾推到 GitHub 新增 repository
-2. Vercel → **Add New Project** → 選該 repo
-3. Framework Preset 選 **Other**，Build Command 留空（data.js 已 commit）或填 `node build-data.mjs`
-4. 按 Deploy，完成後每次 push 自動重新部署，免費額度已足夠
+1. Repo 已喺 GitHub：`playerkousas-rgb/hkcamping`（Public）
+2. Vercel → **Add New Project** → Import 該 repo
+3. Framework Preset 選 **Other**；`vercel.json` 已定案，Build Command 會自動讀做
+   `node build-site.mjs`、Output Directory `dist`、Region `hkg1`
+4. 按 Deploy，完成後每次 push 到 `main` 自動重新部署，免費額度已足夠
+
+`build-site.mjs` 只會輸出 4 個檔（約 113KB）入 `dist/`；`.vercelignore` 擋走工具、文件同大快照。
+本機想驗收同一份產物：`npm run build:site` 後用任何 static server 開 `dist/`。
+詳細交接同 Vercel 連接口限制見 [GITHUB-SETUP.md](GITHUB-SETUP.md)。
 
 ## 將來升級 Notion 的路徑（不用重寫網站）
 
@@ -118,7 +147,8 @@ python3 -m http.server 8000
 ## 後續可加強方向
 
 - [ ] 核實 NGO 營舍最新收費（目前為約數），補上電話與電郵欄位
-- [ ] 對接香港天文台 / OpenWeather，顯示各營地週末降雨與溫度
+- [x] 對接香港天文台：每日同步 `weather.json`，build 嵌入 `data.js`，天氣列 + 地圖 pin 顯示週末 PSR 降雨概率與溫度（P3 已完成）
+- [ ] 分區實時氣溫／濕度（天文台 1 分鐘 CSV）落返每張營地卡片
 - [ ] 營地相片（注意版權，優先用官方圖片或實拍）
 - [ ] 空位/預訂日曆（康文署康體通、郊野營人、私人營地）
 - [ ] 活動專頁：把營地與附近行山徑、水上活動、餐廳串成行程
