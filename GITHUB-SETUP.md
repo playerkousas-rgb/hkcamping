@@ -52,9 +52,18 @@ gh run list -R playerkousas-rgb/hkcamping --limit 5
 
 ## 三、專案關鍵合約（改動前必讀）
 
-- 編輯源：`data.csv`（108 筆，19 欄）＋ `data/auto/weather.json` → `node build-data.mjs` → `data.js`
-  （前端讀 `window.CAMPSITES` 同 `window.CAMP_WEATHER`；後者係嵌入快照，唔使 fetch）。
+- 編輯源：`data.csv`（108 筆，19 欄）＋ `data/auto/weather.json` ＋ `data/auto/conditions.json` ＋ `data/auto/ocf-forecast.json`
+  → `node build-data.mjs` → `data.js`（前端讀 `window.CAMPSITES`／`CAMP_WEATHER`／`CAMP_CONDITIONS`／`CAMP_OCF`；全部嵌入快照，唔使 fetch）。
+- **OCF 九日預報**（v1.3.0）：`tools-sync-ocf.mjs` 抓 `maps.weather.gov.hk/ocf/dat/<code>.xml`（12 個站，檔名 .xml 但內容係 JSON）。
+  呢個 endpoint 唔喺官方 open data API 文檔，係 OCF 網頁產品嘅資料檔；腳本 fail-closed（成功站點 < 8 就保留舊快照）。
+  站點 code 實測有效：TKL／TPO／SEK／SHA／TWN／LFS／TUN／CCH／SKW／HKS／JKB／HKO；**CLK／WCH／CLC／PNG 已證實 404，唔好加**。
+  TWN（荃灣）同 SKW（筲箕灣）官方只提供溫度、冇降雨概率，前端顯示「降雨概率 —」。
+- `build-data.mjs` 亦會按 `district`／`area` 配對 `weatherStation`／`rainDistrict`／`tideStation` 落每筆營地
+  （**就近站，唔係營地實測**）；改 `data.csv` 嘅 area 名時要檢查配對仲啱唔啱。
+- 日出日落係 `app.js` 嘅 `sunTimesHKT()` 純 JS 天文公式，零 API；已用 HKO 官方 SRS 2026 驗證（誤差 ≤3 分鐘）。
 - `price: null`＝面議／電話查詢（**唔係免費**；免費係 `0`）。
+- `priceSource` 係 v1.1.0 加嘅收費可信度欄：`free`（官方免費 41）／`estimate`（約數未核實 44，前端顯示「約 $」）／`enquiry`（面議 23）／`official`（已核實）。**未核實一律 `estimate`**，唔好靜靜改做 `official`。
+- `build-data.mjs` 會按營地名稱將 `data/auto/afcd-campsites.json` 嘅官方 `waterSource`／`tentSpace`／`countryPark` 嵌入 41 筆漁護署營地（其他營地為 `null`）；改 CSV 營地名時要留意配對。
 - 同步腳本只寫 `data/auto/`，**永遠唔直接改 `data.csv`**（來源隔離）。
 - 全部數據源 keyless、$0/月；日後若需要 API key，入 GitHub/Vercel Secrets，唔入庫。
 - `data.js` 係 build 產物但必須 commit（`index.html` 用 `<script>` 直接載入，`file://` 都開到）。

@@ -63,6 +63,17 @@ data.js                   ← 網站唯一讀取嘅合併成品
 | `.github/workflows/sync-data.yml` | 每日 00:30 HKT 跑 AFCD＋天氣同步 + rebuild，有變更先 commit，無變更靜默 |
 | `.github/workflows/sync-had.yml` | 每月 2 號 01:15 HKT 跑持牌賓館月更，只 commit `had-*` 三個檔，唔碰 data.csv |
 | `data/auto/` | 機器快照目錄（已含首次實測產出） |
+| `build-data.mjs` 官方欄位 join | v1.1.0 起：按營地名稱把 `afcd-campsites.json` 嘅 `waterSource`／`tentSpace`／`countryPark` 嵌入 41 筆營地（41/41 配對成功）；呢啲係**官方客觀數據**，同 `price` 嘅人手約數分開處理 |
+| `tools-sync-conditions.mjs` | **v1.2.0 新增**：每日抓 `rhrread`（18 區雨量 + 27 站氣溫）＋ `HLT`（8 站當月＋下月高低潮）→ `data/auto/conditions.json`。`build-data.mjs` 按 `district`/`area` 配對就近氣象站同潮汐站落每筆營地 |
+| `app.js` `sunTimesHKT()` | **v1.2.0 新增**：純 JS 天文公式（NOAA/SunCalc）計日出日落，零 API、任何年份、`file://` 都用得；已用 HKO 官方 SRS 2026 五個錨點驗證，最大誤差 3 分鐘 |
+| `tools-sync-ocf.mjs` | **v1.3.0 新增**：每日抓天文台「自動分區天氣預報」(OCF) 12 個站嘅未來 9–10 日預報（`maps.weather.gov.hk/ocf/dat/<code>.xml`，檔名 .xml 但內容係 JSON）→ `data/auto/ocf-forecast.json`。多模型共識 + 本地觀測校正，每日更新兩次；**電腦自動生成、未經人手修訂**，UI 已標明 |
+
+> **點解用 OCF 而唔用第三方天氣 API**：HKO open data 嘅九天預報（`fnd`）係全港一個數、
+> `rhrread` 分區數據全部係實況，官方一直冇「分區 × 未來多日」嘅 JSON API。
+> 2026-10-27 查證後發現 OCF 網頁產品有逐站點九日預報嘅資料檔，就係官方答案。
+> 曾考慮 Open-Meteo（瑞士 OpenMeteo GmbH 開源搬運商，聚合 ECMWF／NOAA 等模型），
+> 但佢喺香港得 11–25km 全球粗格仔、冇本地觀測校正、免費 tier 只限非商業，
+> 而且實測同天文台正式預報有 2°C／降雨判斷分歧 → **決定唔用**，維持全官方數據源。
 
 **2026-10-27 交接修補**：上面兩條 yml 曾經只存在於文件、repo 入面冇，現已補回。
 GitHub Actions cron 用 UTC：`30 16 * * *`＝00:30 HKT、`15 17 1 * *`＝每月 2 號 01:15 HKT。
@@ -111,8 +122,21 @@ GitHub Actions cron 用 UTC：`30 16 * * *`＝00:30 HKT、`15 17 1 * *`＝每月
    PSR 係**全港預測**，唔係逐營地實測，UI 已寫明避免誤導。
 4. **第 3 步**：寫 NGO 改動偵測 workflow + Telegram/ntfy 通知
 5. **第 4 步**：CSDI 關閉設施新 dataset ID 補回後，營地卡片加「臨時關閉」徽章；持牌營舍卡片加旅館牌號徽章
-6. **第 5 步**：分區實時氣溫／濕度（天文台 1 分鐘 CSV）落返每張營地卡片
-7. **第 6 步**：若將來資料量再膨脹或要多人編修，先將 data.csv 搬上 Supabase（你已連接）或 Google Sheets，前端合約 `window.CAMPSITES` 唔變
+6. **✅ 第 5 步（v1.2.0 完成）**：分區實況 + 潮汐 + 日光 — `rhrread` 18 區雨量／27 站氣溫配對落每張卡片，
+   HLT 8 站官方高低潮，純 JS 天文公式計日出日落。**注意「就近站」限制**：山區氣溫同無潮汐站嘅外島
+   （東平洲、西貢東）只作大概，面板已標明要再上天文台確認。
+7. **✅ 第 6 步（v1.3.0 完成）**：**未來九日該區預報**（HKO OCF 12 站）—— 用官方自動分區天氣預報嘅
+   逐站點九日資料檔，頂部時間軸 + 卡片面板。呢個先係真正影響「星期六去唔去」嘅預測，唔係得個實況。
+   用戶曾問過第三方 Open-Meteo 嘅可信度，查證後決定**全用官方 OCF**。
+   ⚠️ 站點 code 唔喺官方 open data API 文檔（係 OCF 網頁產品嘅資料檔），`tools-sync-ocf.mjs` 已做
+   fail-closed（成功站點 < 8 就保留舊快照），將來若官方改 endpoint 最多係停更新，唔會顯示假數據。
+8. **第 7 步**：蚊患指數 — ⚠️ 食環署 CSDI 圖層（`fehd_rcd_1629966670823_4638`）實測 `PERIOD` 得 **`2021-09`**，
+   係 5 年前舊數據；最新 2026 指數只喺新聞稿 HTML，**冇 machine-readable API**。
+   用戶已決定**唔做**，避免當舊數據係實時而誤導。
+9. **第 8 步**：寵物規矩 — ⚠️ 法例層面清晰（郊野公園可帶狗但要妥善管束，20kg+ 大型狗有效管制下可豁免牽繩），
+   但個別場地（NGO／康文署／Glamping）各有自己規矩，**冇任何 API**，要逐間問。
+   用戶已決定**唔做**，只保留通用法例提示喺「出發前準備」清單。
+10. **第 9 步**：若將來資料量再膨脹或要多人編修，先將 data.csv 搬上 Supabase（你已連接）或 Google Sheets，前端合約 `window.CAMPSITES` 唔變
 
 ## 六、成本
 

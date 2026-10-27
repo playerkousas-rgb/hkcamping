@@ -1,5 +1,10 @@
 # 香港露營・宿營・民宿資料庫（HK Camp Database）
 
+> 📌 **項目進度／交接**：[PROGRESS.md](PROGRESS.md)（完整 commit 清單、驗收、下一步）·
+> [HANDOVER-STATUS.md](HANDOVER-STATUS.md)（規則對照）·
+> [GITHUB-SETUP.md](GITHUB-SETUP.md)（部署設定）·
+> [AUTOMATION.md](AUTOMATION.md)（自動化策略）
+
 參考台灣 [營火部落營地資料庫](https://campfiretw.com/camp-database/) 的香港版，收錄：
 
 - ⛺ **漁農自然護理署（漁護署）41 個郊野公園指定露營地點**（官方完整名單，全部免費）
@@ -10,22 +15,75 @@
 合共 **108 筆**（41 + 6 + 30 + 4 + 27；`data.js` 分類為露營 45、宿營 32、Glamping 4、民宿 27）。
 功能：分區地圖（Leaflet + OpenStreetMap）、類型/分區/費用/交通/設施/訊號篩選、
 全文搜尋（可搜營運機構）、價格排序、我的最愛（瀏覽器本地記錄，無須登入）、
-**週末天氣列**（天文台九天預報 PSR 降雨概率，連地圖 pin 標記；每日 Actions 自動更新）。
+**未來九日該區預報**（天文台 OCF 自動分區天氣預報：12 站降雨概率／溫度／天氣）、
+**週末天氣列**（全港 PSR 降雨概率，連地圖 pin 標記）、
+**該區實況**（18 區雨量 + 就近氣象站氣溫）、**潮汐**（8 個官方站高低潮）、
+**日出日落**（天文公式計算，誤差 ≤3 分鐘）、
+**未核實收費一律加「約」**、官方水源／營位規模徽章、同埋「訂營＋出發前準備」清單。
 
 ## 資料來源與可信度
 
 | 資料 | 來源 |
 |---|---|
 | 漁護署 41 營地名單、設施分類 | [漁護署指定露營地點官方網頁](https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html) |
+| 41 營地嘅**水源類型／營位規模／所屬郊野公園** | CSDI `afcd_rcd_1635133060194_82554`（見 `data/auto/afcd-campsites.json`，`build-data.mjs` 按名配對嵌入 `data.js`）——**官方數據，唔係估算** |
+| **未來九日該區預報**（12 站降雨概率／溫度／天氣） | 天文台 [自動分區天氣預報 OCF](https://maps.weather.gov.hk/ocf/help_e.html) 嘅 <code>maps.weather.gov.hk/ocf/dat/&lt;code&gt;.xml</code>（檔名 .xml、內容係 JSON），每日更新兩次；見 `tools-sync-ocf.mjs` |
 | 康文署 4 度假營營費與地址 | [康文署度假營官方網頁](https://www.lcsd.gov.hk/tc/camp/) |
 | NGO 營舍名單、地址、設施、座標 | [康文署資助非政府機構營舍頁面](https://www.lcsd.gov.hk/tc/camp/sngocc.html) 及各機構官網 |
 | 持牌賓館/渡假屋名單、座標、牌照號碼 | [牌照事務處持牌酒店及賓館名單](https://www.hadla.gov.hk/psi/licensed-hotels-and-guesthouses/)（CSDI LLHG 圖層，月更，見 `tools-sync-had.mjs`） |
+| **該區實況天氣**（18 區雨量 + 27 站氣溫） | 天文台 [`weather.php?dataType=rhrread`](https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc)，每小時更新，見 `tools-sync-conditions.mjs` |
+| **潮汐高低潮**（8 站全年預測） | 天文台 [`opendata.php?dataType=HLT`](https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HLT&station=QUB&year=2026&month=10&rformat=json)，每年更新，HKO 已計好唔使自己估 |
+| **日出／日落時間** | 純 JS 天文公式（`app.js` 嘅 `sunTimesHKT()`，NOAA/SunCalc），零 API；已用天文台 [`SRS`](https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=SRS&year=2026&rformat=json) 五個錨點驗證，最大誤差 3 分鐘 |
 | 絕大部分營地經緯度 | OpenStreetMap（經 Nominatim 查詢的 camp_site 點位，見 `geocache.json`） |
 | 小部分無 OSM 點位者 | 按官方地址定位（已在 `tools-geocode*.mjs` 註明），誤差約數百米 |
 
-NGO 與私人營地的收費為**約數（每人每晚起）**，實際按營期、團體人數及官網報價為準；
-漁護署營地全部免費，惟荃錦營地須於「郊野營人」系統預約。
-持牌賓館類條目價格統一標示「面議／電話查詢」，唔設虛擬報價；持牌狀態每月由 `tools-sync-had.mjs` 自動覆核。
+> ### ⚠️ 收費可信度（2026-10-27 起）
+>
+> `data.csv` 嘅 `priceSource` 欄將 108 筆分成三類，前端會直接顯示出嚟：
+>
+> | priceSource | 筆數 | 前端顯示 | 意思 |
+> |---|---:|---|---|
+> | `free` | 41 | `免費` | 漁護署官方指定營地，全部免費（惟荃錦營地須喺「郊野營人」系統預約） |
+> | `estimate` | 44 | **`約 $120 每人每晚起`** + 橙色警句 | 康文署／NGO／Glamping／分區民宿嘅收費，**未逐筆向官方核實**，落訂前必須上官網或打電話確認 |
+> | `enquiry` | 23 | `面議／電話查詢` | 持牌民宿經營者，資料庫**刻意唔報假價**；持牌狀態每月由 `tools-sync-had.mjs` 自動覆核 |
+>
+> 即使係康文署有官方收費表嘅 6 筆，喺未逐筆核實前都一律標「約」。
+> 另外 `priceUnit` 有「每人每晚起／每營位每晚／每間每晚起／每人每課程起」等唔同單位，
+> **價格排序只作粗略參考**，唔可以直接比較。核實後可把個別列嘅 `priceSource` 改成 `official`（前端唔加「約」）。
+
+### 📅 未來九日該區預報（v1.3.0）
+
+頁面頂部有條**九日時間軸**，可以揀地區（西貢、長洲、大埔、打鼓嶺、沙田、荃灣、流浮山、屯門、筲箕灣、黃竹坑、將軍澳、香港天文台），
+每日顯示天氣圖標、最高／最低溫、**降雨概率**、🌇 日落時間，週末會特別標記。
+
+數據係天文台**「自動分區天氣預報」(OCF)** —— 多模型共識系統，
+輸出會先用香港及珠三角氣象站嘅觀測數據校正，再按各模型過往表現加權合成 [官方說明](https://maps.weather.gov.hk/ocf/help_e.html)。
+比一般用嘅全港九天預報多咗「該區」維度，亦比第三方天氣 API 可靠（全部官方、有本地校正）。
+
+> ⚠️ **重要**：OCF 係**電腦自動生成、未經人手修訂**，官方講明可能同天文台正式預報或個別站點實測唔同。
+> 降雨概率（PoP）只表示「當日落雨機會」，**唔代表雨量、落雨時間或持續時間**，官方驗證統計誤差約 10 次／100 次。
+> 面板已寫明呢點同埋連去[天文台正式九天預報](https://www.hko.gov.hk/tc/wxinfo/currwx/fnd.htm)。
+> 另外 12 個站之中，**荃灣／筲箕灣兩個站官方只提供溫度、冇降雨概率**，UI 會顯示「降雨概率 —」而唔會作數。
+>
+> 「營地 → 就近站」配對同 v1.2.0 嘅潮汐／實況站一樣係人工策展（`build-data.mjs`），
+> 山區同外島同站點可以有明顯差異；正式活動前請再上天文台確認。
+
+### 🌡 該區天氣・🌊 潮汐・🌇 日光（v1.2.0）
+
+撳任何卡片嘅 **「🌡 該區天氣」** 掣，會彈出一個面板，顯示三樣嘢：
+
+1. **該區實況** — `rhrread` 嘅 18 區過去一小時雨量 + 就近自動氣象站一分鐘平均氣溫。
+2. **今日日光** — 日出／日落 HKT + 「建議幾點前紮營」（用純 JS 天文公式按日期計，任何年份都用得）。
+3. **潮汐** — 就近潮汐站嘅今日／週末高低潮時間同高度（HKO 官方 `HLT` 預測，唔係自己估）。
+
+> ⚠️ **「就近站」唔係營地實測**：`build-data.mjs` 按 `district` + `area` 關鍵字配對
+> 最近嘅自動氣象站／潮汐站。山區氣溫可以比市區站低幾度；東平洲、西貢東等冇潮汐站嘅地方
+> 用大埔滘／高流灣代替，潮差同時間可以有偏差。面板已標明「就近站」，
+> **正式活動前請再上天文台分區天氣／潮汐預報確認**。
+>
+> 潮汐站只用 8 個仍運作嘅站（鰂魚涌、高流灣、大埔滘、長洲、石壁、大澳、赤鱲角東、尖鼻咀）。
+> 官方標明**芝麻灣（1997 停）、樂安排（1999 停）**兩個站預測誤差較大，故不採用。
+> 初始快照只含 2026-10-27 至 11-04 共 9 日；每日 `sync-data.yml` 會補齊當月＋下月全部日子。
 
 ## 專案結構
 
@@ -42,10 +100,16 @@ hk-camp-database/
 │   ├── weather.json          天文台警告 + 九天預報（含週末降雨概率）
 │   ├── had-guesthouses.json  牌照處 1,807 間持牌酒店賓館快照（CSDI LLHG，含座標）
 │   ├── had-candidates.json   鄉郊渡假類候選（27 經營者／50 處所）
-│   └── had-diff-report.md    賓館月更報告＋民宿合規警示＋營舍持牌名單
+│   ├── had-diff-report.md    賓館月更報告＋民宿合規警示＋營舍持牌名單
+│   ├── conditions.json       該區實況天氣（18 區雨量 + 27 站氣溫）＋ 8 潮汐站高低潮
+│   └── ocf-forecast.json     OCF 自動分區九日預報（12 站 × 10 日）
 ├── tools-sync-afcd.mjs  # CSDI 營地同步 + 差異檢查
 ├── tools-sync-weather.mjs # 天文台天氣快照
 ├── tools-sync-had.mjs   # 持牌賓館月更同步（CSDI＋HAD CSV，只出快照唔改 data.csv）
+├── tools-sync-conditions.mjs # 該區天氣（rhrread）＋潮汐（HLT 8 站）每日同步
+├── tools-sync-ocf.mjs   # 天文台 OCF 自動分區九日預報（12 站）每日同步
+├── data/auto/conditions.json # 該區天氣／潮汐快照（每日 Actions 更新）
+├── data/auto/ocf-forecast.json # OCF 九日分區預報快照（每日 Actions 更新）
 ├── .github/workflows/sync-data.yml # 每日 00:30 HKT 自動同步（cron '30 16 * * *' UTC）
 ├── .github/workflows/sync-had.yml  # 每月 2 號 01:15 HKT 月更（cron '15 17 1 * *' UTC）
 ├── .github/workflows/guard.yml # push / PR / 每週一跑 guard（S12 / F14）
@@ -88,8 +152,9 @@ node build-data.mjs --check   # 只驗收 data.js 同 data.csv／weather.json �
 | operator | 營運機構 | 漁農自然護理署 / 香港童軍總會 |
 | district | 香港十八區分區 | 西貢區 |
 | area | 細部地點 | 西貢海下灣仔半島 |
-| price | 每晚價格 HKD，免費填 0 | 0 / 41 / 780 |
-| priceUnit | 計價單位 | 免費 / 每人每晚起 / 每營位每晚 |
+| price | 每晚價格 HKD，免費填 0，面議留空 | 0 / 41 / 780 |
+| priceUnit | 計價單位（各列可唔同，排序只作參考） | 免費 / 每人每晚起 / 每營位每晚 |
+| priceSource | **收費可信度**：`free`＝官方免費、`estimate`＝約數未核實（前端加「約」）、`enquiry`＝面議唔報價、`official`＝已核實官方價 | estimate |
 | booking | 是否需要預訂：是 / 否 | 是 |
 | bookingUrl | 自助預訂系統網址（康體通、郊野營人等），無則留空 | https://... |
 | infoUrl | 官方資料頁（NGO 無自助系統時，預訂查詢按鈕連到此頁） | https://... |
@@ -113,9 +178,9 @@ python3 -m http.server 8000
 ## 品質守護（commit 前跑）
 
 ```bash
-npm run guard       # 8 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約
-npm test            # 模擬 DOM 執行 data.js + app.js，確認 108 筆渲染
-npm run build:site  # 產生 dist/（4 個檔，約 123KB，含嵌入天氣快照）
+npm run guard       # 11 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報
+npm test            # 9 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸
+npm run build:site  # 產生 dist/（4 個檔，約 241KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
 ```
 
 `guard.yml` 喺 push、PR 同每週一自動跑同一條；五大鐵律 S／F／A／W／V 嘅適用範圍同例外，
@@ -146,7 +211,8 @@ npm run build:site  # 產生 dist/（4 個檔，約 123KB，含嵌入天氣快�
 
 ## 後續可加強方向
 
-- [ ] 核實 NGO 營舍最新收費（目前為約數），補上電話與電郵欄位
+- [ ] **逐筆核實 44 筆 `estimate` 收費**，核實後把 `priceSource` 改成 `official`；補上電話與電郵欄位
+- [ ] 合併／改寫 5 筆「分區導覽種子列」民宿（b01–b04/b06），佢哋唔係真實單一經營者，現時嘅 $600–$850 只係區域參考價
 - [x] 對接香港天文台：每日同步 `weather.json`，build 嵌入 `data.js`，天氣列 + 地圖 pin 顯示週末 PSR 降雨概率與溫度（P3 已完成）
 - [ ] 分區實時氣溫／濕度（天文台 1 分鐘 CSV）落返每張營地卡片
 - [ ] 營地相片（注意版權，優先用官方圖片或實拍）

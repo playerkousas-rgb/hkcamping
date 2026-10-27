@@ -75,8 +75,100 @@ test('data.js 載入 108 筆，前端啟動無例外', () => {
 
 test('雙版號同頁尾版權（V1 / W1）', () => {
   const { doc } = boot();
-  assert.equal(doc.getElementById('versionBadge').textContent, 'v1.0.0');
-  assert.equal(doc.getElementById('appVersion').textContent, '1.0.0');
+  assert.equal(doc.getElementById('versionBadge').textContent, 'v1.3.0');
+  assert.equal(doc.getElementById('appVersion').textContent, '1.3.0');
+});
+
+test('約數標記：44 筆有銀碼卡片顯示「約」+ 警句，免費／面議唔會', () => {
+  const { doc } = boot();
+  const cards = doc.getElementById('cardGrid').children;
+  const approx = cards.filter((c) => c.innerHTML.includes('約數 · 未逐筆核實'));
+  assert.equal(approx.length, 44);
+  assert.match(approx[0].innerHTML, /約 \$/);
+  const free = cards.filter((c) => c.innerHTML.includes('>免費<'));
+  assert.equal(free.length, 41);
+  assert.ok(free.every((c) => !c.innerHTML.includes('約數 · 未逐筆核實')));
+  const enquiry = cards.filter((c) => c.innerHTML.includes('面議／電話查詢'));
+  assert.equal(enquiry.length, 23);
+  assert.ok(enquiry.every((c) => !c.innerHTML.includes('約數 · 未逐筆核實')));
+});
+
+test('官方 CSDI 水源／營位徽章淨係出現喺 41 筆漁護署營地', () => {
+  const { sandbox, doc } = boot();
+  const cards = doc.getElementById('cardGrid').children;
+  // 用「⛺ 營位」做標記，唔好用 .prep-badge（潮汐站徽章都用緊呢個 class）
+  const withBadge = cards.filter((c) => c.innerHTML.includes('⛺ '));
+  assert.equal(withBadge.length, 41);
+  const seasonal = cards.filter((c) => c.innerHTML.includes('季節性溪澗'));
+  assert.equal(seasonal.length, 23);       // CSDI: 23 個季節性水源
+  const small = cards.filter((c) => c.innerHTML.includes('假日易滿'));
+  assert.equal(small.length, 31);          // CSDI: 31 個少於 20 營位
+  const afcd = sandbox.CAMPSITES.filter((x) => x.operator === '漁農自然護理署');
+  assert.ok(afcd.every((x) => x.waterSource && x.tentSpace && x.countryPark));
+  assert.equal(sandbox.CAMPSITES.filter((x) => x.priceSource === 'estimate').length, 44);
+});
+
+test('v1.2.0：該區天氣／潮汐／日出日落公式', () => {
+  const { sandbox, doc } = boot();
+  const A = sandbox.CAMPSITES;
+  // 每個營地都有就近氣象站 + 雨量區
+  assert.ok(A.every((x) => x.weatherStation && x.rainDistrict));
+  // 75 個沿岸營地有潮汐站（其餘 null）
+  assert.equal(A.filter((x) => x.tideStation).length, 75);
+  // conditions 快照：18 區雨量、27 站氣溫、8 潮汐站
+  const C = sandbox.CAMP_CONDITIONS;
+  assert.equal(C.districtWeather.rainfall.length, 18);
+  assert.equal(C.districtWeather.temperature.length, 27);
+  assert.equal(Object.keys(C.tides.stations).length, 8);
+  // 潮汐 seed 抽查（QUB 2026-10-27 應對得上官方 0342/1026/1509/2147）
+  const q = C.tides.stations.QUB.days['2026-10-27'];
+  assert.equal(q.map((e) => e.time).join(','), '03:42,10:26,15:09,21:47');
+  assert.equal(q.map((e) => e.type).join(','), 'L,H,L,H');
+  // 日出日落純 JS 公式：對照 HKO 官方 SRS，容許 3 分鐘誤差
+  const toMin = (t) => { const [a, b] = t.split(':').map(Number); return a * 60 + b; };
+  for (const [d, r, s] of [
+    ['2026-01-01', '07:03', '17:51'], ['2026-06-21', '05:39', '19:11'],
+    ['2026-10-27', '06:25', '17:49'], ['2026-12-31', '07:02', '17:50'],
+  ]) {
+    const got = sandbox.__campSunTimes(d);
+    assert.ok(Math.abs(toMin(got.rise) - toMin(r)) <= 3, `${d} 日出 ${got.rise} vs ${r}`);
+    assert.ok(Math.abs(toMin(got.set) - toMin(s)) <= 3, `${d} 日落 ${got.set} vs ${s}`);
+  }
+  // 天氣列有日落提示
+  assert.match(doc.getElementById('weatherBar').children.map((c) => c.textContent).join(' '), /🌇 日落/);
+  // 卡片有「該區天氣」按鈕
+  assert.match(doc.getElementById('cardGrid').children[0].innerHTML, /data-action="local"/);
+});
+
+test('v1.3.0：官方 OCF 九日分區預報時間軸', () => {
+  const { sandbox, doc } = boot();
+  const A = sandbox.CAMPSITES;
+  const O = sandbox.CAMP_OCF;
+  // 12 站、每站 10 日
+  assert.equal(Object.keys(O.stations).length, 12);
+  assert.equal(O.stations.SEK.daily.length, 10);
+  assert.ok(O.notes.includes('未經人手修訂'));
+  // 108 筆全部配對到有效站
+  assert.ok(A.every((x) => x.ocfStation && O.stations[x.ocfStation]));
+  // 官方實測值抽驗（2026-10-31 星期六）
+  const sek = O.stations.SEK.daily.find((d) => d.date === '2026-10-31');
+  assert.equal(sek.rainLabel, '20%');
+  assert.equal(sek.max, 30.4);
+  assert.equal(sek.min, 22.5);
+  const lfs = O.stations.LFS.daily.find((d) => d.date === '2026-10-31');
+  assert.equal(lfs.rainLabel, '< 10%');
+  // TWN／SKW 官方無 PoP，要容錯
+  assert.equal(O.stations.TWN.daily[0].rainPct, null);
+  // 九日時間軸有渲染
+  const scroll = doc.getElementById('forecastScroll');
+  assert.equal(scroll.children.length, 10);
+  const first = scroll.children[0].children.map((c) => c.textContent).join('|');
+  assert.match(first, /今日/);
+  assert.match(first, /🌧/);
+  assert.match(first, /🌇/);
+  // 地區選擇器有 option
+  const sel = doc.getElementById('forecastRegion');
+  assert.ok(sel.children.length >= 10);
 });
 
 test('價格 null 顯示面議，唔會當成免費', () => {

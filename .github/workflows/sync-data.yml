@@ -34,12 +34,18 @@ jobs:
       - name: 天文台警告 + 九天預報快照
         run: node tools-sync-weather.mjs
 
-      - name: 重建 data.js（data.csv → data.js）
+      - name: 該區天氣 + 潮汐官方快照（rhrread ＋ HLT）
+        run: node tools-sync-conditions.mjs
+
+      - name: 天文台 OCF 自動分區九日預報（12 站）
+        run: node tools-sync-ocf.mjs
+
+      - name: 重建 data.js（data.csv ＋ weather ＋ conditions ＋ ocf → data.js）
         run: node build-data.mjs
 
       - name: 有變更先 commit，無變更靜默
         run: |
-          git add data/auto/afcd-campsites.json data/auto/afcd-diff-report.md data/auto/weather.json data.js
+          git add data/auto/afcd-campsites.json data/auto/afcd-diff-report.md data/auto/weather.json data/auto/conditions.json data/auto/ocf-forecast.json data.js
           if git diff --cached --quiet; then
             echo "✅ 官方數據與天氣無實質變更，跳過 commit"
             exit 0

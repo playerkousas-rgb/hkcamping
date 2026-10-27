@@ -4,7 +4,7 @@
 
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.0.0';
+  const APP_VERSION = '1.3.0';
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -19,6 +19,124 @@
   const OFCA_COVERAGE_URL = 'https://www.map.gov.hk/gm/map/search/faci/__OFCA_MOBILE?lg=tc';
   // 地理資訊地圖座標深鏈（政府官方地圖，營地位置一按即達）
   const geoInfoUrl = (s) => `https://www.map.gov.hk/gm/geo:${s.lat},${s.lng}?lg=tc`;
+
+  /* ---------- 日出日落（純 JS 天文公式，NOAA/SunCalc；HKT） ----------
+   * 已用 HKO 官方 SRS 2026 五個錨點驗證，最大誤差 3 分鐘。
+   * 零 API、任何年份都用得、file:// 都用得。
+   */
+  const RAD = Math.PI / 180;
+  const DAY_MS = 86400000, J1970 = 2440588, J2000 = 2451545, J0 = 0.0009;
+  const OBLIQ = RAD * 23.4397;
+  const toJulian = (ms) => ms / DAY_MS - 0.5 + J1970;
+  const fromJulian = (j) => (j + 0.5 - J1970) * DAY_MS;
+  const toDays = (ms) => toJulian(ms) - J2000;
+  const solarMeanAnomaly = (d) => RAD * (357.5291 + 0.98560028 * d);
+  const eclipticLongitude = (M) => {
+    const C = RAD * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M));
+    return M + C + RAD * 102.9372 + Math.PI;
+  };
+  const declination = (L) => Math.asin(Math.sin(OBLIQ) * Math.sin(L));
+  const julianCycle = (d, lw) => Math.round(d - J0 - lw / (2 * Math.PI));
+  const approxTransit = (Ht, lw, n) => J0 + (Ht + lw) / (2 * Math.PI) + n;
+  const solarTransitJ = (ds, M, L) => J2000 + ds + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
+  const hourAngle = (h, phi, dec) =>
+    Math.acos((Math.sin(h) - Math.sin(phi) * Math.sin(dec)) / (Math.cos(phi) * Math.cos(dec)));
+
+  function sunTimesHKT(dateStr, lat = 22.3, lng = 114.2) {
+    const parts = String(dateStr || '').split('-').map(Number);
+    if (parts.length !== 3 || parts.some((n) => !Number.isFinite(n))) return null;
+    const [y, m, d] = parts;
+    const lw = RAD * -lng, phi = RAD * lat, h0 = RAD * -0.833;
+    const n = julianCycle(toDays(Date.UTC(y, m - 1, d)), lw);
+    const ds = approxTransit(0, lw, n);
+    const M = solarMeanAnomaly(ds);
+    const L = eclipticLongitude(M);
+    const dec = declination(L);
+    const Jnoon = solarTransitJ(ds, M, L);
+    const Jset = solarTransitJ(approxTransit(hourAngle(h0, phi, dec), lw, n), M, L);
+    const Jrise = Jnoon - (Jset - Jnoon);
+    const fmt = (ms) => {
+      const dt = new Date(ms + 8 * 3600000);
+      return `${String(dt.getUTCHours()).padStart(2, '0')}:${String(dt.getUTCMinutes()).padStart(2, '0')}`;
+    };
+    return { rise: fmt(fromJulian(Jrise)), set: fmt(fromJulian(Jset)) };
+  }
+  // 畀 smoke test 用（唔影響 UI）
+  window.__campSunTimes = sunTimesHKT;
+
+  const todayHK = () => {
+    const d = new Date(Date.now() + 8 * 3600000);
+    return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+  };
+  const hkDateFromCompact = (s) => {
+    const v = String(s || '');
+    return v.length === 8 ? `${v.slice(0, 4)}-${v.slice(4, 6)}-${v.slice(6, 8)}` : v;
+  };
+
+  /* ---------- OCF 自動分區九日預報（ocf-forecast.json，由 build-data.mjs 嵌入） ---------- */
+  const OCF = (window.CAMP_OCF && typeof window.CAMP_OCF === 'object') ? window.CAMP_OCF : null;
+  const WEEKDAY_SHORT = ['日', '一', '二', '三', '四', '五', '六'];
+
+  // HKO OCF 天氣圖標 → 中文描述 + emoji（官方 help_e.html 圖標定義）
+  const OCF_WEATHER = {
+    50: ['☀️', '天晴'], 51: ['🌤', '大致天晴'], 52: ['⛅', '部分時間有陽光'],
+    53: ['🌦', '有幾陣驟雨'], 54: ['🌧', '間中有驟雨'], 60: ['☁️', '多雲'],
+    62: ['🌧', '微雨'], 63: ['🌧', '中雨或大雨'], 80: ['🌦', '局部地區驟雨'],
+    70: ['🌙', '天晴（夜）'], 74: ['🌙', '大致天晴（夜）'],
+  };
+  const ocfWeather = (code) => OCF_WEATHER[code] || ['🌡', '天氣未詳'];
+  const rainClass = (pct) => pct === null ? 'na' : pct >= 60 ? 'high' : pct >= 40 ? 'mid' : 'low';
+  const fmtForecastDay = (iso) => {
+    const [y, m, d] = iso.split('-').map(Number);
+    const wd = WEEKDAY_SHORT[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+    return { md: `${m}/${d}`, wd: `星期${wd}` };
+  };
+
+  function ocfDaily(site, dateStr) {
+    if (!OCF || !site || !site.ocfStation) return null;
+    const st = OCF.stations?.[site.ocfStation];
+    if (!st) return null;
+    return {
+      station: st.name,
+      code: site.ocfStation,
+      day: (st.daily || []).find((d) => d.date === dateStr) || null,
+    };
+  }
+
+  /* ---------- 該區天氣 + 潮汐（conditions.json，由 build-data.mjs 嵌入） ---------- */
+  const CONDITIONS = (window.CAMP_CONDITIONS && typeof window.CAMP_CONDITIONS === 'object')
+    ? window.CAMP_CONDITIONS : null;
+  const TIDE_STATION_NAMES = {
+    QUB: '鰂魚涌', KLW: '高流灣', TPK: '大埔滘', CCH: '長洲',
+    SPW: '石壁', TAO: '大澳', CLK: '赤鱲角東', TBT: '尖鼻咀',
+  };
+
+  function districtReading(site) {
+    if (!CONDITIONS || !CONDITIONS.districtWeather) return null;
+    const dw = CONDITIONS.districtWeather;
+    const temp = (dw.temperature || []).find((x) => x.station === site.weatherStation);
+    const rain = (dw.rainfall || []).find((x) => x.district === site.rainDistrict);
+    return {
+      station: site.weatherStation || '—',
+      tempC: temp ? temp.c : null,
+      rainMm: rain ? rain.mm : null,
+      rainDistrict: site.rainDistrict || '—',
+      updateTime: dw.updateTime || CONDITIONS.fetchedAt,
+    };
+  }
+
+  function tideReading(site, dateStr) {
+    if (!CONDITIONS || !CONDITIONS.tides || !site.tideStation) return null;
+    const st = CONDITIONS.tides.stations?.[site.tideStation];
+    const events = st?.days?.[dateStr];
+    if (!events || !events.length) return null;
+    return { code: site.tideStation, name: st.name || TIDE_STATION_NAMES[site.tideStation], events };
+  }
+
+  function isStale(iso, maxHours = 3) {
+    const t = Date.parse(iso || '');
+    return !Number.isFinite(t) || Date.now() - t > maxHours * 3600 * 1000;
+  }
 
   /* ---------- 天氣（天文台快照，由 build-data.mjs 嵌入 data.js） ---------- */
   // 來源：data/auto/weather.json（每日 GitHub Actions 更新）。冇快照就自動隱藏天氣功能。
@@ -218,7 +336,27 @@
   /* ---------- 卡片 ---------- */
   function priceText(s) {
     if (s.price === null || s.price === undefined) return '面議／電話查詢';
-    return s.price === 0 ? '免費' : `$${s.price} ${s.priceUnit || ''}`.trim();
+    if (s.price === 0) return '免費';
+    // priceSource = estimate 即係未逐筆核實嘅約數 → 前面加「約」
+    const approx = s.priceSource === 'estimate' ? '約 ' : '';
+    return `${approx}$${s.price} ${s.priceUnit || ''}`.trim();
+  }
+
+  /* 官方 CSDI 欄位 → 出發前準備提示（只喺漁護署營地有值） */
+  function prepBadges(s) {
+    if (!s.waterSource && !s.tentSpace) return '';
+    let water = '';
+    if (s.waterSource) {
+      const seasonal = s.waterSource.includes('季節性');
+      const label = seasonal ? '⚠️ 季節性溪澗（旱季可能無水）'
+        : s.waterSource.includes('洗手間') ? '🚻 洗手間' : '🚰 水喉';
+      water = `<span class="prep-badge ${seasonal ? 'warn' : ''}">${label}</span>`;
+    }
+    const small = s.tentSpace && s.tentSpace.includes('少於');
+    const tent = s.tentSpace
+      ? `<span class="prep-badge ${small ? 'warn' : ''}">⛺ ${s.tentSpace} 營位${small ? ' · 假日易滿' : ''}</span>`
+      : '';
+    return `<div class="prep-badges">${water}${tent}</div>`;
   }
 
   function renderCards(sites) {
@@ -245,9 +383,14 @@
           ${s.booking ? '<span class="price-unit">· 需預訂</span>'
             : `<span class="price-unit">· ${s.type === '民宿' ? '訂房請先電話查詢' : '免預訂／先到先得'}</span>`}
         </div>
+        ${s.priceSource === 'estimate'
+          ? '<div class="price-caveat">約數 · 未逐筆核實，落訂前請向場地官網／電話確認</div>' : ''}
+        ${prepBadges(s)}
+        ${s.tideStation ? `<div class="prep-badges"><span class="prep-badge tide">🌊 潮汐站：${TIDE_STATION_NAMES[s.tideStation] || s.tideStation}</span></div>` : ''}
         <p class="summary">${s.summary}</p>
         <div class="mini-tags">${tags.map((t) => `<span class="mini-tag">${t}</span>`).join('')}</div>
         <div class="card-actions">
+          <button data-action="local">🌡 該區天氣</button>
           <button data-action="locate">📍 地圖位置</button>
           <a href="https://www.google.com/maps?q=${s.lat},${s.lng}" target="_blank" rel="noopener">🗺 導航</a>
           <a href="${OFCA_COVERAGE_URL}" target="_blank" rel="noopener" title="通訊辦郊野公園流動網絡覆蓋調查（地理資訊地圖）">📶 覆蓋查詢</a>
@@ -264,6 +407,15 @@
         renderFilters();
       });
       card.querySelector('[data-action="locate"]').addEventListener('click', () => flyTo(s.id));
+      card.querySelector('[data-action="local"]').addEventListener('click', () => {
+        localSiteId = s.id;
+        renderLocalConditions(s);
+        const panel = document.getElementById('localPanel');
+        if (panel) {
+          panel.hidden = false;
+          panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
       grid.appendChild(card);
     });
   }
@@ -341,6 +493,11 @@
     document.getElementById('clearAll').addEventListener('click', clearAll);
     document.getElementById('emptyClear').addEventListener('click', clearAll);
 
+    // 該區天氣面板收起
+    document.getElementById('localClose').addEventListener('click', () => {
+      document.getElementById('localPanel').hidden = true;
+    });
+
     // 手機版側欄
     const sidebar = document.getElementById('sidebar');
     const toggle = document.getElementById('filterToggle');
@@ -404,8 +561,7 @@
     const last = WEEKEND_DAYS[WEEKEND_DAYS.length - 1];
     const range = first.date === last.date
       ? fmtDay(first.date) : `${fmtDay(first.date)}–${fmtDay(last.date)}`;
-    const fetched = Date.parse(WEATHER.fetchedAt || '');
-    const stale = !Number.isFinite(fetched) || Date.now() - fetched > 36 * 3600 * 1000;
+    const stale = isStale(WEATHER.fetchedAt, 36);
 
     bar.hidden = false;
     bar.className = `weather-bar ${WEEKEND_PSR_CLASS}`;
@@ -424,6 +580,14 @@
     add('span', 'psr-badge', `降雨概率 ${WEEKEND_PSR_TEXT}`);
     add('span', 'weather-detail',
       `${range} · ${WEEKEND_DAYS.map((d) => `${d.week} ${d.psr}`).join('／')}${temp}`);
+
+    // 週末日落（官方 SRS 驗證過嘅純 JS 公式）
+    const sun = sunTimesHKT(hkDateFromCompact(first.date));
+    if (sun) {
+      const oneHourBefore = `${String(Math.max(0, Number(sun.set.slice(0, 2)) - 1)).padStart(2, '0')}${sun.set.slice(2)}`;
+      add('span', 'weather-sun', `🌇 日落 ${sun.set} · 建議 ${oneHourBefore} 前紮營`);
+    }
+
     if (warnings.length) {
       add('span', 'weather-warn', `⚠ 生效警告：${warnings.map((w) => w.name).join('、')}`);
     }
@@ -434,6 +598,263 @@
     link.href = 'https://www.hko.gov.hk/tc/wxinfo/currwx/fnd.htm';
     link.target = '_blank';
     link.rel = 'noopener';
+  }
+
+  /* ---------- 該區天氣 + 潮汐面板（v1.2.0） ---------- */
+  let localSiteId = null;   // 用戶揀咗邊個營地睇該區天氣
+
+  function renderLocalConditions(site) {
+    const host = document.getElementById('localConditions');
+    if (!host) return;
+    host.replaceChildren();
+
+    if (!site) {
+      const hint = document.createElement('p');
+      hint.className = 'local-hint';
+      hint.textContent = '👆 撳卡片嘅「該區天氣」睇該區實況、潮汐同日出日落。';
+      host.appendChild(hint);
+      return;
+    }
+
+    const stale = !CONDITIONS || isStale(CONDITIONS.districtWeather?.updateTime || CONDITIONS.fetchedAt, 3);
+    const dr = districtReading(site);
+    const sun = sunTimesHKT(todayHK(), site.lat, site.lng);
+    const weekendDay = WEEKEND_DAYS.length ? hkDateFromCompact(WEEKEND_DAYS[0].date) : todayHK();
+    const tideToday = tideReading(site, todayHK());
+    const tideWeekend = tideReading(site, weekendDay);
+
+    const mk = (tag, cls, text) => {
+      const el = document.createElement(tag);
+      if (cls) el.className = cls;
+      if (text != null) el.textContent = text;
+      return el;
+    };
+
+    const head = mk('div', 'local-head');
+    head.appendChild(mk('strong', '', `📍 ${site.name}`));
+    head.appendChild(mk('span', 'local-tag', `${site.district} · ${site.area}`));
+    if (stale) head.appendChild(mk('span', 'local-stale', '⚠ 快照可能過期'));
+    host.appendChild(head);
+    host.appendChild(mk('p', 'local-disclaimer',
+      '以下係就近自動氣象站／潮汐站嘅官方實況，唔係營地實地測量；山區與海邊可以有明顯差異。'));
+
+    const grid = mk('div', 'local-grid');
+
+    // 1. 該區實況
+    const box1 = mk('section', 'local-box');
+    box1.appendChild(mk('h4', '', '🌡 該區實況'));
+    if (dr && (dr.tempC !== null || dr.rainMm !== null)) {
+      const big = mk('div', 'local-big', dr.tempC !== null ? `${dr.tempC}°C` : '—');
+      box1.appendChild(big);
+      box1.appendChild(mk('div', 'local-sub', `就近氣象站：${dr.station}（一分鐘平均氣溫）`));
+      box1.appendChild(mk('div', 'local-sub',
+        `${dr.rainDistrict} 過去一小時雨量：${dr.rainMm !== null ? `${dr.rainMm} mm` : '—'}`));
+      const link = mk('a', 'local-link', '天文台分區天氣 ↗');
+      link.href = 'https://www.hko.gov.hk/tc/wxinfo/currwx/rhrread.htm';
+      link.target = '_blank'; link.rel = 'noopener';
+      box1.appendChild(link);
+    } else {
+      box1.appendChild(mk('div', 'local-sub', '暫無該區實況數據'));
+    }
+    grid.appendChild(box1);
+
+    // 2. 日出日落
+    const box2 = mk('section', 'local-box');
+    box2.appendChild(mk('h4', '', '🌇 今日日光'));
+    if (sun) {
+      box2.appendChild(mk('div', 'local-big', sun.set));
+      box2.appendChild(mk('div', 'local-sub', `日出 ${sun.rise} · 日落 ${sun.set}（HKT）`));
+      const setup = `${String(Math.max(0, Number(sun.set.slice(0, 2)) - 1)).padStart(2, '0')}${sun.set.slice(2)}`;
+      box2.appendChild(mk('div', 'local-warn', `建議 ${setup} 前紮好營，摸黑開營好危險`));
+      const link = mk('a', 'local-link', '天文台日出日沒表 ↗');
+      link.href = 'https://www.hko.gov.hk/tc/gts/astronomy/SRS.htm';
+      link.target = '_blank'; link.rel = 'noopener';
+      box2.appendChild(link);
+    } else {
+      box2.appendChild(mk('div', 'local-sub', '未能計算日光時間'));
+    }
+    grid.appendChild(box2);
+
+    // 2b. 該區未來九日（OCF 官方分區預報）
+    const ocfSt = OCF?.stations?.[site.ocfStation];
+    if (ocfSt && Array.isArray(ocfSt.daily) && ocfSt.daily.length) {
+      const boxOcf = mk('section', 'local-box local-box-wide');
+      boxOcf.appendChild(mk('h4', '', `📅 未來九日（${ocfSt.name}站 · 天文台 OCF）`));
+      const strip = mk('div', 'local-forecast-strip');
+      ocfSt.daily.slice(0, 9).forEach((d) => {
+        const [emoji, label] = ocfWeather(d.weather);
+        const cell = mk('div', `lfc-day ${rainClass(d.rainPct)}`);
+        const { md, wd } = fmtForecastDay(d.date);
+        cell.appendChild(mk('span', 'lfc-date', `${md} ${wd.replace('星期', '週')}`));
+        cell.appendChild(mk('span', 'lfc-icon', emoji));
+        cell.appendChild(mk('span', 'lfc-temp',
+          d.max !== null && d.min !== null ? `${Math.round(d.max)}°/${Math.round(d.min)}°` : '—'));
+        cell.appendChild(mk('span', 'lfc-rain', d.rainLabel || '—'));
+        cell.title = `${label}｜最高 ${d.max ?? '—'}°C｜最低 ${d.min ?? '—'}°C｜降雨概率 ${d.rainLabel ?? '官方無提供'}`;
+        strip.appendChild(cell);
+      });
+      boxOcf.appendChild(strip);
+      const note = mk('a', 'local-link', 'OCF 官方說明（自動預報，可能同正式預報唔同）↗');
+      note.href = 'https://maps.weather.gov.hk/ocf/help_e.html';
+      note.target = '_blank'; note.rel = 'noopener';
+      boxOcf.appendChild(note);
+      grid.appendChild(boxOcf);
+    }
+
+    // 3. 潮汐
+    const box3 = mk('section', 'local-box');
+    box3.appendChild(mk('h4', '', '🌊 潮汐（就近站）'));
+    if (tideToday || tideWeekend) {
+      const st = tideToday || tideWeekend;
+      box3.appendChild(mk('div', 'local-sub', `就近潮汐站：${st.name}（HKO 官方預測）`));
+      const renderEvents = (label, tr, dateStr) => {
+        if (!tr) return;
+        const row = mk('div', 'tide-row');
+        row.appendChild(mk('span', 'tide-label', label));
+        const list = mk('span', 'tide-list');
+        tr.events.forEach((ev) => {
+          const chip = mk('span', `tide-chip ${ev.type === 'H' ? 'high' : 'low'}`,
+            `${ev.type === 'H' ? '漲' : '退'} ${ev.time} (${ev.height.toFixed(2)}m)`);
+          list.appendChild(chip);
+        });
+        row.appendChild(list);
+        box3.appendChild(row);
+      };
+      const shortDate = (iso) => `${iso.slice(5, 7)}/${iso.slice(8, 10)}`;
+      renderEvents(`今日 ${shortDate(todayHK())}`, tideToday, todayHK());
+      if (weekendDay !== todayHK()) renderEvents(`週末 ${shortDate(weekendDay)}`, tideWeekend, weekendDay);
+      box3.appendChild(mk('div', 'local-warn',
+        '退潮先適合行近岸／礁石；潮漲唔好喺沙洲或低窪紮營。'));
+      const link = mk('a', 'local-link', '天文台潮汐預報 ↗');
+      link.href = 'https://www.hko.gov.hk/tc/tide/etide_main.htm';
+      link.target = '_blank'; link.rel = 'noopener';
+      box3.appendChild(link);
+    } else {
+      box3.appendChild(mk('div', 'local-sub', '呢個營地唔喺沿岸，或暫無潮汐數據'));
+    }
+    grid.appendChild(box3);
+
+    host.appendChild(grid);
+  }
+
+  /* ---------- 九日該區預報時間軸（v1.3.0） ---------- */
+  let forecastCode = null;   // 目前揀咗邊個 OCF 站
+
+  function renderForecastRegionOptions() {
+    const sel = document.getElementById('forecastRegion');
+    if (!sel) return;
+    sel.replaceChildren();
+    if (!OCF || !OCF.stations) return;
+
+    // 只列出 data.csv 實際用到嘅站，並按營地數量排序
+    const used = {};
+    SITES.forEach((s) => { if (s.ocfStation) used[s.ocfStation] = (used[s.ocfStation] || 0) + 1; });
+    const codes = Object.keys(OCF.stations)
+      .filter((c) => used[c])
+      .sort((a, b) => used[b] - used[a]);
+    if (!codes.length) return;
+
+    if (!forecastCode || !codes.includes(forecastCode)) forecastCode = codes[0];
+    codes.forEach((code) => {
+      const opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = `${OCF.stations[code].name}（${used[code]} 個營地）`;
+      sel.appendChild(opt);
+    });
+    sel.value = forecastCode;
+    sel.addEventListener('change', (e) => {
+      forecastCode = e.target.value;
+      renderForecast();
+    });
+  }
+
+  function renderForecast() {
+    const host = document.getElementById('forecastScroll');
+    const meta = document.getElementById('forecastSource');
+    if (!host) return;
+    host.replaceChildren();
+
+    if (!OCF || !OCF.stations || !forecastCode) {
+      const p = document.createElement('p');
+      p.className = 'forecast-empty';
+      p.textContent = '暫無分區預報數據（GitHub Actions 每日更新）。';
+      host.appendChild(p);
+      return;
+    }
+    const st = OCF.stations[forecastCode];
+    if (!st || !Array.isArray(st.daily) || !st.daily.length) {
+      const p = document.createElement('p');
+      p.className = 'forecast-empty';
+      p.textContent = '呢個站暫無預報數據。';
+      host.appendChild(p);
+      return;
+    }
+
+    if (meta) {
+      const t = String(st.modelTime || OCF.fetchedAt || '');
+      meta.textContent = `站點：${st.name} · 模型 ${t.length === 10 ? `${t.slice(0, 4)}-${t.slice(4, 6)}-${t.slice(6, 8)} ${t.slice(8)}:00` : t}`;
+    }
+
+    const today = todayHK();
+    const stale = isStale(OCF.fetchedAt, 30);
+
+    st.daily.forEach((d, i) => {
+      const [emoji, label] = ocfWeather(d.weather);
+      const { md, wd } = fmtForecastDay(d.date);
+      const card = document.createElement('div');
+      card.className = `forecast-day ${i === 0 ? 'today' : ''}`;
+      if (/星期六|星期日/.test(wd)) card.classList.add('weekend');
+
+      const add = (tag, cls, text) => {
+        const el = document.createElement(tag);
+        if (cls) el.className = cls;
+        if (text != null) el.textContent = text;
+        card.appendChild(el);
+        return el;
+      };
+
+      add('div', 'fc-date', i === 0 ? `今日 ${md}` : `${md} ${wd}`);
+      add('div', 'fc-icon', emoji);
+      add('div', 'fc-weather', d.weather ? label : '—');
+      add('div', 'fc-temp',
+        d.max !== null && d.min !== null ? `${Math.round(d.max)}° / ${Math.round(d.min)}°` : '—');
+
+      const rain = add('div', `fc-rain ${rainClass(d.rainPct)}`,
+        d.rainLabel ? `🌧 ${d.rainLabel}` : '🌧 降雨概率 —');
+      if (d.rainPct === null) rain.title = '呢個站官方無提供降雨概率';
+      if (d.rainPct !== null && d.rainPct >= 60) {
+        add('div', 'fc-warn', '⚠️ 唔適宜');
+      } else if (d.rainPct !== null && d.rainPct >= 40) {
+        add('div', 'fc-warn mild', '帶雨具');
+      } else {
+        add('div', 'fc-warn ok', '適合');
+      }
+
+      // 該區日落（沿用純 JS 天文公式）
+      const sun = sunTimesHKT(d.date);
+      if (sun) add('div', 'fc-sun', `🌇 ${sun.set}`);
+
+      // 該營地潮汐（如有）
+      const coastal = SITES.find((s) => s.ocfStation === forecastCode && s.tideStation);
+      if (coastal) {
+        const tr = tideReading(coastal, d.date);
+        if (tr) {
+          const low = tr.events.filter((e) => e.type === 'L').map((e) => e.time).join('/');
+          const high = tr.events.filter((e) => e.type === 'H').map((e) => e.time).join('/');
+          add('div', 'fc-tide', `🌊 退 ${low || '—'} · 漲 ${high || '—'}`);
+        }
+      }
+
+      if (d.date === today) card.classList.add('current');
+      host.appendChild(card);
+    });
+
+    if (stale) {
+      const warn = document.createElement('p');
+      warn.className = 'forecast-stale';
+      warn.textContent = `⚠️ 快照抓取時間 ${fmtStamp(OCF.fetchedAt)}，可能已過期，請以天文台正式預報為準。`;
+      host.appendChild(warn);
+    }
   }
 
   /* ---------- 版號顯示（W1 / V1） ---------- */
@@ -447,6 +868,8 @@
   /* ---------- 啟動 ---------- */
   renderVersion();
   renderWeather();
+  renderForecastRegionOptions();
+  renderForecast();
   if (!SITES.length) {
     document.getElementById('resultCount').textContent = '⚠ 未能載入 data.js，請先執行 node build-data.mjs';
   } else {
