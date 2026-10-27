@@ -4489,21 +4489,27 @@ window.CAMPSITES = [
 // 天文台快照（data/auto/weather.json），由 GitHub Actions 每日更新後 rebuild
 window.CAMP_WEATHER = {
   "source": "香港天文台 open data (data.weather.gov.hk)",
-  "fetchedAt": "2026-10-27T04:58:06.066Z",
-  "hkoUpdateTime": "2026-10-27T11:30:00+08:00",
-  "activeWarnings": [],
+  "fetchedAt": "2026-10-27T20:49:57.306Z",
+  "hkoUpdateTime": "2026-10-28T04:10:00+08:00",
+  "activeWarnings": [
+    {
+      "code": "WMSGNL",
+      "name": "強烈季候風信號",
+      "actionCode": "ISSUE"
+    }
+  ],
   "forecast": [
     {
       "date": "20261028",
       "week": "星期三",
-      "weather": "部分時間有陽光，早晚有一兩陣微雨。",
+      "weather": "部分時間有陽光，早晚有一兩陣雨。",
       "minTemp": 24,
       "maxTemp": 28,
       "minRh": 60,
       "maxRh": 85,
       "icon": 51,
       "psr": "低",
-      "wind": "東風4至5級，離岸及高地間中6級。"
+      "wind": "東風4至5級，離岸及高地6級。"
     },
     {
       "date": "20261029",
@@ -4632,21 +4638,19 @@ window.CAMP_WEATHER = {
 
 // 該區天氣 + 潮汐（data/auto/conditions.json），每日 Actions 更新
 window.CAMP_CONDITIONS = {
-  "fetchedAt": "2026-10-27T08:10:00.000Z",
-  "seed": true,
-  "seedNote": "2026-10-27 用 fetch_page 實測 HKO 官方 API 取得嘅初始快照；GitHub Actions 每日會覆寫。",
+  "fetchedAt": "2026-10-27T20:49:58.792Z",
   "districtWeather": {
     "source": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc",
-    "updateTime": "2026-10-27T16:02:00+08:00",
-    "recordTime": "2026-10-27T16:00:00+08:00",
+    "updateTime": "2026-10-28T04:02:00+08:00",
+    "recordTime": "2026-10-28T04:00:00+08:00",
     "rainfallPeriod": {
-      "start": "2026-10-27T14:45:00+08:00",
-      "end": "2026-10-27T15:45:00+08:00"
+      "start": "2026-10-28T02:45:00+08:00",
+      "end": "2026-10-28T03:45:00+08:00"
     },
     "rainfall": [
       {
         "district": "中西區",
-        "mm": 0
+        "mm": 1
       },
       {
         "district": "東區",
@@ -4674,7 +4678,7 @@ window.CAMP_CONDITIONS = {
       },
       {
         "district": "南區",
-        "mm": 0
+        "mm": 1
       },
       {
         "district": "大埔",
@@ -4690,7 +4694,7 @@ window.CAMP_CONDITIONS = {
       },
       {
         "district": "灣仔",
-        "mm": 0
+        "mm": 1
       },
       {
         "district": "元朗",
@@ -4720,139 +4724,606 @@ window.CAMP_CONDITIONS = {
     "temperature": [
       {
         "station": "京士柏",
-        "c": 27
+        "c": 24
       },
       {
         "station": "香港天文台",
-        "c": 28
+        "c": 25
       },
       {
         "station": "黃竹坑",
-        "c": 29
+        "c": 25
       },
       {
         "station": "打鼓嶺",
-        "c": 30
+        "c": 25
       },
       {
         "station": "流浮山",
-        "c": 30
+        "c": 24
       },
       {
         "station": "大埔",
-        "c": 29
-      },
-      {
-        "station": "沙田",
-        "c": 29
-      },
-      {
-        "station": "屯門",
-        "c": 29
-      },
-      {
-        "station": "將軍澳",
-        "c": 27
-      },
-      {
-        "station": "西貢",
-        "c": 27
-      },
-      {
-        "station": "長洲",
-        "c": 27
-      },
-      {
-        "station": "赤鱲角",
-        "c": 29
-      },
-      {
-        "station": "青衣",
-        "c": 29
-      },
-      {
-        "station": "石崗",
-        "c": 30
-      },
-      {
-        "station": "荃灣可觀",
-        "c": 28
-      },
-      {
-        "station": "荃灣城門谷",
-        "c": 29
-      },
-      {
-        "station": "香港公園",
-        "c": 27
-      },
-      {
-        "station": "筲箕灣",
         "c": 26
       },
       {
+        "station": "沙田",
+        "c": 25
+      },
+      {
+        "station": "屯門",
+        "c": 25
+      },
+      {
+        "station": "將軍澳",
+        "c": 25
+      },
+      {
+        "station": "西貢",
+        "c": 26
+      },
+      {
+        "station": "長洲",
+        "c": 25
+      },
+      {
+        "station": "赤鱲角",
+        "c": 26
+      },
+      {
+        "station": "青衣",
+        "c": 25
+      },
+      {
+        "station": "石崗",
+        "c": 26
+      },
+      {
+        "station": "荃灣可觀",
+        "c": 24
+      },
+      {
+        "station": "荃灣城門谷",
+        "c": 25
+      },
+      {
+        "station": "香港公園",
+        "c": 24
+      },
+      {
+        "station": "筲箕灣",
+        "c": 25
+      },
+      {
         "station": "九龍城",
-        "c": 29
+        "c": 24
       },
       {
         "station": "跑馬地",
-        "c": 29
+        "c": 24
       },
       {
         "station": "黃大仙",
-        "c": 28
+        "c": 25
       },
       {
         "station": "赤柱",
-        "c": 28
+        "c": 25
       },
       {
         "station": "觀塘",
-        "c": 27
+        "c": 25
       },
       {
         "station": "深水埗",
-        "c": 29
+        "c": 25
       },
       {
         "station": "啟德跑道公園",
-        "c": 27
+        "c": 26
       },
       {
         "station": "元朗公園",
-        "c": 30
+        "c": 25
       },
       {
         "station": "大美督",
-        "c": 27
+        "c": 25
       }
     ],
     "humidity": [
       {
         "station": "香港天文台",
-        "percent": 68
+        "percent": 75
       }
     ],
-    "uv": [
-      {
-        "place": "京士柏",
-        "value": 2,
-        "desc": "低"
-      }
+    "uv": [],
+    "warningMessage": [
+      "天文台在上午4時正發出強烈季候風信號。"
     ],
-    "warningMessage": "",
     "icon": [
-      51
+      62
     ]
   },
   "tides": {
     "source": "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HLT&station=<code>&year=<year>&month=<month>&rformat=json",
-    "fetchedAt": "2026-10-27T08:10:00.000Z",
-    "note": "初始快照只含 2026-10-27 至 11-04（9 日），每日 sync-data.yml 會補齊當月＋下月全部日子。",
+    "fetchedAt": "2026-10-27T20:49:58.792Z",
     "stations": {
       "QUB": {
         "name": "鰂魚涌",
         "days": {
+          "2026-10-01": [
+            {
+              "time": "06:14",
+              "height": 0.75,
+              "type": "L"
+            },
+            {
+              "time": "13:11",
+              "height": 1.69,
+              "type": "H"
+            },
+            {
+              "time": "17:02",
+              "height": 1.37,
+              "type": "L"
+            }
+          ],
+          "2026-10-02": [
+            {
+              "time": "00:16",
+              "height": 2.46,
+              "type": "H"
+            },
+            {
+              "time": "07:21",
+              "height": 0.8,
+              "type": "L"
+            },
+            {
+              "time": "14:35",
+              "height": 1.55,
+              "type": "H"
+            },
+            {
+              "time": "16:59",
+              "height": 1.44,
+              "type": "L"
+            }
+          ],
+          "2026-10-03": [
+            {
+              "time": "01:05",
+              "height": 2.44,
+              "type": "H"
+            },
+            {
+              "time": "08:57",
+              "height": 0.84,
+              "type": "L"
+            }
+          ],
+          "2026-10-04": [
+            {
+              "time": "02:21",
+              "height": 2.39,
+              "type": "H"
+            },
+            {
+              "time": "10:31",
+              "height": 0.82,
+              "type": "L"
+            }
+          ],
+          "2026-10-05": [
+            {
+              "time": "03:58",
+              "height": 2.36,
+              "type": "H"
+            },
+            {
+              "time": "11:52",
+              "height": 0.78,
+              "type": "L"
+            }
+          ],
+          "2026-10-06": [
+            {
+              "time": "05:17",
+              "height": 2.36,
+              "type": "H"
+            },
+            {
+              "time": "12:40",
+              "height": 0.76,
+              "type": "L"
+            },
+            {
+              "time": "20:10",
+              "height": 1.78,
+              "type": "H"
+            },
+            {
+              "time": "23:32",
+              "height": 1.61,
+              "type": "L"
+            }
+          ],
+          "2026-10-07": [
+            {
+              "time": "06:27",
+              "height": 2.36,
+              "type": "H"
+            },
+            {
+              "time": "13:16",
+              "height": 0.77,
+              "type": "L"
+            },
+            {
+              "time": "20:24",
+              "height": 1.86,
+              "type": "H"
+            }
+          ],
+          "2026-10-08": [
+            {
+              "time": "00:43",
+              "height": 1.41,
+              "type": "L"
+            },
+            {
+              "time": "07:28",
+              "height": 2.34,
+              "type": "H"
+            },
+            {
+              "time": "13:48",
+              "height": 0.82,
+              "type": "L"
+            },
+            {
+              "time": "20:40",
+              "height": 1.97,
+              "type": "H"
+            }
+          ],
+          "2026-10-09": [
+            {
+              "time": "01:37",
+              "height": 1.21,
+              "type": "L"
+            },
+            {
+              "time": "08:23",
+              "height": 2.29,
+              "type": "H"
+            },
+            {
+              "time": "14:19",
+              "height": 0.9,
+              "type": "L"
+            },
+            {
+              "time": "20:57",
+              "height": 2.08,
+              "type": "H"
+            }
+          ],
+          "2026-10-10": [
+            {
+              "time": "02:25",
+              "height": 1.04,
+              "type": "L"
+            },
+            {
+              "time": "09:14",
+              "height": 2.21,
+              "type": "H"
+            },
+            {
+              "time": "14:49",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "21:17",
+              "height": 2.21,
+              "type": "H"
+            }
+          ],
+          "2026-10-11": [
+            {
+              "time": "03:09",
+              "height": 0.92,
+              "type": "L"
+            },
+            {
+              "time": "10:01",
+              "height": 2.11,
+              "type": "H"
+            },
+            {
+              "time": "15:17",
+              "height": 1.11,
+              "type": "L"
+            },
+            {
+              "time": "21:40",
+              "height": 2.32,
+              "type": "H"
+            }
+          ],
+          "2026-10-12": [
+            {
+              "time": "03:52",
+              "height": 0.85,
+              "type": "L"
+            },
+            {
+              "time": "10:45",
+              "height": 1.99,
+              "type": "H"
+            },
+            {
+              "time": "15:43",
+              "height": 1.22,
+              "type": "L"
+            },
+            {
+              "time": "22:06",
+              "height": 2.39,
+              "type": "H"
+            }
+          ],
+          "2026-10-13": [
+            {
+              "time": "04:33",
+              "height": 0.83,
+              "type": "L"
+            },
+            {
+              "time": "11:28",
+              "height": 1.86,
+              "type": "H"
+            },
+            {
+              "time": "16:06",
+              "height": 1.32,
+              "type": "L"
+            },
+            {
+              "time": "22:34",
+              "height": 2.43,
+              "type": "H"
+            }
+          ],
+          "2026-10-14": [
+            {
+              "time": "05:15",
+              "height": 0.85,
+              "type": "L"
+            },
+            {
+              "time": "12:14",
+              "height": 1.74,
+              "type": "H"
+            },
+            {
+              "time": "16:23",
+              "height": 1.41,
+              "type": "L"
+            },
+            {
+              "time": "23:01",
+              "height": 2.43,
+              "type": "H"
+            }
+          ],
+          "2026-10-15": [
+            {
+              "time": "05:59",
+              "height": 0.9,
+              "type": "L"
+            },
+            {
+              "time": "13:12",
+              "height": 1.62,
+              "type": "H"
+            },
+            {
+              "time": "16:17",
+              "height": 1.48,
+              "type": "L"
+            },
+            {
+              "time": "23:23",
+              "height": 2.4,
+              "type": "H"
+            }
+          ],
+          "2026-10-16": [
+            {
+              "time": "06:51",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "23:33",
+              "height": 2.34,
+              "type": "H"
+            }
+          ],
+          "2026-10-17": [
+            {
+              "time": "08:09",
+              "height": 1.01,
+              "type": "L"
+            }
+          ],
+          "2026-10-18": [
+            {
+              "time": "00:30",
+              "height": 2.27,
+              "type": "H"
+            },
+            {
+              "time": "09:47",
+              "height": 1.03,
+              "type": "L"
+            }
+          ],
+          "2026-10-19": [
+            {
+              "time": "01:36",
+              "height": 2.2,
+              "type": "H"
+            },
+            {
+              "time": "11:24",
+              "height": 1.01,
+              "type": "L"
+            }
+          ],
+          "2026-10-20": [
+            {
+              "time": "03:06",
+              "height": 2.13,
+              "type": "H"
+            },
+            {
+              "time": "12:12",
+              "height": 0.99,
+              "type": "L"
+            }
+          ],
+          "2026-10-21": [
+            {
+              "time": "04:23",
+              "height": 2.11,
+              "type": "H"
+            },
+            {
+              "time": "12:43",
+              "height": 0.98,
+              "type": "L"
+            },
+            {
+              "time": "19:56",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "23:46",
+              "height": 1.63,
+              "type": "L"
+            }
+          ],
+          "2026-10-22": [
+            {
+              "time": "05:29",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "13:02",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "20:05",
+              "height": 1.92,
+              "type": "H"
+            }
+          ],
+          "2026-10-23": [
+            {
+              "time": "00:43",
+              "height": 1.44,
+              "type": "L"
+            },
+            {
+              "time": "06:35",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "13:21",
+              "height": 1.03,
+              "type": "L"
+            },
+            {
+              "time": "20:12",
+              "height": 2.03,
+              "type": "H"
+            }
+          ],
+          "2026-10-24": [
+            {
+              "time": "01:30",
+              "height": 1.23,
+              "type": "L"
+            },
+            {
+              "time": "07:41",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "13:45",
+              "height": 1.08,
+              "type": "L"
+            },
+            {
+              "time": "20:23",
+              "height": 2.17,
+              "type": "H"
+            }
+          ],
+          "2026-10-25": [
+            {
+              "time": "02:14",
+              "height": 1.02,
+              "type": "L"
+            },
+            {
+              "time": "08:40",
+              "height": 2.08,
+              "type": "H"
+            },
+            {
+              "time": "14:13",
+              "height": 1.14,
+              "type": "L"
+            },
+            {
+              "time": "20:45",
+              "height": 2.33,
+              "type": "H"
+            }
+          ],
+          "2026-10-26": [
+            {
+              "time": "02:58",
+              "height": 0.82,
+              "type": "L"
+            },
+            {
+              "time": "09:34",
+              "height": 2.04,
+              "type": "H"
+            },
+            {
+              "time": "14:41",
+              "height": 1.21,
+              "type": "L"
+            },
+            {
+              "time": "21:14",
+              "height": 2.48,
+              "type": "H"
+            }
+          ],
           "2026-10-27": [
             {
               "time": "03:42",
@@ -5015,172 +5486,1703 @@ window.CAMP_CONDITIONS = {
               "height": 1.54,
               "type": "L"
             }
-          ]
-        }
-      },
-      "CCH": {
-        "name": "長洲",
-        "days": {
-          "2026-10-27": [
+          ],
+          "2026-11-05": [
             {
-              "time": "03:50",
-              "height": 0.6,
+              "time": "06:18",
+              "height": 2.12,
+              "type": "H"
+            },
+            {
+              "time": "12:25",
+              "height": 1.01,
               "type": "L"
             },
             {
-              "time": "10:29",
+              "time": "19:27",
+              "height": 2.05,
+              "type": "H"
+            }
+          ],
+          "2026-11-06": [
+            {
+              "time": "00:47",
+              "height": 1.33,
+              "type": "L"
+            },
+            {
+              "time": "07:23",
+              "height": 2.04,
+              "type": "H"
+            },
+            {
+              "time": "12:59",
+              "height": 1.09,
+              "type": "L"
+            },
+            {
+              "time": "19:49",
+              "height": 2.17,
+              "type": "H"
+            }
+          ],
+          "2026-11-07": [
+            {
+              "time": "01:38",
+              "height": 1.13,
+              "type": "L"
+            },
+            {
+              "time": "08:21",
               "height": 1.96,
               "type": "H"
             },
             {
+              "time": "13:32",
+              "height": 1.17,
+              "type": "L"
+            },
+            {
+              "time": "20:11",
+              "height": 2.29,
+              "type": "H"
+            }
+          ],
+          "2026-11-08": [
+            {
+              "time": "02:24",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "09:15",
+              "height": 1.89,
+              "type": "H"
+            },
+            {
+              "time": "14:02",
+              "height": 1.25,
+              "type": "L"
+            },
+            {
+              "time": "20:33",
+              "height": 2.4,
+              "type": "H"
+            }
+          ],
+          "2026-11-09": [
+            {
+              "time": "03:07",
+              "height": 0.84,
+              "type": "L"
+            },
+            {
+              "time": "10:05",
+              "height": 1.82,
+              "type": "H"
+            },
+            {
+              "time": "14:30",
+              "height": 1.33,
+              "type": "L"
+            },
+            {
+              "time": "20:57",
+              "height": 2.49,
+              "type": "H"
+            }
+          ],
+          "2026-11-10": [
+            {
+              "time": "03:49",
+              "height": 0.76,
+              "type": "L"
+            },
+            {
+              "time": "10:51",
+              "height": 1.76,
+              "type": "H"
+            },
+            {
+              "time": "14:54",
+              "height": 1.4,
+              "type": "L"
+            },
+            {
+              "time": "21:23",
+              "height": 2.53,
+              "type": "H"
+            }
+          ],
+          "2026-11-11": [
+            {
+              "time": "04:30",
+              "height": 0.73,
+              "type": "L"
+            },
+            {
+              "time": "11:37",
+              "height": 1.7,
+              "type": "H"
+            },
+            {
+              "time": "15:13",
+              "height": 1.45,
+              "type": "L"
+            },
+            {
+              "time": "21:48",
+              "height": 2.54,
+              "type": "H"
+            }
+          ],
+          "2026-11-12": [
+            {
+              "time": "05:10",
+              "height": 0.74,
+              "type": "L"
+            },
+            {
+              "time": "12:25",
+              "height": 1.64,
+              "type": "H"
+            },
+            {
+              "time": "15:14",
+              "height": 1.49,
+              "type": "L"
+            },
+            {
+              "time": "21:28",
+              "height": 2.52,
+              "type": "H"
+            }
+          ],
+          "2026-11-13": [
+            {
+              "time": "05:52",
+              "height": 0.77,
+              "type": "L"
+            },
+            {
+              "time": "13:19",
+              "height": 1.58,
+              "type": "H"
+            },
+            {
+              "time": "15:22",
+              "height": 1.51,
+              "type": "L"
+            },
+            {
+              "time": "21:52",
+              "height": 2.48,
+              "type": "H"
+            }
+          ],
+          "2026-11-14": [
+            {
+              "time": "06:39",
+              "height": 0.82,
+              "type": "L"
+            },
+            {
+              "time": "22:30",
+              "height": 2.41,
+              "type": "H"
+            }
+          ],
+          "2026-11-15": [
+            {
+              "time": "07:33",
+              "height": 0.88,
+              "type": "L"
+            },
+            {
+              "time": "23:24",
+              "height": 2.31,
+              "type": "H"
+            }
+          ],
+          "2026-11-16": [
+            {
+              "time": "08:30",
+              "height": 0.93,
+              "type": "L"
+            }
+          ],
+          "2026-11-17": [
+            {
+              "time": "00:32",
+              "height": 2.2,
+              "type": "H"
+            },
+            {
+              "time": "09:24",
+              "height": 0.98,
+              "type": "L"
+            }
+          ],
+          "2026-11-18": [
+            {
+              "time": "01:42",
+              "height": 2.07,
+              "type": "H"
+            },
+            {
+              "time": "10:13",
+              "height": 1.02,
+              "type": "L"
+            },
+            {
+              "time": "18:43",
+              "height": 1.8,
+              "type": "H"
+            },
+            {
+              "time": "21:51",
+              "height": 1.73,
+              "type": "L"
+            }
+          ],
+          "2026-11-19": [
+            {
+              "time": "03:34",
+              "height": 1.96,
+              "type": "H"
+            },
+            {
+              "time": "10:55",
+              "height": 1.06,
+              "type": "L"
+            },
+            {
+              "time": "18:50",
+              "height": 1.9,
+              "type": "H"
+            },
+            {
+              "time": "23:19",
+              "height": 1.57,
+              "type": "L"
+            }
+          ],
+          "2026-11-20": [
+            {
+              "time": "04:58",
+              "height": 1.89,
+              "type": "H"
+            },
+            {
+              "time": "11:33",
+              "height": 1.11,
+              "type": "L"
+            },
+            {
+              "time": "18:57",
+              "height": 2.01,
+              "type": "H"
+            }
+          ],
+          "2026-11-21": [
+            {
+              "time": "00:23",
+              "height": 1.35,
+              "type": "L"
+            },
+            {
+              "time": "06:18",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "12:08",
+              "height": 1.16,
+              "type": "L"
+            },
+            {
+              "time": "19:09",
+              "height": 2.16,
+              "type": "H"
+            }
+          ],
+          "2026-11-22": [
+            {
+              "time": "01:15",
+              "height": 1.1,
+              "type": "L"
+            },
+            {
+              "time": "07:35",
+              "height": 1.81,
+              "type": "H"
+            },
+            {
+              "time": "12:42",
+              "height": 1.23,
+              "type": "L"
+            },
+            {
+              "time": "19:31",
+              "height": 2.33,
+              "type": "H"
+            }
+          ],
+          "2026-11-23": [
+            {
+              "time": "02:03",
+              "height": 0.85,
+              "type": "L"
+            },
+            {
+              "time": "08:39",
+              "height": 1.79,
+              "type": "H"
+            },
+            {
+              "time": "13:15",
+              "height": 1.29,
+              "type": "L"
+            },
+            {
+              "time": "20:00",
+              "height": 2.51,
+              "type": "H"
+            }
+          ],
+          "2026-11-24": [
+            {
+              "time": "02:50",
+              "height": 0.63,
+              "type": "L"
+            },
+            {
+              "time": "09:38",
+              "height": 1.76,
+              "type": "H"
+            },
+            {
+              "time": "13:47",
+              "height": 1.34,
+              "type": "L"
+            },
+            {
+              "time": "20:34",
+              "height": 2.66,
+              "type": "H"
+            }
+          ],
+          "2026-11-25": [
+            {
+              "time": "03:38",
+              "height": 0.46,
+              "type": "L"
+            },
+            {
+              "time": "10:36",
+              "height": 1.72,
+              "type": "H"
+            },
+            {
+              "time": "14:19",
+              "height": 1.39,
+              "type": "L"
+            },
+            {
+              "time": "21:15",
+              "height": 2.77,
+              "type": "H"
+            }
+          ],
+          "2026-11-26": [
+            {
+              "time": "04:28",
+              "height": 0.38,
+              "type": "L"
+            },
+            {
+              "time": "11:35",
+              "height": 1.67,
+              "type": "H"
+            },
+            {
+              "time": "14:48",
+              "height": 1.42,
+              "type": "L"
+            },
+            {
+              "time": "22:02",
+              "height": 2.81,
+              "type": "H"
+            }
+          ],
+          "2026-11-27": [
+            {
+              "time": "05:22",
+              "height": 0.37,
+              "type": "L"
+            },
+            {
+              "time": "12:34",
+              "height": 1.62,
+              "type": "H"
+            },
+            {
               "time": "15:17",
-              "height": 1.27,
+              "height": 1.45,
+              "type": "L"
+            },
+            {
+              "time": "22:53",
+              "height": 2.77,
+              "type": "H"
+            }
+          ],
+          "2026-11-28": [
+            {
+              "time": "06:20",
+              "height": 0.43,
+              "type": "L"
+            },
+            {
+              "time": "13:33",
+              "height": 1.59,
+              "type": "H"
+            },
+            {
+              "time": "15:50",
+              "height": 1.48,
+              "type": "L"
+            },
+            {
+              "time": "23:47",
+              "height": 2.66,
+              "type": "H"
+            }
+          ],
+          "2026-11-29": [
+            {
+              "time": "07:19",
+              "height": 0.53,
+              "type": "L"
+            },
+            {
+              "time": "14:31",
+              "height": 1.6,
+              "type": "H"
+            },
+            {
+              "time": "16:49",
+              "height": 1.54,
+              "type": "L"
+            }
+          ],
+          "2026-11-30": [
+            {
+              "time": "00:48",
+              "height": 2.5,
+              "type": "H"
+            },
+            {
+              "time": "08:15",
+              "height": 0.66,
+              "type": "L"
+            },
+            {
+              "time": "15:32",
+              "height": 1.66,
+              "type": "H"
+            },
+            {
+              "time": "18:22",
+              "height": 1.6,
+              "type": "L"
+            }
+          ]
+        }
+      },
+      "KLW": {
+        "name": "高流灣",
+        "days": {
+          "2026-10-01": [
+            {
+              "time": "00:18",
+              "height": 2.4,
+              "type": "H"
+            },
+            {
+              "time": "06:05",
+              "height": 0.72,
+              "type": "L"
+            },
+            {
+              "time": "12:59",
+              "height": 1.7,
+              "type": "H"
+            },
+            {
+              "time": "16:25",
+              "height": 1.32,
+              "type": "L"
+            }
+          ],
+          "2026-10-02": [
+            {
+              "time": "01:03",
+              "height": 2.41,
+              "type": "H"
+            },
+            {
+              "time": "07:00",
+              "height": 0.78,
+              "type": "L"
+            },
+            {
+              "time": "13:59",
+              "height": 1.54,
+              "type": "H"
+            },
+            {
+              "time": "16:32",
+              "height": 1.37,
+              "type": "L"
+            }
+          ],
+          "2026-10-03": [
+            {
+              "time": "01:54",
+              "height": 2.4,
+              "type": "H"
+            },
+            {
+              "time": "08:10",
+              "height": 0.85,
+              "type": "L"
+            },
+            {
+              "time": "22:58",
+              "height": 2.26,
+              "type": "H"
+            }
+          ],
+          "2026-10-04": [
+            {
+              "time": "00:37",
+              "height": 2.2,
+              "type": "L"
+            },
+            {
+              "time": "02:54",
+              "height": 2.37,
+              "type": "H"
+            },
+            {
+              "time": "12:14",
+              "height": 0.86,
+              "type": "L"
+            }
+          ],
+          "2026-10-05": [
+            {
+              "time": "04:03",
+              "height": 2.34,
+              "type": "H"
+            },
+            {
+              "time": "11:28",
+              "height": 0.8,
+              "type": "L"
+            }
+          ],
+          "2026-10-06": [
+            {
+              "time": "05:16",
+              "height": 2.33,
+              "type": "H"
+            },
+            {
+              "time": "12:11",
+              "height": 0.77,
+              "type": "L"
+            },
+            {
+              "time": "19:42",
+              "height": 1.73,
+              "type": "H"
+            },
+            {
+              "time": "23:10",
+              "height": 1.54,
+              "type": "L"
+            }
+          ],
+          "2026-10-07": [
+            {
+              "time": "06:28",
+              "height": 2.32,
+              "type": "H"
+            },
+            {
+              "time": "12:51",
+              "height": 0.76,
+              "type": "L"
+            },
+            {
+              "time": "19:59",
+              "height": 1.83,
+              "type": "H"
+            }
+          ],
+          "2026-10-08": [
+            {
+              "time": "00:25",
+              "height": 1.36,
+              "type": "L"
+            },
+            {
+              "time": "07:32",
+              "height": 2.3,
+              "type": "H"
+            },
+            {
+              "time": "13:30",
+              "height": 0.77,
+              "type": "L"
+            },
+            {
+              "time": "20:27",
+              "height": 1.94,
+              "type": "H"
+            }
+          ],
+          "2026-10-09": [
+            {
+              "time": "01:25",
+              "height": 1.16,
+              "type": "L"
+            },
+            {
+              "time": "08:27",
+              "height": 2.25,
+              "type": "H"
+            },
+            {
+              "time": "14:07",
+              "height": 0.82,
+              "type": "L"
+            },
+            {
+              "time": "20:59",
+              "height": 2.06,
+              "type": "H"
+            }
+          ],
+          "2026-10-10": [
+            {
+              "time": "02:17",
+              "height": 0.98,
+              "type": "L"
+            },
+            {
+              "time": "09:15",
+              "height": 2.18,
+              "type": "H"
+            },
+            {
+              "time": "14:43",
+              "height": 0.91,
               "type": "L"
             },
             {
               "time": "21:32",
-              "height": 2.61,
+              "height": 2.17,
+              "type": "H"
+            }
+          ],
+          "2026-10-11": [
+            {
+              "time": "03:04",
+              "height": 0.86,
+              "type": "L"
+            },
+            {
+              "time": "09:59",
+              "height": 2.08,
+              "type": "H"
+            },
+            {
+              "time": "15:16",
+              "height": 1.02,
+              "type": "L"
+            },
+            {
+              "time": "22:06",
+              "height": 2.26,
+              "type": "H"
+            }
+          ],
+          "2026-10-12": [
+            {
+              "time": "03:47",
+              "height": 0.8,
+              "type": "L"
+            },
+            {
+              "time": "10:40",
+              "height": 1.97,
+              "type": "H"
+            },
+            {
+              "time": "15:45",
+              "height": 1.15,
+              "type": "L"
+            },
+            {
+              "time": "22:40",
+              "height": 2.32,
+              "type": "H"
+            }
+          ],
+          "2026-10-13": [
+            {
+              "time": "04:27",
+              "height": 0.79,
+              "type": "L"
+            },
+            {
+              "time": "11:20",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "16:07",
+              "height": 1.27,
+              "type": "L"
+            },
+            {
+              "time": "23:13",
+              "height": 2.34,
+              "type": "H"
+            }
+          ],
+          "2026-10-14": [
+            {
+              "time": "05:07",
+              "height": 0.82,
+              "type": "L"
+            },
+            {
+              "time": "12:01",
+              "height": 1.72,
+              "type": "H"
+            },
+            {
+              "time": "16:17",
+              "height": 1.36,
+              "type": "L"
+            },
+            {
+              "time": "20:22",
+              "height": 2.32,
+              "type": "H"
+            }
+          ],
+          "2026-10-15": [
+            {
+              "time": "05:47",
+              "height": 0.88,
+              "type": "L"
+            },
+            {
+              "time": "12:44",
+              "height": 1.59,
+              "type": "H"
+            },
+            {
+              "time": "16:07",
+              "height": 1.42,
+              "type": "L"
+            },
+            {
+              "time": "20:54",
+              "height": 2.3,
+              "type": "H"
+            }
+          ],
+          "2026-10-16": [
+            {
+              "time": "06:30",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "21:27",
+              "height": 2.25,
+              "type": "H"
+            }
+          ],
+          "2026-10-17": [
+            {
+              "time": "07:24",
+              "height": 1.03,
+              "type": "L"
+            }
+          ],
+          "2026-10-18": [
+            {
+              "time": "01:21",
+              "height": 2.18,
+              "type": "H"
+            },
+            {
+              "time": "11:08",
+              "height": 1,
+              "type": "L"
+            }
+          ],
+          "2026-10-19": [
+            {
+              "time": "02:05",
+              "height": 2.14,
+              "type": "H"
+            },
+            {
+              "time": "11:48",
+              "height": 0.97,
+              "type": "L"
+            }
+          ],
+          "2026-10-20": [
+            {
+              "time": "03:00",
+              "height": 2.09,
+              "type": "H"
+            },
+            {
+              "time": "12:20",
+              "height": 0.96,
+              "type": "L"
+            }
+          ],
+          "2026-10-21": [
+            {
+              "time": "04:00",
+              "height": 2.06,
+              "type": "H"
+            },
+            {
+              "time": "12:38",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "19:49",
+              "height": 1.79,
+              "type": "H"
+            },
+            {
+              "time": "23:19",
+              "height": 1.59,
+              "type": "L"
+            }
+          ],
+          "2026-10-22": [
+            {
+              "time": "05:06",
+              "height": 2.04,
+              "type": "H"
+            },
+            {
+              "time": "12:52",
+              "height": 0.98,
+              "type": "L"
+            },
+            {
+              "time": "19:58",
+              "height": 1.87,
+              "type": "H"
+            }
+          ],
+          "2026-10-23": [
+            {
+              "time": "00:27",
+              "height": 1.41,
+              "type": "L"
+            },
+            {
+              "time": "06:35",
+              "height": 2.02,
+              "type": "H"
+            },
+            {
+              "time": "13:15",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "20:12",
+              "height": 1.98,
+              "type": "H"
+            }
+          ],
+          "2026-10-24": [
+            {
+              "time": "01:19",
+              "height": 1.2,
+              "type": "L"
+            },
+            {
+              "time": "07:52",
+              "height": 2.02,
+              "type": "H"
+            },
+            {
+              "time": "13:42",
+              "height": 1.04,
+              "type": "L"
+            },
+            {
+              "time": "20:37",
+              "height": 2.11,
+              "type": "H"
+            }
+          ],
+          "2026-10-25": [
+            {
+              "time": "02:06",
+              "height": 0.98,
+              "type": "L"
+            },
+            {
+              "time": "08:48",
+              "height": 2.02,
+              "type": "H"
+            },
+            {
+              "time": "14:12",
+              "height": 1.09,
+              "type": "L"
+            },
+            {
+              "time": "21:09",
+              "height": 2.25,
+              "type": "H"
+            }
+          ],
+          "2026-10-26": [
+            {
+              "time": "02:51",
+              "height": 0.78,
+              "type": "L"
+            },
+            {
+              "time": "09:38",
+              "height": 2,
+              "type": "H"
+            },
+            {
+              "time": "14:41",
+              "height": 1.16,
+              "type": "L"
+            },
+            {
+              "time": "21:46",
+              "height": 2.39,
+              "type": "H"
+            }
+          ],
+          "2026-10-27": [
+            {
+              "time": "03:35",
+              "height": 0.62,
+              "type": "L"
+            },
+            {
+              "time": "10:24",
+              "height": 1.95,
+              "type": "H"
+            },
+            {
+              "time": "15:08",
+              "height": 1.25,
+              "type": "L"
+            },
+            {
+              "time": "22:26",
+              "height": 2.51,
               "type": "H"
             }
           ],
           "2026-10-28": [
             {
-              "time": "04:37",
-              "height": 0.5,
+              "time": "04:20",
+              "height": 0.53,
               "type": "L"
             },
             {
-              "time": "11:25",
-              "height": 1.85,
+              "time": "11:11",
+              "height": 1.86,
               "type": "H"
             },
             {
-              "time": "15:43",
-              "height": 1.35,
+              "time": "15:27",
+              "height": 1.32,
               "type": "L"
             },
             {
-              "time": "21:59",
-              "height": 2.69,
+              "time": "23:09",
+              "height": 2.59,
               "type": "H"
             }
           ],
           "2026-10-29": [
             {
-              "time": "05:27",
-              "height": 0.48,
+              "time": "05:07",
+              "height": 0.52,
               "type": "L"
             },
             {
-              "time": "12:29",
-              "height": 1.73,
+              "time": "12:00",
+              "height": 1.75,
               "type": "H"
             },
             {
-              "time": "16:04",
-              "height": 1.42,
+              "time": "15:21",
+              "height": 1.37,
               "type": "L"
             },
             {
-              "time": "22:27",
-              "height": 2.71,
+              "time": "23:54",
+              "height": 2.62,
               "type": "H"
             }
           ],
           "2026-10-30": [
             {
-              "time": "06:26",
-              "height": 0.52,
+              "time": "05:58",
+              "height": 0.58,
               "type": "L"
             },
             {
-              "time": "13:40",
-              "height": 1.62,
+              "time": "12:53",
+              "height": 1.63,
               "type": "H"
             },
             {
-              "time": "16:08",
-              "height": 1.49,
+              "time": "15:36",
+              "height": 1.41,
               "type": "L"
-            },
-            {
-              "time": "23:23",
-              "height": 2.65,
-              "type": "H"
             }
           ],
           "2026-10-31": [
             {
-              "time": "07:35",
-              "height": 0.59,
+              "time": "00:44",
+              "height": 2.59,
+              "type": "H"
+            },
+            {
+              "time": "06:54",
+              "height": 0.67,
+              "type": "L"
+            },
+            {
+              "time": "13:58",
+              "height": 1.55,
+              "type": "H"
+            },
+            {
+              "time": "16:06",
+              "height": 1.46,
               "type": "L"
             }
           ],
           "2026-11-01": [
             {
-              "time": "00:26",
-              "height": 2.54,
+              "time": "01:39",
+              "height": 2.51,
               "type": "H"
             },
             {
-              "time": "08:47",
-              "height": 0.67,
+              "time": "08:03",
+              "height": 0.77,
               "type": "L"
+            },
+            {
+              "time": "22:37",
+              "height": 2.27,
+              "type": "H"
             }
           ],
           "2026-11-02": [
             {
-              "time": "01:50",
-              "height": 2.39,
+              "time": "00:19",
+              "height": 2.19,
+              "type": "L"
+            },
+            {
+              "time": "02:41",
+              "height": 2.4,
               "type": "H"
             },
             {
-              "time": "09:56",
-              "height": 0.75,
+              "time": "09:22",
+              "height": 0.83,
               "type": "L"
             }
           ],
           "2026-11-03": [
             {
-              "time": "03:48",
-              "height": 2.27,
+              "time": "03:51",
+              "height": 2.29,
               "type": "H"
             },
             {
-              "time": "11:00",
-              "height": 0.81,
+              "time": "10:27",
+              "height": 0.88,
               "type": "L"
             },
             {
-              "time": "19:05",
-              "height": 1.83,
+              "time": "18:00",
+              "height": 1.77,
               "type": "H"
             },
             {
-              "time": "22:24",
-              "height": 1.69,
+              "time": "21:33",
+              "height": 1.67,
               "type": "L"
             }
           ],
           "2026-11-04": [
             {
-              "time": "05:11",
-              "height": 2.18,
+              "time": "05:03",
+              "height": 2.19,
               "type": "H"
             },
             {
-              "time": "11:53",
-              "height": 0.88,
+              "time": "11:18",
+              "height": 0.92,
               "type": "L"
             },
             {
-              "time": "19:18",
-              "height": 1.92,
+              "time": "18:36",
+              "height": 1.89,
               "type": "H"
             },
             {
-              "time": "23:59",
-              "height": 1.5,
+              "time": "23:13",
+              "height": 1.51,
+              "type": "L"
+            }
+          ],
+          "2026-11-05": [
+            {
+              "time": "06:13",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "12:03",
+              "height": 0.97,
+              "type": "L"
+            },
+            {
+              "time": "19:12",
+              "height": 2.02,
+              "type": "H"
+            }
+          ],
+          "2026-11-06": [
+            {
+              "time": "00:23",
+              "height": 1.3,
+              "type": "L"
+            },
+            {
+              "time": "07:17",
+              "height": 2.01,
+              "type": "H"
+            },
+            {
+              "time": "12:44",
+              "height": 1.03,
+              "type": "L"
+            },
+            {
+              "time": "19:47",
+              "height": 2.14,
+              "type": "H"
+            }
+          ],
+          "2026-11-07": [
+            {
+              "time": "01:20",
+              "height": 1.1,
+              "type": "L"
+            },
+            {
+              "time": "08:13",
+              "height": 1.94,
+              "type": "H"
+            },
+            {
+              "time": "13:23",
+              "height": 1.09,
+              "type": "L"
+            },
+            {
+              "time": "20:22",
+              "height": 2.25,
+              "type": "H"
+            }
+          ],
+          "2026-11-08": [
+            {
+              "time": "02:09",
+              "height": 0.92,
+              "type": "L"
+            },
+            {
+              "time": "09:01",
+              "height": 1.87,
+              "type": "H"
+            },
+            {
+              "time": "13:59",
+              "height": 1.17,
+              "type": "L"
+            },
+            {
+              "time": "20:57",
+              "height": 2.34,
+              "type": "H"
+            }
+          ],
+          "2026-11-09": [
+            {
+              "time": "02:54",
+              "height": 0.79,
+              "type": "L"
+            },
+            {
+              "time": "09:45",
+              "height": 1.8,
+              "type": "H"
+            },
+            {
+              "time": "14:31",
+              "height": 1.26,
+              "type": "L"
+            },
+            {
+              "time": "21:32",
+              "height": 2.4,
+              "type": "H"
+            }
+          ],
+          "2026-11-10": [
+            {
+              "time": "03:36",
+              "height": 0.72,
+              "type": "L"
+            },
+            {
+              "time": "10:27",
+              "height": 1.74,
+              "type": "H"
+            },
+            {
+              "time": "14:54",
+              "height": 1.34,
+              "type": "L"
+            },
+            {
+              "time": "22:07",
+              "height": 2.42,
+              "type": "H"
+            }
+          ],
+          "2026-11-11": [
+            {
+              "time": "04:17",
+              "height": 0.71,
+              "type": "L"
+            },
+            {
+              "time": "11:07",
+              "height": 1.67,
+              "type": "H"
+            },
+            {
+              "time": "15:03",
+              "height": 1.39,
+              "type": "L"
+            },
+            {
+              "time": "19:27",
+              "height": 2.43,
+              "type": "H"
+            }
+          ],
+          "2026-11-12": [
+            {
+              "time": "04:56",
+              "height": 0.73,
+              "type": "L"
+            },
+            {
+              "time": "11:49",
+              "height": 1.61,
+              "type": "H"
+            },
+            {
+              "time": "15:00",
+              "height": 1.41,
+              "type": "L"
+            },
+            {
+              "time": "19:59",
+              "height": 2.43,
+              "type": "H"
+            }
+          ],
+          "2026-11-13": [
+            {
+              "time": "05:35",
+              "height": 0.77,
+              "type": "L"
+            },
+            {
+              "time": "12:35",
+              "height": 1.55,
+              "type": "H"
+            },
+            {
+              "time": "15:18",
+              "height": 1.43,
+              "type": "L"
+            },
+            {
+              "time": "20:32",
+              "height": 2.39,
+              "type": "H"
+            }
+          ],
+          "2026-11-14": [
+            {
+              "time": "06:16",
+              "height": 0.83,
+              "type": "L"
+            },
+            {
+              "time": "21:08",
+              "height": 2.32,
+              "type": "H"
+            }
+          ],
+          "2026-11-15": [
+            {
+              "time": "07:01",
+              "height": 0.89,
+              "type": "L"
+            },
+            {
+              "time": "21:48",
+              "height": 2.23,
+              "type": "H"
+            }
+          ],
+          "2026-11-16": [
+            {
+              "time": "07:54",
+              "height": 0.95,
+              "type": "L"
+            },
+            {
+              "time": "22:35",
+              "height": 2.12,
+              "type": "H"
+            }
+          ],
+          "2026-11-17": [
+            {
+              "time": "08:54",
+              "height": 0.99,
+              "type": "L"
+            }
+          ],
+          "2026-11-18": [
+            {
+              "time": "02:30",
+              "height": 2,
+              "type": "H"
+            },
+            {
+              "time": "09:51",
+              "height": 1.02,
+              "type": "L"
+            },
+            {
+              "time": "18:30",
+              "height": 1.75,
+              "type": "H"
+            },
+            {
+              "time": "21:02",
+              "height": 1.67,
+              "type": "L"
+            }
+          ],
+          "2026-11-19": [
+            {
+              "time": "03:39",
+              "height": 1.91,
+              "type": "H"
+            },
+            {
+              "time": "10:38",
+              "height": 1.05,
+              "type": "L"
+            },
+            {
+              "time": "18:32",
+              "height": 1.85,
+              "type": "H"
+            },
+            {
+              "time": "22:48",
+              "height": 1.54,
+              "type": "L"
+            }
+          ],
+          "2026-11-20": [
+            {
+              "time": "05:01",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "11:19",
+              "height": 1.08,
+              "type": "L"
+            },
+            {
+              "time": "18:48",
+              "height": 1.97,
+              "type": "H"
+            }
+          ],
+          "2026-11-21": [
+            {
+              "time": "00:02",
+              "height": 1.33,
+              "type": "L"
+            },
+            {
+              "time": "06:24",
+              "height": 1.79,
+              "type": "H"
+            },
+            {
+              "time": "11:57",
+              "height": 1.13,
+              "type": "L"
+            },
+            {
+              "time": "19:16",
+              "height": 2.11,
+              "type": "H"
+            }
+          ],
+          "2026-11-22": [
+            {
+              "time": "00:58",
+              "height": 1.08,
+              "type": "L"
+            },
+            {
+              "time": "07:35",
+              "height": 1.77,
+              "type": "H"
+            },
+            {
+              "time": "12:34",
+              "height": 1.18,
+              "type": "L"
+            },
+            {
+              "time": "19:51",
+              "height": 2.26,
+              "type": "H"
+            }
+          ],
+          "2026-11-23": [
+            {
+              "time": "01:48",
+              "height": 0.83,
+              "type": "L"
+            },
+            {
+              "time": "08:34",
+              "height": 1.76,
+              "type": "H"
+            },
+            {
+              "time": "13:09",
+              "height": 1.23,
+              "type": "L"
+            },
+            {
+              "time": "20:30",
+              "height": 2.41,
+              "type": "H"
+            }
+          ],
+          "2026-11-24": [
+            {
+              "time": "02:36",
+              "height": 0.6,
+              "type": "L"
+            },
+            {
+              "time": "09:27",
+              "height": 1.75,
+              "type": "H"
+            },
+            {
+              "time": "13:42",
+              "height": 1.28,
+              "type": "L"
+            },
+            {
+              "time": "21:14",
+              "height": 2.54,
+              "type": "H"
+            }
+          ],
+          "2026-11-25": [
+            {
+              "time": "03:24",
+              "height": 0.44,
+              "type": "L"
+            },
+            {
+              "time": "10:16",
+              "height": 1.71,
+              "type": "H"
+            },
+            {
+              "time": "14:10",
+              "height": 1.31,
+              "type": "L"
+            },
+            {
+              "time": "22:01",
+              "height": 2.65,
+              "type": "H"
+            }
+          ],
+          "2026-11-26": [
+            {
+              "time": "04:12",
+              "height": 0.35,
+              "type": "L"
+            },
+            {
+              "time": "11:04",
+              "height": 1.66,
+              "type": "H"
+            },
+            {
+              "time": "14:32",
+              "height": 1.33,
+              "type": "L"
+            },
+            {
+              "time": "22:49",
+              "height": 2.71,
+              "type": "H"
+            }
+          ],
+          "2026-11-27": [
+            {
+              "time": "05:01",
+              "height": 0.35,
+              "type": "L"
+            },
+            {
+              "time": "11:54",
+              "height": 1.61,
+              "type": "H"
+            },
+            {
+              "time": "14:57",
+              "height": 1.35,
+              "type": "L"
+            },
+            {
+              "time": "23:39",
+              "height": 2.7,
+              "type": "H"
+            }
+          ],
+          "2026-11-28": [
+            {
+              "time": "05:51",
+              "height": 0.42,
+              "type": "L"
+            },
+            {
+              "time": "12:47",
+              "height": 1.57,
+              "type": "H"
+            },
+            {
+              "time": "15:35",
+              "height": 1.38,
+              "type": "L"
+            }
+          ],
+          "2026-11-29": [
+            {
+              "time": "00:31",
+              "height": 2.62,
+              "type": "H"
+            },
+            {
+              "time": "06:44",
+              "height": 0.54,
+              "type": "L"
+            },
+            {
+              "time": "13:48",
+              "height": 1.56,
+              "type": "H"
+            },
+            {
+              "time": "16:24",
+              "height": 1.43,
+              "type": "L"
+            }
+          ],
+          "2026-11-30": [
+            {
+              "time": "01:26",
+              "height": 2.48,
+              "type": "H"
+            },
+            {
+              "time": "07:37",
+              "height": 0.67,
+              "type": "L"
+            },
+            {
+              "time": "14:58",
+              "height": 1.61,
+              "type": "H"
+            },
+            {
+              "time": "17:33",
+              "height": 1.52,
               "type": "L"
             }
           ]
@@ -5189,6 +7191,523 @@ window.CAMP_CONDITIONS = {
       "TPK": {
         "name": "大埔滘",
         "days": {
+          "2026-10-01": [
+            {
+              "time": "00:23",
+              "height": 2.49,
+              "type": "H"
+            },
+            {
+              "time": "06:10",
+              "height": 0.65,
+              "type": "L"
+            },
+            {
+              "time": "12:58",
+              "height": 1.8,
+              "type": "H"
+            },
+            {
+              "time": "16:31",
+              "height": 1.32,
+              "type": "L"
+            }
+          ],
+          "2026-10-02": [
+            {
+              "time": "01:07",
+              "height": 2.49,
+              "type": "H"
+            },
+            {
+              "time": "07:00",
+              "height": 0.73,
+              "type": "L"
+            },
+            {
+              "time": "13:54",
+              "height": 1.61,
+              "type": "H"
+            },
+            {
+              "time": "16:42",
+              "height": 1.38,
+              "type": "L"
+            }
+          ],
+          "2026-10-03": [
+            {
+              "time": "01:56",
+              "height": 2.46,
+              "type": "H"
+            },
+            {
+              "time": "07:58",
+              "height": 0.82,
+              "type": "L"
+            },
+            {
+              "time": "09:49",
+              "height": 0.97,
+              "type": "H"
+            },
+            {
+              "time": "11:51",
+              "height": 0.89,
+              "type": "L"
+            }
+          ],
+          "2026-10-04": [
+            {
+              "time": "02:55",
+              "height": 2.41,
+              "type": "H"
+            },
+            {
+              "time": "12:35",
+              "height": 0.84,
+              "type": "L"
+            }
+          ],
+          "2026-10-05": [
+            {
+              "time": "04:04",
+              "height": 2.38,
+              "type": "H"
+            },
+            {
+              "time": "11:24",
+              "height": 0.8,
+              "type": "L"
+            }
+          ],
+          "2026-10-06": [
+            {
+              "time": "05:14",
+              "height": 2.36,
+              "type": "H"
+            },
+            {
+              "time": "12:05",
+              "height": 0.76,
+              "type": "L"
+            },
+            {
+              "time": "19:24",
+              "height": 1.75,
+              "type": "H"
+            },
+            {
+              "time": "23:08",
+              "height": 1.53,
+              "type": "L"
+            }
+          ],
+          "2026-10-07": [
+            {
+              "time": "06:30",
+              "height": 2.36,
+              "type": "H"
+            },
+            {
+              "time": "12:47",
+              "height": 0.76,
+              "type": "L"
+            },
+            {
+              "time": "19:51",
+              "height": 1.88,
+              "type": "H"
+            }
+          ],
+          "2026-10-08": [
+            {
+              "time": "00:29",
+              "height": 1.34,
+              "type": "L"
+            },
+            {
+              "time": "07:37",
+              "height": 2.36,
+              "type": "H"
+            },
+            {
+              "time": "13:29",
+              "height": 0.78,
+              "type": "L"
+            },
+            {
+              "time": "20:24",
+              "height": 2.02,
+              "type": "H"
+            }
+          ],
+          "2026-10-09": [
+            {
+              "time": "01:31",
+              "height": 1.14,
+              "type": "L"
+            },
+            {
+              "time": "08:30",
+              "height": 2.34,
+              "type": "H"
+            },
+            {
+              "time": "14:10",
+              "height": 0.83,
+              "type": "L"
+            },
+            {
+              "time": "20:58",
+              "height": 2.17,
+              "type": "H"
+            }
+          ],
+          "2026-10-10": [
+            {
+              "time": "02:22",
+              "height": 0.97,
+              "type": "L"
+            },
+            {
+              "time": "09:15",
+              "height": 2.3,
+              "type": "H"
+            },
+            {
+              "time": "14:48",
+              "height": 0.91,
+              "type": "L"
+            },
+            {
+              "time": "21:34",
+              "height": 2.31,
+              "type": "H"
+            }
+          ],
+          "2026-10-11": [
+            {
+              "time": "03:08",
+              "height": 0.84,
+              "type": "L"
+            },
+            {
+              "time": "09:57",
+              "height": 2.23,
+              "type": "H"
+            },
+            {
+              "time": "15:24",
+              "height": 1.04,
+              "type": "L"
+            },
+            {
+              "time": "22:10",
+              "height": 2.41,
+              "type": "H"
+            }
+          ],
+          "2026-10-12": [
+            {
+              "time": "03:50",
+              "height": 0.78,
+              "type": "L"
+            },
+            {
+              "time": "10:37",
+              "height": 2.13,
+              "type": "H"
+            },
+            {
+              "time": "15:57",
+              "height": 1.18,
+              "type": "L"
+            },
+            {
+              "time": "22:47",
+              "height": 2.48,
+              "type": "H"
+            }
+          ],
+          "2026-10-13": [
+            {
+              "time": "04:30",
+              "height": 0.78,
+              "type": "L"
+            },
+            {
+              "time": "11:17",
+              "height": 2.01,
+              "type": "H"
+            },
+            {
+              "time": "16:26",
+              "height": 1.32,
+              "type": "L"
+            },
+            {
+              "time": "23:23",
+              "height": 2.49,
+              "type": "H"
+            }
+          ],
+          "2026-10-14": [
+            {
+              "time": "05:09",
+              "height": 0.83,
+              "type": "L"
+            },
+            {
+              "time": "11:58",
+              "height": 1.88,
+              "type": "H"
+            },
+            {
+              "time": "16:40",
+              "height": 1.43,
+              "type": "L"
+            },
+            {
+              "time": "23:58",
+              "height": 2.46,
+              "type": "H"
+            }
+          ],
+          "2026-10-15": [
+            {
+              "time": "05:48",
+              "height": 0.89,
+              "type": "L"
+            },
+            {
+              "time": "12:40",
+              "height": 1.74,
+              "type": "H"
+            },
+            {
+              "time": "16:17",
+              "height": 1.47,
+              "type": "L"
+            },
+            {
+              "time": "20:38",
+              "height": 2.42,
+              "type": "H"
+            }
+          ],
+          "2026-10-16": [
+            {
+              "time": "06:28",
+              "height": 0.97,
+              "type": "L"
+            },
+            {
+              "time": "13:28",
+              "height": 1.61,
+              "type": "H"
+            },
+            {
+              "time": "16:47",
+              "height": 1.52,
+              "type": "L"
+            },
+            {
+              "time": "21:11",
+              "height": 2.35,
+              "type": "H"
+            }
+          ],
+          "2026-10-17": [
+            {
+              "time": "07:14",
+              "height": 1.04,
+              "type": "L"
+            },
+            {
+              "time": "08:54",
+              "height": 1.16,
+              "type": "H"
+            },
+            {
+              "time": "10:48",
+              "height": 1.09,
+              "type": "L"
+            }
+          ],
+          "2026-10-18": [
+            {
+              "time": "01:25",
+              "height": 2.25,
+              "type": "H"
+            },
+            {
+              "time": "11:18",
+              "height": 1.04,
+              "type": "L"
+            }
+          ],
+          "2026-10-19": [
+            {
+              "time": "01:55",
+              "height": 2.19,
+              "type": "H"
+            },
+            {
+              "time": "11:47",
+              "height": 1.02,
+              "type": "L"
+            }
+          ],
+          "2026-10-20": [
+            {
+              "time": "02:37",
+              "height": 2.13,
+              "type": "H"
+            },
+            {
+              "time": "12:04",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "19:24",
+              "height": 1.79,
+              "type": "H"
+            },
+            {
+              "time": "21:28",
+              "height": 1.73,
+              "type": "L"
+            }
+          ],
+          "2026-10-21": [
+            {
+              "time": "03:32",
+              "height": 2.09,
+              "type": "H"
+            },
+            {
+              "time": "12:21",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "19:50",
+              "height": 1.86,
+              "type": "H"
+            },
+            {
+              "time": "23:34",
+              "height": 1.61,
+              "type": "L"
+            }
+          ],
+          "2026-10-22": [
+            {
+              "time": "05:33",
+              "height": 2.07,
+              "type": "H"
+            },
+            {
+              "time": "12:48",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "20:06",
+              "height": 1.93,
+              "type": "H"
+            }
+          ],
+          "2026-10-23": [
+            {
+              "time": "00:39",
+              "height": 1.42,
+              "type": "L"
+            },
+            {
+              "time": "06:48",
+              "height": 2.07,
+              "type": "H"
+            },
+            {
+              "time": "13:19",
+              "height": 1.02,
+              "type": "L"
+            },
+            {
+              "time": "20:16",
+              "height": 2.05,
+              "type": "H"
+            }
+          ],
+          "2026-10-24": [
+            {
+              "time": "01:29",
+              "height": 1.19,
+              "type": "L"
+            },
+            {
+              "time": "08:02",
+              "height": 2.09,
+              "type": "H"
+            },
+            {
+              "time": "13:52",
+              "height": 1.05,
+              "type": "L"
+            },
+            {
+              "time": "20:41",
+              "height": 2.19,
+              "type": "H"
+            }
+          ],
+          "2026-10-25": [
+            {
+              "time": "02:15",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "08:56",
+              "height": 2.12,
+              "type": "H"
+            },
+            {
+              "time": "14:26",
+              "height": 1.11,
+              "type": "L"
+            },
+            {
+              "time": "21:16",
+              "height": 2.35,
+              "type": "H"
+            }
+          ],
+          "2026-10-26": [
+            {
+              "time": "02:59",
+              "height": 0.74,
+              "type": "L"
+            },
+            {
+              "time": "09:42",
+              "height": 2.13,
+              "type": "H"
+            },
+            {
+              "time": "15:00",
+              "height": 1.18,
+              "type": "L"
+            },
+            {
+              "time": "21:55",
+              "height": 2.51,
+              "type": "H"
+            }
+          ],
           "2026-10-27": [
             {
               "time": "03:42",
@@ -5371,12 +7890,5714 @@ window.CAMP_CONDITIONS = {
               "height": 1.5,
               "type": "L"
             }
+          ],
+          "2026-11-05": [
+            {
+              "time": "06:15",
+              "height": 2.15,
+              "type": "H"
+            },
+            {
+              "time": "12:02",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "19:10",
+              "height": 2.11,
+              "type": "H"
+            }
+          ],
+          "2026-11-06": [
+            {
+              "time": "00:22",
+              "height": 1.31,
+              "type": "L"
+            },
+            {
+              "time": "07:20",
+              "height": 2.09,
+              "type": "H"
+            },
+            {
+              "time": "12:46",
+              "height": 1.07,
+              "type": "L"
+            },
+            {
+              "time": "19:48",
+              "height": 2.25,
+              "type": "H"
+            }
+          ],
+          "2026-11-07": [
+            {
+              "time": "01:19",
+              "height": 1.11,
+              "type": "L"
+            },
+            {
+              "time": "08:13",
+              "height": 2.03,
+              "type": "H"
+            },
+            {
+              "time": "13:29",
+              "height": 1.14,
+              "type": "L"
+            },
+            {
+              "time": "20:26",
+              "height": 2.38,
+              "type": "H"
+            }
+          ],
+          "2026-11-08": [
+            {
+              "time": "02:09",
+              "height": 0.93,
+              "type": "L"
+            },
+            {
+              "time": "08:59",
+              "height": 1.99,
+              "type": "H"
+            },
+            {
+              "time": "14:09",
+              "height": 1.23,
+              "type": "L"
+            },
+            {
+              "time": "21:03",
+              "height": 2.48,
+              "type": "H"
+            }
+          ],
+          "2026-11-09": [
+            {
+              "time": "02:53",
+              "height": 0.8,
+              "type": "L"
+            },
+            {
+              "time": "09:41",
+              "height": 1.94,
+              "type": "H"
+            },
+            {
+              "time": "14:45",
+              "height": 1.32,
+              "type": "L"
+            },
+            {
+              "time": "21:41",
+              "height": 2.55,
+              "type": "H"
+            }
+          ],
+          "2026-11-10": [
+            {
+              "time": "03:35",
+              "height": 0.74,
+              "type": "L"
+            },
+            {
+              "time": "10:22",
+              "height": 1.89,
+              "type": "H"
+            },
+            {
+              "time": "15:17",
+              "height": 1.41,
+              "type": "L"
+            },
+            {
+              "time": "22:18",
+              "height": 2.57,
+              "type": "H"
+            }
+          ],
+          "2026-11-11": [
+            {
+              "time": "04:15",
+              "height": 0.72,
+              "type": "L"
+            },
+            {
+              "time": "11:02",
+              "height": 1.83,
+              "type": "H"
+            },
+            {
+              "time": "14:45",
+              "height": 1.48,
+              "type": "L"
+            },
+            {
+              "time": "19:16",
+              "height": 2.56,
+              "type": "H"
+            }
+          ],
+          "2026-11-12": [
+            {
+              "time": "04:53",
+              "height": 0.74,
+              "type": "L"
+            },
+            {
+              "time": "11:43",
+              "height": 1.76,
+              "type": "H"
+            },
+            {
+              "time": "15:06",
+              "height": 1.49,
+              "type": "L"
+            },
+            {
+              "time": "19:48",
+              "height": 2.55,
+              "type": "H"
+            }
+          ],
+          "2026-11-13": [
+            {
+              "time": "05:32",
+              "height": 0.79,
+              "type": "L"
+            },
+            {
+              "time": "12:26",
+              "height": 1.69,
+              "type": "H"
+            },
+            {
+              "time": "15:43",
+              "height": 1.51,
+              "type": "L"
+            },
+            {
+              "time": "20:21",
+              "height": 2.5,
+              "type": "H"
+            }
+          ],
+          "2026-11-14": [
+            {
+              "time": "06:11",
+              "height": 0.84,
+              "type": "L"
+            },
+            {
+              "time": "13:17",
+              "height": 1.61,
+              "type": "H"
+            },
+            {
+              "time": "16:22",
+              "height": 1.55,
+              "type": "L"
+            },
+            {
+              "time": "20:59",
+              "height": 2.41,
+              "type": "H"
+            }
+          ],
+          "2026-11-15": [
+            {
+              "time": "06:54",
+              "height": 0.91,
+              "type": "L"
+            },
+            {
+              "time": "21:47",
+              "height": 2.3,
+              "type": "H"
+            }
+          ],
+          "2026-11-16": [
+            {
+              "time": "07:40",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "22:46",
+              "height": 2.18,
+              "type": "H"
+            }
+          ],
+          "2026-11-17": [
+            {
+              "time": "08:32",
+              "height": 1.02,
+              "type": "L"
+            }
+          ],
+          "2026-11-18": [
+            {
+              "time": "02:16",
+              "height": 2.05,
+              "type": "H"
+            },
+            {
+              "time": "09:33",
+              "height": 1.06,
+              "type": "L"
+            },
+            {
+              "time": "18:33",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "21:09",
+              "height": 1.69,
+              "type": "L"
+            }
+          ],
+          "2026-11-19": [
+            {
+              "time": "04:06",
+              "height": 1.95,
+              "type": "H"
+            },
+            {
+              "time": "10:33",
+              "height": 1.09,
+              "type": "L"
+            },
+            {
+              "time": "18:44",
+              "height": 1.93,
+              "type": "H"
+            },
+            {
+              "time": "22:48",
+              "height": 1.57,
+              "type": "L"
+            }
+          ],
+          "2026-11-20": [
+            {
+              "time": "05:20",
+              "height": 1.9,
+              "type": "H"
+            },
+            {
+              "time": "11:19",
+              "height": 1.14,
+              "type": "L"
+            },
+            {
+              "time": "18:42",
+              "height": 2.05,
+              "type": "H"
+            }
+          ],
+          "2026-11-21": [
+            {
+              "time": "00:10",
+              "height": 1.35,
+              "type": "L"
+            },
+            {
+              "time": "06:28",
+              "height": 1.87,
+              "type": "H"
+            },
+            {
+              "time": "12:00",
+              "height": 1.19,
+              "type": "L"
+            },
+            {
+              "time": "19:15",
+              "height": 2.2,
+              "type": "H"
+            }
+          ],
+          "2026-11-22": [
+            {
+              "time": "01:05",
+              "height": 1.1,
+              "type": "L"
+            },
+            {
+              "time": "07:39",
+              "height": 1.86,
+              "type": "H"
+            },
+            {
+              "time": "12:40",
+              "height": 1.24,
+              "type": "L"
+            },
+            {
+              "time": "19:56",
+              "height": 2.36,
+              "type": "H"
+            }
+          ],
+          "2026-11-23": [
+            {
+              "time": "01:54",
+              "height": 0.83,
+              "type": "L"
+            },
+            {
+              "time": "08:38",
+              "height": 1.88,
+              "type": "H"
+            },
+            {
+              "time": "13:18",
+              "height": 1.3,
+              "type": "L"
+            },
+            {
+              "time": "20:40",
+              "height": 2.52,
+              "type": "H"
+            }
+          ],
+          "2026-11-24": [
+            {
+              "time": "02:41",
+              "height": 0.58,
+              "type": "L"
+            },
+            {
+              "time": "09:28",
+              "height": 1.89,
+              "type": "H"
+            },
+            {
+              "time": "13:50",
+              "height": 1.35,
+              "type": "L"
+            },
+            {
+              "time": "21:25",
+              "height": 2.66,
+              "type": "H"
+            }
+          ],
+          "2026-11-25": [
+            {
+              "time": "03:27",
+              "height": 0.4,
+              "type": "L"
+            },
+            {
+              "time": "10:14",
+              "height": 1.86,
+              "type": "H"
+            },
+            {
+              "time": "14:09",
+              "height": 1.4,
+              "type": "L"
+            },
+            {
+              "time": "22:11",
+              "height": 2.78,
+              "type": "H"
+            }
+          ],
+          "2026-11-26": [
+            {
+              "time": "04:14",
+              "height": 0.31,
+              "type": "L"
+            },
+            {
+              "time": "11:00",
+              "height": 1.82,
+              "type": "H"
+            },
+            {
+              "time": "14:35",
+              "height": 1.42,
+              "type": "L"
+            },
+            {
+              "time": "22:57",
+              "height": 2.84,
+              "type": "H"
+            }
+          ],
+          "2026-11-27": [
+            {
+              "time": "05:01",
+              "height": 0.31,
+              "type": "L"
+            },
+            {
+              "time": "11:48",
+              "height": 1.76,
+              "type": "H"
+            },
+            {
+              "time": "15:09",
+              "height": 1.44,
+              "type": "L"
+            },
+            {
+              "time": "23:44",
+              "height": 2.83,
+              "type": "H"
+            }
+          ],
+          "2026-11-28": [
+            {
+              "time": "05:48",
+              "height": 0.38,
+              "type": "L"
+            },
+            {
+              "time": "12:38",
+              "height": 1.7,
+              "type": "H"
+            },
+            {
+              "time": "15:50",
+              "height": 1.46,
+              "type": "L"
+            }
+          ],
+          "2026-11-29": [
+            {
+              "time": "00:33",
+              "height": 2.74,
+              "type": "H"
+            },
+            {
+              "time": "06:37",
+              "height": 0.51,
+              "type": "L"
+            },
+            {
+              "time": "13:35",
+              "height": 1.68,
+              "type": "H"
+            },
+            {
+              "time": "16:37",
+              "height": 1.5,
+              "type": "L"
+            }
+          ],
+          "2026-11-30": [
+            {
+              "time": "01:25",
+              "height": 2.58,
+              "type": "H"
+            },
+            {
+              "time": "07:28",
+              "height": 0.65,
+              "type": "L"
+            },
+            {
+              "time": "14:44",
+              "height": 1.71,
+              "type": "H"
+            },
+            {
+              "time": "17:35",
+              "height": 1.57,
+              "type": "L"
+            }
+          ]
+        }
+      },
+      "CCH": {
+        "name": "長洲",
+        "days": {
+          "2026-10-01": [
+            {
+              "time": "06:23",
+              "height": 0.69,
+              "type": "L"
+            },
+            {
+              "time": "13:16",
+              "height": 1.68,
+              "type": "H"
+            },
+            {
+              "time": "17:11",
+              "height": 1.35,
+              "type": "L"
+            },
+            {
+              "time": "23:42",
+              "height": 2.48,
+              "type": "H"
+            }
+          ],
+          "2026-10-02": [
+            {
+              "time": "07:31",
+              "height": 0.74,
+              "type": "L"
+            },
+            {
+              "time": "14:42",
+              "height": 1.53,
+              "type": "H"
+            },
+            {
+              "time": "17:02",
+              "height": 1.44,
+              "type": "L"
+            }
+          ],
+          "2026-10-03": [
+            {
+              "time": "00:29",
+              "height": 2.45,
+              "type": "H"
+            },
+            {
+              "time": "08:58",
+              "height": 0.78,
+              "type": "L"
+            }
+          ],
+          "2026-10-04": [
+            {
+              "time": "01:51",
+              "height": 2.38,
+              "type": "H"
+            },
+            {
+              "time": "10:26",
+              "height": 0.78,
+              "type": "L"
+            }
+          ],
+          "2026-10-05": [
+            {
+              "time": "03:51",
+              "height": 2.34,
+              "type": "H"
+            },
+            {
+              "time": "11:51",
+              "height": 0.73,
+              "type": "L"
+            }
+          ],
+          "2026-10-06": [
+            {
+              "time": "05:19",
+              "height": 2.34,
+              "type": "H"
+            },
+            {
+              "time": "12:44",
+              "height": 0.7,
+              "type": "L"
+            },
+            {
+              "time": "20:19",
+              "height": 1.79,
+              "type": "H"
+            },
+            {
+              "time": "23:50",
+              "height": 1.59,
+              "type": "L"
+            }
+          ],
+          "2026-10-07": [
+            {
+              "time": "06:30",
+              "height": 2.35,
+              "type": "H"
+            },
+            {
+              "time": "13:24",
+              "height": 0.72,
+              "type": "L"
+            },
+            {
+              "time": "20:32",
+              "height": 1.86,
+              "type": "H"
+            }
+          ],
+          "2026-10-08": [
+            {
+              "time": "00:58",
+              "height": 1.38,
+              "type": "L"
+            },
+            {
+              "time": "07:30",
+              "height": 2.34,
+              "type": "H"
+            },
+            {
+              "time": "13:58",
+              "height": 0.77,
+              "type": "L"
+            },
+            {
+              "time": "20:43",
+              "height": 1.96,
+              "type": "H"
+            }
+          ],
+          "2026-10-09": [
+            {
+              "time": "01:50",
+              "height": 1.18,
+              "type": "L"
+            },
+            {
+              "time": "08:23",
+              "height": 2.3,
+              "type": "H"
+            },
+            {
+              "time": "14:30",
+              "height": 0.85,
+              "type": "L"
+            },
+            {
+              "time": "20:54",
+              "height": 2.08,
+              "type": "H"
+            }
+          ],
+          "2026-10-10": [
+            {
+              "time": "02:36",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "09:13",
+              "height": 2.22,
+              "type": "H"
+            },
+            {
+              "time": "14:59",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "21:10",
+              "height": 2.21,
+              "type": "H"
+            }
+          ],
+          "2026-10-11": [
+            {
+              "time": "03:19",
+              "height": 0.87,
+              "type": "L"
+            },
+            {
+              "time": "10:00",
+              "height": 2.12,
+              "type": "H"
+            },
+            {
+              "time": "15:26",
+              "height": 1.07,
+              "type": "L"
+            },
+            {
+              "time": "21:32",
+              "height": 2.33,
+              "type": "H"
+            }
+          ],
+          "2026-10-12": [
+            {
+              "time": "04:00",
+              "height": 0.8,
+              "type": "L"
+            },
+            {
+              "time": "10:46",
+              "height": 2,
+              "type": "H"
+            },
+            {
+              "time": "15:51",
+              "height": 1.19,
+              "type": "L"
+            },
+            {
+              "time": "21:58",
+              "height": 2.41,
+              "type": "H"
+            }
+          ],
+          "2026-10-13": [
+            {
+              "time": "04:41",
+              "height": 0.77,
+              "type": "L"
+            },
+            {
+              "time": "11:31",
+              "height": 1.87,
+              "type": "H"
+            },
+            {
+              "time": "16:14",
+              "height": 1.3,
+              "type": "L"
+            },
+            {
+              "time": "22:24",
+              "height": 2.44,
+              "type": "H"
+            }
+          ],
+          "2026-10-14": [
+            {
+              "time": "05:23",
+              "height": 0.79,
+              "type": "L"
+            },
+            {
+              "time": "12:19",
+              "height": 1.73,
+              "type": "H"
+            },
+            {
+              "time": "16:31",
+              "height": 1.39,
+              "type": "L"
+            },
+            {
+              "time": "22:48",
+              "height": 2.44,
+              "type": "H"
+            }
+          ],
+          "2026-10-15": [
+            {
+              "time": "06:07",
+              "height": 0.84,
+              "type": "L"
+            },
+            {
+              "time": "13:18",
+              "height": 1.61,
+              "type": "H"
+            },
+            {
+              "time": "16:21",
+              "height": 1.46,
+              "type": "L"
+            },
+            {
+              "time": "23:03",
+              "height": 2.41,
+              "type": "H"
+            }
+          ],
+          "2026-10-16": [
+            {
+              "time": "06:59",
+              "height": 0.9,
+              "type": "L"
+            },
+            {
+              "time": "23:29",
+              "height": 2.35,
+              "type": "H"
+            }
+          ],
+          "2026-10-17": [
+            {
+              "time": "08:08",
+              "height": 0.96,
+              "type": "L"
+            }
+          ],
+          "2026-10-18": [
+            {
+              "time": "00:21",
+              "height": 2.27,
+              "type": "H"
+            },
+            {
+              "time": "09:29",
+              "height": 0.99,
+              "type": "L"
+            }
+          ],
+          "2026-10-19": [
+            {
+              "time": "01:30",
+              "height": 2.19,
+              "type": "H"
+            },
+            {
+              "time": "11:12",
+              "height": 0.99,
+              "type": "L"
+            }
+          ],
+          "2026-10-20": [
+            {
+              "time": "03:07",
+              "height": 2.12,
+              "type": "H"
+            },
+            {
+              "time": "12:10",
+              "height": 0.96,
+              "type": "L"
+            }
+          ],
+          "2026-10-21": [
+            {
+              "time": "04:28",
+              "height": 2.09,
+              "type": "H"
+            },
+            {
+              "time": "12:44",
+              "height": 0.95,
+              "type": "L"
+            },
+            {
+              "time": "20:02",
+              "height": 1.83,
+              "type": "H"
+            },
+            {
+              "time": "23:58",
+              "height": 1.6,
+              "type": "L"
+            }
+          ],
+          "2026-10-22": [
+            {
+              "time": "05:34",
+              "height": 2.09,
+              "type": "H"
+            },
+            {
+              "time": "13:07",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "20:08",
+              "height": 1.91,
+              "type": "H"
+            }
+          ],
+          "2026-10-23": [
+            {
+              "time": "00:54",
+              "height": 1.41,
+              "type": "L"
+            },
+            {
+              "time": "06:39",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "13:28",
+              "height": 0.99,
+              "type": "L"
+            },
+            {
+              "time": "20:12",
+              "height": 2.02,
+              "type": "H"
+            }
+          ],
+          "2026-10-24": [
+            {
+              "time": "01:40",
+              "height": 1.19,
+              "type": "L"
+            },
+            {
+              "time": "07:42",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "13:53",
+              "height": 1.03,
+              "type": "L"
+            },
+            {
+              "time": "20:20",
+              "height": 2.16,
+              "type": "H"
+            }
+          ],
+          "2026-10-25": [
+            {
+              "time": "02:22",
+              "height": 0.97,
+              "type": "L"
+            },
+            {
+              "time": "08:41",
+              "height": 2.08,
+              "type": "H"
+            },
+            {
+              "time": "14:20",
+              "height": 1.1,
+              "type": "L"
+            },
+            {
+              "time": "20:40",
+              "height": 2.33,
+              "type": "H"
+            }
+          ],
+          "2026-10-26": [
+            {
+              "time": "03:06",
+              "height": 0.76,
+              "type": "L"
+            },
+            {
+              "time": "09:35",
+              "height": 2.04,
+              "type": "H"
+            },
+            {
+              "time": "14:49",
+              "height": 1.18,
+              "type": "L"
+            },
+            {
+              "time": "21:05",
+              "height": 2.49,
+              "type": "H"
+            }
+          ],
+          "2026-10-27": [
+            {
+              "time": "03:50",
+              "height": 0.6,
+              "type": "L"
+            },
+            {
+              "time": "10:29",
+              "height": 1.96,
+              "type": "H"
+            },
+            {
+              "time": "15:17",
+              "height": 1.27,
+              "type": "L"
+            },
+            {
+              "time": "21:32",
+              "height": 2.61,
+              "type": "H"
+            }
+          ],
+          "2026-10-28": [
+            {
+              "time": "04:37",
+              "height": 0.5,
+              "type": "L"
+            },
+            {
+              "time": "11:25",
+              "height": 1.85,
+              "type": "H"
+            },
+            {
+              "time": "15:43",
+              "height": 1.35,
+              "type": "L"
+            },
+            {
+              "time": "21:59",
+              "height": 2.69,
+              "type": "H"
+            }
+          ],
+          "2026-10-29": [
+            {
+              "time": "05:27",
+              "height": 0.48,
+              "type": "L"
+            },
+            {
+              "time": "12:29",
+              "height": 1.73,
+              "type": "H"
+            },
+            {
+              "time": "16:04",
+              "height": 1.42,
+              "type": "L"
+            },
+            {
+              "time": "22:27",
+              "height": 2.71,
+              "type": "H"
+            }
+          ],
+          "2026-10-30": [
+            {
+              "time": "06:26",
+              "height": 0.52,
+              "type": "L"
+            },
+            {
+              "time": "13:40",
+              "height": 1.62,
+              "type": "H"
+            },
+            {
+              "time": "16:08",
+              "height": 1.49,
+              "type": "L"
+            },
+            {
+              "time": "23:23",
+              "height": 2.65,
+              "type": "H"
+            }
+          ],
+          "2026-10-31": [
+            {
+              "time": "07:35",
+              "height": 0.59,
+              "type": "L"
+            }
+          ],
+          "2026-11-01": [
+            {
+              "time": "00:26",
+              "height": 2.54,
+              "type": "H"
+            },
+            {
+              "time": "08:47",
+              "height": 0.67,
+              "type": "L"
+            }
+          ],
+          "2026-11-02": [
+            {
+              "time": "01:50",
+              "height": 2.39,
+              "type": "H"
+            },
+            {
+              "time": "09:56",
+              "height": 0.75,
+              "type": "L"
+            }
+          ],
+          "2026-11-03": [
+            {
+              "time": "03:48",
+              "height": 2.27,
+              "type": "H"
+            },
+            {
+              "time": "11:00",
+              "height": 0.81,
+              "type": "L"
+            },
+            {
+              "time": "19:05",
+              "height": 1.83,
+              "type": "H"
+            },
+            {
+              "time": "22:24",
+              "height": 1.69,
+              "type": "L"
+            }
+          ],
+          "2026-11-04": [
+            {
+              "time": "05:11",
+              "height": 2.18,
+              "type": "H"
+            },
+            {
+              "time": "11:53",
+              "height": 0.88,
+              "type": "L"
+            },
+            {
+              "time": "19:18",
+              "height": 1.92,
+              "type": "H"
+            },
+            {
+              "time": "23:59",
+              "height": 1.5,
+              "type": "L"
+            }
+          ],
+          "2026-11-05": [
+            {
+              "time": "06:23",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "12:34",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "19:33",
+              "height": 2.03,
+              "type": "H"
+            }
+          ],
+          "2026-11-06": [
+            {
+              "time": "00:59",
+              "height": 1.28,
+              "type": "L"
+            },
+            {
+              "time": "07:26",
+              "height": 2.03,
+              "type": "H"
+            },
+            {
+              "time": "13:10",
+              "height": 1.05,
+              "type": "L"
+            },
+            {
+              "time": "19:49",
+              "height": 2.16,
+              "type": "H"
+            }
+          ],
+          "2026-11-07": [
+            {
+              "time": "01:49",
+              "height": 1.07,
+              "type": "L"
+            },
+            {
+              "time": "08:24",
+              "height": 1.95,
+              "type": "H"
+            },
+            {
+              "time": "13:42",
+              "height": 1.14,
+              "type": "L"
+            },
+            {
+              "time": "20:07",
+              "height": 2.29,
+              "type": "H"
+            }
+          ],
+          "2026-11-08": [
+            {
+              "time": "02:34",
+              "height": 0.9,
+              "type": "L"
+            },
+            {
+              "time": "09:19",
+              "height": 1.88,
+              "type": "H"
+            },
+            {
+              "time": "14:12",
+              "height": 1.23,
+              "type": "L"
+            },
+            {
+              "time": "20:28",
+              "height": 2.4,
+              "type": "H"
+            }
+          ],
+          "2026-11-09": [
+            {
+              "time": "03:17",
+              "height": 0.77,
+              "type": "L"
+            },
+            {
+              "time": "10:11",
+              "height": 1.82,
+              "type": "H"
+            },
+            {
+              "time": "14:39",
+              "height": 1.31,
+              "type": "L"
+            },
+            {
+              "time": "20:50",
+              "height": 2.49,
+              "type": "H"
+            }
+          ],
+          "2026-11-10": [
+            {
+              "time": "04:00",
+              "height": 0.69,
+              "type": "L"
+            },
+            {
+              "time": "10:59",
+              "height": 1.75,
+              "type": "H"
+            },
+            {
+              "time": "15:03",
+              "height": 1.38,
+              "type": "L"
+            },
+            {
+              "time": "21:14",
+              "height": 2.54,
+              "type": "H"
+            }
+          ],
+          "2026-11-11": [
+            {
+              "time": "04:38",
+              "height": 0.66,
+              "type": "L"
+            },
+            {
+              "time": "11:45",
+              "height": 1.69,
+              "type": "H"
+            },
+            {
+              "time": "15:23",
+              "height": 1.44,
+              "type": "L"
+            },
+            {
+              "time": "21:35",
+              "height": 2.55,
+              "type": "H"
+            }
+          ],
+          "2026-11-12": [
+            {
+              "time": "05:18",
+              "height": 0.67,
+              "type": "L"
+            },
+            {
+              "time": "12:33",
+              "height": 1.63,
+              "type": "H"
+            },
+            {
+              "time": "15:21",
+              "height": 1.48,
+              "type": "L"
+            },
+            {
+              "time": "21:47",
+              "height": 2.53,
+              "type": "H"
+            }
+          ],
+          "2026-11-13": [
+            {
+              "time": "06:00",
+              "height": 0.71,
+              "type": "L"
+            },
+            {
+              "time": "13:24",
+              "height": 1.57,
+              "type": "H"
+            },
+            {
+              "time": "15:22",
+              "height": 1.5,
+              "type": "L"
+            },
+            {
+              "time": "22:11",
+              "height": 2.49,
+              "type": "H"
+            }
+          ],
+          "2026-11-14": [
+            {
+              "time": "06:46",
+              "height": 0.76,
+              "type": "L"
+            },
+            {
+              "time": "22:48",
+              "height": 2.41,
+              "type": "H"
+            }
+          ],
+          "2026-11-15": [
+            {
+              "time": "07:36",
+              "height": 0.82,
+              "type": "L"
+            },
+            {
+              "time": "23:37",
+              "height": 2.32,
+              "type": "H"
+            }
+          ],
+          "2026-11-16": [
+            {
+              "time": "08:31",
+              "height": 0.88,
+              "type": "L"
+            }
+          ],
+          "2026-11-17": [
+            {
+              "time": "00:34",
+              "height": 2.2,
+              "type": "H"
+            },
+            {
+              "time": "09:24",
+              "height": 0.94,
+              "type": "L"
+            }
+          ],
+          "2026-11-18": [
+            {
+              "time": "01:39",
+              "height": 2.07,
+              "type": "H"
+            },
+            {
+              "time": "10:15",
+              "height": 0.98,
+              "type": "L"
+            },
+            {
+              "time": "18:52",
+              "height": 1.79,
+              "type": "H"
+            },
+            {
+              "time": "22:05",
+              "height": 1.7,
+              "type": "L"
+            }
+          ],
+          "2026-11-19": [
+            {
+              "time": "03:27",
+              "height": 1.95,
+              "type": "H"
+            },
+            {
+              "time": "11:00",
+              "height": 1.03,
+              "type": "L"
+            },
+            {
+              "time": "18:57",
+              "height": 1.88,
+              "type": "H"
+            },
+            {
+              "time": "23:29",
+              "height": 1.54,
+              "type": "L"
+            }
+          ],
+          "2026-11-20": [
+            {
+              "time": "04:59",
+              "height": 1.88,
+              "type": "H"
+            },
+            {
+              "time": "11:40",
+              "height": 1.07,
+              "type": "L"
+            },
+            {
+              "time": "19:01",
+              "height": 2,
+              "type": "H"
+            }
+          ],
+          "2026-11-21": [
+            {
+              "time": "00:32",
+              "height": 1.31,
+              "type": "L"
+            },
+            {
+              "time": "06:18",
+              "height": 1.83,
+              "type": "H"
+            },
+            {
+              "time": "12:16",
+              "height": 1.13,
+              "type": "L"
+            },
+            {
+              "time": "19:07",
+              "height": 2.15,
+              "type": "H"
+            }
+          ],
+          "2026-11-22": [
+            {
+              "time": "01:24",
+              "height": 1.05,
+              "type": "L"
+            },
+            {
+              "time": "07:36",
+              "height": 1.8,
+              "type": "H"
+            },
+            {
+              "time": "12:50",
+              "height": 1.2,
+              "type": "L"
+            },
+            {
+              "time": "19:26",
+              "height": 2.33,
+              "type": "H"
+            }
+          ],
+          "2026-11-23": [
+            {
+              "time": "02:11",
+              "height": 0.79,
+              "type": "L"
+            },
+            {
+              "time": "08:42",
+              "height": 1.78,
+              "type": "H"
+            },
+            {
+              "time": "13:24",
+              "height": 1.27,
+              "type": "L"
+            },
+            {
+              "time": "19:51",
+              "height": 2.51,
+              "type": "H"
+            }
+          ],
+          "2026-11-24": [
+            {
+              "time": "02:58",
+              "height": 0.56,
+              "type": "L"
+            },
+            {
+              "time": "09:43",
+              "height": 1.76,
+              "type": "H"
+            },
+            {
+              "time": "13:57",
+              "height": 1.33,
+              "type": "L"
+            },
+            {
+              "time": "20:19",
+              "height": 2.67,
+              "type": "H"
+            }
+          ],
+          "2026-11-25": [
+            {
+              "time": "03:46",
+              "height": 0.39,
+              "type": "L"
+            },
+            {
+              "time": "10:44",
+              "height": 1.71,
+              "type": "H"
+            },
+            {
+              "time": "14:29",
+              "height": 1.38,
+              "type": "L"
+            },
+            {
+              "time": "20:53",
+              "height": 2.78,
+              "type": "H"
+            }
+          ],
+          "2026-11-26": [
+            {
+              "time": "04:37",
+              "height": 0.29,
+              "type": "L"
+            },
+            {
+              "time": "11:45",
+              "height": 1.66,
+              "type": "H"
+            },
+            {
+              "time": "15:00",
+              "height": 1.42,
+              "type": "L"
+            },
+            {
+              "time": "21:40",
+              "height": 2.82,
+              "type": "H"
+            }
+          ],
+          "2026-11-27": [
+            {
+              "time": "05:31",
+              "height": 0.28,
+              "type": "L"
+            },
+            {
+              "time": "12:43",
+              "height": 1.61,
+              "type": "H"
+            },
+            {
+              "time": "15:29",
+              "height": 1.45,
+              "type": "L"
+            },
+            {
+              "time": "22:35",
+              "height": 2.78,
+              "type": "H"
+            }
+          ],
+          "2026-11-28": [
+            {
+              "time": "06:27",
+              "height": 0.34,
+              "type": "L"
+            },
+            {
+              "time": "13:41",
+              "height": 1.58,
+              "type": "H"
+            },
+            {
+              "time": "15:59",
+              "height": 1.48,
+              "type": "L"
+            },
+            {
+              "time": "23:30",
+              "height": 2.67,
+              "type": "H"
+            }
+          ],
+          "2026-11-29": [
+            {
+              "time": "07:24",
+              "height": 0.45,
+              "type": "L"
+            },
+            {
+              "time": "14:40",
+              "height": 1.59,
+              "type": "H"
+            },
+            {
+              "time": "17:23",
+              "height": 1.54,
+              "type": "L"
+            }
+          ],
+          "2026-11-30": [
+            {
+              "time": "00:27",
+              "height": 2.5,
+              "type": "H"
+            },
+            {
+              "time": "08:19",
+              "height": 0.59,
+              "type": "L"
+            }
+          ]
+        }
+      },
+      "SPW": {
+        "name": "石壁",
+        "days": {
+          "2026-10-01": [
+            {
+              "time": "06:34",
+              "height": 0.61,
+              "type": "L"
+            },
+            {
+              "time": "13:28",
+              "height": 1.69,
+              "type": "H"
+            },
+            {
+              "time": "17:24",
+              "height": 1.34,
+              "type": "L"
+            },
+            {
+              "time": "23:33",
+              "height": 2.55,
+              "type": "H"
+            }
+          ],
+          "2026-10-02": [
+            {
+              "time": "07:39",
+              "height": 0.67,
+              "type": "L"
+            },
+            {
+              "time": "14:54",
+              "height": 1.54,
+              "type": "H"
+            },
+            {
+              "time": "17:29",
+              "height": 1.45,
+              "type": "L"
+            }
+          ],
+          "2026-10-03": [
+            {
+              "time": "00:20",
+              "height": 2.51,
+              "type": "H"
+            },
+            {
+              "time": "08:59",
+              "height": 0.71,
+              "type": "L"
+            }
+          ],
+          "2026-10-04": [
+            {
+              "time": "01:38",
+              "height": 2.43,
+              "type": "H"
+            },
+            {
+              "time": "10:29",
+              "height": 0.72,
+              "type": "L"
+            }
+          ],
+          "2026-10-05": [
+            {
+              "time": "03:49",
+              "height": 2.37,
+              "type": "H"
+            },
+            {
+              "time": "11:52",
+              "height": 0.67,
+              "type": "L"
+            }
+          ],
+          "2026-10-06": [
+            {
+              "time": "05:23",
+              "height": 2.37,
+              "type": "H"
+            },
+            {
+              "time": "12:49",
+              "height": 0.64,
+              "type": "L"
+            },
+            {
+              "time": "20:29",
+              "height": 1.82,
+              "type": "H"
+            }
+          ],
+          "2026-10-07": [
+            {
+              "time": "00:07",
+              "height": 1.58,
+              "type": "L"
+            },
+            {
+              "time": "06:35",
+              "height": 2.38,
+              "type": "H"
+            },
+            {
+              "time": "13:32",
+              "height": 0.65,
+              "type": "L"
+            },
+            {
+              "time": "20:41",
+              "height": 1.89,
+              "type": "H"
+            }
+          ],
+          "2026-10-08": [
+            {
+              "time": "01:12",
+              "height": 1.36,
+              "type": "L"
+            },
+            {
+              "time": "07:36",
+              "height": 2.37,
+              "type": "H"
+            },
+            {
+              "time": "14:08",
+              "height": 0.7,
+              "type": "L"
+            },
+            {
+              "time": "20:51",
+              "height": 1.99,
+              "type": "H"
+            }
+          ],
+          "2026-10-09": [
+            {
+              "time": "02:03",
+              "height": 1.14,
+              "type": "L"
+            },
+            {
+              "time": "08:31",
+              "height": 2.33,
+              "type": "H"
+            },
+            {
+              "time": "14:41",
+              "height": 0.78,
+              "type": "L"
+            },
+            {
+              "time": "21:00",
+              "height": 2.12,
+              "type": "H"
+            }
+          ],
+          "2026-10-10": [
+            {
+              "time": "02:49",
+              "height": 0.95,
+              "type": "L"
+            },
+            {
+              "time": "09:23",
+              "height": 2.25,
+              "type": "H"
+            },
+            {
+              "time": "15:11",
+              "height": 0.9,
+              "type": "L"
+            },
+            {
+              "time": "21:13",
+              "height": 2.26,
+              "type": "H"
+            }
+          ],
+          "2026-10-11": [
+            {
+              "time": "03:31",
+              "height": 0.81,
+              "type": "L"
+            },
+            {
+              "time": "10:13",
+              "height": 2.15,
+              "type": "H"
+            },
+            {
+              "time": "15:38",
+              "height": 1.03,
+              "type": "L"
+            },
+            {
+              "time": "21:32",
+              "height": 2.38,
+              "type": "H"
+            }
+          ],
+          "2026-10-12": [
+            {
+              "time": "04:12",
+              "height": 0.73,
+              "type": "L"
+            },
+            {
+              "time": "10:59",
+              "height": 2.02,
+              "type": "H"
+            },
+            {
+              "time": "16:03",
+              "height": 1.16,
+              "type": "L"
+            },
+            {
+              "time": "22:00",
+              "height": 2.47,
+              "type": "H"
+            }
+          ],
+          "2026-10-13": [
+            {
+              "time": "04:52",
+              "height": 0.7,
+              "type": "L"
+            },
+            {
+              "time": "11:44",
+              "height": 1.89,
+              "type": "H"
+            },
+            {
+              "time": "16:25",
+              "height": 1.29,
+              "type": "L"
+            },
+            {
+              "time": "22:20",
+              "height": 2.51,
+              "type": "H"
+            }
+          ],
+          "2026-10-14": [
+            {
+              "time": "05:33",
+              "height": 0.72,
+              "type": "L"
+            },
+            {
+              "time": "12:31",
+              "height": 1.75,
+              "type": "H"
+            },
+            {
+              "time": "16:41",
+              "height": 1.39,
+              "type": "L"
+            },
+            {
+              "time": "22:43",
+              "height": 2.5,
+              "type": "H"
+            }
+          ],
+          "2026-10-15": [
+            {
+              "time": "06:17",
+              "height": 0.77,
+              "type": "L"
+            },
+            {
+              "time": "13:26",
+              "height": 1.63,
+              "type": "H"
+            },
+            {
+              "time": "16:42",
+              "height": 1.47,
+              "type": "L"
+            },
+            {
+              "time": "23:07",
+              "height": 2.47,
+              "type": "H"
+            }
+          ],
+          "2026-10-16": [
+            {
+              "time": "07:07",
+              "height": 0.84,
+              "type": "L"
+            },
+            {
+              "time": "23:38",
+              "height": 2.41,
+              "type": "H"
+            }
+          ],
+          "2026-10-17": [
+            {
+              "time": "08:09",
+              "height": 0.91,
+              "type": "L"
+            }
+          ],
+          "2026-10-18": [
+            {
+              "time": "00:24",
+              "height": 2.32,
+              "type": "H"
+            },
+            {
+              "time": "09:27",
+              "height": 0.95,
+              "type": "L"
+            }
+          ],
+          "2026-10-19": [
+            {
+              "time": "01:33",
+              "height": 2.22,
+              "type": "H"
+            },
+            {
+              "time": "10:59",
+              "height": 0.95,
+              "type": "L"
+            }
+          ],
+          "2026-10-20": [
+            {
+              "time": "03:12",
+              "height": 2.14,
+              "type": "H"
+            },
+            {
+              "time": "12:06",
+              "height": 0.92,
+              "type": "L"
+            }
+          ],
+          "2026-10-21": [
+            {
+              "time": "04:37",
+              "height": 2.11,
+              "type": "H"
+            },
+            {
+              "time": "12:45",
+              "height": 0.91,
+              "type": "L"
+            },
+            {
+              "time": "20:12",
+              "height": 1.85,
+              "type": "H"
+            }
+          ],
+          "2026-10-22": [
+            {
+              "time": "00:18",
+              "height": 1.6,
+              "type": "L"
+            },
+            {
+              "time": "05:45",
+              "height": 2.12,
+              "type": "H"
+            },
+            {
+              "time": "13:14",
+              "height": 0.91,
+              "type": "L"
+            },
+            {
+              "time": "20:14",
+              "height": 1.94,
+              "type": "H"
+            }
+          ],
+          "2026-10-23": [
+            {
+              "time": "01:10",
+              "height": 1.39,
+              "type": "L"
+            },
+            {
+              "time": "06:49",
+              "height": 2.13,
+              "type": "H"
+            },
+            {
+              "time": "13:39",
+              "height": 0.94,
+              "type": "L"
+            },
+            {
+              "time": "20:20",
+              "height": 2.05,
+              "type": "H"
+            }
+          ],
+          "2026-10-24": [
+            {
+              "time": "01:54",
+              "height": 1.15,
+              "type": "L"
+            },
+            {
+              "time": "07:51",
+              "height": 2.13,
+              "type": "H"
+            },
+            {
+              "time": "14:05",
+              "height": 0.98,
+              "type": "L"
+            },
+            {
+              "time": "20:28",
+              "height": 2.2,
+              "type": "H"
+            }
+          ],
+          "2026-10-25": [
+            {
+              "time": "02:35",
+              "height": 0.91,
+              "type": "L"
+            },
+            {
+              "time": "08:51",
+              "height": 2.11,
+              "type": "H"
+            },
+            {
+              "time": "14:32",
+              "height": 1.05,
+              "type": "L"
+            },
+            {
+              "time": "20:44",
+              "height": 2.38,
+              "type": "H"
+            }
+          ],
+          "2026-10-26": [
+            {
+              "time": "03:17",
+              "height": 0.69,
+              "type": "L"
+            },
+            {
+              "time": "09:47",
+              "height": 2.06,
+              "type": "H"
+            },
+            {
+              "time": "15:00",
+              "height": 1.14,
+              "type": "L"
+            },
+            {
+              "time": "21:06",
+              "height": 2.54,
+              "type": "H"
+            }
+          ],
+          "2026-10-27": [
+            {
+              "time": "04:01",
+              "height": 0.52,
+              "type": "L"
+            },
+            {
+              "time": "10:43",
+              "height": 1.98,
+              "type": "H"
+            },
+            {
+              "time": "15:27",
+              "height": 1.24,
+              "type": "L"
+            },
+            {
+              "time": "21:29",
+              "height": 2.68,
+              "type": "H"
+            }
+          ],
+          "2026-10-28": [
+            {
+              "time": "04:47",
+              "height": 0.41,
+              "type": "L"
+            },
+            {
+              "time": "11:39",
+              "height": 1.87,
+              "type": "H"
+            },
+            {
+              "time": "15:54",
+              "height": 1.33,
+              "type": "L"
+            },
+            {
+              "time": "21:55",
+              "height": 2.77,
+              "type": "H"
+            }
+          ],
+          "2026-10-29": [
+            {
+              "time": "05:37",
+              "height": 0.39,
+              "type": "L"
+            },
+            {
+              "time": "12:40",
+              "height": 1.75,
+              "type": "H"
+            },
+            {
+              "time": "16:18",
+              "height": 1.42,
+              "type": "L"
+            },
+            {
+              "time": "22:27",
+              "height": 2.78,
+              "type": "H"
+            }
+          ],
+          "2026-10-30": [
+            {
+              "time": "06:33",
+              "height": 0.44,
+              "type": "L"
+            },
+            {
+              "time": "13:50",
+              "height": 1.64,
+              "type": "H"
+            },
+            {
+              "time": "16:36",
+              "height": 1.5,
+              "type": "L"
+            },
+            {
+              "time": "23:12",
+              "height": 2.72,
+              "type": "H"
+            }
+          ],
+          "2026-10-31": [
+            {
+              "time": "07:38",
+              "height": 0.52,
+              "type": "L"
+            }
+          ],
+          "2026-11-01": [
+            {
+              "time": "00:15",
+              "height": 2.59,
+              "type": "H"
+            },
+            {
+              "time": "08:49",
+              "height": 0.61,
+              "type": "L"
+            }
+          ],
+          "2026-11-02": [
+            {
+              "time": "01:42",
+              "height": 2.43,
+              "type": "H"
+            },
+            {
+              "time": "10:01",
+              "height": 0.68,
+              "type": "L"
+            }
+          ],
+          "2026-11-03": [
+            {
+              "time": "03:47",
+              "height": 2.3,
+              "type": "H"
+            },
+            {
+              "time": "11:07",
+              "height": 0.75,
+              "type": "L"
+            },
+            {
+              "time": "19:16",
+              "height": 1.86,
+              "type": "H"
+            },
+            {
+              "time": "22:43",
+              "height": 1.68,
+              "type": "L"
+            }
+          ],
+          "2026-11-04": [
+            {
+              "time": "05:15",
+              "height": 2.2,
+              "type": "H"
+            },
+            {
+              "time": "12:01",
+              "height": 0.82,
+              "type": "L"
+            },
+            {
+              "time": "19:32",
+              "height": 1.95,
+              "type": "H"
+            }
+          ],
+          "2026-11-05": [
+            {
+              "time": "00:10",
+              "height": 1.48,
+              "type": "L"
+            },
+            {
+              "time": "06:29",
+              "height": 2.12,
+              "type": "H"
+            },
+            {
+              "time": "12:45",
+              "height": 0.9,
+              "type": "L"
+            },
+            {
+              "time": "19:46",
+              "height": 2.06,
+              "type": "H"
+            }
+          ],
+          "2026-11-06": [
+            {
+              "time": "01:11",
+              "height": 1.24,
+              "type": "L"
+            },
+            {
+              "time": "07:36",
+              "height": 2.05,
+              "type": "H"
+            },
+            {
+              "time": "13:22",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "19:59",
+              "height": 2.19,
+              "type": "H"
+            }
+          ],
+          "2026-11-07": [
+            {
+              "time": "02:00",
+              "height": 1.02,
+              "type": "L"
+            },
+            {
+              "time": "08:36",
+              "height": 1.98,
+              "type": "H"
+            },
+            {
+              "time": "13:54",
+              "height": 1.1,
+              "type": "L"
+            },
+            {
+              "time": "20:12",
+              "height": 2.33,
+              "type": "H"
+            }
+          ],
+          "2026-11-08": [
+            {
+              "time": "02:45",
+              "height": 0.84,
+              "type": "L"
+            },
+            {
+              "time": "09:31",
+              "height": 1.91,
+              "type": "H"
+            },
+            {
+              "time": "14:24",
+              "height": 1.2,
+              "type": "L"
+            },
+            {
+              "time": "20:28",
+              "height": 2.46,
+              "type": "H"
+            }
+          ],
+          "2026-11-09": [
+            {
+              "time": "03:27",
+              "height": 0.71,
+              "type": "L"
+            },
+            {
+              "time": "10:21",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "14:51",
+              "height": 1.29,
+              "type": "L"
+            },
+            {
+              "time": "20:50",
+              "height": 2.56,
+              "type": "H"
+            }
+          ],
+          "2026-11-10": [
+            {
+              "time": "04:07",
+              "height": 0.62,
+              "type": "L"
+            },
+            {
+              "time": "11:07",
+              "height": 1.77,
+              "type": "H"
+            },
+            {
+              "time": "15:15",
+              "height": 1.38,
+              "type": "L"
+            },
+            {
+              "time": "21:14",
+              "height": 2.61,
+              "type": "H"
+            }
+          ],
+          "2026-11-11": [
+            {
+              "time": "04:46",
+              "height": 0.59,
+              "type": "L"
+            },
+            {
+              "time": "11:51",
+              "height": 1.71,
+              "type": "H"
+            },
+            {
+              "time": "15:33",
+              "height": 1.44,
+              "type": "L"
+            },
+            {
+              "time": "21:39",
+              "height": 2.62,
+              "type": "H"
+            }
+          ],
+          "2026-11-12": [
+            {
+              "time": "05:26",
+              "height": 0.6,
+              "type": "L"
+            },
+            {
+              "time": "12:38",
+              "height": 1.64,
+              "type": "H"
+            },
+            {
+              "time": "15:42",
+              "height": 1.49,
+              "type": "L"
+            },
+            {
+              "time": "22:03",
+              "height": 2.6,
+              "type": "H"
+            }
+          ],
+          "2026-11-13": [
+            {
+              "time": "06:07",
+              "height": 0.64,
+              "type": "L"
+            },
+            {
+              "time": "13:31",
+              "height": 1.58,
+              "type": "H"
+            },
+            {
+              "time": "15:40",
+              "height": 1.52,
+              "type": "L"
+            },
+            {
+              "time": "22:31",
+              "height": 2.55,
+              "type": "H"
+            }
+          ],
+          "2026-11-14": [
+            {
+              "time": "06:52",
+              "height": 0.7,
+              "type": "L"
+            },
+            {
+              "time": "23:06",
+              "height": 2.47,
+              "type": "H"
+            }
+          ],
+          "2026-11-15": [
+            {
+              "time": "07:41",
+              "height": 0.76,
+              "type": "L"
+            },
+            {
+              "time": "23:49",
+              "height": 2.37,
+              "type": "H"
+            }
+          ],
+          "2026-11-16": [
+            {
+              "time": "08:34",
+              "height": 0.83,
+              "type": "L"
+            }
+          ],
+          "2026-11-17": [
+            {
+              "time": "00:42",
+              "height": 2.24,
+              "type": "H"
+            },
+            {
+              "time": "09:29",
+              "height": 0.89,
+              "type": "L"
+            }
+          ],
+          "2026-11-18": [
+            {
+              "time": "01:51",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "10:23",
+              "height": 0.93,
+              "type": "L"
+            },
+            {
+              "time": "19:04",
+              "height": 1.81,
+              "type": "H"
+            },
+            {
+              "time": "22:22",
+              "height": 1.7,
+              "type": "L"
+            }
+          ],
+          "2026-11-19": [
+            {
+              "time": "03:30",
+              "height": 1.97,
+              "type": "H"
+            },
+            {
+              "time": "11:11",
+              "height": 0.98,
+              "type": "L"
+            },
+            {
+              "time": "19:04",
+              "height": 1.9,
+              "type": "H"
+            },
+            {
+              "time": "23:47",
+              "height": 1.52,
+              "type": "L"
+            }
+          ],
+          "2026-11-20": [
+            {
+              "time": "05:03",
+              "height": 1.89,
+              "type": "H"
+            },
+            {
+              "time": "11:53",
+              "height": 1.03,
+              "type": "L"
+            },
+            {
+              "time": "19:10",
+              "height": 2.03,
+              "type": "H"
+            }
+          ],
+          "2026-11-21": [
+            {
+              "time": "00:47",
+              "height": 1.28,
+              "type": "L"
+            },
+            {
+              "time": "06:26",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "12:29",
+              "height": 1.1,
+              "type": "L"
+            },
+            {
+              "time": "19:19",
+              "height": 2.18,
+              "type": "H"
+            }
+          ],
+          "2026-11-22": [
+            {
+              "time": "01:36",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "07:46",
+              "height": 1.82,
+              "type": "H"
+            },
+            {
+              "time": "13:03",
+              "height": 1.17,
+              "type": "L"
+            },
+            {
+              "time": "19:34",
+              "height": 2.37,
+              "type": "H"
+            }
+          ],
+          "2026-11-23": [
+            {
+              "time": "02:22",
+              "height": 0.72,
+              "type": "L"
+            },
+            {
+              "time": "08:54",
+              "height": 1.8,
+              "type": "H"
+            },
+            {
+              "time": "13:36",
+              "height": 1.24,
+              "type": "L"
+            },
+            {
+              "time": "19:56",
+              "height": 2.57,
+              "type": "H"
+            }
+          ],
+          "2026-11-24": [
+            {
+              "time": "03:07",
+              "height": 0.48,
+              "type": "L"
+            },
+            {
+              "time": "09:56",
+              "height": 1.78,
+              "type": "H"
+            },
+            {
+              "time": "14:08",
+              "height": 1.31,
+              "type": "L"
+            },
+            {
+              "time": "20:23",
+              "height": 2.74,
+              "type": "H"
+            }
+          ],
+          "2026-11-25": [
+            {
+              "time": "03:55",
+              "height": 0.3,
+              "type": "L"
+            },
+            {
+              "time": "10:55",
+              "height": 1.74,
+              "type": "H"
+            },
+            {
+              "time": "14:41",
+              "height": 1.37,
+              "type": "L"
+            },
+            {
+              "time": "20:56",
+              "height": 2.86,
+              "type": "H"
+            }
+          ],
+          "2026-11-26": [
+            {
+              "time": "04:45",
+              "height": 0.21,
+              "type": "L"
+            },
+            {
+              "time": "11:53",
+              "height": 1.68,
+              "type": "H"
+            },
+            {
+              "time": "15:15",
+              "height": 1.42,
+              "type": "L"
+            },
+            {
+              "time": "21:38",
+              "height": 2.9,
+              "type": "H"
+            }
+          ],
+          "2026-11-27": [
+            {
+              "time": "05:37",
+              "height": 0.2,
+              "type": "L"
+            },
+            {
+              "time": "12:52",
+              "height": 1.63,
+              "type": "H"
+            },
+            {
+              "time": "15:52",
+              "height": 1.46,
+              "type": "L"
+            },
+            {
+              "time": "22:29",
+              "height": 2.85,
+              "type": "H"
+            }
+          ],
+          "2026-11-28": [
+            {
+              "time": "06:32",
+              "height": 0.26,
+              "type": "L"
+            },
+            {
+              "time": "13:53",
+              "height": 1.6,
+              "type": "H"
+            },
+            {
+              "time": "16:36",
+              "height": 1.5,
+              "type": "L"
+            },
+            {
+              "time": "23:25",
+              "height": 2.73,
+              "type": "H"
+            }
+          ],
+          "2026-11-29": [
+            {
+              "time": "07:28",
+              "height": 0.38,
+              "type": "L"
+            },
+            {
+              "time": "15:00",
+              "height": 1.61,
+              "type": "H"
+            },
+            {
+              "time": "17:40",
+              "height": 1.56,
+              "type": "L"
+            }
+          ],
+          "2026-11-30": [
+            {
+              "time": "00:25",
+              "height": 2.55,
+              "type": "H"
+            },
+            {
+              "time": "08:24",
+              "height": 0.52,
+              "type": "L"
+            },
+            {
+              "time": "16:19",
+              "height": 1.67,
+              "type": "H"
+            },
+            {
+              "time": "19:00",
+              "height": 1.61,
+              "type": "L"
+            }
+          ]
+        }
+      },
+      "TAO": {
+        "name": "大澳",
+        "days": {
+          "2026-10-01": [
+            {
+              "time": "06:53",
+              "height": 0.49,
+              "type": "L"
+            },
+            {
+              "time": "13:43",
+              "height": 1.75,
+              "type": "H"
+            },
+            {
+              "time": "17:54",
+              "height": 1.28,
+              "type": "L"
+            },
+            {
+              "time": "23:59",
+              "height": 2.63,
+              "type": "H"
+            }
+          ],
+          "2026-10-02": [
+            {
+              "time": "07:54",
+              "height": 0.56,
+              "type": "L"
+            },
+            {
+              "time": "15:09",
+              "height": 1.59,
+              "type": "H"
+            },
+            {
+              "time": "18:16",
+              "height": 1.43,
+              "type": "L"
+            }
+          ],
+          "2026-10-03": [
+            {
+              "time": "00:43",
+              "height": 2.58,
+              "type": "H"
+            },
+            {
+              "time": "09:12",
+              "height": 0.61,
+              "type": "L"
+            }
+          ],
+          "2026-10-04": [
+            {
+              "time": "01:50",
+              "height": 2.48,
+              "type": "H"
+            },
+            {
+              "time": "10:41",
+              "height": 0.62,
+              "type": "L"
+            }
+          ],
+          "2026-10-05": [
+            {
+              "time": "03:52",
+              "height": 2.4,
+              "type": "H"
+            },
+            {
+              "time": "12:03",
+              "height": 0.57,
+              "type": "L"
+            },
+            {
+              "time": "20:25",
+              "height": 1.8,
+              "type": "H"
+            },
+            {
+              "time": "22:58",
+              "height": 1.72,
+              "type": "L"
+            }
+          ],
+          "2026-10-06": [
+            {
+              "time": "05:41",
+              "height": 2.4,
+              "type": "H"
+            },
+            {
+              "time": "13:03",
+              "height": 0.53,
+              "type": "L"
+            },
+            {
+              "time": "20:42",
+              "height": 1.88,
+              "type": "H"
+            }
+          ],
+          "2026-10-07": [
+            {
+              "time": "00:33",
+              "height": 1.53,
+              "type": "L"
+            },
+            {
+              "time": "06:56",
+              "height": 2.43,
+              "type": "H"
+            },
+            {
+              "time": "13:48",
+              "height": 0.53,
+              "type": "L"
+            },
+            {
+              "time": "20:59",
+              "height": 1.96,
+              "type": "H"
+            }
+          ],
+          "2026-10-08": [
+            {
+              "time": "01:35",
+              "height": 1.29,
+              "type": "L"
+            },
+            {
+              "time": "07:56",
+              "height": 2.43,
+              "type": "H"
+            },
+            {
+              "time": "14:26",
+              "height": 0.57,
+              "type": "L"
+            },
+            {
+              "time": "21:12",
+              "height": 2.06,
+              "type": "H"
+            }
+          ],
+          "2026-10-09": [
+            {
+              "time": "02:25",
+              "height": 1.05,
+              "type": "L"
+            },
+            {
+              "time": "08:51",
+              "height": 2.39,
+              "type": "H"
+            },
+            {
+              "time": "15:00",
+              "height": 0.66,
+              "type": "L"
+            },
+            {
+              "time": "21:21",
+              "height": 2.19,
+              "type": "H"
+            }
+          ],
+          "2026-10-10": [
+            {
+              "time": "03:10",
+              "height": 0.85,
+              "type": "L"
+            },
+            {
+              "time": "09:41",
+              "height": 2.32,
+              "type": "H"
+            },
+            {
+              "time": "15:31",
+              "height": 0.77,
+              "type": "L"
+            },
+            {
+              "time": "21:34",
+              "height": 2.33,
+              "type": "H"
+            }
+          ],
+          "2026-10-11": [
+            {
+              "time": "03:52",
+              "height": 0.7,
+              "type": "L"
+            },
+            {
+              "time": "10:29",
+              "height": 2.21,
+              "type": "H"
+            },
+            {
+              "time": "16:00",
+              "height": 0.91,
+              "type": "L"
+            },
+            {
+              "time": "21:54",
+              "height": 2.46,
+              "type": "H"
+            }
+          ],
+          "2026-10-12": [
+            {
+              "time": "04:32",
+              "height": 0.62,
+              "type": "L"
+            },
+            {
+              "time": "11:15",
+              "height": 2.08,
+              "type": "H"
+            },
+            {
+              "time": "16:25",
+              "height": 1.05,
+              "type": "L"
+            },
+            {
+              "time": "22:17",
+              "height": 2.55,
+              "type": "H"
+            }
+          ],
+          "2026-10-13": [
+            {
+              "time": "05:11",
+              "height": 0.6,
+              "type": "L"
+            },
+            {
+              "time": "11:59",
+              "height": 1.95,
+              "type": "H"
+            },
+            {
+              "time": "16:49",
+              "height": 1.19,
+              "type": "L"
+            },
+            {
+              "time": "22:41",
+              "height": 2.59,
+              "type": "H"
+            }
+          ],
+          "2026-10-14": [
+            {
+              "time": "05:51",
+              "height": 0.62,
+              "type": "L"
+            },
+            {
+              "time": "12:45",
+              "height": 1.81,
+              "type": "H"
+            },
+            {
+              "time": "17:08",
+              "height": 1.32,
+              "type": "L"
+            },
+            {
+              "time": "23:06",
+              "height": 2.59,
+              "type": "H"
+            }
+          ],
+          "2026-10-15": [
+            {
+              "time": "06:34",
+              "height": 0.67,
+              "type": "L"
+            },
+            {
+              "time": "13:37",
+              "height": 1.67,
+              "type": "H"
+            },
+            {
+              "time": "17:20",
+              "height": 1.43,
+              "type": "L"
+            },
+            {
+              "time": "23:33",
+              "height": 2.55,
+              "type": "H"
+            }
+          ],
+          "2026-10-16": [
+            {
+              "time": "07:22",
+              "height": 0.74,
+              "type": "L"
+            }
+          ],
+          "2026-10-17": [
+            {
+              "time": "00:06",
+              "height": 2.48,
+              "type": "H"
+            },
+            {
+              "time": "08:20",
+              "height": 0.82,
+              "type": "L"
+            }
+          ],
+          "2026-10-18": [
+            {
+              "time": "00:49",
+              "height": 2.38,
+              "type": "H"
+            },
+            {
+              "time": "09:33",
+              "height": 0.88,
+              "type": "L"
+            }
+          ],
+          "2026-10-19": [
+            {
+              "time": "01:50",
+              "height": 2.26,
+              "type": "H"
+            },
+            {
+              "time": "10:56",
+              "height": 0.89,
+              "type": "L"
+            }
+          ],
+          "2026-10-20": [
+            {
+              "time": "03:25",
+              "height": 2.17,
+              "type": "H"
+            },
+            {
+              "time": "12:06",
+              "height": 0.86,
+              "type": "L"
+            },
+            {
+              "time": "20:37",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "23:35",
+              "height": 1.74,
+              "type": "L"
+            }
+          ],
+          "2026-10-21": [
+            {
+              "time": "04:58",
+              "height": 2.14,
+              "type": "H"
+            },
+            {
+              "time": "12:52",
+              "height": 0.83,
+              "type": "L"
+            },
+            {
+              "time": "20:31",
+              "height": 1.9,
+              "type": "H"
+            }
+          ],
+          "2026-10-22": [
+            {
+              "time": "00:45",
+              "height": 1.55,
+              "type": "L"
+            },
+            {
+              "time": "06:11",
+              "height": 2.15,
+              "type": "H"
+            },
+            {
+              "time": "13:26",
+              "height": 0.82,
+              "type": "L"
+            },
+            {
+              "time": "20:31",
+              "height": 1.99,
+              "type": "H"
+            }
+          ],
+          "2026-10-23": [
+            {
+              "time": "01:33",
+              "height": 1.32,
+              "type": "L"
+            },
+            {
+              "time": "07:13",
+              "height": 2.17,
+              "type": "H"
+            },
+            {
+              "time": "13:56",
+              "height": 0.84,
+              "type": "L"
+            },
+            {
+              "time": "20:35",
+              "height": 2.11,
+              "type": "H"
+            }
+          ],
+          "2026-10-24": [
+            {
+              "time": "02:15",
+              "height": 1.06,
+              "type": "L"
+            },
+            {
+              "time": "08:12",
+              "height": 2.19,
+              "type": "H"
+            },
+            {
+              "time": "14:24",
+              "height": 0.88,
+              "type": "L"
+            },
+            {
+              "time": "20:47",
+              "height": 2.28,
+              "type": "H"
+            }
+          ],
+          "2026-10-25": [
+            {
+              "time": "02:55",
+              "height": 0.8,
+              "type": "L"
+            },
+            {
+              "time": "09:09",
+              "height": 2.18,
+              "type": "H"
+            },
+            {
+              "time": "14:53",
+              "height": 0.95,
+              "type": "L"
+            },
+            {
+              "time": "21:04",
+              "height": 2.46,
+              "type": "H"
+            }
+          ],
+          "2026-10-26": [
+            {
+              "time": "03:36",
+              "height": 0.57,
+              "type": "L"
+            },
+            {
+              "time": "10:05",
+              "height": 2.13,
+              "type": "H"
+            },
+            {
+              "time": "15:22",
+              "height": 1.04,
+              "type": "L"
+            },
+            {
+              "time": "21:25",
+              "height": 2.63,
+              "type": "H"
+            }
+          ],
+          "2026-10-27": [
+            {
+              "time": "04:19",
+              "height": 0.38,
+              "type": "L"
+            },
+            {
+              "time": "11:00",
+              "height": 2.05,
+              "type": "H"
+            },
+            {
+              "time": "15:51",
+              "height": 1.14,
+              "type": "L"
+            },
+            {
+              "time": "21:50",
+              "height": 2.77,
+              "type": "H"
+            }
+          ],
+          "2026-10-28": [
+            {
+              "time": "05:05",
+              "height": 0.28,
+              "type": "L"
+            },
+            {
+              "time": "11:56",
+              "height": 1.94,
+              "type": "H"
+            },
+            {
+              "time": "16:20",
+              "height": 1.25,
+              "type": "L"
+            },
+            {
+              "time": "22:19",
+              "height": 2.86,
+              "type": "H"
+            }
+          ],
+          "2026-10-29": [
+            {
+              "time": "05:54",
+              "height": 0.26,
+              "type": "L"
+            },
+            {
+              "time": "12:56",
+              "height": 1.81,
+              "type": "H"
+            },
+            {
+              "time": "16:50",
+              "height": 1.36,
+              "type": "L"
+            },
+            {
+              "time": "22:54",
+              "height": 2.86,
+              "type": "H"
+            }
+          ],
+          "2026-10-30": [
+            {
+              "time": "06:49",
+              "height": 0.31,
+              "type": "L"
+            },
+            {
+              "time": "14:06",
+              "height": 1.69,
+              "type": "H"
+            },
+            {
+              "time": "17:20",
+              "height": 1.47,
+              "type": "L"
+            },
+            {
+              "time": "23:36",
+              "height": 2.79,
+              "type": "H"
+            }
+          ],
+          "2026-10-31": [
+            {
+              "time": "07:52",
+              "height": 0.4,
+              "type": "L"
+            }
+          ],
+          "2026-11-01": [
+            {
+              "time": "00:30",
+              "height": 2.65,
+              "type": "H"
+            },
+            {
+              "time": "09:03",
+              "height": 0.5,
+              "type": "L"
+            }
+          ],
+          "2026-11-02": [
+            {
+              "time": "01:49",
+              "height": 2.47,
+              "type": "H"
+            },
+            {
+              "time": "10:16",
+              "height": 0.58,
+              "type": "L"
+            },
+            {
+              "time": "19:00",
+              "height": 1.81,
+              "type": "H"
+            },
+            {
+              "time": "21:13",
+              "height": 1.76,
+              "type": "L"
+            }
+          ],
+          "2026-11-03": [
+            {
+              "time": "03:50",
+              "height": 2.32,
+              "type": "H"
+            },
+            {
+              "time": "11:23",
+              "height": 0.64,
+              "type": "L"
+            },
+            {
+              "time": "19:27",
+              "height": 1.91,
+              "type": "H"
+            },
+            {
+              "time": "23:11",
+              "height": 1.64,
+              "type": "L"
+            }
+          ],
+          "2026-11-04": [
+            {
+              "time": "05:34",
+              "height": 2.22,
+              "type": "H"
+            },
+            {
+              "time": "12:19",
+              "height": 0.71,
+              "type": "L"
+            },
+            {
+              "time": "19:50",
+              "height": 2.01,
+              "type": "H"
+            }
+          ],
+          "2026-11-05": [
+            {
+              "time": "00:31",
+              "height": 1.41,
+              "type": "L"
+            },
+            {
+              "time": "06:51",
+              "height": 2.15,
+              "type": "H"
+            },
+            {
+              "time": "13:00",
+              "height": 0.79,
+              "type": "L"
+            },
+            {
+              "time": "20:08",
+              "height": 2.12,
+              "type": "H"
+            }
+          ],
+          "2026-11-06": [
+            {
+              "time": "01:31",
+              "height": 1.16,
+              "type": "L"
+            },
+            {
+              "time": "07:57",
+              "height": 2.09,
+              "type": "H"
+            },
+            {
+              "time": "13:42",
+              "height": 0.89,
+              "type": "L"
+            },
+            {
+              "time": "20:19",
+              "height": 2.24,
+              "type": "H"
+            }
+          ],
+          "2026-11-07": [
+            {
+              "time": "02:20",
+              "height": 0.93,
+              "type": "L"
+            },
+            {
+              "time": "08:56",
+              "height": 2.02,
+              "type": "H"
+            },
+            {
+              "time": "14:16",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "20:30",
+              "height": 2.39,
+              "type": "H"
+            }
+          ],
+          "2026-11-08": [
+            {
+              "time": "03:04",
+              "height": 0.74,
+              "type": "L"
+            },
+            {
+              "time": "09:49",
+              "height": 1.95,
+              "type": "H"
+            },
+            {
+              "time": "14:47",
+              "height": 1.11,
+              "type": "L"
+            },
+            {
+              "time": "20:47",
+              "height": 2.53,
+              "type": "H"
+            }
+          ],
+          "2026-11-09": [
+            {
+              "time": "03:45",
+              "height": 0.6,
+              "type": "L"
+            },
+            {
+              "time": "10:37",
+              "height": 1.88,
+              "type": "H"
+            },
+            {
+              "time": "15:15",
+              "height": 1.21,
+              "type": "L"
+            },
+            {
+              "time": "21:10",
+              "height": 2.63,
+              "type": "H"
+            }
+          ],
+          "2026-11-10": [
+            {
+              "time": "04:24",
+              "height": 0.52,
+              "type": "L"
+            },
+            {
+              "time": "11:21",
+              "height": 1.82,
+              "type": "H"
+            },
+            {
+              "time": "15:40",
+              "height": 1.3,
+              "type": "L"
+            },
+            {
+              "time": "21:35",
+              "height": 2.69,
+              "type": "H"
+            }
+          ],
+          "2026-11-11": [
+            {
+              "time": "05:02",
+              "height": 0.48,
+              "type": "L"
+            },
+            {
+              "time": "12:04",
+              "height": 1.75,
+              "type": "H"
+            },
+            {
+              "time": "16:02",
+              "height": 1.39,
+              "type": "L"
+            },
+            {
+              "time": "22:02",
+              "height": 2.7,
+              "type": "H"
+            }
+          ],
+          "2026-11-12": [
+            {
+              "time": "05:41",
+              "height": 0.49,
+              "type": "L"
+            },
+            {
+              "time": "12:50",
+              "height": 1.68,
+              "type": "H"
+            },
+            {
+              "time": "16:21",
+              "height": 1.46,
+              "type": "L"
+            },
+            {
+              "time": "22:30",
+              "height": 2.68,
+              "type": "H"
+            }
+          ],
+          "2026-11-13": [
+            {
+              "time": "06:21",
+              "height": 0.53,
+              "type": "L"
+            },
+            {
+              "time": "13:42",
+              "height": 1.62,
+              "type": "H"
+            },
+            {
+              "time": "16:31",
+              "height": 1.52,
+              "type": "L"
+            },
+            {
+              "time": "23:00",
+              "height": 2.62,
+              "type": "H"
+            }
+          ],
+          "2026-11-14": [
+            {
+              "time": "07:04",
+              "height": 0.6,
+              "type": "L"
+            },
+            {
+              "time": "23:35",
+              "height": 2.53,
+              "type": "H"
+            }
+          ],
+          "2026-11-15": [
+            {
+              "time": "07:52",
+              "height": 0.67,
+              "type": "L"
+            }
+          ],
+          "2026-11-16": [
+            {
+              "time": "00:16",
+              "height": 2.42,
+              "type": "H"
+            },
+            {
+              "time": "08:45",
+              "height": 0.75,
+              "type": "L"
+            }
+          ],
+          "2026-11-17": [
+            {
+              "time": "01:07",
+              "height": 2.28,
+              "type": "H"
+            },
+            {
+              "time": "09:41",
+              "height": 0.81,
+              "type": "L"
+            }
+          ],
+          "2026-11-18": [
+            {
+              "time": "02:14",
+              "height": 2.13,
+              "type": "H"
+            },
+            {
+              "time": "10:38",
+              "height": 0.87,
+              "type": "L"
+            },
+            {
+              "time": "19:23",
+              "height": 1.85,
+              "type": "H"
+            },
+            {
+              "time": "22:56",
+              "height": 1.69,
+              "type": "L"
+            }
+          ],
+          "2026-11-19": [
+            {
+              "time": "03:46",
+              "height": 2,
+              "type": "H"
+            },
+            {
+              "time": "11:29",
+              "height": 0.91,
+              "type": "L"
+            },
+            {
+              "time": "19:21",
+              "height": 1.94,
+              "type": "H"
+            }
+          ],
+          "2026-11-20": [
+            {
+              "time": "00:13",
+              "height": 1.48,
+              "type": "L"
+            },
+            {
+              "time": "05:22",
+              "height": 1.92,
+              "type": "H"
+            },
+            {
+              "time": "12:12",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "19:25",
+              "height": 2.07,
+              "type": "H"
+            }
+          ],
+          "2026-11-21": [
+            {
+              "time": "01:08",
+              "height": 1.21,
+              "type": "L"
+            },
+            {
+              "time": "06:47",
+              "height": 1.88,
+              "type": "H"
+            },
+            {
+              "time": "12:50",
+              "height": 1.02,
+              "type": "L"
+            },
+            {
+              "time": "19:35",
+              "height": 2.24,
+              "type": "H"
+            }
+          ],
+          "2026-11-22": [
+            {
+              "time": "01:55",
+              "height": 0.91,
+              "type": "L"
+            },
+            {
+              "time": "08:04",
+              "height": 1.87,
+              "type": "H"
+            },
+            {
+              "time": "13:25",
+              "height": 1.1,
+              "type": "L"
+            },
+            {
+              "time": "19:52",
+              "height": 2.44,
+              "type": "H"
+            }
+          ],
+          "2026-11-23": [
+            {
+              "time": "02:39",
+              "height": 0.62,
+              "type": "L"
+            },
+            {
+              "time": "09:11",
+              "height": 1.86,
+              "type": "H"
+            },
+            {
+              "time": "14:00",
+              "height": 1.17,
+              "type": "L"
+            },
+            {
+              "time": "20:15",
+              "height": 2.65,
+              "type": "H"
+            }
+          ],
+          "2026-11-24": [
+            {
+              "time": "03:25",
+              "height": 0.36,
+              "type": "L"
+            },
+            {
+              "time": "10:12",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "14:34",
+              "height": 1.25,
+              "type": "L"
+            },
+            {
+              "time": "20:44",
+              "height": 2.83,
+              "type": "H"
+            }
+          ],
+          "2026-11-25": [
+            {
+              "time": "04:11",
+              "height": 0.18,
+              "type": "L"
+            },
+            {
+              "time": "11:10",
+              "height": 1.8,
+              "type": "H"
+            },
+            {
+              "time": "15:10",
+              "height": 1.32,
+              "type": "L"
+            },
+            {
+              "time": "21:19",
+              "height": 2.94,
+              "type": "H"
+            }
+          ],
+          "2026-11-26": [
+            {
+              "time": "05:01",
+              "height": 0.09,
+              "type": "L"
+            },
+            {
+              "time": "12:08",
+              "height": 1.74,
+              "type": "H"
+            },
+            {
+              "time": "15:47",
+              "height": 1.38,
+              "type": "L"
+            },
+            {
+              "time": "22:00",
+              "height": 2.98,
+              "type": "H"
+            }
+          ],
+          "2026-11-27": [
+            {
+              "time": "05:52",
+              "height": 0.08,
+              "type": "L"
+            },
+            {
+              "time": "13:08",
+              "height": 1.69,
+              "type": "H"
+            },
+            {
+              "time": "16:29",
+              "height": 1.43,
+              "type": "L"
+            },
+            {
+              "time": "22:46",
+              "height": 2.93,
+              "type": "H"
+            }
+          ],
+          "2026-11-28": [
+            {
+              "time": "06:47",
+              "height": 0.15,
+              "type": "L"
+            },
+            {
+              "time": "14:13",
+              "height": 1.66,
+              "type": "H"
+            },
+            {
+              "time": "17:18",
+              "height": 1.49,
+              "type": "L"
+            },
+            {
+              "time": "23:38",
+              "height": 2.8,
+              "type": "H"
+            }
+          ],
+          "2026-11-29": [
+            {
+              "time": "07:43",
+              "height": 0.27,
+              "type": "L"
+            },
+            {
+              "time": "15:24",
+              "height": 1.67,
+              "type": "H"
+            },
+            {
+              "time": "18:19",
+              "height": 1.56,
+              "type": "L"
+            }
+          ],
+          "2026-11-30": [
+            {
+              "time": "00:37",
+              "height": 2.61,
+              "type": "H"
+            },
+            {
+              "time": "08:39",
+              "height": 0.41,
+              "type": "L"
+            },
+            {
+              "time": "16:37",
+              "height": 1.73,
+              "type": "H"
+            },
+            {
+              "time": "19:39",
+              "height": 1.6,
+              "type": "L"
+            }
+          ]
+        }
+      },
+      "CLK": {
+        "name": "赤鱲角東",
+        "days": {
+          "2026-10-01": [
+            {
+              "time": "07:22",
+              "height": 0.58,
+              "type": "L"
+            },
+            {
+              "time": "13:52",
+              "height": 1.77,
+              "type": "H"
+            },
+            {
+              "time": "18:05",
+              "height": 1.32,
+              "type": "L"
+            }
+          ],
+          "2026-10-02": [
+            {
+              "time": "00:17",
+              "height": 2.68,
+              "type": "H"
+            },
+            {
+              "time": "08:28",
+              "height": 0.61,
+              "type": "L"
+            },
+            {
+              "time": "15:13",
+              "height": 1.61,
+              "type": "H"
+            },
+            {
+              "time": "18:27",
+              "height": 1.47,
+              "type": "L"
+            }
+          ],
+          "2026-10-03": [
+            {
+              "time": "00:59",
+              "height": 2.63,
+              "type": "H"
+            },
+            {
+              "time": "09:41",
+              "height": 0.64,
+              "type": "L"
+            }
+          ],
+          "2026-10-04": [
+            {
+              "time": "01:59",
+              "height": 2.52,
+              "type": "H"
+            },
+            {
+              "time": "11:04",
+              "height": 0.64,
+              "type": "L"
+            }
+          ],
+          "2026-10-05": [
+            {
+              "time": "04:03",
+              "height": 2.42,
+              "type": "H"
+            },
+            {
+              "time": "12:28",
+              "height": 0.6,
+              "type": "L"
+            },
+            {
+              "time": "20:37",
+              "height": 1.83,
+              "type": "H"
+            },
+            {
+              "time": "23:15",
+              "height": 1.77,
+              "type": "L"
+            }
+          ],
+          "2026-10-06": [
+            {
+              "time": "05:49",
+              "height": 2.42,
+              "type": "H"
+            },
+            {
+              "time": "13:28",
+              "height": 0.57,
+              "type": "L"
+            },
+            {
+              "time": "20:49",
+              "height": 1.91,
+              "type": "H"
+            }
+          ],
+          "2026-10-07": [
+            {
+              "time": "00:50",
+              "height": 1.57,
+              "type": "L"
+            },
+            {
+              "time": "07:02",
+              "height": 2.45,
+              "type": "H"
+            },
+            {
+              "time": "14:14",
+              "height": 0.59,
+              "type": "L"
+            },
+            {
+              "time": "21:06",
+              "height": 1.99,
+              "type": "H"
+            }
+          ],
+          "2026-10-08": [
+            {
+              "time": "01:53",
+              "height": 1.33,
+              "type": "L"
+            },
+            {
+              "time": "08:01",
+              "height": 2.45,
+              "type": "H"
+            },
+            {
+              "time": "14:52",
+              "height": 0.65,
+              "type": "L"
+            },
+            {
+              "time": "21:20",
+              "height": 2.1,
+              "type": "H"
+            }
+          ],
+          "2026-10-09": [
+            {
+              "time": "02:44",
+              "height": 1.11,
+              "type": "L"
+            },
+            {
+              "time": "08:54",
+              "height": 2.42,
+              "type": "H"
+            },
+            {
+              "time": "15:24",
+              "height": 0.75,
+              "type": "L"
+            },
+            {
+              "time": "21:31",
+              "height": 2.23,
+              "type": "H"
+            }
+          ],
+          "2026-10-10": [
+            {
+              "time": "03:31",
+              "height": 0.92,
+              "type": "L"
+            },
+            {
+              "time": "09:44",
+              "height": 2.34,
+              "type": "H"
+            },
+            {
+              "time": "15:52",
+              "height": 0.87,
+              "type": "L"
+            },
+            {
+              "time": "21:44",
+              "height": 2.37,
+              "type": "H"
+            }
+          ],
+          "2026-10-11": [
+            {
+              "time": "04:15",
+              "height": 0.78,
+              "type": "L"
+            },
+            {
+              "time": "10:33",
+              "height": 2.23,
+              "type": "H"
+            },
+            {
+              "time": "16:15",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "22:05",
+              "height": 2.49,
+              "type": "H"
+            }
+          ],
+          "2026-10-12": [
+            {
+              "time": "05:00",
+              "height": 0.7,
+              "type": "L"
+            },
+            {
+              "time": "11:21",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "16:36",
+              "height": 1.12,
+              "type": "L"
+            },
+            {
+              "time": "22:29",
+              "height": 2.58,
+              "type": "H"
+            }
+          ],
+          "2026-10-13": [
+            {
+              "time": "05:38",
+              "height": 0.68,
+              "type": "L"
+            },
+            {
+              "time": "12:09",
+              "height": 1.97,
+              "type": "H"
+            },
+            {
+              "time": "16:57",
+              "height": 1.23,
+              "type": "L"
+            },
+            {
+              "time": "22:55",
+              "height": 2.62,
+              "type": "H"
+            }
+          ],
+          "2026-10-14": [
+            {
+              "time": "06:20",
+              "height": 0.69,
+              "type": "L"
+            },
+            {
+              "time": "12:57",
+              "height": 1.83,
+              "type": "H"
+            },
+            {
+              "time": "17:18",
+              "height": 1.34,
+              "type": "L"
+            },
+            {
+              "time": "23:21",
+              "height": 2.61,
+              "type": "H"
+            }
+          ],
+          "2026-10-15": [
+            {
+              "time": "07:05",
+              "height": 0.73,
+              "type": "L"
+            },
+            {
+              "time": "13:49",
+              "height": 1.7,
+              "type": "H"
+            },
+            {
+              "time": "17:36",
+              "height": 1.44,
+              "type": "L"
+            },
+            {
+              "time": "23:48",
+              "height": 2.57,
+              "type": "H"
+            }
+          ],
+          "2026-10-16": [
+            {
+              "time": "07:56",
+              "height": 0.79,
+              "type": "L"
+            },
+            {
+              "time": "14:56",
+              "height": 1.59,
+              "type": "H"
+            },
+            {
+              "time": "17:31",
+              "height": 1.53,
+              "type": "L"
+            }
+          ],
+          "2026-10-17": [
+            {
+              "time": "00:18",
+              "height": 2.5,
+              "type": "H"
+            },
+            {
+              "time": "08:55",
+              "height": 0.84,
+              "type": "L"
+            }
+          ],
+          "2026-10-18": [
+            {
+              "time": "00:57",
+              "height": 2.39,
+              "type": "H"
+            },
+            {
+              "time": "10:02",
+              "height": 0.88,
+              "type": "L"
+            }
+          ],
+          "2026-10-19": [
+            {
+              "time": "01:54",
+              "height": 2.27,
+              "type": "H"
+            },
+            {
+              "time": "11:22",
+              "height": 0.89,
+              "type": "L"
+            }
+          ],
+          "2026-10-20": [
+            {
+              "time": "03:38",
+              "height": 2.17,
+              "type": "H"
+            },
+            {
+              "time": "12:29",
+              "height": 0.87,
+              "type": "L"
+            },
+            {
+              "time": "20:48",
+              "height": 1.87,
+              "type": "H"
+            },
+            {
+              "time": "23:47",
+              "height": 1.77,
+              "type": "L"
+            }
+          ],
+          "2026-10-21": [
+            {
+              "time": "05:09",
+              "height": 2.14,
+              "type": "H"
+            },
+            {
+              "time": "13:14",
+              "height": 0.86,
+              "type": "L"
+            },
+            {
+              "time": "20:31",
+              "height": 1.93,
+              "type": "H"
+            }
+          ],
+          "2026-10-22": [
+            {
+              "time": "01:04",
+              "height": 1.58,
+              "type": "L"
+            },
+            {
+              "time": "06:24",
+              "height": 2.16,
+              "type": "H"
+            },
+            {
+              "time": "13:48",
+              "height": 0.86,
+              "type": "L"
+            },
+            {
+              "time": "20:36",
+              "height": 2.02,
+              "type": "H"
+            }
+          ],
+          "2026-10-23": [
+            {
+              "time": "01:51",
+              "height": 1.35,
+              "type": "L"
+            },
+            {
+              "time": "07:27",
+              "height": 2.2,
+              "type": "H"
+            },
+            {
+              "time": "14:16",
+              "height": 0.9,
+              "type": "L"
+            },
+            {
+              "time": "20:46",
+              "height": 2.14,
+              "type": "H"
+            }
+          ],
+          "2026-10-24": [
+            {
+              "time": "02:34",
+              "height": 1.11,
+              "type": "L"
+            },
+            {
+              "time": "08:23",
+              "height": 2.22,
+              "type": "H"
+            },
+            {
+              "time": "14:41",
+              "height": 0.95,
+              "type": "L"
+            },
+            {
+              "time": "20:56",
+              "height": 2.3,
+              "type": "H"
+            }
+          ],
+          "2026-10-25": [
+            {
+              "time": "03:15",
+              "height": 0.87,
+              "type": "L"
+            },
+            {
+              "time": "09:16",
+              "height": 2.21,
+              "type": "H"
+            },
+            {
+              "time": "15:07",
+              "height": 1.02,
+              "type": "L"
+            },
+            {
+              "time": "21:12",
+              "height": 2.48,
+              "type": "H"
+            }
+          ],
+          "2026-10-26": [
+            {
+              "time": "03:59",
+              "height": 0.66,
+              "type": "L"
+            },
+            {
+              "time": "10:11",
+              "height": 2.16,
+              "type": "H"
+            },
+            {
+              "time": "15:34",
+              "height": 1.11,
+              "type": "L"
+            },
+            {
+              "time": "21:35",
+              "height": 2.67,
+              "type": "H"
+            }
+          ],
+          "2026-10-27": [
+            {
+              "time": "04:44",
+              "height": 0.5,
+              "type": "L"
+            },
+            {
+              "time": "11:08",
+              "height": 2.07,
+              "type": "H"
+            },
+            {
+              "time": "16:03",
+              "height": 1.2,
+              "type": "L"
+            },
+            {
+              "time": "22:00",
+              "height": 2.82,
+              "type": "H"
+            }
+          ],
+          "2026-10-28": [
+            {
+              "time": "05:33",
+              "height": 0.4,
+              "type": "L"
+            },
+            {
+              "time": "12:08",
+              "height": 1.95,
+              "type": "H"
+            },
+            {
+              "time": "16:33",
+              "height": 1.3,
+              "type": "L"
+            },
+            {
+              "time": "22:36",
+              "height": 2.9,
+              "type": "H"
+            }
+          ],
+          "2026-10-29": [
+            {
+              "time": "06:27",
+              "height": 0.37,
+              "type": "L"
+            },
+            {
+              "time": "13:09",
+              "height": 1.82,
+              "type": "H"
+            },
+            {
+              "time": "17:00",
+              "height": 1.4,
+              "type": "L"
+            },
+            {
+              "time": "23:13",
+              "height": 2.91,
+              "type": "H"
+            }
+          ],
+          "2026-10-30": [
+            {
+              "time": "07:26",
+              "height": 0.4,
+              "type": "L"
+            },
+            {
+              "time": "14:13",
+              "height": 1.71,
+              "type": "H"
+            },
+            {
+              "time": "17:33",
+              "height": 1.51,
+              "type": "L"
+            },
+            {
+              "time": "23:54",
+              "height": 2.84,
+              "type": "H"
+            }
+          ],
+          "2026-10-31": [
+            {
+              "time": "08:27",
+              "height": 0.46,
+              "type": "L"
+            }
+          ],
+          "2026-11-01": [
+            {
+              "time": "00:44",
+              "height": 2.69,
+              "type": "H"
+            },
+            {
+              "time": "09:31",
+              "height": 0.54,
+              "type": "L"
+            }
+          ],
+          "2026-11-02": [
+            {
+              "time": "01:52",
+              "height": 2.5,
+              "type": "H"
+            },
+            {
+              "time": "10:39",
+              "height": 0.61,
+              "type": "L"
+            }
+          ],
+          "2026-11-03": [
+            {
+              "time": "04:04",
+              "height": 2.33,
+              "type": "H"
+            },
+            {
+              "time": "11:45",
+              "height": 0.67,
+              "type": "L"
+            },
+            {
+              "time": "19:36",
+              "height": 1.93,
+              "type": "H"
+            },
+            {
+              "time": "23:30",
+              "height": 1.68,
+              "type": "L"
+            }
+          ],
+          "2026-11-04": [
+            {
+              "time": "05:40",
+              "height": 2.24,
+              "type": "H"
+            },
+            {
+              "time": "12:41",
+              "height": 0.75,
+              "type": "L"
+            },
+            {
+              "time": "19:58",
+              "height": 2.03,
+              "type": "H"
+            }
+          ],
+          "2026-11-05": [
+            {
+              "time": "00:52",
+              "height": 1.45,
+              "type": "L"
+            },
+            {
+              "time": "06:55",
+              "height": 2.17,
+              "type": "H"
+            },
+            {
+              "time": "13:25",
+              "height": 0.84,
+              "type": "L"
+            },
+            {
+              "time": "20:13",
+              "height": 2.14,
+              "type": "H"
+            }
+          ],
+          "2026-11-06": [
+            {
+              "time": "01:53",
+              "height": 1.2,
+              "type": "L"
+            },
+            {
+              "time": "07:59",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "14:01",
+              "height": 0.95,
+              "type": "L"
+            },
+            {
+              "time": "20:24",
+              "height": 2.27,
+              "type": "H"
+            }
+          ],
+          "2026-11-07": [
+            {
+              "time": "02:44",
+              "height": 0.98,
+              "type": "L"
+            },
+            {
+              "time": "09:00",
+              "height": 2.03,
+              "type": "H"
+            },
+            {
+              "time": "14:31",
+              "height": 1.06,
+              "type": "L"
+            },
+            {
+              "time": "20:38",
+              "height": 2.42,
+              "type": "H"
+            }
+          ],
+          "2026-11-08": [
+            {
+              "time": "03:30",
+              "height": 0.8,
+              "type": "L"
+            },
+            {
+              "time": "09:56",
+              "height": 1.96,
+              "type": "H"
+            },
+            {
+              "time": "14:58",
+              "height": 1.17,
+              "type": "L"
+            },
+            {
+              "time": "20:58",
+              "height": 2.55,
+              "type": "H"
+            }
+          ],
+          "2026-11-09": [
+            {
+              "time": "04:14",
+              "height": 0.67,
+              "type": "L"
+            },
+            {
+              "time": "10:47",
+              "height": 1.9,
+              "type": "H"
+            },
+            {
+              "time": "15:23",
+              "height": 1.26,
+              "type": "L"
+            },
+            {
+              "time": "21:22",
+              "height": 2.65,
+              "type": "H"
+            }
+          ],
+          "2026-11-10": [
+            {
+              "time": "04:56",
+              "height": 0.59,
+              "type": "L"
+            },
+            {
+              "time": "11:33",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "15:48",
+              "height": 1.34,
+              "type": "L"
+            },
+            {
+              "time": "21:49",
+              "height": 2.71,
+              "type": "H"
+            }
+          ],
+          "2026-11-11": [
+            {
+              "time": "05:36",
+              "height": 0.57,
+              "type": "L"
+            },
+            {
+              "time": "12:17",
+              "height": 1.77,
+              "type": "H"
+            },
+            {
+              "time": "16:12",
+              "height": 1.4,
+              "type": "L"
+            },
+            {
+              "time": "22:17",
+              "height": 2.72,
+              "type": "H"
+            }
+          ],
+          "2026-11-12": [
+            {
+              "time": "06:17",
+              "height": 0.57,
+              "type": "L"
+            },
+            {
+              "time": "13:02",
+              "height": 1.71,
+              "type": "H"
+            },
+            {
+              "time": "16:35",
+              "height": 1.47,
+              "type": "L"
+            },
+            {
+              "time": "22:45",
+              "height": 2.69,
+              "type": "H"
+            }
+          ],
+          "2026-11-13": [
+            {
+              "time": "06:58",
+              "height": 0.61,
+              "type": "L"
+            },
+            {
+              "time": "13:49",
+              "height": 1.65,
+              "type": "H"
+            },
+            {
+              "time": "16:54",
+              "height": 1.52,
+              "type": "L"
+            },
+            {
+              "time": "23:15",
+              "height": 2.63,
+              "type": "H"
+            }
+          ],
+          "2026-11-14": [
+            {
+              "time": "07:41",
+              "height": 0.66,
+              "type": "L"
+            },
+            {
+              "time": "23:48",
+              "height": 2.55,
+              "type": "H"
+            }
+          ],
+          "2026-11-15": [
+            {
+              "time": "08:27",
+              "height": 0.72,
+              "type": "L"
+            }
+          ],
+          "2026-11-16": [
+            {
+              "time": "00:27",
+              "height": 2.43,
+              "type": "H"
+            },
+            {
+              "time": "09:15",
+              "height": 0.77,
+              "type": "L"
+            }
+          ],
+          "2026-11-17": [
+            {
+              "time": "01:15",
+              "height": 2.28,
+              "type": "H"
+            },
+            {
+              "time": "10:05",
+              "height": 0.83,
+              "type": "L"
+            }
+          ],
+          "2026-11-18": [
+            {
+              "time": "02:23",
+              "height": 2.13,
+              "type": "H"
+            },
+            {
+              "time": "10:56",
+              "height": 0.88,
+              "type": "L"
+            },
+            {
+              "time": "19:15",
+              "height": 1.86,
+              "type": "H"
+            },
+            {
+              "time": "23:04",
+              "height": 1.7,
+              "type": "L"
+            }
+          ],
+          "2026-11-19": [
+            {
+              "time": "04:09",
+              "height": 2,
+              "type": "H"
+            },
+            {
+              "time": "11:44",
+              "height": 0.93,
+              "type": "L"
+            },
+            {
+              "time": "19:22",
+              "height": 1.96,
+              "type": "H"
+            }
+          ],
+          "2026-11-20": [
+            {
+              "time": "00:29",
+              "height": 1.5,
+              "type": "L"
+            },
+            {
+              "time": "05:36",
+              "height": 1.93,
+              "type": "H"
+            },
+            {
+              "time": "12:26",
+              "height": 0.99,
+              "type": "L"
+            },
+            {
+              "time": "19:33",
+              "height": 2.09,
+              "type": "H"
+            }
+          ],
+          "2026-11-21": [
+            {
+              "time": "01:27",
+              "height": 1.23,
+              "type": "L"
+            },
+            {
+              "time": "06:58",
+              "height": 1.9,
+              "type": "H"
+            },
+            {
+              "time": "13:03",
+              "height": 1.06,
+              "type": "L"
+            },
+            {
+              "time": "19:42",
+              "height": 2.26,
+              "type": "H"
+            }
+          ],
+          "2026-11-22": [
+            {
+              "time": "02:16",
+              "height": 0.96,
+              "type": "L"
+            },
+            {
+              "time": "08:12",
+              "height": 1.88,
+              "type": "H"
+            },
+            {
+              "time": "13:38",
+              "height": 1.13,
+              "type": "L"
+            },
+            {
+              "time": "19:58",
+              "height": 2.46,
+              "type": "H"
+            }
+          ],
+          "2026-11-23": [
+            {
+              "time": "03:03",
+              "height": 0.69,
+              "type": "L"
+            },
+            {
+              "time": "09:19",
+              "height": 1.87,
+              "type": "H"
+            },
+            {
+              "time": "14:13",
+              "height": 1.21,
+              "type": "L"
+            },
+            {
+              "time": "20:24",
+              "height": 2.68,
+              "type": "H"
+            }
+          ],
+          "2026-11-24": [
+            {
+              "time": "03:52",
+              "height": 0.46,
+              "type": "L"
+            },
+            {
+              "time": "10:24",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "14:48",
+              "height": 1.28,
+              "type": "L"
+            },
+            {
+              "time": "20:57",
+              "height": 2.86,
+              "type": "H"
+            }
+          ],
+          "2026-11-25": [
+            {
+              "time": "04:43",
+              "height": 0.3,
+              "type": "L"
+            },
+            {
+              "time": "11:25",
+              "height": 1.8,
+              "type": "H"
+            },
+            {
+              "time": "15:23",
+              "height": 1.35,
+              "type": "L"
+            },
+            {
+              "time": "21:35",
+              "height": 2.98,
+              "type": "H"
+            }
+          ],
+          "2026-11-26": [
+            {
+              "time": "05:37",
+              "height": 0.21,
+              "type": "L"
+            },
+            {
+              "time": "12:21",
+              "height": 1.75,
+              "type": "H"
+            },
+            {
+              "time": "16:01",
+              "height": 1.4,
+              "type": "L"
+            },
+            {
+              "time": "22:16",
+              "height": 3.01,
+              "type": "H"
+            }
+          ],
+          "2026-11-27": [
+            {
+              "time": "06:30",
+              "height": 0.19,
+              "type": "L"
+            },
+            {
+              "time": "13:15",
+              "height": 1.7,
+              "type": "H"
+            },
+            {
+              "time": "16:40",
+              "height": 1.46,
+              "type": "L"
+            },
+            {
+              "time": "23:01",
+              "height": 2.96,
+              "type": "H"
+            }
+          ],
+          "2026-11-28": [
+            {
+              "time": "07:24",
+              "height": 0.24,
+              "type": "L"
+            },
+            {
+              "time": "14:11",
+              "height": 1.67,
+              "type": "H"
+            },
+            {
+              "time": "17:25",
+              "height": 1.51,
+              "type": "L"
+            },
+            {
+              "time": "23:49",
+              "height": 2.82,
+              "type": "H"
+            }
+          ],
+          "2026-11-29": [
+            {
+              "time": "08:16",
+              "height": 0.33,
+              "type": "L"
+            },
+            {
+              "time": "15:14",
+              "height": 1.67,
+              "type": "H"
+            },
+            {
+              "time": "18:18",
+              "height": 1.57,
+              "type": "L"
+            }
+          ],
+          "2026-11-30": [
+            {
+              "time": "00:43",
+              "height": 2.62,
+              "type": "H"
+            },
+            {
+              "time": "09:08",
+              "height": 0.46,
+              "type": "L"
+            },
+            {
+              "time": "16:47",
+              "height": 1.72,
+              "type": "H"
+            },
+            {
+              "time": "19:29",
+              "height": 1.63,
+              "type": "L"
+            }
           ]
         }
       },
       "TBT": {
         "name": "尖鼻咀",
         "days": {
+          "2026-10-01": [
+            {
+              "time": "08:22",
+              "height": 0.41,
+              "type": "L"
+            },
+            {
+              "time": "14:12",
+              "height": 1.88,
+              "type": "H"
+            },
+            {
+              "time": "18:57",
+              "height": 1.2,
+              "type": "L"
+            }
+          ],
+          "2026-10-02": [
+            {
+              "time": "00:21",
+              "height": 2.95,
+              "type": "H"
+            },
+            {
+              "time": "09:21",
+              "height": 0.45,
+              "type": "L"
+            },
+            {
+              "time": "15:41",
+              "height": 1.7,
+              "type": "H"
+            },
+            {
+              "time": "19:19",
+              "height": 1.37,
+              "type": "L"
+            }
+          ],
+          "2026-10-03": [
+            {
+              "time": "01:01",
+              "height": 2.85,
+              "type": "H"
+            },
+            {
+              "time": "10:31",
+              "height": 0.48,
+              "type": "L"
+            },
+            {
+              "time": "17:22",
+              "height": 1.63,
+              "type": "H"
+            },
+            {
+              "time": "19:40",
+              "height": 1.56,
+              "type": "L"
+            }
+          ],
+          "2026-10-04": [
+            {
+              "time": "01:59",
+              "height": 2.67,
+              "type": "H"
+            },
+            {
+              "time": "11:46",
+              "height": 0.47,
+              "type": "L"
+            }
+          ],
+          "2026-10-05": [
+            {
+              "time": "03:49",
+              "height": 2.49,
+              "type": "H"
+            },
+            {
+              "time": "13:02",
+              "height": 0.43,
+              "type": "L"
+            },
+            {
+              "time": "20:48",
+              "height": 1.9,
+              "type": "H"
+            }
+          ],
+          "2026-10-06": [
+            {
+              "time": "00:19",
+              "height": 1.7,
+              "type": "L"
+            },
+            {
+              "time": "06:17",
+              "height": 2.49,
+              "type": "H"
+            },
+            {
+              "time": "14:09",
+              "height": 0.39,
+              "type": "L"
+            },
+            {
+              "time": "21:09",
+              "height": 2.02,
+              "type": "H"
+            }
+          ],
+          "2026-10-07": [
+            {
+              "time": "01:47",
+              "height": 1.44,
+              "type": "L"
+            },
+            {
+              "time": "07:28",
+              "height": 2.57,
+              "type": "H"
+            },
+            {
+              "time": "15:03",
+              "height": 0.39,
+              "type": "L"
+            },
+            {
+              "time": "21:26",
+              "height": 2.13,
+              "type": "H"
+            }
+          ],
+          "2026-10-08": [
+            {
+              "time": "02:51",
+              "height": 1.14,
+              "type": "L"
+            },
+            {
+              "time": "08:20",
+              "height": 2.61,
+              "type": "H"
+            },
+            {
+              "time": "15:48",
+              "height": 0.44,
+              "type": "L"
+            },
+            {
+              "time": "21:36",
+              "height": 2.25,
+              "type": "H"
+            }
+          ],
+          "2026-10-09": [
+            {
+              "time": "03:43",
+              "height": 0.89,
+              "type": "L"
+            },
+            {
+              "time": "09:06",
+              "height": 2.59,
+              "type": "H"
+            },
+            {
+              "time": "16:25",
+              "height": 0.54,
+              "type": "L"
+            },
+            {
+              "time": "21:45",
+              "height": 2.4,
+              "type": "H"
+            }
+          ],
+          "2026-10-10": [
+            {
+              "time": "04:31",
+              "height": 0.7,
+              "type": "L"
+            },
+            {
+              "time": "09:50",
+              "height": 2.51,
+              "type": "H"
+            },
+            {
+              "time": "16:56",
+              "height": 0.68,
+              "type": "L"
+            },
+            {
+              "time": "22:01",
+              "height": 2.56,
+              "type": "H"
+            }
+          ],
+          "2026-10-11": [
+            {
+              "time": "05:15",
+              "height": 0.58,
+              "type": "L"
+            },
+            {
+              "time": "10:36",
+              "height": 2.39,
+              "type": "H"
+            },
+            {
+              "time": "17:21",
+              "height": 0.81,
+              "type": "L"
+            },
+            {
+              "time": "22:21",
+              "height": 2.7,
+              "type": "H"
+            }
+          ],
+          "2026-10-12": [
+            {
+              "time": "05:57",
+              "height": 0.52,
+              "type": "L"
+            },
+            {
+              "time": "11:24",
+              "height": 2.25,
+              "type": "H"
+            },
+            {
+              "time": "17:38",
+              "height": 0.94,
+              "type": "L"
+            },
+            {
+              "time": "22:42",
+              "height": 2.79,
+              "type": "H"
+            }
+          ],
+          "2026-10-13": [
+            {
+              "time": "06:37",
+              "height": 0.51,
+              "type": "L"
+            },
+            {
+              "time": "12:16",
+              "height": 2.1,
+              "type": "H"
+            },
+            {
+              "time": "17:53",
+              "height": 1.04,
+              "type": "L"
+            },
+            {
+              "time": "23:03",
+              "height": 2.84,
+              "type": "H"
+            }
+          ],
+          "2026-10-14": [
+            {
+              "time": "07:17",
+              "height": 0.54,
+              "type": "L"
+            },
+            {
+              "time": "13:13",
+              "height": 1.95,
+              "type": "H"
+            },
+            {
+              "time": "18:10",
+              "height": 1.15,
+              "type": "L"
+            },
+            {
+              "time": "23:25",
+              "height": 2.85,
+              "type": "H"
+            }
+          ],
+          "2026-10-15": [
+            {
+              "time": "07:59",
+              "height": 0.59,
+              "type": "L"
+            },
+            {
+              "time": "14:11",
+              "height": 1.81,
+              "type": "H"
+            },
+            {
+              "time": "18:29",
+              "height": 1.27,
+              "type": "L"
+            },
+            {
+              "time": "23:50",
+              "height": 2.81,
+              "type": "H"
+            }
+          ],
+          "2026-10-16": [
+            {
+              "time": "08:47",
+              "height": 0.65,
+              "type": "L"
+            },
+            {
+              "time": "15:11",
+              "height": 1.7,
+              "type": "H"
+            },
+            {
+              "time": "18:44",
+              "height": 1.41,
+              "type": "L"
+            }
+          ],
+          "2026-10-17": [
+            {
+              "time": "00:20",
+              "height": 2.71,
+              "type": "H"
+            },
+            {
+              "time": "09:42",
+              "height": 0.7,
+              "type": "L"
+            },
+            {
+              "time": "16:24",
+              "height": 1.63,
+              "type": "H"
+            },
+            {
+              "time": "18:49",
+              "height": 1.55,
+              "type": "L"
+            }
+          ],
+          "2026-10-18": [
+            {
+              "time": "00:57",
+              "height": 2.56,
+              "type": "H"
+            },
+            {
+              "time": "10:44",
+              "height": 0.74,
+              "type": "L"
+            }
+          ],
+          "2026-10-19": [
+            {
+              "time": "01:54",
+              "height": 2.36,
+              "type": "H"
+            },
+            {
+              "time": "11:51",
+              "height": 0.75,
+              "type": "L"
+            }
+          ],
+          "2026-10-20": [
+            {
+              "time": "03:55",
+              "height": 2.21,
+              "type": "H"
+            },
+            {
+              "time": "12:56",
+              "height": 0.74,
+              "type": "L"
+            },
+            {
+              "time": "20:48",
+              "height": 1.93,
+              "type": "H"
+            }
+          ],
+          "2026-10-21": [
+            {
+              "time": "00:34",
+              "height": 1.69,
+              "type": "L"
+            },
+            {
+              "time": "05:49",
+              "height": 2.21,
+              "type": "H"
+            },
+            {
+              "time": "13:50",
+              "height": 0.72,
+              "type": "L"
+            },
+            {
+              "time": "20:45",
+              "height": 2.02,
+              "type": "H"
+            }
+          ],
+          "2026-10-22": [
+            {
+              "time": "01:50",
+              "height": 1.44,
+              "type": "L"
+            },
+            {
+              "time": "06:59",
+              "height": 2.29,
+              "type": "H"
+            },
+            {
+              "time": "14:34",
+              "height": 0.73,
+              "type": "L"
+            },
+            {
+              "time": "20:50",
+              "height": 2.13,
+              "type": "H"
+            }
+          ],
+          "2026-10-23": [
+            {
+              "time": "02:43",
+              "height": 1.16,
+              "type": "L"
+            },
+            {
+              "time": "07:54",
+              "height": 2.36,
+              "type": "H"
+            },
+            {
+              "time": "15:12",
+              "height": 0.75,
+              "type": "L"
+            },
+            {
+              "time": "20:56",
+              "height": 2.27,
+              "type": "H"
+            }
+          ],
+          "2026-10-24": [
+            {
+              "time": "03:31",
+              "height": 0.89,
+              "type": "L"
+            },
+            {
+              "time": "08:45",
+              "height": 2.41,
+              "type": "H"
+            },
+            {
+              "time": "15:46",
+              "height": 0.81,
+              "type": "L"
+            },
+            {
+              "time": "21:07",
+              "height": 2.46,
+              "type": "H"
+            }
+          ],
+          "2026-10-25": [
+            {
+              "time": "04:18",
+              "height": 0.64,
+              "type": "L"
+            },
+            {
+              "time": "09:35",
+              "height": 2.39,
+              "type": "H"
+            },
+            {
+              "time": "16:17",
+              "height": 0.88,
+              "type": "L"
+            },
+            {
+              "time": "21:25",
+              "height": 2.69,
+              "type": "H"
+            }
+          ],
+          "2026-10-26": [
+            {
+              "time": "05:05",
+              "height": 0.45,
+              "type": "L"
+            },
+            {
+              "time": "10:29",
+              "height": 2.33,
+              "type": "H"
+            },
+            {
+              "time": "16:44",
+              "height": 0.98,
+              "type": "L"
+            },
+            {
+              "time": "21:49",
+              "height": 2.92,
+              "type": "H"
+            }
+          ],
           "2026-10-27": [
             {
               "time": "05:53",
@@ -5564,692 +13785,552 @@ window.CAMP_CONDITIONS = {
               "height": 2.14,
               "type": "H"
             }
-          ]
-        }
-      },
-      "KLW": {
-        "name": "高流灣",
-        "days": {
-          "2026-10-27": [
-            {
-              "time": "03:35",
-              "height": 0.62,
-              "type": "L"
-            },
-            {
-              "time": "10:24",
-              "height": 1.95,
-              "type": "H"
-            },
-            {
-              "time": "15:08",
-              "height": 1.25,
-              "type": "L"
-            },
-            {
-              "time": "22:26",
-              "height": 2.51,
-              "type": "H"
-            }
           ],
-          "2026-10-28": [
+          "2026-11-05": [
             {
-              "time": "04:20",
-              "height": 0.53,
-              "type": "L"
-            },
-            {
-              "time": "11:11",
-              "height": 1.86,
-              "type": "H"
-            },
-            {
-              "time": "15:27",
-              "height": 1.32,
-              "type": "L"
-            },
-            {
-              "time": "23:09",
-              "height": 2.59,
-              "type": "H"
-            }
-          ],
-          "2026-10-29": [
-            {
-              "time": "05:07",
-              "height": 0.52,
-              "type": "L"
-            },
-            {
-              "time": "12:00",
-              "height": 1.75,
-              "type": "H"
-            },
-            {
-              "time": "15:21",
-              "height": 1.37,
-              "type": "L"
-            },
-            {
-              "time": "23:54",
-              "height": 2.62,
-              "type": "H"
-            }
-          ],
-          "2026-10-30": [
-            {
-              "time": "05:58",
-              "height": 0.58,
-              "type": "L"
-            },
-            {
-              "time": "12:53",
-              "height": 1.63,
-              "type": "H"
-            },
-            {
-              "time": "15:36",
-              "height": 1.41,
-              "type": "L"
-            }
-          ],
-          "2026-10-31": [
-            {
-              "time": "00:44",
-              "height": 2.59,
-              "type": "H"
-            },
-            {
-              "time": "06:54",
-              "height": 0.67,
-              "type": "L"
-            },
-            {
-              "time": "13:58",
-              "height": 1.55,
-              "type": "H"
-            },
-            {
-              "time": "16:06",
-              "height": 1.46,
-              "type": "L"
-            }
-          ],
-          "2026-11-01": [
-            {
-              "time": "01:39",
-              "height": 2.51,
-              "type": "H"
-            },
-            {
-              "time": "08:03",
-              "height": 0.77,
-              "type": "L"
-            },
-            {
-              "time": "22:37",
-              "height": 2.27,
-              "type": "H"
-            }
-          ],
-          "2026-11-02": [
-            {
-              "time": "00:19",
-              "height": 2.19,
-              "type": "L"
-            },
-            {
-              "time": "02:41",
-              "height": 2.4,
-              "type": "H"
-            },
-            {
-              "time": "09:22",
-              "height": 0.83,
-              "type": "L"
-            }
-          ],
-          "2026-11-03": [
-            {
-              "time": "03:51",
-              "height": 2.29,
-              "type": "H"
-            },
-            {
-              "time": "10:27",
-              "height": 0.88,
-              "type": "L"
-            },
-            {
-              "time": "18:00",
-              "height": 1.77,
-              "type": "H"
-            },
-            {
-              "time": "21:33",
-              "height": 1.67,
-              "type": "L"
-            }
-          ],
-          "2026-11-04": [
-            {
-              "time": "05:03",
-              "height": 2.19,
-              "type": "H"
-            },
-            {
-              "time": "11:18",
-              "height": 0.92,
-              "type": "L"
-            },
-            {
-              "time": "18:36",
-              "height": 1.89,
-              "type": "H"
-            },
-            {
-              "time": "23:13",
-              "height": 1.51,
-              "type": "L"
-            }
-          ]
-        }
-      },
-      "TAO": {
-        "name": "大澳",
-        "days": {
-          "2026-10-27": [
-            {
-              "time": "04:19",
-              "height": 0.38,
-              "type": "L"
-            },
-            {
-              "time": "11:00",
-              "height": 2.05,
-              "type": "H"
-            },
-            {
-              "time": "15:51",
-              "height": 1.14,
-              "type": "L"
-            },
-            {
-              "time": "21:50",
-              "height": 2.77,
-              "type": "H"
-            }
-          ],
-          "2026-10-28": [
-            {
-              "time": "05:05",
-              "height": 0.28,
-              "type": "L"
-            },
-            {
-              "time": "11:56",
-              "height": 1.94,
-              "type": "H"
-            },
-            {
-              "time": "16:20",
-              "height": 1.25,
-              "type": "L"
-            },
-            {
-              "time": "22:19",
-              "height": 2.86,
-              "type": "H"
-            }
-          ],
-          "2026-10-29": [
-            {
-              "time": "05:54",
-              "height": 0.26,
-              "type": "L"
-            },
-            {
-              "time": "12:56",
-              "height": 1.81,
-              "type": "H"
-            },
-            {
-              "time": "16:50",
-              "height": 1.36,
-              "type": "L"
-            },
-            {
-              "time": "22:54",
-              "height": 2.86,
-              "type": "H"
-            }
-          ],
-          "2026-10-30": [
-            {
-              "time": "06:49",
-              "height": 0.31,
-              "type": "L"
-            },
-            {
-              "time": "14:06",
-              "height": 1.69,
-              "type": "H"
-            },
-            {
-              "time": "17:20",
-              "height": 1.47,
-              "type": "L"
-            },
-            {
-              "time": "23:36",
-              "height": 2.79,
-              "type": "H"
-            }
-          ],
-          "2026-10-31": [
-            {
-              "time": "07:52",
-              "height": 0.4,
-              "type": "L"
-            }
-          ],
-          "2026-11-01": [
-            {
-              "time": "00:30",
-              "height": 2.65,
-              "type": "H"
-            },
-            {
-              "time": "09:03",
-              "height": 0.5,
-              "type": "L"
-            }
-          ],
-          "2026-11-02": [
-            {
-              "time": "01:49",
-              "height": 2.47,
-              "type": "H"
-            },
-            {
-              "time": "10:16",
-              "height": 0.58,
-              "type": "L"
-            },
-            {
-              "time": "19:00",
-              "height": 1.81,
-              "type": "H"
-            },
-            {
-              "time": "21:13",
-              "height": 1.76,
-              "type": "L"
-            }
-          ],
-          "2026-11-03": [
-            {
-              "time": "03:50",
-              "height": 2.32,
-              "type": "H"
-            },
-            {
-              "time": "11:23",
-              "height": 0.64,
-              "type": "L"
-            },
-            {
-              "time": "19:27",
-              "height": 1.91,
-              "type": "H"
-            },
-            {
-              "time": "23:11",
-              "height": 1.64,
-              "type": "L"
-            }
-          ],
-          "2026-11-04": [
-            {
-              "time": "05:34",
-              "height": 2.22,
-              "type": "H"
-            },
-            {
-              "time": "12:19",
-              "height": 0.71,
-              "type": "L"
-            },
-            {
-              "time": "19:50",
-              "height": 2.01,
-              "type": "H"
-            }
-          ]
-        }
-      },
-      "SPW": {
-        "name": "石壁",
-        "days": {
-          "2026-10-27": [
-            {
-              "time": "04:01",
-              "height": 0.52,
-              "type": "L"
-            },
-            {
-              "time": "10:43",
-              "height": 1.98,
-              "type": "H"
-            },
-            {
-              "time": "15:27",
-              "height": 1.24,
-              "type": "L"
-            },
-            {
-              "time": "21:29",
-              "height": 2.68,
-              "type": "H"
-            }
-          ],
-          "2026-10-28": [
-            {
-              "time": "04:47",
-              "height": 0.41,
-              "type": "L"
-            },
-            {
-              "time": "11:39",
-              "height": 1.87,
-              "type": "H"
-            },
-            {
-              "time": "15:54",
-              "height": 1.33,
-              "type": "L"
-            },
-            {
-              "time": "21:55",
-              "height": 2.77,
-              "type": "H"
-            }
-          ],
-          "2026-10-29": [
-            {
-              "time": "05:37",
-              "height": 0.39,
-              "type": "L"
-            },
-            {
-              "time": "12:40",
-              "height": 1.75,
-              "type": "H"
-            },
-            {
-              "time": "16:18",
-              "height": 1.42,
-              "type": "L"
-            },
-            {
-              "time": "22:27",
-              "height": 2.78,
-              "type": "H"
-            }
-          ],
-          "2026-10-30": [
-            {
-              "time": "06:33",
-              "height": 0.44,
-              "type": "L"
-            },
-            {
-              "time": "13:50",
-              "height": 1.64,
-              "type": "H"
-            },
-            {
-              "time": "16:36",
-              "height": 1.5,
-              "type": "L"
-            },
-            {
-              "time": "23:12",
-              "height": 2.72,
-              "type": "H"
-            }
-          ],
-          "2026-10-31": [
-            {
-              "time": "07:38",
-              "height": 0.52,
-              "type": "L"
-            }
-          ],
-          "2026-11-01": [
-            {
-              "time": "00:15",
-              "height": 2.59,
-              "type": "H"
-            },
-            {
-              "time": "08:49",
-              "height": 0.61,
-              "type": "L"
-            }
-          ],
-          "2026-11-02": [
-            {
-              "time": "01:42",
-              "height": 2.43,
-              "type": "H"
-            },
-            {
-              "time": "10:01",
-              "height": 0.68,
-              "type": "L"
-            }
-          ],
-          "2026-11-03": [
-            {
-              "time": "03:47",
-              "height": 2.3,
-              "type": "H"
-            },
-            {
-              "time": "11:07",
-              "height": 0.75,
-              "type": "L"
-            },
-            {
-              "time": "19:16",
-              "height": 1.86,
-              "type": "H"
-            },
-            {
-              "time": "22:43",
-              "height": 1.68,
-              "type": "L"
-            }
-          ],
-          "2026-11-04": [
-            {
-              "time": "05:15",
-              "height": 2.2,
-              "type": "H"
-            },
-            {
-              "time": "12:01",
-              "height": 0.82,
-              "type": "L"
-            },
-            {
-              "time": "19:32",
-              "height": 1.95,
-              "type": "H"
-            }
-          ]
-        }
-      },
-      "CLK": {
-        "name": "赤鱲角東",
-        "days": {
-          "2026-10-27": [
-            {
-              "time": "04:44",
-              "height": 0.5,
-              "type": "L"
-            },
-            {
-              "time": "11:08",
-              "height": 2.07,
-              "type": "H"
-            },
-            {
-              "time": "16:03",
-              "height": 1.2,
-              "type": "L"
-            },
-            {
-              "time": "22:00",
-              "height": 2.82,
-              "type": "H"
-            }
-          ],
-          "2026-10-28": [
-            {
-              "time": "05:33",
-              "height": 0.4,
-              "type": "L"
-            },
-            {
-              "time": "12:08",
-              "height": 1.95,
-              "type": "H"
-            },
-            {
-              "time": "16:33",
+              "time": "01:41",
               "height": 1.3,
               "type": "L"
             },
             {
-              "time": "22:36",
-              "height": 2.9,
+              "time": "07:24",
+              "height": 2.26,
+              "type": "H"
+            },
+            {
+              "time": "14:15",
+              "height": 0.62,
+              "type": "L"
+            },
+            {
+              "time": "20:34",
+              "height": 2.27,
               "type": "H"
             }
           ],
-          "2026-10-29": [
+          "2026-11-06": [
             {
-              "time": "06:27",
-              "height": 0.37,
+              "time": "02:42",
+              "height": 1,
               "type": "L"
             },
             {
-              "time": "13:09",
-              "height": 1.82,
+              "time": "08:19",
+              "height": 2.2,
               "type": "H"
             },
             {
-              "time": "17:00",
-              "height": 1.4,
+              "time": "14:57",
+              "height": 0.74,
               "type": "L"
             },
             {
-              "time": "23:13",
-              "height": 2.91,
-              "type": "H"
-            }
-          ],
-          "2026-10-30": [
-            {
-              "time": "07:26",
-              "height": 0.4,
-              "type": "L"
-            },
-            {
-              "time": "14:13",
-              "height": 1.71,
-              "type": "H"
-            },
-            {
-              "time": "17:33",
-              "height": 1.51,
-              "type": "L"
-            },
-            {
-              "time": "23:54",
-              "height": 2.84,
+              "time": "20:42",
+              "height": 2.42,
               "type": "H"
             }
           ],
-          "2026-10-31": [
+          "2026-11-07": [
             {
-              "time": "08:27",
-              "height": 0.46,
+              "time": "03:34",
+              "height": 0.76,
               "type": "L"
-            }
-          ],
-          "2026-11-01": [
+            },
             {
-              "time": "00:44",
-              "height": 2.69,
+              "time": "09:13",
+              "height": 2.13,
               "type": "H"
             },
             {
-              "time": "09:31",
+              "time": "15:32",
+              "height": 0.87,
+              "type": "L"
+            },
+            {
+              "time": "20:53",
+              "height": 2.59,
+              "type": "H"
+            }
+          ],
+          "2026-11-08": [
+            {
+              "time": "04:23",
+              "height": 0.59,
+              "type": "L"
+            },
+            {
+              "time": "10:08",
+              "height": 2.05,
+              "type": "H"
+            },
+            {
+              "time": "16:00",
+              "height": 1,
+              "type": "L"
+            },
+            {
+              "time": "21:11",
+              "height": 2.75,
+              "type": "H"
+            }
+          ],
+          "2026-11-09": [
+            {
+              "time": "05:10",
+              "height": 0.49,
+              "type": "L"
+            },
+            {
+              "time": "11:02",
+              "height": 2,
+              "type": "H"
+            },
+            {
+              "time": "16:21",
+              "height": 1.1,
+              "type": "L"
+            },
+            {
+              "time": "21:33",
+              "height": 2.86,
+              "type": "H"
+            }
+          ],
+          "2026-11-10": [
+            {
+              "time": "05:55",
+              "height": 0.44,
+              "type": "L"
+            },
+            {
+              "time": "11:51",
+              "height": 1.95,
+              "type": "H"
+            },
+            {
+              "time": "16:39",
+              "height": 1.17,
+              "type": "L"
+            },
+            {
+              "time": "21:58",
+              "height": 2.93,
+              "type": "H"
+            }
+          ],
+          "2026-11-11": [
+            {
+              "time": "06:40",
+              "height": 0.44,
+              "type": "L"
+            },
+            {
+              "time": "12:37",
+              "height": 1.9,
+              "type": "H"
+            },
+            {
+              "time": "16:59",
+              "height": 1.22,
+              "type": "L"
+            },
+            {
+              "time": "22:23",
+              "height": 2.96,
+              "type": "H"
+            }
+          ],
+          "2026-11-12": [
+            {
+              "time": "07:25",
+              "height": 0.47,
+              "type": "L"
+            },
+            {
+              "time": "13:22",
+              "height": 1.85,
+              "type": "H"
+            },
+            {
+              "time": "17:24",
+              "height": 1.28,
+              "type": "L"
+            },
+            {
+              "time": "22:51",
+              "height": 2.94,
+              "type": "H"
+            }
+          ],
+          "2026-11-13": [
+            {
+              "time": "08:09",
+              "height": 0.5,
+              "type": "L"
+            },
+            {
+              "time": "14:07",
+              "height": 1.79,
+              "type": "H"
+            },
+            {
+              "time": "17:50",
+              "height": 1.36,
+              "type": "L"
+            },
+            {
+              "time": "23:22",
+              "height": 2.87,
+              "type": "H"
+            }
+          ],
+          "2026-11-14": [
+            {
+              "time": "08:51",
               "height": 0.54,
               "type": "L"
-            }
-          ],
-          "2026-11-02": [
+            },
             {
-              "time": "01:52",
-              "height": 2.5,
+              "time": "14:55",
+              "height": 1.73,
               "type": "H"
             },
             {
-              "time": "10:39",
-              "height": 0.61,
+              "time": "18:16",
+              "height": 1.46,
+              "type": "L"
+            },
+            {
+              "time": "23:57",
+              "height": 2.76,
+              "type": "H"
+            }
+          ],
+          "2026-11-15": [
+            {
+              "time": "09:32",
+              "height": 0.58,
+              "type": "L"
+            },
+            {
+              "time": "15:54",
+              "height": 1.7,
+              "type": "H"
+            },
+            {
+              "time": "18:43",
+              "height": 1.57,
               "type": "L"
             }
           ],
-          "2026-11-03": [
+          "2026-11-16": [
             {
-              "time": "04:04",
-              "height": 2.33,
+              "time": "00:39",
+              "height": 2.6,
               "type": "H"
             },
             {
-              "time": "11:45",
+              "time": "10:13",
+              "height": 0.63,
+              "type": "L"
+            }
+          ],
+          "2026-11-17": [
+            {
+              "time": "01:32",
+              "height": 2.4,
+              "type": "H"
+            },
+            {
+              "time": "10:55",
               "height": 0.67,
               "type": "L"
             },
             {
-              "time": "19:36",
-              "height": 1.93,
+              "time": "18:43",
+              "height": 1.81,
               "type": "H"
             },
             {
-              "time": "23:30",
-              "height": 1.68,
+              "time": "21:55",
+              "height": 1.76,
               "type": "L"
             }
           ],
-          "2026-11-04": [
+          "2026-11-18": [
             {
-              "time": "05:40",
-              "height": 2.24,
+              "time": "02:48",
+              "height": 2.2,
               "type": "H"
             },
             {
-              "time": "12:41",
-              "height": 0.75,
+              "time": "11:41",
+              "height": 0.73,
               "type": "L"
             },
             {
-              "time": "19:58",
+              "time": "19:20",
+              "height": 1.91,
+              "type": "H"
+            },
+            {
+              "time": "23:49",
+              "height": 1.63,
+              "type": "L"
+            }
+          ],
+          "2026-11-19": [
+            {
+              "time": "04:29",
+              "height": 2.05,
+              "type": "H"
+            },
+            {
+              "time": "12:30",
+              "height": 0.79,
+              "type": "L"
+            },
+            {
+              "time": "19:38",
               "height": 2.03,
               "type": "H"
+            }
+          ],
+          "2026-11-20": [
+            {
+              "time": "01:15",
+              "height": 1.38,
+              "type": "L"
+            },
+            {
+              "time": "06:13",
+              "height": 2,
+              "type": "H"
+            },
+            {
+              "time": "13:19",
+              "height": 0.85,
+              "type": "L"
+            },
+            {
+              "time": "19:45",
+              "height": 2.18,
+              "type": "H"
+            }
+          ],
+          "2026-11-21": [
+            {
+              "time": "02:17",
+              "height": 1.09,
+              "type": "L"
+            },
+            {
+              "time": "07:28",
+              "height": 2,
+              "type": "H"
+            },
+            {
+              "time": "14:04",
+              "height": 0.93,
+              "type": "L"
+            },
+            {
+              "time": "19:53",
+              "height": 2.39,
+              "type": "H"
+            }
+          ],
+          "2026-11-22": [
+            {
+              "time": "03:11",
+              "height": 0.79,
+              "type": "L"
+            },
+            {
+              "time": "08:36",
+              "height": 2,
+              "type": "H"
+            },
+            {
+              "time": "14:43",
+              "height": 1.01,
+              "type": "L"
+            },
+            {
+              "time": "20:11",
+              "height": 2.65,
+              "type": "H"
+            }
+          ],
+          "2026-11-23": [
+            {
+              "time": "04:03",
+              "height": 0.53,
+              "type": "L"
+            },
+            {
+              "time": "09:46",
+              "height": 1.98,
+              "type": "H"
+            },
+            {
+              "time": "15:17",
+              "height": 1.1,
+              "type": "L"
+            },
+            {
+              "time": "20:38",
+              "height": 2.93,
+              "type": "H"
+            }
+          ],
+          "2026-11-24": [
+            {
+              "time": "04:58",
+              "height": 0.33,
+              "type": "L"
+            },
+            {
+              "time": "10:54",
+              "height": 1.95,
+              "type": "H"
+            },
+            {
+              "time": "15:48",
+              "height": 1.18,
+              "type": "L"
+            },
+            {
+              "time": "21:11",
+              "height": 3.14,
+              "type": "H"
+            }
+          ],
+          "2026-11-25": [
+            {
+              "time": "05:56",
+              "height": 0.2,
+              "type": "L"
+            },
+            {
+              "time": "11:52",
+              "height": 1.92,
+              "type": "H"
+            },
+            {
+              "time": "16:16",
+              "height": 1.24,
+              "type": "L"
+            },
+            {
+              "time": "21:47",
+              "height": 3.26,
+              "type": "H"
+            }
+          ],
+          "2026-11-26": [
+            {
+              "time": "06:55",
+              "height": 0.12,
+              "type": "L"
+            },
+            {
+              "time": "12:46",
+              "height": 1.88,
+              "type": "H"
+            },
+            {
+              "time": "16:45",
+              "height": 1.3,
+              "type": "L"
+            },
+            {
+              "time": "22:26",
+              "height": 3.27,
+              "type": "H"
+            }
+          ],
+          "2026-11-27": [
+            {
+              "time": "07:50",
+              "height": 0.08,
+              "type": "L"
+            },
+            {
+              "time": "13:37",
+              "height": 1.84,
+              "type": "H"
+            },
+            {
+              "time": "17:19",
+              "height": 1.35,
+              "type": "L"
+            },
+            {
+              "time": "23:09",
+              "height": 3.17,
+              "type": "H"
+            }
+          ],
+          "2026-11-28": [
+            {
+              "time": "08:39",
+              "height": 0.1,
+              "type": "L"
+            },
+            {
+              "time": "14:31",
+              "height": 1.81,
+              "type": "H"
+            },
+            {
+              "time": "18:00",
+              "height": 1.42,
+              "type": "L"
+            },
+            {
+              "time": "23:56",
+              "height": 2.99,
+              "type": "H"
+            }
+          ],
+          "2026-11-29": [
+            {
+              "time": "09:26",
+              "height": 0.15,
+              "type": "L"
+            },
+            {
+              "time": "15:31",
+              "height": 1.8,
+              "type": "H"
+            },
+            {
+              "time": "18:53",
+              "height": 1.51,
+              "type": "L"
+            }
+          ],
+          "2026-11-30": [
+            {
+              "time": "00:50",
+              "height": 2.75,
+              "type": "H"
+            },
+            {
+              "time": "10:10",
+              "height": 0.25,
+              "type": "L"
+            },
+            {
+              "time": "16:40",
+              "height": 1.83,
+              "type": "H"
+            },
+            {
+              "time": "20:19",
+              "height": 1.59,
+              "type": "L"
             }
           ]
         }
@@ -6260,30 +14341,3023 @@ window.CAMP_CONDITIONS = {
 
 // 天文台 OCF 自動分區九日預報（data/auto/ocf-forecast.json），每日 Actions 更新
 window.CAMP_OCF = {
-  "fetchedAt": "2026-10-27T10:32:00.000Z",
+  "fetchedAt": "2026-10-27T20:50:06.215Z",
   "source": "https://maps.weather.gov.hk/ocf/dat/<StationCode>.xml",
   "notes": "天文台自動分區天氣預報（ARWF）：多模型共識 + 本地觀測校正，每日更新兩次；電腦自動生成、未經人手修訂，可能同天文台正式預報唔同。PoP 只表示落雨機會，唔代表雨量／時間／持續時間。",
   "officialNotesUrl": "https://maps.weather.gov.hk/ocf/help_e.html",
-  "seed": true,
-  "seedNote": "2026-10-27 用 fetch_page 實測 HKO OCF 12 個站嘅官方 JSON 取得；每日 sync-data.yml 會覆寫（含逐小時）。",
   "failed": [],
   "stations": {
+    "TKL": {
+      "code": "TKL",
+      "name": "打鼓嶺",
+      "lat": 22.529,
+      "lng": 114.157,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.4,
+          "min": 20.6
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.7,
+          "min": 20
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 32.4,
+          "min": 20.9
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 30.2,
+          "min": 21.6
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 52,
+          "max": 29.9,
+          "min": 22.2
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 32.4,
+          "min": 22.2
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 30.4,
+          "min": 21.4
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.9,
+          "min": 21.5
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 30.7,
+          "min": 21
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 22.3,
+          "rh": 69.1,
+          "wind": 8.3,
+          "weather": 51
+        },
+        {
+          "hour": "2026102814",
+          "temp": 29.4,
+          "rh": 52.9,
+          "wind": 11.2,
+          "weather": 50
+        },
+        {
+          "hour": "2026102820",
+          "temp": 24.3,
+          "rh": 77.6,
+          "wind": 8.3,
+          "weather": 74
+        },
+        {
+          "hour": "2026102908",
+          "temp": 22,
+          "rh": 78.9,
+          "wind": 6.1,
+          "weather": 50
+        },
+        {
+          "hour": "2026102914",
+          "temp": 30.7,
+          "rh": 52.1,
+          "wind": 9,
+          "weather": 50
+        },
+        {
+          "hour": "2026102920",
+          "temp": 24,
+          "rh": 80.1,
+          "wind": 4,
+          "weather": 74
+        },
+        {
+          "hour": "2026103008",
+          "temp": 23.6,
+          "rh": 88.9,
+          "wind": 2.5,
+          "weather": 50
+        },
+        {
+          "hour": "2026103014",
+          "temp": 32.4,
+          "rh": 49.9,
+          "wind": 8.6,
+          "weather": 50
+        },
+        {
+          "hour": "2026103020",
+          "temp": 24.4,
+          "rh": 82.6,
+          "wind": 4.7,
+          "weather": 74
+        },
+        {
+          "hour": "2026103108",
+          "temp": 24,
+          "rh": 83,
+          "wind": 6.1,
+          "weather": 50
+        },
+        {
+          "hour": "2026103114",
+          "temp": 30.2,
+          "rh": 59,
+          "wind": 11.2,
+          "weather": 50
+        },
+        {
+          "hour": "2026103120",
+          "temp": 24.1,
+          "rh": 87.3,
+          "wind": 6.5,
+          "weather": 74
+        },
+        {
+          "hour": "2026110108",
+          "temp": 23.8,
+          "rh": 93.8,
+          "wind": 5,
+          "weather": 60
+        },
+        {
+          "hour": "2026110114",
+          "temp": 29.9,
+          "rh": 66.8,
+          "wind": 10.4,
+          "weather": 52
+        },
+        {
+          "hour": "2026110120",
+          "temp": 24.9,
+          "rh": 88.7,
+          "wind": 5,
+          "weather": 741
+        },
+        {
+          "hour": "2026110208",
+          "temp": 24.6,
+          "rh": 86.3,
+          "wind": 4,
+          "weather": 52
+        },
+        {
+          "hour": "2026110214",
+          "temp": 32.4,
+          "rh": 52.8,
+          "wind": 9.7,
+          "weather": 50
+        },
+        {
+          "hour": "2026110220",
+          "temp": 25.9,
+          "rh": 76,
+          "wind": 4.7,
+          "weather": 74
+        },
+        {
+          "hour": "2026110308",
+          "temp": 23.1,
+          "rh": 77.9,
+          "wind": 5.4,
+          "weather": 51
+        },
+        {
+          "hour": "2026110314",
+          "temp": 30.4,
+          "rh": 54.7,
+          "wind": 10.1,
+          "weather": 52
+        },
+        {
+          "hour": "2026110320",
+          "temp": 24.7,
+          "rh": 80.8,
+          "wind": 5.8,
+          "weather": 75
+        },
+        {
+          "hour": "2026110408",
+          "temp": 23.4,
+          "rh": 79.8,
+          "wind": 6.1,
+          "weather": 50
+        },
+        {
+          "hour": "2026110414",
+          "temp": 29.9,
+          "rh": 54.2,
+          "wind": 10.1,
+          "weather": 50
+        },
+        {
+          "hour": "2026110420",
+          "temp": 24.4,
+          "rh": 78.4,
+          "wind": 5.8,
+          "weather": 75
+        },
+        {
+          "hour": "2026110508",
+          "temp": 23,
+          "rh": 78.2,
+          "wind": 4.7,
+          "weather": 50
+        },
+        {
+          "hour": "2026110514",
+          "temp": 30.7,
+          "rh": 50.2,
+          "wind": 9.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110520",
+          "temp": 25,
+          "rh": 73,
+          "wind": 4.7,
+          "weather": 75
+        }
+      ]
+    },
+    "TPO": {
+      "code": "TPO",
+      "name": "大埔",
+      "lat": 22.4482,
+      "lng": 114.177,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.5,
+          "min": 22.6
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.8,
+          "min": 22.2
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 31.3,
+          "min": 22.9
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29.3,
+          "min": 23.7
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 60,
+          "max": 29.1,
+          "min": 24.2
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 31.5,
+          "min": 24.1
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.5,
+          "min": 23.2
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29,
+          "min": 23.5
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.9,
+          "min": 23
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 23.7,
+          "rh": 66.6,
+          "wind": 15.8,
+          "weather": 51
+        },
+        {
+          "hour": "2026102814",
+          "temp": 28.4,
+          "rh": 58.2,
+          "wind": 16.9,
+          "weather": 50
+        },
+        {
+          "hour": "2026102820",
+          "temp": 25.6,
+          "rh": 72.6,
+          "wind": 13,
+          "weather": 74
+        },
+        {
+          "hour": "2026102908",
+          "temp": 23.8,
+          "rh": 75.7,
+          "wind": 11.9,
+          "weather": 50
+        },
+        {
+          "hour": "2026102914",
+          "temp": 29.8,
+          "rh": 57.3,
+          "wind": 14.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026102920",
+          "temp": 25.1,
+          "rh": 77,
+          "wind": 5.8,
+          "weather": 74
+        },
+        {
+          "hour": "2026103008",
+          "temp": 25.1,
+          "rh": 84.6,
+          "wind": 6.5,
+          "weather": 50
+        },
+        {
+          "hour": "2026103014",
+          "temp": 31.2,
+          "rh": 56.9,
+          "wind": 13.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026103020",
+          "temp": 25.5,
+          "rh": 78.5,
+          "wind": 6.8,
+          "weather": 74
+        },
+        {
+          "hour": "2026103108",
+          "temp": 25.3,
+          "rh": 80,
+          "wind": 11.5,
+          "weather": 50
+        },
+        {
+          "hour": "2026103114",
+          "temp": 29.2,
+          "rh": 64.4,
+          "wind": 16.6,
+          "weather": 51
+        },
+        {
+          "hour": "2026103120",
+          "temp": 25.4,
+          "rh": 82.3,
+          "wind": 9.4,
+          "weather": 74
+        },
+        {
+          "hour": "2026110108",
+          "temp": 25,
+          "rh": 90.8,
+          "wind": 10.1,
+          "weather": 60
+        },
+        {
+          "hour": "2026110114",
+          "temp": 29.1,
+          "rh": 71.9,
+          "wind": 15.1,
+          "weather": 60
+        },
+        {
+          "hour": "2026110120",
+          "temp": 26.1,
+          "rh": 84,
+          "wind": 7.2,
+          "weather": 741
+        },
+        {
+          "hour": "2026110208",
+          "temp": 25.7,
+          "rh": 82.8,
+          "wind": 7.6,
+          "weather": 52
+        },
+        {
+          "hour": "2026110214",
+          "temp": 31.5,
+          "rh": 57,
+          "wind": 14.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110220",
+          "temp": 27,
+          "rh": 72.5,
+          "wind": 6.8,
+          "weather": 74
+        },
+        {
+          "hour": "2026110308",
+          "temp": 24.5,
+          "rh": 75.7,
+          "wind": 10.4,
+          "weather": 52
+        },
+        {
+          "hour": "2026110314",
+          "temp": 29.5,
+          "rh": 59.6,
+          "wind": 15.1,
+          "weather": 52
+        },
+        {
+          "hour": "2026110320",
+          "temp": 26,
+          "rh": 76.4,
+          "wind": 8.6,
+          "weather": 75
+        },
+        {
+          "hour": "2026110408",
+          "temp": 24.7,
+          "rh": 76.7,
+          "wind": 11.2,
+          "weather": 51
+        },
+        {
+          "hour": "2026110414",
+          "temp": 29,
+          "rh": 58.7,
+          "wind": 15.1,
+          "weather": 50
+        },
+        {
+          "hour": "2026110420",
+          "temp": 25.7,
+          "rh": 74.3,
+          "wind": 8.6,
+          "weather": 75
+        },
+        {
+          "hour": "2026110508",
+          "temp": 24.4,
+          "rh": 74.2,
+          "wind": 9.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110514",
+          "temp": 29.9,
+          "rh": 54.7,
+          "wind": 14.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110520",
+          "temp": 26.1,
+          "rh": 69.5,
+          "wind": 6.8,
+          "weather": 75
+        }
+      ]
+    },
+    "SEK": {
+      "code": "SEK",
+      "name": "西貢",
+      "lat": 22.436,
+      "lng": 114.085,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.4,
+          "min": 21.4
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.8,
+          "min": 21
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 32.3,
+          "min": 21.9
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 30.3,
+          "min": 22.6
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 52,
+          "max": 30,
+          "min": 23.1
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 32.7,
+          "min": 23
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 30.2,
+          "min": 22.2
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.5,
+          "min": 22.4
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 30.5,
+          "min": 22
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 22.8,
+          "rh": 66.3,
+          "wind": 13,
+          "weather": 52
+        },
+        {
+          "hour": "2026102814",
+          "temp": 29.4,
+          "rh": 54.3,
+          "wind": 15.1,
+          "weather": 50
+        },
+        {
+          "hour": "2026102820",
+          "temp": 24.7,
+          "rh": 74.6,
+          "wind": 9.7,
+          "weather": 74
+        },
+        {
+          "hour": "2026102908",
+          "temp": 22.7,
+          "rh": 76.8,
+          "wind": 9,
+          "weather": 50
+        },
+        {
+          "hour": "2026102914",
+          "temp": 30.8,
+          "rh": 53.6,
+          "wind": 11.9,
+          "weather": 50
+        },
+        {
+          "hour": "2026102920",
+          "temp": 24.8,
+          "rh": 75.2,
+          "wind": 4.3,
+          "weather": 74
+        },
+        {
+          "hour": "2026103008",
+          "temp": 24.2,
+          "rh": 86.3,
+          "wind": 3.6,
+          "weather": 50
+        },
+        {
+          "hour": "2026103014",
+          "temp": 32.3,
+          "rh": 51.8,
+          "wind": 10.1,
+          "weather": 50
+        },
+        {
+          "hour": "2026103020",
+          "temp": 25.1,
+          "rh": 77.9,
+          "wind": 5.4,
+          "weather": 74
+        },
+        {
+          "hour": "2026103108",
+          "temp": 24.6,
+          "rh": 81.9,
+          "wind": 8.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026103114",
+          "temp": 30.2,
+          "rh": 60.8,
+          "wind": 14.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026103120",
+          "temp": 24.7,
+          "rh": 82.8,
+          "wind": 7.2,
+          "weather": 74
+        },
+        {
+          "hour": "2026110108",
+          "temp": 24.4,
+          "rh": 91.6,
+          "wind": 7.2,
+          "weather": 60
+        },
+        {
+          "hour": "2026110114",
+          "temp": 30,
+          "rh": 70.2,
+          "wind": 13.3,
+          "weather": 52
+        },
+        {
+          "hour": "2026110120",
+          "temp": 25.5,
+          "rh": 84.7,
+          "wind": 5.4,
+          "weather": 742
+        },
+        {
+          "hour": "2026110208",
+          "temp": 25,
+          "rh": 84.5,
+          "wind": 5.4,
+          "weather": 51
+        },
+        {
+          "hour": "2026110214",
+          "temp": 32.7,
+          "rh": 54.7,
+          "wind": 11.9,
+          "weather": 51
+        },
+        {
+          "hour": "2026110220",
+          "temp": 26.4,
+          "rh": 73.7,
+          "wind": 4.7,
+          "weather": 74
+        },
+        {
+          "hour": "2026110308",
+          "temp": 23.7,
+          "rh": 75.8,
+          "wind": 7.9,
+          "weather": 52
+        },
+        {
+          "hour": "2026110314",
+          "temp": 30.2,
+          "rh": 57.1,
+          "wind": 13,
+          "weather": 52
+        },
+        {
+          "hour": "2026110320",
+          "temp": 25.3,
+          "rh": 76.4,
+          "wind": 6.5,
+          "weather": 75
+        },
+        {
+          "hour": "2026110408",
+          "temp": 23.7,
+          "rh": 78,
+          "wind": 8.6,
+          "weather": 50
+        },
+        {
+          "hour": "2026110414",
+          "temp": 29.5,
+          "rh": 56.1,
+          "wind": 13,
+          "weather": 50
+        },
+        {
+          "hour": "2026110420",
+          "temp": 25,
+          "rh": 74.7,
+          "wind": 6.5,
+          "weather": 75
+        },
+        {
+          "hour": "2026110508",
+          "temp": 23.6,
+          "rh": 75.3,
+          "wind": 6.8,
+          "weather": 50
+        },
+        {
+          "hour": "2026110514",
+          "temp": 30.5,
+          "rh": 51.4,
+          "wind": 11.9,
+          "weather": 51
+        },
+        {
+          "hour": "2026110520",
+          "temp": 25.6,
+          "rh": 69,
+          "wind": 5,
+          "weather": 75
+        }
+      ]
+    },
+    "SHA": {
+      "code": "SHA",
+      "name": "沙田",
+      "lat": 22.403,
+      "lng": 114.21,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.1,
+          "min": 22.3
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.4,
+          "min": 22.2
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.7,
+          "min": 22.9
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29,
+          "min": 23.6
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 60,
+          "max": 28.9,
+          "min": 24
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 31.3,
+          "min": 23.9
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.2,
+          "min": 23
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.7,
+          "min": 23.3
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.6,
+          "min": 22.9
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 23.8,
+          "rh": 63.5,
+          "wind": 15.8,
+          "weather": 51
+        },
+        {
+          "hour": "2026102814",
+          "temp": 27.8,
+          "rh": 58.2,
+          "wind": 16.9,
+          "weather": 50
+        },
+        {
+          "hour": "2026102820",
+          "temp": 25.7,
+          "rh": 71.7,
+          "wind": 13,
+          "weather": 74
+        },
+        {
+          "hour": "2026102908",
+          "temp": 24.2,
+          "rh": 72.1,
+          "wind": 11.9,
+          "weather": 50
+        },
+        {
+          "hour": "2026102914",
+          "temp": 29,
+          "rh": 57.6,
+          "wind": 14.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026102920",
+          "temp": 25.2,
+          "rh": 76.2,
+          "wind": 5.8,
+          "weather": 74
+        },
+        {
+          "hour": "2026103008",
+          "temp": 25.6,
+          "rh": 79.3,
+          "wind": 6.5,
+          "weather": 50
+        },
+        {
+          "hour": "2026103014",
+          "temp": 30.7,
+          "rh": 58.5,
+          "wind": 13.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026103020",
+          "temp": 25.5,
+          "rh": 77.3,
+          "wind": 6.8,
+          "weather": 74
+        },
+        {
+          "hour": "2026103108",
+          "temp": 25.9,
+          "rh": 75.9,
+          "wind": 11.5,
+          "weather": 50
+        },
+        {
+          "hour": "2026103114",
+          "temp": 28.8,
+          "rh": 64.9,
+          "wind": 16.6,
+          "weather": 51
+        },
+        {
+          "hour": "2026103120",
+          "temp": 25.6,
+          "rh": 80.2,
+          "wind": 9.4,
+          "weather": 74
+        },
+        {
+          "hour": "2026110108",
+          "temp": 25.4,
+          "rh": 86,
+          "wind": 10.1,
+          "weather": 60
+        },
+        {
+          "hour": "2026110114",
+          "temp": 28.6,
+          "rh": 72.3,
+          "wind": 15.1,
+          "weather": 60
+        },
+        {
+          "hour": "2026110120",
+          "temp": 26.2,
+          "rh": 82.3,
+          "wind": 7.2,
+          "weather": 741
+        },
+        {
+          "hour": "2026110208",
+          "temp": 26.1,
+          "rh": 78.3,
+          "wind": 7.6,
+          "weather": 52
+        },
+        {
+          "hour": "2026110214",
+          "temp": 30.9,
+          "rh": 57.6,
+          "wind": 14.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110220",
+          "temp": 26.9,
+          "rh": 71.8,
+          "wind": 6.8,
+          "weather": 74
+        },
+        {
+          "hour": "2026110308",
+          "temp": 24.9,
+          "rh": 73.6,
+          "wind": 10.4,
+          "weather": 52
+        },
+        {
+          "hour": "2026110314",
+          "temp": 28.9,
+          "rh": 60.7,
+          "wind": 15.1,
+          "weather": 52
+        },
+        {
+          "hour": "2026110320",
+          "temp": 26.1,
+          "rh": 74.8,
+          "wind": 8.6,
+          "weather": 75
+        },
+        {
+          "hour": "2026110408",
+          "temp": 25.1,
+          "rh": 73.3,
+          "wind": 11.2,
+          "weather": 51
+        },
+        {
+          "hour": "2026110414",
+          "temp": 28.4,
+          "rh": 59.6,
+          "wind": 15.1,
+          "weather": 50
+        },
+        {
+          "hour": "2026110420",
+          "temp": 25.7,
+          "rh": 73.7,
+          "wind": 8.6,
+          "weather": 75
+        },
+        {
+          "hour": "2026110508",
+          "temp": 24.9,
+          "rh": 70.9,
+          "wind": 9.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110514",
+          "temp": 29.3,
+          "rh": 55.1,
+          "wind": 14.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110520",
+          "temp": 26.1,
+          "rh": 69.7,
+          "wind": 6.8,
+          "weather": 75
+        }
+      ]
+    },
+    "TWN": {
+      "code": "TWN",
+      "name": "荃灣",
+      "lat": 22.3836,
+      "lng": 114.108,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.5,
+          "min": 20.9
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.8,
+          "min": 20.7
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 30.1,
+          "min": 21.5
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.4,
+          "min": 22.2
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.1,
+          "min": 22.6
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 30.7,
+          "min": 22.6
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.2,
+          "min": 21.8
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.6,
+          "min": 21.9
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.5,
+          "min": 21.6
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 21.4,
+          "rh": 71,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026102814",
+          "temp": 27.1,
+          "rh": 61.9,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026102820",
+          "temp": 23.4,
+          "rh": 77.2,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026102908",
+          "temp": 21.8,
+          "rh": 81.4,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026102914",
+          "temp": 28.4,
+          "rh": 61,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026102920",
+          "temp": 23.3,
+          "rh": 79.1,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103008",
+          "temp": 23.3,
+          "rh": 90.2,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103014",
+          "temp": 30.1,
+          "rh": 60.5,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103020",
+          "temp": 23.6,
+          "rh": 81.3,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103108",
+          "temp": 23.5,
+          "rh": 86.1,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103114",
+          "temp": 28.2,
+          "rh": 68.7,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103120",
+          "temp": 23.4,
+          "rh": 85.6,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110108",
+          "temp": 23,
+          "rh": 96.5,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110114",
+          "temp": 27.8,
+          "rh": 78,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110120",
+          "temp": 24,
+          "rh": 88.2,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110208",
+          "temp": 23.8,
+          "rh": 89,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110214",
+          "temp": 30.3,
+          "rh": 62.1,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110220",
+          "temp": 24.8,
+          "rh": 77.7,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110308",
+          "temp": 22.4,
+          "rh": 81,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110314",
+          "temp": 27.8,
+          "rh": 65.1,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110320",
+          "temp": 23.9,
+          "rh": 80.1,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110408",
+          "temp": 22.5,
+          "rh": 82.4,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110414",
+          "temp": 27.3,
+          "rh": 63.7,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110420",
+          "temp": 23.6,
+          "rh": 78,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110508",
+          "temp": 22.3,
+          "rh": 80.1,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110514",
+          "temp": 28.1,
+          "rh": 58.7,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110520",
+          "temp": 24,
+          "rh": 72.9,
+          "wind": null,
+          "weather": null
+        }
+      ]
+    },
+    "LFS": {
+      "code": "LFS",
+      "name": "流浮山",
+      "lat": 22.469,
+      "lng": 113.984,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.4,
+          "min": 22.1
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 31.7,
+          "min": 21.6
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 32.5,
+          "min": 22.6
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 31.3,
+          "min": 23.2
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 30.7,
+          "min": 23.6
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 32.9,
+          "min": 23.8
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 31.1,
+          "min": 23.1
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 30.9,
+          "min": 23
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 31.3,
+          "min": 22.7
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 23.3,
+          "rh": 68.4,
+          "wind": 16.9,
+          "weather": 52
+        },
+        {
+          "hour": "2026102814",
+          "temp": 30.4,
+          "rh": 54.3,
+          "wind": 17.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026102820",
+          "temp": 24.6,
+          "rh": 77.8,
+          "wind": 16.2,
+          "weather": 74
+        },
+        {
+          "hour": "2026102908",
+          "temp": 23,
+          "rh": 78.6,
+          "wind": 13.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026102914",
+          "temp": 31.7,
+          "rh": 54.1,
+          "wind": 14.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026102920",
+          "temp": 25.1,
+          "rh": 75,
+          "wind": 12.2,
+          "weather": 74
+        },
+        {
+          "hour": "2026103008",
+          "temp": 24.5,
+          "rh": 88.7,
+          "wind": 8.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026103014",
+          "temp": 32.3,
+          "rh": 56,
+          "wind": 14,
+          "weather": 50
+        },
+        {
+          "hour": "2026103020",
+          "temp": 25.2,
+          "rh": 79.5,
+          "wind": 13.3,
+          "weather": 74
+        },
+        {
+          "hour": "2026103108",
+          "temp": 24.8,
+          "rh": 84.5,
+          "wind": 12.2,
+          "weather": 50
+        },
+        {
+          "hour": "2026103114",
+          "temp": 31.2,
+          "rh": 59.8,
+          "wind": 16.9,
+          "weather": 50
+        },
+        {
+          "hour": "2026103120",
+          "temp": 24.7,
+          "rh": 85.2,
+          "wind": 14,
+          "weather": 74
+        },
+        {
+          "hour": "2026110108",
+          "temp": 24.7,
+          "rh": 92.4,
+          "wind": 11.5,
+          "weather": 52
+        },
+        {
+          "hour": "2026110114",
+          "temp": 30.7,
+          "rh": 69.3,
+          "wind": 15.8,
+          "weather": 52
+        },
+        {
+          "hour": "2026110120",
+          "temp": 25.5,
+          "rh": 86.6,
+          "wind": 13,
+          "weather": 74
+        },
+        {
+          "hour": "2026110208",
+          "temp": 25.4,
+          "rh": 87.4,
+          "wind": 10.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110214",
+          "temp": 32.9,
+          "rh": 57.4,
+          "wind": 13.7,
+          "weather": 51
+        },
+        {
+          "hour": "2026110220",
+          "temp": 26.5,
+          "rh": 75.4,
+          "wind": 12.2,
+          "weather": 74
+        },
+        {
+          "hour": "2026110308",
+          "temp": 24.1,
+          "rh": 76.1,
+          "wind": 12.2,
+          "weather": 50
+        },
+        {
+          "hour": "2026110314",
+          "temp": 31.1,
+          "rh": 57.9,
+          "wind": 15.5,
+          "weather": 51
+        },
+        {
+          "hour": "2026110320",
+          "temp": 25.4,
+          "rh": 78.2,
+          "wind": 13.3,
+          "weather": 75
+        },
+        {
+          "hour": "2026110408",
+          "temp": 24.1,
+          "rh": 80,
+          "wind": 12.6,
+          "weather": 50
+        },
+        {
+          "hour": "2026110414",
+          "temp": 30.9,
+          "rh": 57,
+          "wind": 15.5,
+          "weather": 50
+        },
+        {
+          "hour": "2026110420",
+          "temp": 25.1,
+          "rh": 76.7,
+          "wind": 13.7,
+          "weather": 75
+        },
+        {
+          "hour": "2026110508",
+          "temp": 23.9,
+          "rh": 77.7,
+          "wind": 11.5,
+          "weather": 50
+        },
+        {
+          "hour": "2026110514",
+          "temp": 31.3,
+          "rh": 53.8,
+          "wind": 14.8,
+          "weather": 52
+        },
+        {
+          "hour": "2026110520",
+          "temp": 25.8,
+          "rh": 70.7,
+          "wind": 12.6,
+          "weather": 75
+        }
+      ]
+    },
+    "TUN": {
+      "code": "TUN",
+      "name": "屯門",
+      "lat": 22.386,
+      "lng": 113.964,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.5,
+          "min": 22.7
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.9,
+          "min": 22.3
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.4,
+          "min": 23.3
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.8,
+          "min": 23.9
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.3,
+          "min": 24.2
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 31.4,
+          "min": 24.4
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29.6,
+          "min": 23.7
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.2,
+          "min": 23.6
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29.6,
+          "min": 23.5
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 23.7,
+          "rh": 61.8,
+          "wind": 10.8,
+          "weather": 52
+        },
+        {
+          "hour": "2026102814",
+          "temp": 28.4,
+          "rh": 56.8,
+          "wind": 13.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026102820",
+          "temp": 24.7,
+          "rh": 76.4,
+          "wind": 9.7,
+          "weather": 74
+        },
+        {
+          "hour": "2026102908",
+          "temp": 23.6,
+          "rh": 72.1,
+          "wind": 8.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026102914",
+          "temp": 29.7,
+          "rh": 56.7,
+          "wind": 11.2,
+          "weather": 50
+        },
+        {
+          "hour": "2026102920",
+          "temp": 25,
+          "rh": 75.8,
+          "wind": 7.9,
+          "weather": 74
+        },
+        {
+          "hour": "2026103008",
+          "temp": 25.2,
+          "rh": 80.1,
+          "wind": 5,
+          "weather": 50
+        },
+        {
+          "hour": "2026103014",
+          "temp": 29.9,
+          "rh": 62.2,
+          "wind": 10.8,
+          "weather": 50
+        },
+        {
+          "hour": "2026103020",
+          "temp": 25.2,
+          "rh": 78.7,
+          "wind": 8.3,
+          "weather": 74
+        },
+        {
+          "hour": "2026103108",
+          "temp": 25.5,
+          "rh": 77.2,
+          "wind": 7.9,
+          "weather": 50
+        },
+        {
+          "hour": "2026103114",
+          "temp": 29.5,
+          "rh": 62.2,
+          "wind": 12.6,
+          "weather": 50
+        },
+        {
+          "hour": "2026103120",
+          "temp": 24.8,
+          "rh": 83.2,
+          "wind": 9,
+          "weather": 74
+        },
+        {
+          "hour": "2026110108",
+          "temp": 25.2,
+          "rh": 85.4,
+          "wind": 7.2,
+          "weather": 52
+        },
+        {
+          "hour": "2026110114",
+          "temp": 29.3,
+          "rh": 71.6,
+          "wind": 11.9,
+          "weather": 52
+        },
+        {
+          "hour": "2026110120",
+          "temp": 25.6,
+          "rh": 85.6,
+          "wind": 8.3,
+          "weather": 74
+        },
+        {
+          "hour": "2026110208",
+          "temp": 25.9,
+          "rh": 80,
+          "wind": 6.5,
+          "weather": 50
+        },
+        {
+          "hour": "2026110214",
+          "temp": 31.2,
+          "rh": 60.2,
+          "wind": 10.4,
+          "weather": 51
+        },
+        {
+          "hour": "2026110220",
+          "temp": 26.4,
+          "rh": 75.9,
+          "wind": 7.6,
+          "weather": 74
+        },
+        {
+          "hour": "2026110308",
+          "temp": 24.7,
+          "rh": 70,
+          "wind": 7.9,
+          "weather": 51
+        },
+        {
+          "hour": "2026110314",
+          "temp": 29.4,
+          "rh": 59.4,
+          "wind": 11.9,
+          "weather": 52
+        },
+        {
+          "hour": "2026110320",
+          "temp": 25.3,
+          "rh": 77.7,
+          "wind": 9,
+          "weather": 75
+        },
+        {
+          "hour": "2026110408",
+          "temp": 24.6,
+          "rh": 72.9,
+          "wind": 8.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026110414",
+          "temp": 29,
+          "rh": 58.3,
+          "wind": 11.9,
+          "weather": 50
+        },
+        {
+          "hour": "2026110420",
+          "temp": 25.1,
+          "rh": 76.2,
+          "wind": 9,
+          "weather": 75
+        },
+        {
+          "hour": "2026110508",
+          "temp": 24.5,
+          "rh": 70.8,
+          "wind": 7.6,
+          "weather": 50
+        },
+        {
+          "hour": "2026110514",
+          "temp": 29.4,
+          "rh": 54.9,
+          "wind": 11.2,
+          "weather": 51
+        },
+        {
+          "hour": "2026110520",
+          "temp": 25.7,
+          "rh": 70.4,
+          "wind": 7.9,
+          "weather": 75
+        }
+      ]
+    },
+    "CCH": {
+      "code": "CCH",
+      "name": "長洲",
+      "lat": 22.201,
+      "lng": 114.027,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 27.9,
+          "min": 22.4
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 28.5,
+          "min": 22.4
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.2,
+          "min": 23.6
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.8,
+          "min": 24
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 28.6,
+          "min": 24.1
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 30.3,
+          "min": 24.3
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.1,
+          "min": 23.6
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.2,
+          "min": 23.3
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.9,
+          "min": 23.4
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 23.7,
+          "rh": 72.9,
+          "wind": 30.2,
+          "weather": 51
+        },
+        {
+          "hour": "2026102814",
+          "temp": 27.6,
+          "rh": 66,
+          "wind": 27.7,
+          "weather": 50
+        },
+        {
+          "hour": "2026102820",
+          "temp": 24.5,
+          "rh": 79.3,
+          "wind": 26.6,
+          "weather": 74
+        },
+        {
+          "hour": "2026102908",
+          "temp": 23.9,
+          "rh": 81,
+          "wind": 23.8,
+          "weather": 51
+        },
+        {
+          "hour": "2026102914",
+          "temp": 27.8,
+          "rh": 69,
+          "wind": 22.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026102920",
+          "temp": 24.6,
+          "rh": 78.3,
+          "wind": 15.1,
+          "weather": 74
+        },
+        {
+          "hour": "2026103008",
+          "temp": 25.2,
+          "rh": 85.8,
+          "wind": 13,
+          "weather": 50
+        },
+        {
+          "hour": "2026103014",
+          "temp": 27.8,
+          "rh": 73.2,
+          "wind": 19.8,
+          "weather": 50
+        },
+        {
+          "hour": "2026103020",
+          "temp": 24.8,
+          "rh": 80.6,
+          "wind": 15.5,
+          "weather": 74
+        },
+        {
+          "hour": "2026103108",
+          "temp": 25.3,
+          "rh": 84,
+          "wind": 22.3,
+          "weather": 50
+        },
+        {
+          "hour": "2026103114",
+          "temp": 28.1,
+          "rh": 73.5,
+          "wind": 24.8,
+          "weather": 50
+        },
+        {
+          "hour": "2026103120",
+          "temp": 24.9,
+          "rh": 84.5,
+          "wind": 20.2,
+          "weather": 74
+        },
+        {
+          "hour": "2026110108",
+          "temp": 25.2,
+          "rh": 92.1,
+          "wind": 19.8,
+          "weather": 60
+        },
+        {
+          "hour": "2026110114",
+          "temp": 28.2,
+          "rh": 80,
+          "wind": 23,
+          "weather": 52
+        },
+        {
+          "hour": "2026110120",
+          "temp": 25.4,
+          "rh": 88.5,
+          "wind": 17.6,
+          "weather": 742
+        },
+        {
+          "hour": "2026110208",
+          "temp": 25.6,
+          "rh": 87.6,
+          "wind": 15.1,
+          "weather": 51
+        },
+        {
+          "hour": "2026110214",
+          "temp": 29.8,
+          "rh": 71.2,
+          "wind": 18.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110220",
+          "temp": 25.8,
+          "rh": 82.3,
+          "wind": 14.8,
+          "weather": 74
+        },
+        {
+          "hour": "2026110308",
+          "temp": 24.8,
+          "rh": 81.4,
+          "wind": 19.8,
+          "weather": 52
+        },
+        {
+          "hour": "2026110314",
+          "temp": 28.6,
+          "rh": 70.9,
+          "wind": 23.8,
+          "weather": 51
+        },
+        {
+          "hour": "2026110320",
+          "temp": 25.1,
+          "rh": 82.4,
+          "wind": 19.1,
+          "weather": 75
+        },
+        {
+          "hour": "2026110408",
+          "temp": 24.5,
+          "rh": 82.4,
+          "wind": 22,
+          "weather": 50
+        },
+        {
+          "hour": "2026110414",
+          "temp": 27.7,
+          "rh": 69.6,
+          "wind": 23.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110420",
+          "temp": 24.7,
+          "rh": 81.5,
+          "wind": 19.1,
+          "weather": 75
+        },
+        {
+          "hour": "2026110508",
+          "temp": 24.6,
+          "rh": 79.8,
+          "wind": 18.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110514",
+          "temp": 28.4,
+          "rh": 65.3,
+          "wind": 20.5,
+          "weather": 50
+        },
+        {
+          "hour": "2026110520",
+          "temp": 25.2,
+          "rh": 75.8,
+          "wind": 16.2,
+          "weather": 75
+        }
+      ]
+    },
+    "SKW": {
+      "code": "SKW",
+      "name": "筲箕灣",
+      "lat": 22.2817,
+      "lng": 114.236,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 26.5,
+          "min": 23
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.3,
+          "min": 23
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.2,
+          "min": 24.2
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.4,
+          "min": 24.7
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.2,
+          "min": 24.7
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 29.5,
+          "min": 24.7
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.5,
+          "min": 24
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 26.9,
+          "min": 23.9
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.7,
+          "min": 23.9
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 24,
+          "rh": 67.3,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026102814",
+          "temp": 26.5,
+          "rh": 66.9,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026102820",
+          "temp": 25.2,
+          "rh": 73.8,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026102908",
+          "temp": 24.3,
+          "rh": 74.9,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026102914",
+          "temp": 27.3,
+          "rh": 68.3,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026102920",
+          "temp": 25.2,
+          "rh": 74.2,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103008",
+          "temp": 26.4,
+          "rh": 79.4,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103014",
+          "temp": 27.7,
+          "rh": 70.9,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103020",
+          "temp": 25.4,
+          "rh": 75.9,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103108",
+          "temp": 26.7,
+          "rh": 77.1,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103114",
+          "temp": 26.5,
+          "rh": 74.3,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026103120",
+          "temp": 25.4,
+          "rh": 80.5,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110108",
+          "temp": 25.8,
+          "rh": 86.4,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110114",
+          "temp": 27.2,
+          "rh": 81.8,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110120",
+          "temp": 25.9,
+          "rh": 84.1,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110208",
+          "temp": 26.6,
+          "rh": 79.9,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110214",
+          "temp": 29.5,
+          "rh": 67.8,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110220",
+          "temp": 26.6,
+          "rh": 74.2,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110308",
+          "temp": 25.4,
+          "rh": 75.9,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110314",
+          "temp": 27.5,
+          "rh": 71,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110320",
+          "temp": 25.7,
+          "rh": 76.6,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110408",
+          "temp": 25.3,
+          "rh": 74,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110414",
+          "temp": 26.9,
+          "rh": 68.6,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110420",
+          "temp": 25.4,
+          "rh": 74.9,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110508",
+          "temp": 25.3,
+          "rh": 72.2,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110514",
+          "temp": 27.6,
+          "rh": 63.6,
+          "wind": null,
+          "weather": null
+        },
+        {
+          "hour": "2026110520",
+          "temp": 25.9,
+          "rh": 71.2,
+          "wind": null,
+          "weather": null
+        }
+      ]
+    },
+    "HKS": {
+      "code": "HKS",
+      "name": "黃竹坑",
+      "lat": 22.245,
+      "lng": 114.174,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.7,
+          "min": 22.6
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.4,
+          "min": 22.7
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.2,
+          "min": 23.9
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29.5,
+          "min": 24.3
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 52,
+          "max": 29.3,
+          "min": 24.4
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 31.3,
+          "min": 24.4
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.7,
+          "min": 23.7
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 29,
+          "min": 23.5
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.8,
+          "min": 23.6
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 23.9,
+          "rh": 69.5,
+          "wind": 11.9,
+          "weather": 51
+        },
+        {
+          "hour": "2026102814",
+          "temp": 28.7,
+          "rh": 59.9,
+          "wind": 11.2,
+          "weather": 50
+        },
+        {
+          "hour": "2026102820",
+          "temp": 25,
+          "rh": 75.1,
+          "wind": 9,
+          "weather": 74
+        },
+        {
+          "hour": "2026102908",
+          "temp": 24.1,
+          "rh": 76.5,
+          "wind": 9.4,
+          "weather": 52
+        },
+        {
+          "hour": "2026102914",
+          "temp": 29.1,
+          "rh": 61.6,
+          "wind": 9.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026102920",
+          "temp": 25.1,
+          "rh": 75.1,
+          "wind": 4,
+          "weather": 74
+        },
+        {
+          "hour": "2026103008",
+          "temp": 25.7,
+          "rh": 80.6,
+          "wind": 5.8,
+          "weather": 50
+        },
+        {
+          "hour": "2026103014",
+          "temp": 30.2,
+          "rh": 64.2,
+          "wind": 9,
+          "weather": 50
+        },
+        {
+          "hour": "2026103020",
+          "temp": 25.3,
+          "rh": 77.1,
+          "wind": 4.3,
+          "weather": 74
+        },
+        {
+          "hour": "2026103108",
+          "temp": 26.3,
+          "rh": 79.1,
+          "wind": 8.6,
+          "weather": 51
+        },
+        {
+          "hour": "2026103114",
+          "temp": 29.5,
+          "rh": 66.8,
+          "wind": 10.1,
+          "weather": 51
+        },
+        {
+          "hour": "2026103120",
+          "temp": 25.3,
+          "rh": 81.5,
+          "wind": 6.5,
+          "weather": 74
+        },
+        {
+          "hour": "2026110108",
+          "temp": 25.6,
+          "rh": 88,
+          "wind": 7.9,
+          "weather": 60
+        },
+        {
+          "hour": "2026110114",
+          "temp": 29.3,
+          "rh": 73.6,
+          "wind": 9.4,
+          "weather": 52
+        },
+        {
+          "hour": "2026110120",
+          "temp": 25.8,
+          "rh": 85.3,
+          "wind": 5,
+          "weather": 741
+        },
+        {
+          "hour": "2026110208",
+          "temp": 26.1,
+          "rh": 82.4,
+          "wind": 5.8,
+          "weather": 51
+        },
+        {
+          "hour": "2026110214",
+          "temp": 31.3,
+          "rh": 62.3,
+          "wind": 8.6,
+          "weather": 51
+        },
+        {
+          "hour": "2026110220",
+          "temp": 26.4,
+          "rh": 76,
+          "wind": 4,
+          "weather": 74
+        },
+        {
+          "hour": "2026110308",
+          "temp": 25.3,
+          "rh": 77.7,
+          "wind": 7.9,
+          "weather": 52
+        },
+        {
+          "hour": "2026110314",
+          "temp": 29.7,
+          "rh": 64,
+          "wind": 9.7,
+          "weather": 52
+        },
+        {
+          "hour": "2026110320",
+          "temp": 25.4,
+          "rh": 78.2,
+          "wind": 5.8,
+          "weather": 75
+        },
+        {
+          "hour": "2026110408",
+          "temp": 25,
+          "rh": 76,
+          "wind": 9,
+          "weather": 51
+        },
+        {
+          "hour": "2026110414",
+          "temp": 29,
+          "rh": 61.8,
+          "wind": 9.7,
+          "weather": 50
+        },
+        {
+          "hour": "2026110420",
+          "temp": 25.1,
+          "rh": 76.5,
+          "wind": 5.4,
+          "weather": 75
+        },
+        {
+          "hour": "2026110508",
+          "temp": 25.1,
+          "rh": 74.5,
+          "wind": 7.2,
+          "weather": 50
+        },
+        {
+          "hour": "2026110514",
+          "temp": 29.8,
+          "rh": 57.3,
+          "wind": 9,
+          "weather": 50
+        },
+        {
+          "hour": "2026110520",
+          "temp": 25.7,
+          "rh": 72.3,
+          "wind": 4.3,
+          "weather": 75
+        }
+      ]
+    },
+    "JKB": {
+      "code": "JKB",
+      "name": "將軍澳",
+      "lat": 22.316,
+      "lng": 114.256,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
+      "daily": [
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 27.5,
+          "min": 21.4
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.4,
+          "min": 21.3
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.6,
+          "min": 22.5
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 28.5,
+          "min": 23
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 60,
+          "rainLabel": "60%",
+          "weather": 52,
+          "max": 28.4,
+          "min": 23.1
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 30.9,
+          "min": 23
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 60,
+          "rainLabel": "60%",
+          "weather": 51,
+          "max": 28.6,
+          "min": 22.2
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 28,
+          "min": 22.2
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 29.1,
+          "min": 22.3
+        }
+      ],
+      "hourly": [
+        {
+          "hour": "2026102808",
+          "temp": 23.1,
+          "rh": 72.8,
+          "wind": 9.4,
+          "weather": 51
+        },
+        {
+          "hour": "2026102814",
+          "temp": 27.5,
+          "rh": 61.6,
+          "wind": 11.2,
+          "weather": 50
+        },
+        {
+          "hour": "2026102820",
+          "temp": 23.8,
+          "rh": 82.4,
+          "wind": 7.2,
+          "weather": 74
+        },
+        {
+          "hour": "2026102908",
+          "temp": 23.4,
+          "rh": 81.3,
+          "wind": 7.6,
+          "weather": 52
+        },
+        {
+          "hour": "2026102914",
+          "temp": 28.4,
+          "rh": 62.9,
+          "wind": 10.1,
+          "weather": 50
+        },
+        {
+          "hour": "2026102920",
+          "temp": 23.6,
+          "rh": 83.4,
+          "wind": 4.3,
+          "weather": 74
+        },
+        {
+          "hour": "2026103008",
+          "temp": 25,
+          "rh": 85.8,
+          "wind": 5.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026103014",
+          "temp": 29.6,
+          "rh": 64.4,
+          "wind": 9.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026103020",
+          "temp": 23.9,
+          "rh": 85.6,
+          "wind": 4.3,
+          "weather": 74
+        },
+        {
+          "hour": "2026103108",
+          "temp": 25.3,
+          "rh": 83.4,
+          "wind": 7.2,
+          "weather": 51
+        },
+        {
+          "hour": "2026103114",
+          "temp": 28.2,
+          "rh": 68.6,
+          "wind": 10.8,
+          "weather": 50
+        },
+        {
+          "hour": "2026103120",
+          "temp": 23.9,
+          "rh": 90.5,
+          "wind": 5.4,
+          "weather": 74
+        },
+        {
+          "hour": "2026110108",
+          "temp": 24.7,
+          "rh": 93.4,
+          "wind": 6.5,
+          "weather": 62
+        },
+        {
+          "hour": "2026110114",
+          "temp": 28.4,
+          "rh": 74.5,
+          "wind": 9.7,
+          "weather": 52
+        },
+        {
+          "hour": "2026110120",
+          "temp": 24.4,
+          "rh": 94.2,
+          "wind": 5,
+          "weather": 741
+        },
+        {
+          "hour": "2026110208",
+          "temp": 25.4,
+          "rh": 86.5,
+          "wind": 5.4,
+          "weather": 52
+        },
+        {
+          "hour": "2026110214",
+          "temp": 30.9,
+          "rh": 61.4,
+          "wind": 9.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110220",
+          "temp": 25.1,
+          "rh": 83.4,
+          "wind": 4.3,
+          "weather": 74
+        },
+        {
+          "hour": "2026110308",
+          "temp": 24.1,
+          "rh": 83,
+          "wind": 6.8,
+          "weather": 52
+        },
+        {
+          "hour": "2026110314",
+          "temp": 28.6,
+          "rh": 64.7,
+          "wind": 10.1,
+          "weather": 52
+        },
+        {
+          "hour": "2026110320",
+          "temp": 24.2,
+          "rh": 86,
+          "wind": 5.4,
+          "weather": 75
+        },
+        {
+          "hour": "2026110408",
+          "temp": 24.1,
+          "rh": 80.5,
+          "wind": 7.2,
+          "weather": 52
+        },
+        {
+          "hour": "2026110414",
+          "temp": 28,
+          "rh": 63,
+          "wind": 9.7,
+          "weather": 50
+        },
+        {
+          "hour": "2026110420",
+          "temp": 23.9,
+          "rh": 83.6,
+          "wind": 5.4,
+          "weather": 75
+        },
+        {
+          "hour": "2026110508",
+          "temp": 24.2,
+          "rh": 79,
+          "wind": 6.1,
+          "weather": 51
+        },
+        {
+          "hour": "2026110514",
+          "temp": 29.1,
+          "rh": 57.9,
+          "wind": 9.7,
+          "weather": 50
+        },
+        {
+          "hour": "2026110520",
+          "temp": 24.3,
+          "rh": 80.2,
+          "wind": 4.7,
+          "weather": 75
+        }
+      ]
+    },
     "HKO": {
       "code": "HKO",
       "name": "香港天文台",
       "lat": 22.302,
       "lng": 114.174,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
+      "modelTime": 2026102700,
+      "lastModified": 20261028043227,
       "daily": [
-        {
-          "date": "2026-10-27",
-          "rainPct": 60,
-          "rainLabel": "60%",
-          "weather": 52,
-          "max": 29.7,
-          "min": 24.5
-        },
         {
           "date": "2026-10-28",
           "rainPct": 20,
@@ -6314,23 +17388,23 @@ window.CAMP_OCF = {
           "rainLabel": "20%",
           "weather": 51,
           "max": 29,
-          "min": 25.6
+          "min": 25.7
         },
         {
           "date": "2026-11-01",
           "rainPct": 40,
           "rainLabel": "40%",
-          "weather": 51,
-          "max": 29.1,
-          "min": 25.7
+          "weather": 52,
+          "max": 28.7,
+          "min": 25.8
         },
         {
           "date": "2026-11-02",
           "rainPct": 40,
           "rainLabel": "40%",
           "weather": 50,
-          "max": 31.4,
-          "min": 25.7
+          "max": 31.1,
+          "min": 25.8
         },
         {
           "date": "2026-11-03",
@@ -6338,1027 +17412,216 @@ window.CAMP_OCF = {
           "rainLabel": "40%",
           "weather": 51,
           "max": 29,
-          "min": 24.6
+          "min": 25
         },
         {
           "date": "2026-11-04",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 28.6,
-          "min": 24.4
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 29,
-          "min": 23.8
-        }
-      ],
-      "hourly": []
-    },
-    "SEK": {
-      "code": "SEK",
-      "name": "西貢",
-      "lat": 22.436,
-      "lng": 114.085,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
-        {
-          "date": "2026-10-27",
           "rainPct": 40,
           "rainLabel": "40%",
-          "weather": 52,
-          "max": 31.5,
-          "min": 22.9
-        },
-        {
-          "date": "2026-10-28",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 29.3,
-          "min": 21.3
-        },
-        {
-          "date": "2026-10-29",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 30.7,
-          "min": 21.1
-        },
-        {
-          "date": "2026-10-30",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 32.2,
-          "min": 21.8
-        },
-        {
-          "date": "2026-10-31",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 30.4,
-          "min": 22.5
-        },
-        {
-          "date": "2026-11-01",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 30.6,
-          "min": 23.1
-        },
-        {
-          "date": "2026-11-02",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 32.9,
-          "min": 23
-        },
-        {
-          "date": "2026-11-03",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 30.1,
-          "min": 21.9
-        },
-        {
-          "date": "2026-11-04",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 29.9,
-          "min": 21.6
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 30.2,
-          "min": 21
-        }
-      ],
-      "hourly": []
-    },
-    "LFS": {
-      "code": "LFS",
-      "name": "流浮山",
-      "lat": 22.469,
-      "lng": 113.984,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
-        {
-          "date": "2026-10-27",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 60,
-          "max": 32.6,
-          "min": 23.7
-        },
-        {
-          "date": "2026-10-28",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 30.3,
-          "min": 22
-        },
-        {
-          "date": "2026-10-29",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 31.7,
-          "min": 21.6
-        },
-        {
-          "date": "2026-10-30",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 32.3,
-          "min": 22.5
-        },
-        {
-          "date": "2026-10-31",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 31.4,
-          "min": 23.2
-        },
-        {
-          "date": "2026-11-01",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 31.3,
-          "min": 23.8
-        },
-        {
-          "date": "2026-11-02",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 33.2,
-          "min": 23.8
-        },
-        {
-          "date": "2026-11-03",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 31,
-          "min": 22.7
-        },
-        {
-          "date": "2026-11-04",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 30.8,
-          "min": 22.2
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 51,
-          "max": 31,
-          "min": 21.7
-        }
-      ],
-      "hourly": []
-    },
-    "CCH": {
-      "code": "CCH",
-      "name": "長洲",
-      "lat": 22.201,
-      "lng": 114.027,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
-        {
-          "date": "2026-10-27",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 52,
-          "max": 29.6,
-          "min": 24.1
-        },
-        {
-          "date": "2026-10-28",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 27.7,
-          "min": 22.4
-        },
-        {
-          "date": "2026-10-29",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 28.5,
-          "min": 22.5
-        },
-        {
-          "date": "2026-10-30",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 29.2,
-          "min": 23.5
-        },
-        {
-          "date": "2026-10-31",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 28.8,
-          "min": 24
-        },
-        {
-          "date": "2026-11-01",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 28.7,
-          "min": 24.2
-        },
-        {
-          "date": "2026-11-02",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 30.5,
-          "min": 24.3
-        },
-        {
-          "date": "2026-11-03",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 28.8,
-          "min": 23
-        },
-        {
-          "date": "2026-11-04",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 28.3,
-          "min": 22.9
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 28.6,
-          "min": 22.3
-        }
-      ],
-      "hourly": []
-    },
-    "TPO": {
-      "code": "TPO",
-      "name": "大埔",
-      "lat": 22.4482,
-      "lng": 114.177,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
-        {
-          "date": "2026-10-27",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 52,
-          "max": 30.4,
-          "min": 23.9
-        },
-        {
-          "date": "2026-10-28",
-          "rainPct": 20,
-          "rainLabel": "20%",
           "weather": 50,
           "max": 28.4,
-          "min": 22.5
+          "min": 25
         },
         {
-          "date": "2026-10-29",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 29.8,
-          "min": 22.3
-        },
-        {
-          "date": "2026-10-30",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 31.3,
-          "min": 22.9
-        },
-        {
-          "date": "2026-10-31",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 29.4,
-          "min": 23.7
-        },
-        {
-          "date": "2026-11-01",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 29.7,
-          "min": 24.2
-        },
-        {
-          "date": "2026-11-02",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 31.8,
-          "min": 24
-        },
-        {
-          "date": "2026-11-03",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 29.4,
-          "min": 22.9
-        },
-        {
-          "date": "2026-11-04",
+          "date": "2026-11-05",
           "rainPct": 20,
           "rainLabel": "20%",
           "weather": 50,
           "max": 29.2,
-          "min": 22.8
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 29.6,
-          "min": 22.3
+          "min": 25
         }
       ],
-      "hourly": []
-    },
-    "SHA": {
-      "code": "SHA",
-      "name": "沙田",
-      "lat": 22.403,
-      "lng": 114.21,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
+      "hourly": [
         {
-          "date": "2026-10-27",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 52,
-          "max": 30.5,
-          "min": 23.7
+          "hour": "2026102808",
+          "temp": 24.3,
+          "rh": 66,
+          "wind": 15.8,
+          "weather": 51
         },
         {
-          "date": "2026-10-28",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 28.2,
-          "min": 22.3
+          "hour": "2026102814",
+          "temp": 27.7,
+          "rh": 61,
+          "wind": 16.6,
+          "weather": 50
         },
         {
-          "date": "2026-10-29",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 29.4,
-          "min": 22.2
+          "hour": "2026102820",
+          "temp": 26.2,
+          "rh": 70.1,
+          "wind": 15.8,
+          "weather": 74
         },
         {
-          "date": "2026-10-30",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 30.8,
-          "min": 22.8
+          "hour": "2026102908",
+          "temp": 24.5,
+          "rh": 73.5,
+          "wind": 12.6,
+          "weather": 52
         },
         {
-          "date": "2026-10-31",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 29.1,
-          "min": 23.6
+          "hour": "2026102914",
+          "temp": 28.6,
+          "rh": 61,
+          "wind": 14,
+          "weather": 50
         },
         {
-          "date": "2026-11-01",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 29.4,
-          "min": 24
+          "hour": "2026102920",
+          "temp": 26.1,
+          "rh": 70.7,
+          "wind": 10.1,
+          "weather": 74
         },
         {
-          "date": "2026-11-02",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 31.6,
-          "min": 23.7
+          "hour": "2026103008",
+          "temp": 26,
+          "rh": 78.5,
+          "wind": 8.6,
+          "weather": 50
         },
         {
-          "date": "2026-11-03",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 29.2,
-          "min": 22.7
+          "hour": "2026103014",
+          "temp": 30,
+          "rh": 63.2,
+          "wind": 13.7,
+          "weather": 50
         },
         {
-          "date": "2026-11-04",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 28.9,
-          "min": 22.6
+          "hour": "2026103020",
+          "temp": 26.4,
+          "rh": 71.9,
+          "wind": 10.8,
+          "weather": 74
         },
         {
-          "date": "2026-11-05",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 29.3,
-          "min": 22.1
+          "hour": "2026103108",
+          "temp": 26.3,
+          "rh": 75.8,
+          "wind": 12.2,
+          "weather": 51
+        },
+        {
+          "hour": "2026103114",
+          "temp": 28.9,
+          "rh": 66.6,
+          "wind": 15.5,
+          "weather": 51
+        },
+        {
+          "hour": "2026103120",
+          "temp": 26.4,
+          "rh": 75.9,
+          "wind": 13,
+          "weather": 74
+        },
+        {
+          "hour": "2026110108",
+          "temp": 26,
+          "rh": 85.5,
+          "wind": 11.2,
+          "weather": 60
+        },
+        {
+          "hour": "2026110114",
+          "temp": 28.6,
+          "rh": 73.4,
+          "wind": 14,
+          "weather": 52
+        },
+        {
+          "hour": "2026110120",
+          "temp": 26.9,
+          "rh": 78.9,
+          "wind": 11.2,
+          "weather": 741
+        },
+        {
+          "hour": "2026110208",
+          "temp": 26.4,
+          "rh": 79,
+          "wind": 9,
+          "weather": 51
+        },
+        {
+          "hour": "2026110214",
+          "temp": 30.9,
+          "rh": 60.8,
+          "wind": 13.7,
+          "weather": 50
+        },
+        {
+          "hour": "2026110220",
+          "temp": 27.7,
+          "rh": 70.1,
+          "wind": 10.4,
+          "weather": 74
+        },
+        {
+          "hour": "2026110308",
+          "temp": 25.5,
+          "rh": 74.4,
+          "wind": 11.2,
+          "weather": 52
+        },
+        {
+          "hour": "2026110314",
+          "temp": 28.8,
+          "rh": 64,
+          "wind": 14.4,
+          "weather": 52
+        },
+        {
+          "hour": "2026110320",
+          "temp": 26.8,
+          "rh": 71.9,
+          "wind": 12.2,
+          "weather": 75
+        },
+        {
+          "hour": "2026110408",
+          "temp": 25.4,
+          "rh": 73.3,
+          "wind": 11.9,
+          "weather": 52
+        },
+        {
+          "hour": "2026110414",
+          "temp": 28.2,
+          "rh": 62.2,
+          "wind": 14.4,
+          "weather": 50
+        },
+        {
+          "hour": "2026110420",
+          "temp": 26.4,
+          "rh": 71.1,
+          "wind": 12.2,
+          "weather": 75
+        },
+        {
+          "hour": "2026110508",
+          "temp": 25.4,
+          "rh": 71.6,
+          "wind": 10.1,
+          "weather": 51
+        },
+        {
+          "hour": "2026110514",
+          "temp": 29,
+          "rh": 57.5,
+          "wind": 13.7,
+          "weather": 50
+        },
+        {
+          "hour": "2026110520",
+          "temp": 26.9,
+          "rh": 67.3,
+          "wind": 10.8,
+          "weather": 75
         }
-      ],
-      "hourly": []
-    },
-    "TKL": {
-      "code": "TKL",
-      "name": "打鼓嶺",
-      "lat": 22.529,
-      "lng": 114.157,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
-        {
-          "date": "2026-10-27",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 52,
-          "max": 31.6,
-          "min": 23.2
-        },
-        {
-          "date": "2026-10-28",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 29.4,
-          "min": 20.5
-        },
-        {
-          "date": "2026-10-29",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 30.8,
-          "min": 20
-        },
-        {
-          "date": "2026-10-30",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 32.5,
-          "min": 20.8
-        },
-        {
-          "date": "2026-10-31",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 30.3,
-          "min": 21.6
-        },
-        {
-          "date": "2026-11-01",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 30.6,
-          "min": 22.3
-        },
-        {
-          "date": "2026-11-02",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 32.7,
-          "min": 22.1
-        },
-        {
-          "date": "2026-11-03",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 30.3,
-          "min": 21.1
-        },
-        {
-          "date": "2026-11-04",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 30.1,
-          "min": 20.7
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 30.5,
-          "min": 20.1
-        }
-      ],
-      "hourly": []
-    },
-    "HKS": {
-      "code": "HKS",
-      "name": "黃竹坑",
-      "lat": 22.245,
-      "lng": 114.174,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
-        {
-          "date": "2026-10-27",
-          "rainPct": 60,
-          "rainLabel": "60%",
-          "weather": 63,
-          "max": 30.1,
-          "min": 23.4
-        },
-        {
-          "date": "2026-10-28",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 28.5,
-          "min": 22.6
-        },
-        {
-          "date": "2026-10-29",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 29.4,
-          "min": 22.7
-        },
-        {
-          "date": "2026-10-30",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 30.2,
-          "min": 23.9
-        },
-        {
-          "date": "2026-10-31",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 29.6,
-          "min": 24.3
-        },
-        {
-          "date": "2026-11-01",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 29.6,
-          "min": 24.4
-        },
-        {
-          "date": "2026-11-02",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 31.7,
-          "min": 24.4
-        },
-        {
-          "date": "2026-11-03",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 29.6,
-          "min": 23.2
-        },
-        {
-          "date": "2026-11-04",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 29.1,
-          "min": 23
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 29.5,
-          "min": 22.5
-        }
-      ],
-      "hourly": []
-    },
-    "JKB": {
-      "code": "JKB",
-      "name": "將軍澳",
-      "lat": 22.316,
-      "lng": 114.256,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
-        {
-          "date": "2026-10-27",
-          "rainPct": 60,
-          "rainLabel": "60%",
-          "weather": 63,
-          "max": 29.4,
-          "min": 23
-        },
-        {
-          "date": "2026-10-28",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 27.6,
-          "min": 21.4
-        },
-        {
-          "date": "2026-10-29",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 28.4,
-          "min": 21.4
-        },
-        {
-          "date": "2026-10-30",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 29.6,
-          "min": 22.4
-        },
-        {
-          "date": "2026-10-31",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 28.6,
-          "min": 23
-        },
-        {
-          "date": "2026-11-01",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 28.8,
-          "min": 23
-        },
-        {
-          "date": "2026-11-02",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 31.2,
-          "min": 22.9
-        },
-        {
-          "date": "2026-11-03",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 28.7,
-          "min": 21.8
-        },
-        {
-          "date": "2026-11-04",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 28.3,
-          "min": 21.6
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 28.8,
-          "min": 21.1
-        }
-      ],
-      "hourly": []
-    },
-    "TUN": {
-      "code": "TUN",
-      "name": "屯門",
-      "lat": 22.386,
-      "lng": 113.964,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
-        {
-          "date": "2026-10-27",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 52,
-          "max": 30.3,
-          "min": 24.3
-        },
-        {
-          "date": "2026-10-28",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 50,
-          "max": 28.5,
-          "min": 22.5
-        },
-        {
-          "date": "2026-10-29",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 29.9,
-          "min": 22.3
-        },
-        {
-          "date": "2026-10-30",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 30.4,
-          "min": 23.2
-        },
-        {
-          "date": "2026-10-31",
-          "rainPct": 5,
-          "rainLabel": "< 10%",
-          "weather": 50,
-          "max": 29.8,
-          "min": 23.9
-        },
-        {
-          "date": "2026-11-01",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 51,
-          "max": 29.7,
-          "min": 24.4
-        },
-        {
-          "date": "2026-11-02",
-          "rainPct": 40,
-          "rainLabel": "40%",
-          "weather": 50,
-          "max": 31.4,
-          "min": 24.5
-        },
-        {
-          "date": "2026-11-03",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 29.6,
-          "min": 23.3
-        },
-        {
-          "date": "2026-11-04",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 29.2,
-          "min": 22.9
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": 20,
-          "rainLabel": "20%",
-          "weather": 51,
-          "max": 29.4,
-          "min": 22.3
-        }
-      ],
-      "hourly": []
-    },
-    "TWN": {
-      "code": "TWN",
-      "name": "荃灣",
-      "lat": 22.3836,
-      "lng": 114.108,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
-        {
-          "date": "2026-10-27",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 29.5,
-          "min": 22.4
-        },
-        {
-          "date": "2026-10-28",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 27.4,
-          "min": 20.9
-        },
-        {
-          "date": "2026-10-29",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 28.7,
-          "min": 20.7
-        },
-        {
-          "date": "2026-10-30",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 30,
-          "min": 21.4
-        },
-        {
-          "date": "2026-10-31",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 28.5,
-          "min": 22.2
-        },
-        {
-          "date": "2026-11-01",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 28.7,
-          "min": 22.6
-        },
-        {
-          "date": "2026-11-02",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 30.8,
-          "min": 22.5
-        },
-        {
-          "date": "2026-11-03",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 28.4,
-          "min": 21.5
-        },
-        {
-          "date": "2026-11-04",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 28.2,
-          "min": 21.2
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 28.6,
-          "min": 20.8
-        }
-      ],
-      "hourly": []
-    },
-    "SKW": {
-      "code": "SKW",
-      "name": "筲箕灣",
-      "lat": 22.2817,
-      "lng": 114.236,
-      "modelTime": 2026102612,
-      "lastModified": 20261027183214,
-      "daily": [
-        {
-          "date": "2026-10-27",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 28,
-          "min": 23.4
-        },
-        {
-          "date": "2026-10-28",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 26.5,
-          "min": 23
-        },
-        {
-          "date": "2026-10-29",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 27.3,
-          "min": 23
-        },
-        {
-          "date": "2026-10-30",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 28.3,
-          "min": 24.2
-        },
-        {
-          "date": "2026-10-31",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 27.5,
-          "min": 24.6
-        },
-        {
-          "date": "2026-11-01",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 27.5,
-          "min": 24.7
-        },
-        {
-          "date": "2026-11-02",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 29.7,
-          "min": 24.6
-        },
-        {
-          "date": "2026-11-03",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 27.5,
-          "min": 23.5
-        },
-        {
-          "date": "2026-11-04",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 27.1,
-          "min": 23.3
-        },
-        {
-          "date": "2026-11-05",
-          "rainPct": null,
-          "rainLabel": null,
-          "weather": null,
-          "max": 27.5,
-          "min": 22.8
-        }
-      ],
-      "hourly": []
+      ]
     }
   }
 };
