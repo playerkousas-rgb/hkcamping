@@ -1,0 +1,51 @@
+# 依 playerkousas-rgb/readme → templates/git/gitignore（G5 / S10）
+# ---- 依賴 / 產物 ----
+node_modules/
+dist/
+build/
+out/
+.vercel/
+.cache/
+coverage/
+.nyc_output/
+
+# ---- secret（唯一例外係 .env.example）----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+service-account*.json
+credentials*.json
+
+# ---- 垃圾檔 ----
+*.log
+*.bak
+*.tmp
+*.old
+*.orig
+*.swp
+.DS_Store
+Thumbs.db
+
+# ---- 大檔 / binary（要就要用 LFS）----
+*.zip
+*.tar.gz
+*.7z
+*.psd
+*.ai
+*.mp4
+*.mov
+*.dmg
+*.exe
+
+# ---- 編輯器 ----
+.idea/
+.vscode/*
+!.vscode/settings.json
+
+# W6：API KEY 注入版
+*_local_*
+*_injected*
+*.keyed.html

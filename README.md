@@ -31,8 +31,10 @@ NGO 與私人營地的收費為**約數（每人每晚起）**，實際按營期
 ```
 hk-camp-database/
 ├── data.csv              # 人工策展層（摘要、標籤、收費、訊號、NGO/民宿）
-├── build-data.mjs        # CSV → data.js 轉換腳本（零依賴）
+├── build-data.mjs        # CSV → data.js 轉換腳本（零依賴，支援 --check）
+├── build-site.mjs        # 部署 build：rebuild data.js + 只抄 4 個檔入 dist/
 ├── data.js               # 自動產生，網站實際讀取的資料
+├── vercel.json / .vercelignore / .gitignore  # 部署與 Git 衛生設定
 ├── data/auto/            # 機器快照層（GitHub Actions 定時更新，勿手改）
 │   ├── afcd-campsites.json   漁護署 41 營地官方數據（CSDI，連水源/營位規模）
 │   ├── afcd-diff-report.md   官方數據與 data.csv 嘅差異報告
@@ -103,10 +105,15 @@ python3 -m http.server 8000
 
 ## 部署到 Vercel（Git + Vercel + Script 方案）
 
-1. 把整個資料夾推到 GitHub 新增 repository
-2. Vercel → **Add New Project** → 選該 repo
-3. Framework Preset 選 **Other**，Build Command 留空（data.js 已 commit）或填 `node build-data.mjs`
-4. 按 Deploy，完成後每次 push 自動重新部署，免費額度已足夠
+1. Repo 已喺 GitHub：`playerkousas-rgb/hkcamping`（Public）
+2. Vercel → **Add New Project** → Import 該 repo
+3. Framework Preset 選 **Other**；`vercel.json` 已定案，Build Command 會自動讀做
+   `node build-site.mjs`、Output Directory `dist`、Region `hkg1`
+4. 按 Deploy，完成後每次 push 到 `main` 自動重新部署，免費額度已足夠
+
+`build-site.mjs` 只會輸出 4 個檔（約 113KB）入 `dist/`；`.vercelignore` 擋走工具、文件同大快照。
+本機想驗收同一份產物：`npm run build:site` 後用任何 static server 開 `dist/`。
+詳細交接同 Vercel 連接口限制見 [GITHUB-SETUP.md](GITHUB-SETUP.md)。
 
 ## 將來升級 Notion 的路徑（不用重寫網站）
 

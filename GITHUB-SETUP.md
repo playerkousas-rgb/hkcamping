@@ -54,18 +54,34 @@ gh run list -R playerkousas-rgb/hkcamping --limit 5
 - `data.js` 係 build 產物但必須 commit（`index.html` 用 `<script>` 直接載入，`file://` 都開到）。
 - 每次 commit 前跑 `npm run guard`（見 [HANDOVER-STATUS.md](HANDOVER-STATUS.md)）。
 
-## 四、Vercel 部署設定
+## 四、Vercel 部署設定（P1）
 
-Framework Preset：**Other**；Build Command：留空（`data.js` 已 commit）或 `node build-data.mjs`；
-Output Directory：`.`（`index.html` 喺根目錄）；Region：`hkg1`（已寫入 `vercel.json`）。
-`.vercelignore` 會擋 `.git/`、`.github/`、`scripts/`、`*.md` 等非部署檔。
+`vercel.json` 已定案：`framework: null`、`buildCommand: node build-site.mjs`、
+`outputDirectory: dist`、`cleanUrls: true`、`regions: ["hkg1"]`、保安 headers。
+`build-site.mjs` 會 rebuild `data.js` 再把 **4 個檔**（index／styles／app／data）抄入 `dist/`，
+輸出約 113KB；`.vercelignore` 擋 `.git/`、`.github/`、`scripts/`、`*.md`、`tools-*.mjs`、
+`geocache.json` 同兩份大 HAD 快照 → 只保留 build 需要嘅 `data/auto/weather.json`。
+
+**Dashboard / Git Import 設定**（Framework Preset 選 **Other** 時覆寫）：
+
+| 欄位 | 值 |
+|---|---|
+| Framework Preset | Other |
+| Build Command | `node build-site.mjs`（或留空，直接用已 commit 嘅 `data.js`） |
+| Output Directory | `dist`（若 Build Command 留空則填 `.`） |
+| Install Command | 留空／`npm install`（零 dependencies） |
+| Root Directory | `.` |
 
 每次 push 到 `main` 自動部署；Preview 建議只開 main、retention 7 日（S8）。
 驗收：地圖同 108 張卡片正常、篩選／搜尋／我最愛可用、OFCA「📶 覆蓋查詢」同「🏛 官方地圖」連結可開、
-頁尾顯示 `© SCOUT SYSTEM` 同版號。
+天氣列顯示週末 PSR、頁尾顯示 `© SCOUT SYSTEM` 同版號。
 
-> 若 Vercel 連接口 token 係 `limited` scope（無 project／deployment 讀寫權），
-> 就需要你喺 Vercel Dashboard 重新授權或改用 Git Import；Git Import 唔需要 API token。
+> ⚠️ **2026-10-27 實測**：Arena 嘅 Vercel 連接口憑證雖然 `validate_credential` 成功，
+> 但用戶係 `limited: true`，`list_projects`／`list_deployments`／`get_project`／`create_project`
+> 全部回 **403 Access denied** → 我**無法代你開 project 或觸發 deployment**。
+> 兩個解法：① 喺 Vercel Dashboard 用 **Git Import** 揀 `playerkousas-rgb/hkcamping`（唔需要 API token）；
+> ② 重新授權 Vercel 連接口（要有 project／deployment 讀寫 scope）再叫我部署。
+> 喺未完成之前，本機 live preview 可以用 `npm run dev` 頂住。
 
 ## 五、Git 工作流程（跟 `readme` 真理倉 G2/G3）
 

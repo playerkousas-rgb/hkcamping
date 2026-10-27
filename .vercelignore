@@ -1,0 +1,48 @@
+# S2：只 upload build 需要嘅源檔；正式輸出係 dist/（見 vercel.json）
+node_modules/
+.git/
+.github/
+.vercel/
+.cache/
+coverage/
+.nyc_output/
+scripts/
+docs/
+templates/
+__tests__/
+tests/
+uploads/
+temp/
+
+# 文件／記錄唔部署
+*.md
+*.log
+*.bak
+*.tmp
+*.old
+*.orig
+*.zip
+*.tar.gz
+*.psd
+*.mp4
+
+# 同步工具、地理編碼快取、大快照唔部署（build 只需要 data/auto/weather.json）
+tools-*.mjs
+geocache.json
+data/auto/had-guesthouses.json
+data/auto/had-candidates.json
+data/auto/afcd-campsites.json
+data/auto/*-diff-report.md
+
+# secret（唯一例外 .env.example）
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+service-account*.json
+credentials*.json
+*_local_*
+*_injected*
+*.keyed.html

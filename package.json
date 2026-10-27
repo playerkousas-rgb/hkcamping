@@ -9,6 +9,7 @@
     "sync:weather": "node tools-sync-weather.mjs",
     "sync:had": "node tools-sync-had.mjs",
     "sync": "node tools-sync-afcd.mjs && node tools-sync-weather.mjs && node tools-sync-had.mjs && node build-data.mjs",
+    "build:site": "node build-site.mjs",
     "dev": "node build-data.mjs && python3 -m http.server 8000"
   },
   "engines": {
