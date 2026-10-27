@@ -1,5 +1,10 @@
 # 香港露營・宿營・民宿資料庫（HK Camp Database）
 
+> 📌 **項目進度／交接**：[PROGRESS.md](PROGRESS.md)（完整 commit 清單、驗收、下一步）·
+> [HANDOVER-STATUS.md](HANDOVER-STATUS.md)（規則對照）·
+> [GITHUB-SETUP.md](GITHUB-SETUP.md)（部署設定）·
+> [AUTOMATION.md](AUTOMATION.md)（自動化策略）
+
 參考台灣 [營火部落營地資料庫](https://campfiretw.com/camp-database/) 的香港版，收錄：
 
 - ⛺ **漁農自然護理署（漁護署）41 個郊野公園指定露營地點**（官方完整名單，全部免費）

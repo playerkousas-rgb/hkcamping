@@ -36,7 +36,7 @@ const files = allFiles();
 
 /* ---------- 1. 必要檔（G1 / 部署合約） ---------- */
 const REQUIRED = [
-  'README.md', 'AUTOMATION.md', 'GITHUB-SETUP.md', 'HANDOVER-STATUS.md', 'VERSIONS.md',
+  'README.md', 'AUTOMATION.md', 'GITHUB-SETUP.md', 'HANDOVER-STATUS.md', 'PROGRESS.md', 'VERSIONS.md',
   'data.csv', 'data.js', 'build-data.mjs', 'build-site.mjs', 'package.json',
   'index.html', 'styles.css', 'app.js',
   '.gitignore', '.vercelignore', 'vercel.json',

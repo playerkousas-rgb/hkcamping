@@ -1,7 +1,8 @@
 # 交接體檢對照（2026-10-27）
 
 > 對照 `playerkousas-rgb/readme` 真理倉（README／AGENTS／PLAYBOOK／docs 00、05、06、10）
-> 同本 repo 嘅 `GITHUB-SETUP.md`（舊交接）。本檔係**現況快照**，改動後請更新。
+> 同本 repo 嘅 `GITHUB-SETUP.md`（舊交接）。本檔係**規則／風險對照**；
+> **完整進度、commit 清單、驗收結果同下一步見 [PROGRESS.md](PROGRESS.md)**。
 
 ## 一、施工進度
 
