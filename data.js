@@ -21,6 +21,7 @@ window.CAMPSITES = [
     "weatherStation": "打鼓嶺",
     "rainDistrict": "北區",
     "tideStation": null,
+    "ocfStation": "TKL",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -63,6 +64,7 @@ window.CAMPSITES = [
     "weatherStation": "打鼓嶺",
     "rainDistrict": "北區",
     "tideStation": null,
+    "ocfStation": "TKL",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -105,6 +107,7 @@ window.CAMPSITES = [
     "weatherStation": "大美督",
     "rainDistrict": "大埔",
     "tideStation": "TPK",
+    "ocfStation": "TPO",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -148,6 +151,7 @@ window.CAMPSITES = [
     "weatherStation": "大美督",
     "rainDistrict": "大埔",
     "tideStation": "TPK",
+    "ocfStation": "TPO",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -189,6 +193,7 @@ window.CAMPSITES = [
     "weatherStation": "大美督",
     "rainDistrict": "大埔",
     "tideStation": "TPK",
+    "ocfStation": "TPO",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -231,6 +236,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": "TPK",
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -276,6 +282,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": "TPK",
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -320,6 +327,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -361,6 +369,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": "TPK",
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -402,6 +411,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": "TPK",
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -443,6 +453,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": "TPK",
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -487,6 +498,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -529,6 +541,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": "KLW",
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -571,6 +584,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": "KLW",
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -613,6 +627,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": "KLW",
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -654,6 +669,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -694,6 +710,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": "KLW",
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -734,6 +751,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -775,6 +793,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -817,6 +836,7 @@ window.CAMPSITES = [
     "weatherStation": "沙田",
     "rainDistrict": "沙田",
     "tideStation": "TPK",
+    "ocfStation": "SHA",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -858,6 +878,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -900,6 +921,7 @@ window.CAMPSITES = [
     "weatherStation": "荃灣城門谷",
     "rainDistrict": "荃灣",
     "tideStation": null,
+    "ocfStation": "TWN",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -940,6 +962,7 @@ window.CAMPSITES = [
     "weatherStation": "荃灣可觀",
     "rainDistrict": "荃灣",
     "tideStation": null,
+    "ocfStation": "TWN",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -983,6 +1006,7 @@ window.CAMPSITES = [
     "weatherStation": "荃灣可觀",
     "rainDistrict": "荃灣",
     "tideStation": null,
+    "ocfStation": "TWN",
     "booking": true,
     "bookingUrl": "https://www.camping.gov.hk/tc/index.php",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1025,6 +1049,7 @@ window.CAMPSITES = [
     "weatherStation": "元朗公園",
     "rainDistrict": "元朗",
     "tideStation": "TBT",
+    "ocfStation": "LFS",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1067,6 +1092,7 @@ window.CAMPSITES = [
     "weatherStation": "屯門",
     "rainDistrict": "屯門",
     "tideStation": "TBT",
+    "ocfStation": "TUN",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1108,6 +1134,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1151,6 +1178,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CLK",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1192,6 +1220,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1232,6 +1261,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1272,6 +1302,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CLK",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1311,6 +1342,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "SKW",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1351,6 +1383,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "TAO",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1392,6 +1425,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "TAO",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1433,6 +1467,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "TAO",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1472,6 +1507,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "TAO",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1511,6 +1547,7 @@ window.CAMPSITES = [
     "weatherStation": "赤鱲角",
     "rainDistrict": "離島區",
     "tideStation": "TAO",
+    "ocfStation": "TWN",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1552,6 +1589,7 @@ window.CAMPSITES = [
     "weatherStation": "大埔",
     "rainDistrict": "大埔",
     "tideStation": null,
+    "ocfStation": "TPO",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1596,6 +1634,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1637,6 +1676,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": "KLW",
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1679,6 +1719,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "https://www.afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/cou_vis_cam_cam/cou_vis_cam_cam.html",
@@ -1722,6 +1763,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "CCH",
     "booking": true,
     "bookingUrl": "https://www.lcsd.gov.hk/clpss/tc/Index.do",
     "infoUrl": "https://www.lcsd.gov.hk/tc/facilities/facilitieslist/camps.html",
@@ -1766,6 +1808,7 @@ window.CAMPSITES = [
     "weatherStation": "大美督",
     "rainDistrict": "西貢",
     "tideStation": "KLW",
+    "ocfStation": "TPO",
     "booking": true,
     "bookingUrl": "https://www.lcsd.gov.hk/clpss/tc/Index.do",
     "infoUrl": "https://www.lcsd.gov.hk/tc/facilities/facilitieslist/camps.html",
@@ -1810,6 +1853,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": true,
     "bookingUrl": "https://www.lcsd.gov.hk/clpss/tc/Index.do",
     "infoUrl": "https://www.lcsd.gov.hk/tc/camp/p_lmhv.html",
@@ -1856,6 +1900,7 @@ window.CAMPSITES = [
     "weatherStation": "筲箕灣",
     "rainDistrict": "東區",
     "tideStation": "QUB",
+    "ocfStation": "SKW",
     "booking": true,
     "bookingUrl": "https://www.lcsd.gov.hk/clpss/tc/Index.do",
     "infoUrl": "https://www.lcsd.gov.hk/tc/camp/",
@@ -1901,6 +1946,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": true,
     "bookingUrl": "https://www.lcsd.gov.hk/clpss/tc/Index.do",
     "infoUrl": "https://www.lcsd.gov.hk/tc/camp/",
@@ -1947,6 +1993,7 @@ window.CAMPSITES = [
     "weatherStation": "荃灣可觀",
     "rainDistrict": "荃灣",
     "tideStation": null,
+    "ocfStation": "TWN",
     "booking": true,
     "bookingUrl": "https://www.lcsd.gov.hk/clpss/tc/Index.do",
     "infoUrl": "https://www.lcsd.gov.hk/tc/camp/",
@@ -1991,6 +2038,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.poleungkuk.org.hk/service/campsites",
@@ -2036,6 +2084,7 @@ window.CAMPSITES = [
     "weatherStation": "元朗公園",
     "rainDistrict": "元朗",
     "tideStation": "TBT",
+    "ocfStation": "LFS",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.poleungkuk.org.hk/service/campsites/po-leung-kuk-jockey-club-tai-tong-holiday-camp",
@@ -2081,6 +2130,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.salvationarmy.org.hk/ssd/bc/hk",
@@ -2124,6 +2174,7 @@ window.CAMPSITES = [
     "weatherStation": "荃灣可觀",
     "rainDistrict": "荃灣",
     "tideStation": null,
+    "ocfStation": "TWN",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.salvationarmy.org.hk/ssd/mwc/hk",
@@ -2167,6 +2218,7 @@ window.CAMPSITES = [
     "weatherStation": "沙田",
     "rainDistrict": "沙田",
     "tideStation": "TPK",
+    "ocfStation": "SHA",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.ymca.org.hk",
@@ -2213,6 +2265,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "http://wyc.ymca.org.hk",
@@ -2259,6 +2312,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CLK",
+    "ocfStation": "TWN",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "http://cmp.ywca.org.hk",
@@ -2304,6 +2358,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "JKB",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://hkfyg.org.hk",
@@ -2347,6 +2402,7 @@ window.CAMPSITES = [
     "weatherStation": "大美督",
     "rainDistrict": "大埔",
     "tideStation": "TPK",
+    "ocfStation": "TPO",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://tmt.hkfyg.org.hk",
@@ -2389,6 +2445,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://lyc.hkfyg.org.hk",
@@ -2432,6 +2489,7 @@ window.CAMPSITES = [
     "weatherStation": "赤柱",
     "rainDistrict": "南區",
     "tideStation": "QUB",
+    "ocfStation": "HKS",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://s.hkfyg.org.hk",
@@ -2474,6 +2532,7 @@ window.CAMPSITES = [
     "weatherStation": "沙田",
     "rainDistrict": "沙田",
     "tideStation": null,
+    "ocfStation": "JKB",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.scout.org.hk/tc/scout-units/camp-sites-facilities/camp-sites-activity-centres/index.html",
@@ -2516,6 +2575,7 @@ window.CAMPSITES = [
     "weatherStation": "赤柱",
     "rainDistrict": "南區",
     "tideStation": "QUB",
+    "ocfStation": "HKS",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.scout.org.hk/tc/scout-units/camp-sites-facilities/camp-sites-activity-centres/index.html",
@@ -2560,6 +2620,7 @@ window.CAMPSITES = [
     "weatherStation": "大埔",
     "rainDistrict": "大埔",
     "tideStation": "TPK",
+    "ocfStation": "TPO",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.scout.org.hk/tc/scout-units/camp-sites-facilities/camp-sites-activity-centres/index.html",
@@ -2605,6 +2666,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.scout.org.hk/tc/scout-units/camp-sites-facilities/camp-sites-activity-centres/index.html",
@@ -2649,6 +2711,7 @@ window.CAMPSITES = [
     "weatherStation": "打鼓嶺",
     "rainDistrict": "北區",
     "tideStation": null,
+    "ocfStation": "TKL",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.hkggacnp.org/br",
@@ -2694,6 +2757,7 @@ window.CAMPSITES = [
     "weatherStation": "沙田",
     "rainDistrict": "沙田",
     "tideStation": null,
+    "ocfStation": "SHA",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.hkggacnp.org/ph",
@@ -2738,6 +2802,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.caritas.org.hk/zh/service/camp",
@@ -2781,6 +2846,7 @@ window.CAMPSITES = [
     "weatherStation": "大埔",
     "rainDistrict": "大埔",
     "tideStation": "TPK",
+    "ocfStation": "TPO",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.caritas.org.hk/zh/service/camp",
@@ -2825,6 +2891,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "http://camp.bgca.org.hk",
@@ -2870,6 +2937,7 @@ window.CAMPSITES = [
     "weatherStation": "黃竹坑",
     "rainDistrict": "南區",
     "tideStation": null,
+    "ocfStation": "HKS",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "http://jcpc.hkphab.org.hk",
@@ -2914,6 +2982,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "http://camp.hkpa.hk",
@@ -2959,6 +3028,7 @@ window.CAMPSITES = [
     "weatherStation": "赤鱲角",
     "rainDistrict": "離島區",
     "tideStation": "CLK",
+    "ocfStation": "TWN",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "http://camp.hkpa.hk/camp/tcsinfo.php",
@@ -3003,6 +3073,7 @@ window.CAMPSITES = [
     "weatherStation": "大埔",
     "rainDistrict": "大埔",
     "tideStation": null,
+    "ocfStation": "TPO",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.ayp.org.hk/youth-development/camp-service/",
@@ -3047,6 +3118,7 @@ window.CAMPSITES = [
     "weatherStation": "打鼓嶺",
     "rainDistrict": "北區",
     "tideStation": null,
+    "ocfStation": "TKL",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "http://www.camphkba.org",
@@ -3092,6 +3164,7 @@ window.CAMPSITES = [
     "weatherStation": "沙田",
     "rainDistrict": "沙田",
     "tideStation": null,
+    "ocfStation": "SHA",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://highrock.stewards.hk",
@@ -3136,6 +3209,7 @@ window.CAMPSITES = [
     "weatherStation": "沙田",
     "rainDistrict": "沙田",
     "tideStation": null,
+    "ocfStation": "SHA",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "http://www.breakthrough.org.hk/chi/village/service.html",
@@ -3180,6 +3254,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "CCH",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.redcross.org.hk",
@@ -3223,6 +3298,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": true,
     "bookingUrl": "",
     "infoUrl": "https://www.outwardbound.org.hk",
@@ -3268,6 +3344,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "CCH",
     "booking": true,
     "bookingUrl": "https://www.longcoast.com.hk",
     "infoUrl": "",
@@ -3311,6 +3388,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": true,
     "bookingUrl": "https://saiyuen.com",
     "infoUrl": "",
@@ -3353,6 +3431,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "CCH",
     "booking": true,
     "bookingUrl": "https://www.treasureislandhk.com",
     "infoUrl": "",
@@ -3395,6 +3474,7 @@ window.CAMPSITES = [
     "weatherStation": "元朗公園",
     "rainDistrict": "元朗",
     "tideStation": "TBT",
+    "ocfStation": "LFS",
     "booking": true,
     "bookingUrl": "https://www.taitungorganic.com",
     "infoUrl": "",
@@ -3440,6 +3520,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3481,6 +3562,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3521,6 +3603,7 @@ window.CAMPSITES = [
     "weatherStation": "赤鱲角",
     "rainDistrict": "離島區",
     "tideStation": "TAO",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3564,6 +3647,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3606,6 +3690,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3638,6 +3723,7 @@ window.CAMPSITES = [
     "weatherStation": "西貢",
     "rainDistrict": "西貢",
     "tideStation": null,
+    "ocfStation": "SEK",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3681,6 +3767,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3714,6 +3801,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3747,6 +3835,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3779,6 +3868,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3811,6 +3901,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3843,6 +3934,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3876,6 +3968,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3909,6 +4002,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "SPW",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3942,6 +4036,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -3974,6 +4069,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4006,6 +4102,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4038,6 +4135,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4070,6 +4168,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4102,6 +4201,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4134,6 +4234,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4166,6 +4267,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4198,6 +4300,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4230,6 +4333,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4262,6 +4366,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4294,6 +4399,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4326,6 +4432,7 @@ window.CAMPSITES = [
     "weatherStation": "長洲",
     "rainDistrict": "離島區",
     "tideStation": "CCH",
+    "ocfStation": "CCH",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -4358,6 +4465,7 @@ window.CAMPSITES = [
     "weatherStation": "打鼓嶺",
     "rainDistrict": "北區",
     "tideStation": null,
+    "ocfStation": "TKL",
     "booking": false,
     "bookingUrl": "",
     "infoUrl": "",
@@ -6146,6 +6254,1111 @@ window.CAMP_CONDITIONS = {
           ]
         }
       }
+    }
+  }
+};
+
+// 天文台 OCF 自動分區九日預報（data/auto/ocf-forecast.json），每日 Actions 更新
+window.CAMP_OCF = {
+  "fetchedAt": "2026-10-27T10:32:00.000Z",
+  "source": "https://maps.weather.gov.hk/ocf/dat/<StationCode>.xml",
+  "notes": "天文台自動分區天氣預報（ARWF）：多模型共識 + 本地觀測校正，每日更新兩次；電腦自動生成、未經人手修訂，可能同天文台正式預報唔同。PoP 只表示落雨機會，唔代表雨量／時間／持續時間。",
+  "officialNotesUrl": "https://maps.weather.gov.hk/ocf/help_e.html",
+  "seed": true,
+  "seedNote": "2026-10-27 用 fetch_page 實測 HKO OCF 12 個站嘅官方 JSON 取得；每日 sync-data.yml 會覆寫（含逐小時）。",
+  "failed": [],
+  "stations": {
+    "HKO": {
+      "code": "HKO",
+      "name": "香港天文台",
+      "lat": 22.302,
+      "lng": 114.174,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": 60,
+          "rainLabel": "60%",
+          "weather": 52,
+          "max": 29.7,
+          "min": 24.5
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28,
+          "min": 24
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29,
+          "min": 24
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30,
+          "min": 25
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29,
+          "min": 25.6
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.1,
+          "min": 25.7
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 31.4,
+          "min": 25.7
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29,
+          "min": 24.6
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.6,
+          "min": 24.4
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29,
+          "min": 23.8
+        }
+      ],
+      "hourly": []
+    },
+    "SEK": {
+      "code": "SEK",
+      "name": "西貢",
+      "lat": 22.436,
+      "lng": 114.085,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 52,
+          "max": 31.5,
+          "min": 22.9
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.3,
+          "min": 21.3
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.7,
+          "min": 21.1
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 32.2,
+          "min": 21.8
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 30.4,
+          "min": 22.5
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 30.6,
+          "min": 23.1
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 32.9,
+          "min": 23
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 30.1,
+          "min": 21.9
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29.9,
+          "min": 21.6
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 30.2,
+          "min": 21
+        }
+      ],
+      "hourly": []
+    },
+    "LFS": {
+      "code": "LFS",
+      "name": "流浮山",
+      "lat": 22.469,
+      "lng": 113.984,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 60,
+          "max": 32.6,
+          "min": 23.7
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.3,
+          "min": 22
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 31.7,
+          "min": 21.6
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 32.3,
+          "min": 22.5
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 31.4,
+          "min": 23.2
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 31.3,
+          "min": 23.8
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 33.2,
+          "min": 23.8
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 31,
+          "min": 22.7
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 30.8,
+          "min": 22.2
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 51,
+          "max": 31,
+          "min": 21.7
+        }
+      ],
+      "hourly": []
+    },
+    "CCH": {
+      "code": "CCH",
+      "name": "長洲",
+      "lat": 22.201,
+      "lng": 114.027,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 52,
+          "max": 29.6,
+          "min": 24.1
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 27.7,
+          "min": 22.4
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 28.5,
+          "min": 22.5
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.2,
+          "min": 23.5
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.8,
+          "min": 24
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 28.7,
+          "min": 24.2
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 30.5,
+          "min": 24.3
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.8,
+          "min": 23
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.3,
+          "min": 22.9
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.6,
+          "min": 22.3
+        }
+      ],
+      "hourly": []
+    },
+    "TPO": {
+      "code": "TPO",
+      "name": "大埔",
+      "lat": 22.4482,
+      "lng": 114.177,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 52,
+          "max": 30.4,
+          "min": 23.9
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.4,
+          "min": 22.5
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.8,
+          "min": 22.3
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 31.3,
+          "min": 22.9
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.4,
+          "min": 23.7
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.7,
+          "min": 24.2
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 31.8,
+          "min": 24
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.4,
+          "min": 22.9
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.2,
+          "min": 22.8
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.6,
+          "min": 22.3
+        }
+      ],
+      "hourly": []
+    },
+    "SHA": {
+      "code": "SHA",
+      "name": "沙田",
+      "lat": 22.403,
+      "lng": 114.21,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 52,
+          "max": 30.5,
+          "min": 23.7
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.2,
+          "min": 22.3
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.4,
+          "min": 22.2
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.8,
+          "min": 22.8
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.1,
+          "min": 23.6
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.4,
+          "min": 24
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 31.6,
+          "min": 23.7
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29.2,
+          "min": 22.7
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.9,
+          "min": 22.6
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.3,
+          "min": 22.1
+        }
+      ],
+      "hourly": []
+    },
+    "TKL": {
+      "code": "TKL",
+      "name": "打鼓嶺",
+      "lat": 22.529,
+      "lng": 114.157,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 52,
+          "max": 31.6,
+          "min": 23.2
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.4,
+          "min": 20.5
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.8,
+          "min": 20
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 32.5,
+          "min": 20.8
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 30.3,
+          "min": 21.6
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 30.6,
+          "min": 22.3
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 32.7,
+          "min": 22.1
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 30.3,
+          "min": 21.1
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 30.1,
+          "min": 20.7
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 30.5,
+          "min": 20.1
+        }
+      ],
+      "hourly": []
+    },
+    "HKS": {
+      "code": "HKS",
+      "name": "黃竹坑",
+      "lat": 22.245,
+      "lng": 114.174,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": 60,
+          "rainLabel": "60%",
+          "weather": 63,
+          "max": 30.1,
+          "min": 23.4
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.5,
+          "min": 22.6
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.4,
+          "min": 22.7
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.2,
+          "min": 23.9
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29.6,
+          "min": 24.3
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.6,
+          "min": 24.4
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 31.7,
+          "min": 24.4
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.6,
+          "min": 23.2
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.1,
+          "min": 23
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 29.5,
+          "min": 22.5
+        }
+      ],
+      "hourly": []
+    },
+    "JKB": {
+      "code": "JKB",
+      "name": "將軍澳",
+      "lat": 22.316,
+      "lng": 114.256,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": 60,
+          "rainLabel": "60%",
+          "weather": 63,
+          "max": 29.4,
+          "min": 23
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 27.6,
+          "min": 21.4
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.4,
+          "min": 21.4
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.6,
+          "min": 22.4
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 28.6,
+          "min": 23
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 28.8,
+          "min": 23
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 31.2,
+          "min": 22.9
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 28.7,
+          "min": 21.8
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 28.3,
+          "min": 21.6
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 28.8,
+          "min": 21.1
+        }
+      ],
+      "hourly": []
+    },
+    "TUN": {
+      "code": "TUN",
+      "name": "屯門",
+      "lat": 22.386,
+      "lng": 113.964,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 52,
+          "max": 30.3,
+          "min": 24.3
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 50,
+          "max": 28.5,
+          "min": 22.5
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.9,
+          "min": 22.3
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 30.4,
+          "min": 23.2
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": 5,
+          "rainLabel": "< 10%",
+          "weather": 50,
+          "max": 29.8,
+          "min": 23.9
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 51,
+          "max": 29.7,
+          "min": 24.4
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": 40,
+          "rainLabel": "40%",
+          "weather": 50,
+          "max": 31.4,
+          "min": 24.5
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29.6,
+          "min": 23.3
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29.2,
+          "min": 22.9
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": 20,
+          "rainLabel": "20%",
+          "weather": 51,
+          "max": 29.4,
+          "min": 22.3
+        }
+      ],
+      "hourly": []
+    },
+    "TWN": {
+      "code": "TWN",
+      "name": "荃灣",
+      "lat": 22.3836,
+      "lng": 114.108,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 29.5,
+          "min": 22.4
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.4,
+          "min": 20.9
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.7,
+          "min": 20.7
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 30,
+          "min": 21.4
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.5,
+          "min": 22.2
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.7,
+          "min": 22.6
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 30.8,
+          "min": 22.5
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.4,
+          "min": 21.5
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.2,
+          "min": 21.2
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.6,
+          "min": 20.8
+        }
+      ],
+      "hourly": []
+    },
+    "SKW": {
+      "code": "SKW",
+      "name": "筲箕灣",
+      "lat": 22.2817,
+      "lng": 114.236,
+      "modelTime": 2026102612,
+      "lastModified": 20261027183214,
+      "daily": [
+        {
+          "date": "2026-10-27",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28,
+          "min": 23.4
+        },
+        {
+          "date": "2026-10-28",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 26.5,
+          "min": 23
+        },
+        {
+          "date": "2026-10-29",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.3,
+          "min": 23
+        },
+        {
+          "date": "2026-10-30",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 28.3,
+          "min": 24.2
+        },
+        {
+          "date": "2026-10-31",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.5,
+          "min": 24.6
+        },
+        {
+          "date": "2026-11-01",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.5,
+          "min": 24.7
+        },
+        {
+          "date": "2026-11-02",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 29.7,
+          "min": 24.6
+        },
+        {
+          "date": "2026-11-03",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.5,
+          "min": 23.5
+        },
+        {
+          "date": "2026-11-04",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.1,
+          "min": 23.3
+        },
+        {
+          "date": "2026-11-05",
+          "rainPct": null,
+          "rainLabel": null,
+          "weather": null,
+          "max": 27.5,
+          "min": 22.8
+        }
+      ],
+      "hourly": []
     }
   }
 };

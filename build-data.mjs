@@ -157,6 +157,38 @@ function tideStationFor(obj) {
   return null;
 }
 
+/**
+ * OCF 自動分區預報配對（v1.3.0）
+ * 12 個 HKO OCF 站（實測有效 code）→ 每個營地按 district / area 配對就近站。
+ * 呢個係「就近站參考」，山區／外島同站點可以有明顯差異；前端必須標明。
+ */
+const OCF_DISTRICT = {
+  '北區': 'TKL',    // 打鼓嶺
+  '大埔區': 'TPO',  // 大埔
+  '西貢區': 'SEK',  // 西貢
+  '沙田區': 'SHA',  // 沙田
+  '荃灣區': 'TWN',  // 荃灣
+  '元朗區': 'LFS',  // 流浮山
+  '屯門區': 'TUN',  // 屯門
+  '離島區': 'CCH',  // 長洲
+  '東區': 'SKW',    // 筲箕灣
+  '南區': 'HKS',    // 黃竹坑
+};
+const OCF_AREA_RULES = [
+  ['馬鞍山', 'SHA'], ['烏溪沙', 'SHA'],
+  ['將軍澳', 'JKB'], ['飛鵝山', 'JKB'], ['井欄樹', 'JKB'],
+  ['東涌', 'TWN'], ['大嶼山昂坪', 'TWN'], ['䃟石灣', 'TWN'],
+  ['赤柱', 'HKS'], ['大潭', 'HKS'], ['聖士提反', 'HKS'], ['薄扶林', 'HKS'],
+  ['柴灣', 'SKW'], ['大浪灣', 'SKW'],
+  ['大棠', 'LFS'], ['大帽山', 'TWN'], ['城門', 'TWN'],
+  ['大美督', 'TPO'], ['船灣', 'TPO'], ['東平洲', 'TPO'], ['荔枝莊', 'TPO'],
+  ['白沙灣', 'SEK'], ['大網仔', 'SEK'], ['北潭', 'SEK'], ['萬宜', 'SEK'],
+];
+function ocfStationFor(obj) {
+  for (const [kw, code] of OCF_AREA_RULES) if (obj.area.includes(kw)) return code;
+  return OCF_DISTRICT[obj.district] || 'HKO';
+}
+
 const raw = readFileSync(CSV_PATH, 'utf8');
 const [header, ...dataRows] = parseCSV(raw).filter((r) => r.some((c) => c.trim() !== ''));
 
@@ -204,6 +236,7 @@ const records = dataRows.map((cols) => {
     weatherStation: stationFor(obj),
     rainDistrict: RAIN_ALIAS[obj.district] || null,
     tideStation: tideStationFor(obj),
+    ocfStation: ocfStationFor(obj),
     booking: obj.booking === '是',
     bookingUrl: obj.bookingUrl || '',
     infoUrl: obj.infoUrl || '',
@@ -248,13 +281,26 @@ if (existsSync(CONDITIONS_PATH)) {
 
 // 日出日落用純 JS 天文公式喺前端計（sunTimesHKT()，見 app.js），
 // 任何年份都用得、零 API、file:// 都行；已用 HKO 官方 SRS 2026 值做驗證錨點。
+// 天文台 OCF 自動分區九日預報（data/auto/ocf-forecast.json），每日 Actions 更新
+const OCF_PATH = join(__dirname, 'data', 'auto', 'ocf-forecast.json');
+let ocf = null;
+if (existsSync(OCF_PATH)) {
+  try {
+    ocf = JSON.parse(readFileSync(OCF_PATH, 'utf8'));
+  } catch (e) {
+    console.warn(`⚠ ocf-forecast.json 無法解析，九日預報會隱藏：${e.message}`);
+  }
+}
+
 const output =
   banner +
   'window.CAMPSITES = ' + JSON.stringify(records, null, 2) + ';\n\n' +
   '// 天文台快照（data/auto/weather.json），由 GitHub Actions 每日更新後 rebuild\n' +
   'window.CAMP_WEATHER = ' + JSON.stringify(weather, null, 2) + ';\n\n' +
   '// 該區天氣 + 潮汐（data/auto/conditions.json），每日 Actions 更新\n' +
-  'window.CAMP_CONDITIONS = ' + JSON.stringify(conditions, null, 2) + ';\n';
+  'window.CAMP_CONDITIONS = ' + JSON.stringify(conditions, null, 2) + ';\n\n' +
+  '// 天文台 OCF 自動分區九日預報（data/auto/ocf-forecast.json），每日 Actions 更新\n' +
+  'window.CAMP_OCF = ' + JSON.stringify(ocf, null, 2) + ';\n';
 
 // --check：只比較、唔寫檔，畀 guard / CI 用（F14 / S12）
 if (process.argv.includes('--check')) {

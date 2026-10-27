@@ -4,7 +4,7 @@
 
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.2.0';
+  const APP_VERSION = '1.3.0';
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -72,6 +72,36 @@
     const v = String(s || '');
     return v.length === 8 ? `${v.slice(0, 4)}-${v.slice(4, 6)}-${v.slice(6, 8)}` : v;
   };
+
+  /* ---------- OCF 自動分區九日預報（ocf-forecast.json，由 build-data.mjs 嵌入） ---------- */
+  const OCF = (window.CAMP_OCF && typeof window.CAMP_OCF === 'object') ? window.CAMP_OCF : null;
+  const WEEKDAY_SHORT = ['日', '一', '二', '三', '四', '五', '六'];
+
+  // HKO OCF 天氣圖標 → 中文描述 + emoji（官方 help_e.html 圖標定義）
+  const OCF_WEATHER = {
+    50: ['☀️', '天晴'], 51: ['🌤', '大致天晴'], 52: ['⛅', '部分時間有陽光'],
+    53: ['🌦', '有幾陣驟雨'], 54: ['🌧', '間中有驟雨'], 60: ['☁️', '多雲'],
+    62: ['🌧', '微雨'], 63: ['🌧', '中雨或大雨'], 80: ['🌦', '局部地區驟雨'],
+    70: ['🌙', '天晴（夜）'], 74: ['🌙', '大致天晴（夜）'],
+  };
+  const ocfWeather = (code) => OCF_WEATHER[code] || ['🌡', '天氣未詳'];
+  const rainClass = (pct) => pct === null ? 'na' : pct >= 60 ? 'high' : pct >= 40 ? 'mid' : 'low';
+  const fmtForecastDay = (iso) => {
+    const [y, m, d] = iso.split('-').map(Number);
+    const wd = WEEKDAY_SHORT[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+    return { md: `${m}/${d}`, wd: `星期${wd}` };
+  };
+
+  function ocfDaily(site, dateStr) {
+    if (!OCF || !site || !site.ocfStation) return null;
+    const st = OCF.stations?.[site.ocfStation];
+    if (!st) return null;
+    return {
+      station: st.name,
+      code: site.ocfStation,
+      day: (st.daily || []).find((d) => d.date === dateStr) || null,
+    };
+  }
 
   /* ---------- 該區天氣 + 潮汐（conditions.json，由 build-data.mjs 嵌入） ---------- */
   const CONDITIONS = (window.CAMP_CONDITIONS && typeof window.CAMP_CONDITIONS === 'object')
@@ -645,6 +675,32 @@
     }
     grid.appendChild(box2);
 
+    // 2b. 該區未來九日（OCF 官方分區預報）
+    const ocfSt = OCF?.stations?.[site.ocfStation];
+    if (ocfSt && Array.isArray(ocfSt.daily) && ocfSt.daily.length) {
+      const boxOcf = mk('section', 'local-box local-box-wide');
+      boxOcf.appendChild(mk('h4', '', `📅 未來九日（${ocfSt.name}站 · 天文台 OCF）`));
+      const strip = mk('div', 'local-forecast-strip');
+      ocfSt.daily.slice(0, 9).forEach((d) => {
+        const [emoji, label] = ocfWeather(d.weather);
+        const cell = mk('div', `lfc-day ${rainClass(d.rainPct)}`);
+        const { md, wd } = fmtForecastDay(d.date);
+        cell.appendChild(mk('span', 'lfc-date', `${md} ${wd.replace('星期', '週')}`));
+        cell.appendChild(mk('span', 'lfc-icon', emoji));
+        cell.appendChild(mk('span', 'lfc-temp',
+          d.max !== null && d.min !== null ? `${Math.round(d.max)}°/${Math.round(d.min)}°` : '—'));
+        cell.appendChild(mk('span', 'lfc-rain', d.rainLabel || '—'));
+        cell.title = `${label}｜最高 ${d.max ?? '—'}°C｜最低 ${d.min ?? '—'}°C｜降雨概率 ${d.rainLabel ?? '官方無提供'}`;
+        strip.appendChild(cell);
+      });
+      boxOcf.appendChild(strip);
+      const note = mk('a', 'local-link', 'OCF 官方說明（自動預報，可能同正式預報唔同）↗');
+      note.href = 'https://maps.weather.gov.hk/ocf/help_e.html';
+      note.target = '_blank'; note.rel = 'noopener';
+      boxOcf.appendChild(note);
+      grid.appendChild(boxOcf);
+    }
+
     // 3. 潮汐
     const box3 = mk('section', 'local-box');
     box3.appendChild(mk('h4', '', '🌊 潮汐（就近站）'));
@@ -681,6 +737,126 @@
     host.appendChild(grid);
   }
 
+  /* ---------- 九日該區預報時間軸（v1.3.0） ---------- */
+  let forecastCode = null;   // 目前揀咗邊個 OCF 站
+
+  function renderForecastRegionOptions() {
+    const sel = document.getElementById('forecastRegion');
+    if (!sel) return;
+    sel.replaceChildren();
+    if (!OCF || !OCF.stations) return;
+
+    // 只列出 data.csv 實際用到嘅站，並按營地數量排序
+    const used = {};
+    SITES.forEach((s) => { if (s.ocfStation) used[s.ocfStation] = (used[s.ocfStation] || 0) + 1; });
+    const codes = Object.keys(OCF.stations)
+      .filter((c) => used[c])
+      .sort((a, b) => used[b] - used[a]);
+    if (!codes.length) return;
+
+    if (!forecastCode || !codes.includes(forecastCode)) forecastCode = codes[0];
+    codes.forEach((code) => {
+      const opt = document.createElement('option');
+      opt.value = code;
+      opt.textContent = `${OCF.stations[code].name}（${used[code]} 個營地）`;
+      sel.appendChild(opt);
+    });
+    sel.value = forecastCode;
+    sel.addEventListener('change', (e) => {
+      forecastCode = e.target.value;
+      renderForecast();
+    });
+  }
+
+  function renderForecast() {
+    const host = document.getElementById('forecastScroll');
+    const meta = document.getElementById('forecastSource');
+    if (!host) return;
+    host.replaceChildren();
+
+    if (!OCF || !OCF.stations || !forecastCode) {
+      const p = document.createElement('p');
+      p.className = 'forecast-empty';
+      p.textContent = '暫無分區預報數據（GitHub Actions 每日更新）。';
+      host.appendChild(p);
+      return;
+    }
+    const st = OCF.stations[forecastCode];
+    if (!st || !Array.isArray(st.daily) || !st.daily.length) {
+      const p = document.createElement('p');
+      p.className = 'forecast-empty';
+      p.textContent = '呢個站暫無預報數據。';
+      host.appendChild(p);
+      return;
+    }
+
+    if (meta) {
+      const t = String(st.modelTime || OCF.fetchedAt || '');
+      meta.textContent = `站點：${st.name} · 模型 ${t.length === 10 ? `${t.slice(0, 4)}-${t.slice(4, 6)}-${t.slice(6, 8)} ${t.slice(8)}:00` : t}`;
+    }
+
+    const today = todayHK();
+    const stale = isStale(OCF.fetchedAt, 30);
+
+    st.daily.forEach((d, i) => {
+      const [emoji, label] = ocfWeather(d.weather);
+      const { md, wd } = fmtForecastDay(d.date);
+      const card = document.createElement('div');
+      card.className = `forecast-day ${i === 0 ? 'today' : ''}`;
+      if (/星期六|星期日/.test(wd)) card.classList.add('weekend');
+
+      const add = (tag, cls, text) => {
+        const el = document.createElement(tag);
+        if (cls) el.className = cls;
+        if (text != null) el.textContent = text;
+        card.appendChild(el);
+        return el;
+      };
+
+      add('div', 'fc-date', i === 0 ? `今日 ${md}` : `${md} ${wd}`);
+      add('div', 'fc-icon', emoji);
+      add('div', 'fc-weather', d.weather ? label : '—');
+      add('div', 'fc-temp',
+        d.max !== null && d.min !== null ? `${Math.round(d.max)}° / ${Math.round(d.min)}°` : '—');
+
+      const rain = add('div', `fc-rain ${rainClass(d.rainPct)}`,
+        d.rainLabel ? `🌧 ${d.rainLabel}` : '🌧 降雨概率 —');
+      if (d.rainPct === null) rain.title = '呢個站官方無提供降雨概率';
+      if (d.rainPct !== null && d.rainPct >= 60) {
+        add('div', 'fc-warn', '⚠️ 唔適宜');
+      } else if (d.rainPct !== null && d.rainPct >= 40) {
+        add('div', 'fc-warn mild', '帶雨具');
+      } else {
+        add('div', 'fc-warn ok', '適合');
+      }
+
+      // 該區日落（沿用純 JS 天文公式）
+      const sun = sunTimesHKT(d.date);
+      if (sun) add('div', 'fc-sun', `🌇 ${sun.set}`);
+
+      // 該營地潮汐（如有）
+      const coastal = SITES.find((s) => s.ocfStation === forecastCode && s.tideStation);
+      if (coastal) {
+        const tr = tideReading(coastal, d.date);
+        if (tr) {
+          const low = tr.events.filter((e) => e.type === 'L').map((e) => e.time).join('/');
+          const high = tr.events.filter((e) => e.type === 'H').map((e) => e.time).join('/');
+          add('div', 'fc-tide', `🌊 退 ${low || '—'} · 漲 ${high || '—'}`);
+        }
+      }
+
+      if (d.date === today) card.classList.add('current');
+      host.appendChild(card);
+    });
+
+    if (stale) {
+      const warn = document.createElement('p');
+      warn.className = 'forecast-stale';
+      warn.textContent = `⚠️ 快照抓取時間 ${fmtStamp(OCF.fetchedAt)}，可能已過期，請以天文台正式預報為準。`;
+      host.appendChild(warn);
+    }
+  }
+
   /* ---------- 版號顯示（W1 / V1） ---------- */
   function renderVersion() {
     const badge = document.getElementById('versionBadge');
@@ -692,6 +868,8 @@
   /* ---------- 啟動 ---------- */
   renderVersion();
   renderWeather();
+  renderForecastRegionOptions();
+  renderForecast();
   if (!SITES.length) {
     document.getElementById('resultCount').textContent = '⚠ 未能載入 data.js，請先執行 node build-data.mjs';
   } else {

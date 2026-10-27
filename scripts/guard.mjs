@@ -43,8 +43,8 @@ const REQUIRED = [
   '.github/workflows/sync-data.yml', '.github/workflows/sync-had.yml',
   '.github/workflows/guard.yml', '.github/PULL_REQUEST_TEMPLATE.md',
   'scripts/guard.mjs', 'scripts/smoke.test.mjs',
-  'tools-sync-conditions.mjs',
-  'data/auto/weather.json', 'data/auto/conditions.json',
+  'tools-sync-conditions.mjs', 'tools-sync-ocf.mjs',
+  'data/auto/weather.json', 'data/auto/conditions.json', 'data/auto/ocf-forecast.json',
 ];
 const missing = REQUIRED.filter((f) => !exists(f));
 missing.length ? bad('必要檔案齊全', `缺：${missing.join(', ')}`) : ok('必要檔案齊全', `${REQUIRED.length} 個`);
@@ -150,6 +150,8 @@ try {
     [guardYml.includes('scripts/guard.mjs'), 'guard CI 存在'],
     [daily.includes('tools-sync-conditions.mjs') && daily.includes('conditions.json'),
       '每日 sync 有該區天氣／潮汐'],
+    [daily.includes('tools-sync-ocf.mjs') && daily.includes('ocf-forecast.json'),
+      '每日 sync 有 OCF 九日預報'],
   ];
   const failed = checks.filter(([pass]) => !pass).map(([, name]) => name);
   failed.length ? bad('workflow 合約', failed.join('; ')) : ok('workflow 合約', `${checks.length} 項全過`);
@@ -209,6 +211,36 @@ try {
     : ok('該區天氣／潮汐／日光', `108 區站配對／${withTide} 潮汐／8 站快照／日光公式`);
 } catch (e) {
   bad('該區天氣／潮汐／日光', e.message);
+}
+
+/* ---------- 11. OCF 九日分區預報（v1.3.0） ---------- */
+try {
+  const box = { window: {} };
+  vm.createContext(box);
+  vm.runInContext(read('data.js'), box);
+  const sites = box.window.CAMPSITES || [];
+  const ocf = box.window.CAMP_OCF;
+  const app = read('app.js');
+  const html = read('index.html');
+  const mapped = sites.filter((x) => x.ocfStation && ocf?.stations?.[x.ocfStation]).length;
+  const stationCount = Object.keys(ocf?.stations || {}).length;
+  const firstSt = Object.values(ocf?.stations || {})[0];
+  const days = firstSt?.daily?.length || 0;
+  const checks = [
+    [mapped === 108, `108 筆營地都配對到 OCF 站（現 ${mapped}）`],
+    [stationCount >= 10, `OCF 快照有 ≥10 站（現 ${stationCount}）`],
+    [days >= 9, `每站有 ≥9 日預報（現 ${days}）`],
+    [firstSt?.daily?.some((d) => d.rainPct !== null), '至少一站有降雨概率'],
+    [app.includes('function renderForecast') && app.includes('renderForecast()'), '前端有九日時間軸'],
+    [html.includes('forecastPanel') && html.includes('自動分區天氣預報'),
+      '面板存在且有 OCF 免責說明'],
+    [ocf?.notes?.includes('未經人手修訂'), '快照有「自動生成」標記'],
+  ];
+  const failed = checks.filter(([p]) => !p).map(([, n]) => n);
+  failed.length ? bad('OCF 九日分區預報', failed.join('; '))
+    : ok('OCF 九日分區預報', `108 配對／${stationCount} 站／${days} 日／官方免責`);
+} catch (e) {
+  bad('OCF 九日分區預報', e.message);
 }
 
 /* ---------- 總結 ---------- */

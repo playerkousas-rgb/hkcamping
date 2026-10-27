@@ -75,8 +75,8 @@ test('data.js 載入 108 筆，前端啟動無例外', () => {
 
 test('雙版號同頁尾版權（V1 / W1）', () => {
   const { doc } = boot();
-  assert.equal(doc.getElementById('versionBadge').textContent, 'v1.2.0');
-  assert.equal(doc.getElementById('appVersion').textContent, '1.2.0');
+  assert.equal(doc.getElementById('versionBadge').textContent, 'v1.3.0');
+  assert.equal(doc.getElementById('appVersion').textContent, '1.3.0');
 });
 
 test('約數標記：44 筆有銀碼卡片顯示「約」+ 警句，免費／面議唔會', () => {
@@ -138,6 +138,37 @@ test('v1.2.0：該區天氣／潮汐／日出日落公式', () => {
   assert.match(doc.getElementById('weatherBar').children.map((c) => c.textContent).join(' '), /🌇 日落/);
   // 卡片有「該區天氣」按鈕
   assert.match(doc.getElementById('cardGrid').children[0].innerHTML, /data-action="local"/);
+});
+
+test('v1.3.0：官方 OCF 九日分區預報時間軸', () => {
+  const { sandbox, doc } = boot();
+  const A = sandbox.CAMPSITES;
+  const O = sandbox.CAMP_OCF;
+  // 12 站、每站 10 日
+  assert.equal(Object.keys(O.stations).length, 12);
+  assert.equal(O.stations.SEK.daily.length, 10);
+  assert.ok(O.notes.includes('未經人手修訂'));
+  // 108 筆全部配對到有效站
+  assert.ok(A.every((x) => x.ocfStation && O.stations[x.ocfStation]));
+  // 官方實測值抽驗（2026-10-31 星期六）
+  const sek = O.stations.SEK.daily.find((d) => d.date === '2026-10-31');
+  assert.equal(sek.rainLabel, '20%');
+  assert.equal(sek.max, 30.4);
+  assert.equal(sek.min, 22.5);
+  const lfs = O.stations.LFS.daily.find((d) => d.date === '2026-10-31');
+  assert.equal(lfs.rainLabel, '< 10%');
+  // TWN／SKW 官方無 PoP，要容錯
+  assert.equal(O.stations.TWN.daily[0].rainPct, null);
+  // 九日時間軸有渲染
+  const scroll = doc.getElementById('forecastScroll');
+  assert.equal(scroll.children.length, 10);
+  const first = scroll.children[0].children.map((c) => c.textContent).join('|');
+  assert.match(first, /今日/);
+  assert.match(first, /🌧/);
+  assert.match(first, /🌇/);
+  // 地區選擇器有 option
+  const sel = doc.getElementById('forecastRegion');
+  assert.ok(sel.children.length >= 10);
 });
 
 test('價格 null 顯示面議，唔會當成免費', () => {
