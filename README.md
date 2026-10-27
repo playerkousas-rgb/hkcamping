@@ -4,10 +4,11 @@
 
 - ⛺ **漁農自然護理署（漁護署）41 個郊野公園指定露營地點**（官方完整名單，全部免費）
 - 🏛 **康樂及文化事務署（康文署）6 個場地**：4 個度假營（麥理浩夫人度假村、鯉魚門公園、西貢戶外康樂中心、曹公潭戶外康樂中心）+ 貝澳營地 + 創興水上活動中心露營區
-- 🤝 **28 個 NGO 營舍**：保良局、救世軍、青年會（YMCA/YWCA）、青協、童軍、女童軍、明愛、小童群益會、傷健協會、遊樂場協會、青年獎勵計劃、浸信會、神託會、突破、紅十字會、外展訓練學校等
+- 🤝 **30 個 NGO 營地／營舍**（28 列宿營 + 基維爾營地、女童軍博康營地 2 列露營）：保良局、救世軍、青年會（YMCA/YWCA）、青協、童軍、女童軍、明愛、小童群益會、傷健協會、遊樂場協會、青年獎勵計劃、浸信會、神託會、突破、紅十字會、外展訓練學校等
 - 🏕 **4 個私人 Glamping** 及 🛖 **27 列民宿/渡假屋**：21 個持牌賓館經營者（牌照事務處名單，含牌照號碼）、5 個分區導覽列，及 1 個坪洲合規提示列
 
-合共 **108 筆**。功能：分區地圖（Leaflet + OpenStreetMap）、類型/分區/費用/交通/設施/訊號篩選、
+合共 **108 筆**（41 + 6 + 30 + 4 + 27；`data.js` 分類為露營 45、宿營 32、Glamping 4、民宿 27）。
+功能：分區地圖（Leaflet + OpenStreetMap）、類型/分區/費用/交通/設施/訊號篩選、
 全文搜尋（可搜營運機構）、價格排序、我的最愛（瀏覽器本地記錄，無須登入）。
 
 ## 資料來源與可信度
@@ -42,8 +43,8 @@ hk-camp-database/
 ├── tools-sync-afcd.mjs  # CSDI 營地同步 + 差異檢查
 ├── tools-sync-weather.mjs # 天文台天氣快照
 ├── tools-sync-had.mjs   # 持牌賓館月更同步（CSDI＋HAD CSV，只出快照唔改 data.csv）
-├── .github/workflows/sync-data.yml # 每日 00:30 HKT 自動同步
-├── .github/workflows/sync-had.yml  # 每月 2 號 01:15 HKT 持牌賓館月更
+├── .github/workflows/sync-data.yml # 每日 00:30 HKT 自動同步（cron '30 16 * * *' UTC）
+├── .github/workflows/sync-had.yml  # 每月 2 號 01:15 HKT 月更（cron '15 17 1 * *' UTC）
 ├── tools-geocode*.mjs    # Nominatim 地理編碼腳本（三個批次，建檔時用）
 ├── geocache.json         # 地理編碼快取（含 OSM 點位來源）
 ├── index.html / styles.css / app.js
@@ -52,6 +53,8 @@ hk-camp-database/
 
 > **恆常化更新策略見 [AUTOMATION.md](AUTOMATION.md)**：邊啲數據全自動、邊啲要半自動改動偵測、
 > 邊啲只能人工，以及零成本 GitHub Actions 架構。
+> `schedule` 同 `workflow_dispatch` 只會喺 **default branch（main）** 上嘅 workflow 生效，
+> 所以兩條 yml 合併入 main 之後先至會真正每日／每月跑；可喺 Actions 分頁手動 Run workflow 驗收。
 
 ## 如何新增 / 修改營地資料
 
@@ -60,7 +63,8 @@ hk-camp-database/
 3. 執行：
 
 ```bash
-node build-data.mjs
+node build-data.mjs           # 產生 data.js（輸出不含時間戳，可重複執行）
+node build-data.mjs --check   # 只驗收 data.js 是否同 data.csv 同步，唔寫檔
 ```
 
 4. 把 `data.csv` 與重新產生的 `data.js` 一併 commit，push 後 Vercel 自動部署

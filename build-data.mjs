@@ -8,7 +8,7 @@
  *   2. 跑 node build-data.mjs
  *   3. commit data.csv 與 data.js，push 到 GitHub，Vercel 自動部署
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -114,13 +114,22 @@ const records = dataRows.map((cols) => {
 const banner =
   '// 此檔案由 build-data.mjs 自動產生，請勿直接編輯。\n' +
   '// 要改資料請編輯 data.csv，然後執行：node build-data.mjs\n' +
-  `// 產生時間：${new Date().toISOString()}，共 ${records.length} 筆\n\n`;
+  `// 共 ${records.length} 筆；輸出不含時間戳，確保 CI 唔會出現假變更\n\n`;
 
-writeFileSync(
-  OUT_PATH,
-  banner + 'window.CAMPSITES = ' + JSON.stringify(records, null, 2) + ';\n',
-  'utf8'
-);
+const output = banner + 'window.CAMPSITES = ' + JSON.stringify(records, null, 2) + ';\n';
+
+// --check：只比較、唔寫檔，畀 guard / CI 用（F14 / S12）
+if (process.argv.includes('--check')) {
+  const current = existsSync(OUT_PATH) ? readFileSync(OUT_PATH, 'utf8') : '';
+  if (current === output) {
+    console.log(`✅ data.js 已同 data.csv 同步（${records.length} 筆）`);
+    process.exit(0);
+  }
+  console.error('❌ data.js 過時或被人手改過，請執行 node build-data.mjs');
+  process.exit(1);
+}
+
+writeFileSync(OUT_PATH, output, 'utf8');
 
 const byType = records.reduce((acc, r) => {
   acc[r.type] = (acc[r.type] || 0) + 1;

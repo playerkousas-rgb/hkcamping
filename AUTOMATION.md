@@ -64,6 +64,11 @@ data.js                   ← 網站唯一讀取嘅合併成品
 | `.github/workflows/sync-had.yml` | 每月 2 號 01:15 HKT 跑持牌賓館月更，只 commit `had-*` 三個檔，唔碰 data.csv |
 | `data/auto/` | 機器快照目錄（已含首次實測產出） |
 
+**2026-10-27 交接修補**：上面兩條 yml 曾經只存在於文件、repo 入面冇，現已補回。
+GitHub Actions cron 用 UTC：`30 16 * * *`＝00:30 HKT、`15 17 1 * *`＝每月 2 號 01:15 HKT。
+`build-data.mjs` 輸出已改為**不含時間戳**，並新增 `--check`，確保每日 rebuild 唔會製造假 commit。
+兩條 workflow 只喺 default branch（`main`）生效；合併後可手動 `workflow_dispatch` 驗收。
+
 本機手動跑：`npm run sync`（全套）或 `npm run sync:had`（單跑賓館）
 
 **首次運行已揪出並修正 3 項真錯誤**：涌背營地座標偏差 3.2 公里、白臘→白腊及大網仔一號→大網仔嘅官方用字、大浪灣/南山座標微調。

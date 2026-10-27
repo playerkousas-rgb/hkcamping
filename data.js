@@ -1,6 +1,6 @@
 // 此檔案由 build-data.mjs 自動產生，請勿直接編輯。
 // 要改資料請編輯 data.csv，然後執行：node build-data.mjs
-// 產生時間：2026-10-27T04:58:27.564Z，共 108 筆
+// 共 108 筆；輸出不含時間戳，確保 CI 唔會出現假變更
 
 window.CAMPSITES = [
   {
