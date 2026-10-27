@@ -12,6 +12,10 @@
 | P2 | `scripts/guard.mjs` + `guard.yml` + PR template + dependabot + `© SCOUT SYSTEM` + 雙版號 + smoke test | ✅ | `0fe6154` |
 | P3 | 前端食 `data/auto/weather.json`：build 嵌入 `data.js`、天氣列、地圖 pin／popup 週末 PSR 標記、過期提示 | ✅ | 本批 |
 
+**合併狀態**：PR [#1](https://github.com/playerkousas-rgb/hkcamping/pull/1) 已於 2026-10-27 合併入 `main`
+（merge commit `1727ba1`）。`gh workflow list` 確認三條 workflow 全部 `active`；
+`main` 上嘅 guard push run `40462553486` **success**。
+
 ## 二、舊交接文件嘅過時資料（已修正）
 
 | 舊 `GITHUB-SETUP.md` | 實際 |
@@ -49,13 +53,17 @@ npm run dev       # http://localhost:8000 本機預覽
 > **網絡限制**：Arena sandbox 只可以連 github／npm／pypi，`tools-sync-*.mjs` 喺本機實測係
 > `fetch failed`（腳本正確地 `exit 1` 並保留舊快照）。CSDI／HKO／HAD 同步**必須喺 GitHub Actions 驗收**。
 
-## 五、你要做嘅兩件事（我做到嘅都已做）
+## 五、你剩返要做嘅事（程式碼部分已完成並合併）
 
-1. **合併 PR 入 `main`**：`schedule`／`workflow_dispatch` 只喺 default branch 生效，
-   兩條同步 workflow 同 guard CI 要合併後先會真正跑。合併後建議手動 Run 一次 `Camp Data Sync`。
-2. **Vercel 授權**：連接口 token `limited: true`，`list_projects`／`get_project`／`create_project`
+1. **手動驗收同步 workflow**：Arena 個 GitHub token 無 `actions: write`，
+   `gh workflow run "Camp Data Sync"` 回 **403 Resource not accessible by integration** → 我觸發唔到。
+   請去 **GitHub → Actions → Camp Data Sync → Run workflow** 撳一次（或等每日 00:30 HKT 自動跑）。
+   兩個 `sync-*.yml` 嘅 `schedule` 已喺 `main` 生效。
+2. **Vercel 授權 / Git Import**：連接口 token `limited: true`，`list_projects`／`get_project`／`create_project`
    全部 403 → 我開唔到 project。請喺 Vercel Dashboard 用 **Git Import** 揀 `playerkousas-rgb/hkcamping`，
    或者重新授權連接口（要有 project／deployment 讀寫 scope）再叫我部署。設定值見 `GITHUB-SETUP.md` §四。
+3. **Dependabot 兩個 PR**（我加 `.github/dependabot.yml` 後自動開）：
+   `actions/checkout 4→7`、`actions/setup-node 4→7`。guard CI 會自動驗，你可以合併或關閉，隨你。
 
 ## 六、未做／可選（唔影響上線）
 
