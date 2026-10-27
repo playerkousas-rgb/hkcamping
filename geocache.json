@@ -1,0 +1,485 @@
+{
+  "gilwell": {
+    "lat": 22.3605777,
+    "lng": 114.2221632,
+    "name": "香港童軍總會基維爾營地 Scout Association of Hong Kong Gilwell Campsite, 麥理浩徑第4段 MacLehose Trail Section 4, 茂草岩 Mau Tso Ngam, 沙田區 Sha Tin District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "pokhong": null,
+  "baptist": null,
+  "highrock": null,
+  "breakthrough": {
+    "lat": 22.3982276,
+    "lng": 114.2179041,
+    "name": "突破青年村 Breakthrough Youth Village, 33, 亞公角山路 A Kung Kok Shan Road, 亞公角 A Kung Kok, 沙田區 Sha Tin District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "shekpik": null,
+  "outwardbound": {
+    "lat": 22.3881195,
+    "lng": 114.2990867,
+    "name": "香港外展訓練學校 Outward Bound, 大網仔單車徑 Tai Mong Tsai Cycle Track, 大網仔 Tai Mong Tsai, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "tungchungcamp": null,
+  "taitongplk": null,
+  "skorc": {
+    "lat": 22.3765426,
+    "lng": 114.2676575,
+    "name": "西貢戶外康樂中心 Sai Kung Outdoor Recreation Centre, 康富路 Hong Fu Road, 蕉坑 Tsiu Hang, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "chonghing": {
+    "lat": 22.3735303,
+    "lng": 114.3377148,
+    "name": "創興水上活動中心 Chong Hing Water Sports Centre, 糧船灣 High Island, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "caritascc": null,
+  "lmhv": {
+    "lat": 22.4074776,
+    "lng": 114.3219322,
+    "name": "麥理浩夫人度假村 Lady MacLehose Holiday Village, 榕北走廊, 北潭 Pak Tam, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "lymp": {
+    "lat": 22.273104,
+    "lng": 114.2325573,
+    "name": "鯉魚門公園 Lei Yue Mun Park, 柴灣道 Chai Wan Road, 柴灣工業區 Chai Wan Industrial Area, 東區 Eastern District, 香港島 Hong Kong Island, 香港 Hong Kong, 中国"
+  },
+  "tktorc": {
+    "lat": 22.3850197,
+    "lng": 114.1070958,
+    "name": "曹公潭戶外康樂中心 Tso Kung Tam Outdoor Recreation Centre, 105, 荃錦公路 Route Twisk, 光板田村第四段 Kwong Pan Tin Tsuen Section 4, 光板田村 Kwong Pan Tin Village, 荃灣區 Tsuen Wan District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "plkptc": null,
+  "wks": null,
+  "hkfygsk": null,
+  "puio": {
+    "lat": 22.2396056,
+    "lng": 113.9776441,
+    "name": "貝澳營地 Pui O Campsite, 芝麻灣道 Chi Ma Wan Road, 貝澳圍, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "tpc": {
+    "lat": 22.5455581,
+    "lng": 114.4283418,
+    "name": "東平洲 Tung Ping Chau, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "leadmine": {
+    "lat": 22.4123139,
+    "lng": 114.1581428,
+    "name": "鉛礦坳 Lead Mine Pass, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "cheungsheung": null,
+  "wantsai": null,
+  "taimongtsai": {
+    "lat": 22.3938476,
+    "lng": 114.3006852,
+    "name": "大網仔 Tai Mong Tsai, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "shamchung": null,
+  "yuntun": {
+    "lat": 22.3960928,
+    "lng": 114.2490475,
+    "name": "昂坪坳, 沙田區 Sha Tin District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "paklap": {
+    "lat": 22.3532804,
+    "lng": 114.3607651,
+    "name": "白腊 Pak Lap, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "hamtin": {
+    "lat": 22.4092191,
+    "lng": 114.3753998,
+    "name": "鹹田灣 Ham Tin Wan, 鹹田 Ham Tin, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "fanlau": {
+    "lat": 22.2246164,
+    "lng": 113.8705767,
+    "name": "鳳凰徑第5段 Lantau Trail Section 5, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "mancheungpo": {
+    "lat": 22.2325985,
+    "lng": 113.8674958,
+    "name": "萬丈布 Man Cheung Po, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "ngongpingl": {
+    "lat": 22.2558027,
+    "lng": 113.9041602,
+    "name": "昂坪 Ngong Ping, 香港 Hong Kong, 中国"
+  },
+  "shaplong": {
+    "lat": 22.2339905,
+    "lng": 113.9996193,
+    "name": "大嶼山郊野公園芝麻灣管理站 LANTAU COUNTRY PARK CHI MA WAN MANAGEMENT CENTRE, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "pakfutin": {
+    "lat": 22.2507617,
+    "lng": 113.9948695,
+    "name": "白富田 Pak Fun Tin, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "samachung": null,
+  "chungpui": {
+    "lat": 22.4867312,
+    "lng": 114.2414759,
+    "name": "涌背 Chung Pui, 大埔 Tai Po, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "konghaau": {
+    "lat": 22.4867236,
+    "lng": 114.293694,
+    "name": "船灣淡水湖郊遊徑 Plover Cove Reservoir Country Trail, 大埔 Tai Po, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "twisk": {
+    "lat": 22.4075,
+    "lng": 114.10507,
+    "name": "大帽山郊野公園 Tai Mo Shan Country Park, 荃錦公路 Route Twisk, 甲龍村 Kap Lung Tsuen, 元朗區 Yuen Long District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "hoiha": {
+    "lat": 22.2797385,
+    "lng": 114.2237846,
+    "name": "凱雁臺 Hoi An Terrace, 23, 西灣河 Sai Wan Ho, 東區 Eastern District, 香港島 Hong Kong Island, 香港 Hong Kong, 中国"
+  },
+  "polin": {
+    "lat": 22.2552584,
+    "lng": 113.9075569,
+    "name": "寶蓮禪寺 Po Lin Monastery, 昂平路 Ngong Ping Road, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "pokhong2": {
+    "lat": 22.4521416,
+    "lng": 114.1638883,
+    "name": "眼鏡本色 沙田友分店, 大埔太和路 Tai Po Tai Wo Road, 大埔舊墟 Tai Po Old Market, 大埔 Tai Po, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "baptist2": {
+    "lat": 31.8715165,
+    "lng": 117.4065172,
+    "name": "合肥市铜陵新村幼儿园 (三十埠分园), 长江东路辅路, 徽商新驿科技平台物流园, 肥东经济开发区, 店埠镇, 瑶海区, 合肥市, 安徽省, 231600, 中国"
+  },
+  "highrock2": {
+    "lat": 22.3739393,
+    "lng": 114.1879588,
+    "name": "香港神託會靈基營 Stewards High Rock Centre, 豐石街 Fung Shek Street, 秦石邨 Chun Shek Estate, 沙田頭 Sha Tin Tau, 沙田區 Sha Tin District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "shekpik2": {
+    "lat": 22.2243028,
+    "lng": 113.894965,
+    "name": "石壁監獄 Shek Pik Prison, 47, 石壁水塘道 Shek Pik Reservoir Road, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "tungchung2": {
+    "lat": 22.2798008,
+    "lng": 113.9299841,
+    "name": "香港遊樂場協會東涌營 Hong Kong Playground Association Tung Chung Camp, 38, 牛凹 Ngau Au, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "taitong2": {
+    "lat": 22.4112701,
+    "lng": 114.0310499,
+    "name": "大棠山道 Tai Tong Shan Road, 大棠 Tai Tong, 元朗區 Yuen Long District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "caritas2": {
+    "lat": 22.2052261,
+    "lng": 114.0320207,
+    "name": "明愛陳震夏郊野學園 (聖保祿校園) Caritas Chan Chun Ha Field Studies Centre St. Paul Campus, 長洲山頂道 Cheung Chau Peak Road, 長洲 Cheung Chau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "plkptc2": null,
+  "wks2": {
+    "lat": 22.428665,
+    "lng": 114.2382078,
+    "name": "烏溪沙青年新村 Wu Kwai Sha Youth Village, 2, 錦英路 Kam Ying Road, 馬鞍台 Ma On Terrace, 烏溪沙 Wu Kai Sha, 沙田區 Sha Tin District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "hkfygsk2": {
+    "lat": 22.3872497,
+    "lng": 114.3029178,
+    "name": "香港青年協會賽馬會西貢戶外訓練營 HKFYG Jockey Club Sai Kung Outdoor Training Camp, 大網仔路 Tai Mong Tsai Road, 斬竹灣 Tsam Chuk Wan, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "cheungsheung2": {
+    "lat": 29.9287471,
+    "lng": 120.2675225,
+    "name": "上曹坞隧道, 江西俞大桥, 浦阳镇, 萧山区, 杭州市, 浙江省, 中国"
+  },
+  "wantsai2": {
+    "lat": 31.8467178,
+    "lng": 117.2905698,
+    "name": "合肥工业大学（屯溪路校区）, 193号, 南一环路, 航运南村, 包公街道, 包河区, 合肥市, 安徽省, 230009, 中国"
+  },
+  "shamchung2": {
+    "lat": 28.5001794,
+    "lng": 121.2440769,
+    "name": "沈海高速, 温岭市, 台州市, 浙江省, 中国"
+  },
+  "samachung2": null,
+  "chonghing2": {
+    "lat": 22.3735303,
+    "lng": 114.3377148,
+    "name": "創興水上活動中心 Chong Hing Water Sports Centre, 糧船灣 High Island, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "pakfutin2": {
+    "lat": 22.2507617,
+    "lng": 113.9948695,
+    "name": "白富田 Pak Fun Tin, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "ngongpingmos2": {
+    "lat": 22.3960928,
+    "lng": 114.2490475,
+    "name": "昂坪坳, 沙田區 Sha Tin District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "paklap2": null,
+  "hoiha2": {
+    "lat": 22.2779805,
+    "lng": 114.2208447,
+    "name": "筲箕灣下海水配水庫 Shau Kei Wan Low Level Salt Water Service Reservoir, 西灣河 Sai Wan Ho, 東區 Eastern District, 香港島 Hong Kong Island, 香港 Hong Kong, 中国"
+  },
+  "twisk2": null,
+  "shaplong2": {
+    "lat": 22.261164,
+    "lng": 113.967383,
+    "name": "雙東坳 Sheung Tung Au, 鳳凰徑第2段 Lantau Trail Section 2, 貝澳坳 Pui O Au, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "mancheungpo2": {
+    "lat": 22.2325985,
+    "lng": 113.8674958,
+    "name": "萬丈布 Man Cheung Po, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "chungpui2": {
+    "lat": 44.019007,
+    "lng": 143.7775583,
+    "name": "佐呂間町交通記念公園, 幸町, 佐呂間町, 常呂郡, オホーツク総合振興局, 北海道, 北海道地方, 日本"
+  },
+  "konghaau2": null,
+  "taimongtsai2": {
+    "lat": 21.755347,
+    "lng": 108.3528301,
+    "name": "广西旭通投资有限公司, 1, 沙埠横街, 沙埠社区, 河西新区, 防城区, 防城港市, 广西壮族自治区, 538021, 中国"
+  },
+  "redcross2": {
+    "lat": 22.219522,
+    "lng": 113.8984617,
+    "name": "香港紅十字會石壁營 Hong Kong Red Cross Shek Pik Camp, 焦土海岸 Scorched Earth Coast, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "plktt2": {
+    "lat": 22.411663,
+    "lng": 114.03331,
+    "name": "保良局賽馬會大棠渡假村 Po Leung Kuk Jockey Club Tai Tong Holiday Camp, 元荃古道 Yuen Tsuen Ancient Trail, 大棠 Tai Tong, 元朗區 Yuen Long District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a01": {
+    "lat": 22.4917489,
+    "lng": 114.1670157,
+    "name": "流水響營地 Lau Shui Heung Campsite, 流水響郊遊徑 Lau Shui Heung Country Trail, 流水響 Lau Shui Heung, 北區 North District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a02": {
+    "lat": 22.4987393,
+    "lng": 114.1779416,
+    "name": "鶴藪營地 Hok Tau Campsite, 鶴藪道 Hok Tau Road, 東山下 Tung Shan Ha, 北區 North District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a03": {
+    "lat": 24.2034394,
+    "lng": 113.4261692,
+    "name": "英德北江冬泳基地, 广东万里碧道英德市段, 英德市, 清远市, 广东省, 513000, 中国"
+  },
+  "a04": {
+    "lat": 22.5084567,
+    "lng": 114.2716527,
+    "name": "三椏涌營地 Sam A Chung Campsite, 苗三古道 Miu Sam Accient Trail, 三椏涌 Sam A Chung, 北區 North District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a05": {
+    "lat": 22.5411535,
+    "lng": 114.4409908,
+    "name": "東平洲營地 Tung Ping Chau Campsite, 平洲環島郊遊徑 Ping Chau Country Trail, 洲頭 Chau Tau, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 518120, 中国"
+  },
+  "a06": {
+    "lat": 22.4616228,
+    "lng": 114.3421831,
+    "name": "灣仔-南營地 Wan Tsai - South Campsite, 灣仔自然教育徑 Wan Tsai Nature Trail, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a07": {
+    "lat": 22.4651138,
+    "lng": 114.3381715,
+    "name": "灣仔-西營地 Wan Tsai - West Campsite, 灣仔自然教育徑 Wan Tsai Nature Trail, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a08": {
+    "lat": 22.4281833,
+    "lng": 114.3089855,
+    "name": "嶂上營地 Cheung Sheung Campsite, 嶂上郊遊徑 Cheung Sheung Country Trail, 嶂上 Cheung Sheung, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a09": {
+    "lat": 22.4415079,
+    "lng": 114.3271505,
+    "name": "猴塘溪營地 Hau Tong Kai Campsite, 海下路 Hoi Ha Road, 白沙澳下洋 Pak Sha O Ha Yeung, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a10": {
+    "lat": 22.4371095,
+    "lng": 114.3340327,
+    "name": "大灘營地 Tai Tan Campsite, 大灘樹木研習徑 Tai Tan Tree Walk, 高塘下洋 Ko Tong Ha Yeung, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a11": {
+    "lat": 22.4349484,
+    "lng": 114.3363916,
+    "name": "黃石營地 Wong Shek Campsite, 北潭路 Pak Tam Road, 高塘下洋 Ko Tong Ha Yeung, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a12": {
+    "lat": 22.4233195,
+    "lng": 114.3360748,
+    "name": "北潭凹營地 Pak Tam Au Campsite, 麥理浩徑第2段 MacLehose Trail Section 2, 土瓜坪 To Kwa Peng, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a13": {
+    "lat": 22.3996441,
+    "lng": 114.3693012,
+    "name": "西灣營地 Sai Wan Camp Site, 麥理浩徑第2段 MacLehose Trail Section 2, 大浪 Tai Long, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a14": {
+    "lat": 22.3740524,
+    "lng": 114.3750602,
+    "name": "浪茄灣營地 Long Ke Wan Campsite, 麥理浩徑第2段 MacLehose Trail Section 2, 浪茄 Long Ke, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a15": {
+    "lat": 22.358788,
+    "lng": 114.3647952,
+    "name": "白臘營地 Pak Lap Campsite, 西貢萬宜路 Sai Kung Man Yee Road, 糧船灣 High Island, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a16": {
+    "lat": 22.3775947,
+    "lng": 114.3325286,
+    "name": "元五墳營地 Yuen Ng Fan Campsite, 上窰郊遊徑 Sheung Yiu Country Trail, 上窰 Sheung Yiu, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a17": {
+    "lat": 22.3822288,
+    "lng": 114.3269062,
+    "name": "曝罟灣營地 Po Kwu Wan Camp Site, 上窰郊遊徑 Sheung Yiu Country Trail, 上窰 Sheung Yiu, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a18": {
+    "lat": 22.4062611,
+    "lng": 114.3254967,
+    "name": "怡庭營地 Yee Ting Campsite, 北潭路 Pak Tam Road, 鯽魚湖 Tsak Yue Wu, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a19": {
+    "lat": 22.4027073,
+    "lng": 114.275236,
+    "name": "水浪窩營地 Shui Long Wo Campsite, 企嶺下林道 Kei Ling Ha Forest Track, 澳頭新村 O Tau New Village, 大埔區 Tai Po District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a20": {
+    "lat": 22.3922522,
+    "lng": 114.2512319,
+    "name": "昂平營地 Ngong Ping Campsite, 馬鞍山郊遊徑 Ma On Shan Country Trail, 茅坪 Mau Ping, 沙田區 Sha Tin District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a21": {
+    "lat": 22.2555773,
+    "lng": 114.2956201,
+    "name": "東龍洲營地 Tung Lung Chau Campsite, 大坳門路 Tai Au Mun Road, 布袋澳 Po Toi O, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a22": {
+    "lat": 22.4113,
+    "lng": 114.1578691,
+    "name": "鉛礦坳營地 Lead Mine Pass Campsite, 城門林道－鉛礦坳段 Shing Mun Forest Track – Lead Mine Pass Section, 荃灣區 Tsuen Wan District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a23": {
+    "lat": 22.405037,
+    "lng": 114.1051588,
+    "name": "扶輪公園營地 Rotary Club Campsite, 大帽山家樂徑 Tai Mo Shan Family Walk, 川龍茶頭窩 Chuen Lung Cha Tau Wo, 荃灣區 Tsuen Wan District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a24": {
+    "lat": 22.4071298,
+    "lng": 114.1039478,
+    "name": "荃錦營地 Twisk Campsite, 荃錦自然教育徑 Twisk Nature Trail, 川龍茶頭窩 Chuen Lung Cha Tau Wo, 荃灣區 Tsuen Wan District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a25": {
+    "lat": 22.4101769,
+    "lng": 114.0722637,
+    "name": "河背營地 Ho Pui Campsite, 河背越野單車徑 (黑鑽級) Ho Pui Mountain Bike Trail (Black Diamond Grade), 馬鞍崗 Ma On Kong, 元朗區 Yuen Long District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a26": {
+    "lat": 22.3901041,
+    "lng": 114.0660184,
+    "name": "田夫仔營地 Tin Fu Tsai Campsite, 元荃古道 Yuen Tsuen Ancient Trail, 清快塘 Tsing Fai Tong, 荃灣區 Tsuen Wan District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a27": {
+    "lat": 22.255468,
+    "lng": 113.98663,
+    "name": "南山營地 Nam Shan Campsite, 嶼南道 South Lantau Road, 貝澳坳 Pui O Au, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a28": {
+    "lat": 22.2519728,
+    "lng": 113.9938644,
+    "name": "白富田營地 Pak Fu Tin Campsite, 鳳凰徑第12段 Lantau Trail Section 12, 鹹田 Ham Tin, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a29": {
+    "lat": 22.2375706,
+    "lng": 113.9882284,
+    "name": "十塱營地 Shap Long Campsite, 芝麻灣郊遊徑 Chi Ma Wan Country Trail, 鹹田 Ham Tin, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a30": {
+    "lat": 22.2113805,
+    "lng": 113.9150014,
+    "name": "籮箕灣營地 Lo Kei Wan Campsite, 石籮海岸 Shek Lo Coast, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a31": {
+    "lat": 22.2138727,
+    "lng": 113.9031064,
+    "name": "石欖洲營地 Shek Lam Chau Campsite, 焦土海岸 Scorched Earth Coast, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a32": {
+    "lat": 22.2141515,
+    "lng": 113.8778391,
+    "name": "大浪灣營地 Tai Long Wan Camp Site, 七色海岸 Seven Coloured Coast, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a33": {
+    "lat": 22.2045703,
+    "lng": 113.8637313,
+    "name": "狗嶺涌營地 Kau Ling Chung Camp Site, 鳳凰徑第7段 Lantau Trail Section 7, 分流村 Fan Lau Tsuen, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a34": {
+    "lat": 22.2306596,
+    "lng": 113.8672137,
+    "name": "萬丈布營地 Man Cheung Po Campsite, 鳳凰徑第5段 Lantau Trail Section 5, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a35": {
+    "lat": 22.2386817,
+    "lng": 113.8529615,
+    "name": "牙鷹角營地 Nga Ying Kok Campsite, 鳳凰徑第7段 Lantau Trail Section 7, 大澳市中心 Tai O Town Centre, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a36": {
+    "lat": 22.2088617,
+    "lng": 113.8442372,
+    "name": "煎魚灣營地 Tsin Yue Wan Campsite, 鳳凰徑第7段 Lantau Trail Section 7, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a37": {
+    "lat": 22.2549701,
+    "lng": 113.9142358,
+    "name": "昂坪營地 Ngong Ping Camp Site, 法門古道, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a38": {
+    "lat": 22.5144594,
+    "lng": 114.2319452,
+    "name": "降下坳營地 Kong Ha Au Campsite, 新娘潭路 Bride's Pool Road, 鹿頸黃屋 Luk Keng Wong Uk, 河瀝背 Ho Lek Pui, 北區 North District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a39": {
+    "lat": 22.2289309,
+    "lng": 113.8897257,
+    "name": "石壁營地 Shek Pik Campsite, 羗山道 Keung Shan Road, 大嶼山 Lantau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a40": {
+    "lat": 22.4100567,
+    "lng": 114.3748257,
+    "name": "鹹田灣營地 Ham Tin Wan Camp Site, 麥理浩徑第2段 MacLehose Trail Section 2, 鹹田 Ham Tin, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "a41": {
+    "lat": 22.3858318,
+    "lng": 114.3081169,
+    "name": "大網仔一號營地 Tai Mong Tsai Camp Site No.1, 誌烈徑 Chi Lit Path, 斬竹灣 Tsam Chuk Wan, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "baptist3": {
+    "lat": 22.4957594,
+    "lng": 114.1410564,
+    "name": "粉嶺浸信會呂明才幼稚園 Fanling Baptist Church Lui Ming Choi Kindergarten, 沙頭角公路－龍躍頭段 Sha Tau Kok Road – Lung Yeuk Tau, 粉嶺市 Fanling Town, 北區 North District, 新界 New Territories, 香港 Hong Kong, 518010, 中国"
+  },
+  "pokhong3": null,
+  "plkptc3": {
+    "lat": 22.3951974,
+    "lng": 114.3205602,
+    "name": "保良局度假營 Po Leung Kuk Holiday Camp, 良梅河堤路 Leung and Mui Promenade, 上窰 Sheung Yiu, 西貢區 Sai Kung District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "caritas_ck": {
+    "lat": 22.2052261,
+    "lng": 114.0320207,
+    "name": "明愛陳震夏郊野學園 (聖保祿校園) Caritas Chan Chun Ha Field Studies Centre St. Paul Campus, 長洲山頂道 Cheung Chau Peak Road, 長洲 Cheung Chau, 離島區 Islands District, 新界 New Territories, 香港 Hong Kong, 中国"
+  },
+  "baptist4": null,
+  "pokhong4": null,
+  "chungpui3": null,
+  "baptist5": {
+    "lat": 39.3592519,
+    "lng": 117.8716575,
+    "name": "金辉园, 振兴街道, 汉沽管理区, 丰南区, 唐山市, 河北省, 中国"
+  }
+}

@@ -1,0 +1,417 @@
+{
+  "source": "https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=afcd_rcd_1635133060194_82554&format=geojson&layer_name=Campsites_Campsites_Ext_GDB",
+  "fetchedAt": "2026-10-27T04:58:05.374Z",
+  "count": 41,
+  "campsites": [
+    {
+      "siteId": "LN/C/027",
+      "name": "牙鷹角營地",
+      "nameEn": "Nga Ying Kok Campsite",
+      "countryPark": "北大嶼郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.238838282,
+      "lng": 113.8528303098
+    },
+    {
+      "siteId": "LS/C/001",
+      "name": "南山營地",
+      "nameEn": "Nam Shan Campsite",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "多於 50",
+      "lat": 22.2532842859,
+      "lng": 113.9861996448
+    },
+    {
+      "siteId": "LS/C/002",
+      "name": "十塱營地",
+      "nameEn": "Shap Long Campsite",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.2370854359,
+      "lng": 113.9882901226
+    },
+    {
+      "siteId": "LS/C/004",
+      "name": "白富田營地",
+      "nameEn": "Pak Fu Tin Campsite",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.2518322704,
+      "lng": 113.9940782802
+    },
+    {
+      "siteId": "LS/C/005",
+      "name": "昂坪營地 (大嶼山)",
+      "nameEn": "Ngong Ping Campsite (Lantau)",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.2549142309,
+      "lng": 113.9142492709
+    },
+    {
+      "siteId": "LS/C/021",
+      "name": "大浪灣營地",
+      "nameEn": "Tai Long Wan Campsite",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.2132639286,
+      "lng": 113.8780203648
+    },
+    {
+      "siteId": "LS/C/022",
+      "name": "狗嶺涌營地",
+      "nameEn": "Kau Ling Chung Campsite",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.2044935806,
+      "lng": 113.863728674
+    },
+    {
+      "siteId": "LS/C/023",
+      "name": "萬丈布營地",
+      "nameEn": "Man Cheung Po Campsite",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.2306475596,
+      "lng": 113.8665133923
+    },
+    {
+      "siteId": "LS/C/024",
+      "name": "煎魚灣營地",
+      "nameEn": "Tsin Yue Wan Campsite",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.2086547936,
+      "lng": 113.8436769211
+    },
+    {
+      "siteId": "LS/C/025",
+      "name": "籮箕灣營地",
+      "nameEn": "Lo Kei Wan Campsite",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.2120566921,
+      "lng": 113.9151776957
+    },
+    {
+      "siteId": "LS/C/026",
+      "name": "石欖洲營地",
+      "nameEn": "Shek Lam Chau Campsite",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.2131347357,
+      "lng": 113.9033096345
+    },
+    {
+      "siteId": "LS/C/028",
+      "name": "石壁營地",
+      "nameEn": "Shek Pik Campsite",
+      "countryPark": "南大嶼郊野公園",
+      "waterSource": "洗手間",
+      "tentSpace": "少於 20",
+      "lat": 22.2289065872,
+      "lng": 113.8898290449
+    },
+    {
+      "siteId": "MOS/C/001",
+      "name": "水浪窩營地",
+      "nameEn": "Shui Long Wo Campsite",
+      "countryPark": "馬鞍山郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.40273969,
+      "lng": 114.2751827111
+    },
+    {
+      "siteId": "MOS/C/101",
+      "name": "昂平營地(馬鞍山)",
+      "nameEn": "Ngong Ping Campsite (Ma On Shan)",
+      "countryPark": "馬鞍山郊野公園",
+      "waterSource": "洗手間",
+      "tentSpace": "20-50",
+      "lat": 22.3923727549,
+      "lng": 114.251017345
+    },
+    {
+      "siteId": "PC/C/001",
+      "name": "三椏涌營地 \r",
+      "nameEn": "Sam A Chung Campsite",
+      "countryPark": "船灣郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.5084487366,
+      "lng": 114.2716254155
+    },
+    {
+      "siteId": "PCE/C/001",
+      "name": "東平洲營地",
+      "nameEn": "Tung Ping Chau Campsite",
+      "countryPark": "船灣郊野公園(擴建部分)",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.5410610208,
+      "lng": 114.4410277669
+    },
+    {
+      "siteId": "PSL/C/001",
+      "name": "涌背營地",
+      "nameEn": "Chung Pui Campsite",
+      "countryPark": "八仙嶺郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "20-50",
+      "lat": 22.487475537,
+      "lng": 114.2429829317
+    },
+    {
+      "siteId": "PSL/C/002",
+      "name": "降下坳營地",
+      "nameEn": "Kong Ha Au Campsite",
+      "countryPark": "八仙嶺郊野公園",
+      "waterSource": "洗手間",
+      "tentSpace": "少於 20",
+      "lat": 22.5144836,
+      "lng": 114.2318259807
+    },
+    {
+      "siteId": "PSL/C/301",
+      "name": "鶴藪營地",
+      "nameEn": "Hok Tau Campsite",
+      "countryPark": "八仙嶺郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "20-50",
+      "lat": 22.4984105752,
+      "lng": 114.1777760988
+    },
+    {
+      "siteId": "PSL/C/302",
+      "name": "流水響營地",
+      "nameEn": "Lau Shui Heung Campsite",
+      "countryPark": "八仙嶺郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.4913918209,
+      "lng": 114.1670793611
+    },
+    {
+      "siteId": "SKE/C/101",
+      "name": "曝罟灣營地",
+      "nameEn": "Po Kwu Wan Campsite",
+      "countryPark": "西貢東郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.3821994875,
+      "lng": 114.3269215542
+    },
+    {
+      "siteId": "SKE/C/102",
+      "name": "元五墳(南風灣)營地",
+      "nameEn": "Yuen Ng Fan (Nam Fung Wan) Campsite",
+      "countryPark": "西貢東郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.3770682528,
+      "lng": 114.3325332832
+    },
+    {
+      "siteId": "SKE/C/103",
+      "name": "白腊營地",
+      "nameEn": "Pak Lap Campsite",
+      "countryPark": "西貢東郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.3587365249,
+      "lng": 114.364792807
+    },
+    {
+      "siteId": "SKE/C/203",
+      "name": "西灣營地",
+      "nameEn": "Sai Wan Campsite",
+      "countryPark": "西貢東郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "多於  50",
+      "lat": 22.3993778703,
+      "lng": 114.369799211
+    },
+    {
+      "siteId": "SKE/C/205",
+      "name": "浪茄灣營地",
+      "nameEn": "Long Ke Wan Campsite",
+      "countryPark": "西貢東郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.3736299345,
+      "lng": 114.374918993
+    },
+    {
+      "siteId": "SKE/C/301",
+      "name": "北潭凹營地",
+      "nameEn": "Pak Tam Au Campsite",
+      "countryPark": "西貢東郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.4231049971,
+      "lng": 114.3359875967
+    },
+    {
+      "siteId": "SKE/C/304",
+      "name": "黃石營地",
+      "nameEn": "Wong Shek Campsite",
+      "countryPark": "西貢東郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "少於 20",
+      "lat": 22.4349683548,
+      "lng": 114.3364218767
+    },
+    {
+      "siteId": "SKE/C/305",
+      "name": "鹹田灣營地",
+      "nameEn": "Ham Tin Wan Campsite",
+      "countryPark": "西貢東郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "多於 50",
+      "lat": 22.4093386148,
+      "lng": 114.3751529757
+    },
+    {
+      "siteId": "SKW/C/101",
+      "name": "大網仔營地",
+      "nameEn": "Tai Mong Tsai Campsite 1",
+      "countryPark": "西貢西郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "少於 20",
+      "lat": 22.3856111159,
+      "lng": 114.308103381
+    },
+    {
+      "siteId": "SKW/C/301",
+      "name": "嶂上營地",
+      "nameEn": "Cheung Sheung Campsite",
+      "countryPark": "西貢西郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.4285103997,
+      "lng": 114.3098106468
+    },
+    {
+      "siteId": "SKW/C/307",
+      "name": "猴塘溪營地",
+      "nameEn": "Hau Tong Kai Campsite",
+      "countryPark": "西貢西郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "少於 20",
+      "lat": 22.4415572536,
+      "lng": 114.3272434133
+    },
+    {
+      "siteId": "SKW/C/308",
+      "name": "灣仔西營地",
+      "nameEn": "Wan Tsai West Campsite",
+      "countryPark": "西貢西郊野公園(灣仔擴建部分)",
+      "waterSource": "水喉",
+      "tentSpace": "多於 50",
+      "lat": 22.4650782044,
+      "lng": 114.338102617
+    },
+    {
+      "siteId": "SKW/C/309",
+      "name": "灣仔南營地",
+      "nameEn": "Wan Tsai South Campsite",
+      "countryPark": "西貢西郊野公園(灣仔擴建部分)",
+      "waterSource": "水喉",
+      "tentSpace": "多於  50",
+      "lat": 22.4616144223,
+      "lng": 114.342129385
+    },
+    {
+      "siteId": "SKW/C/310",
+      "name": "大灘營地",
+      "nameEn": "Tai Tan Campsite",
+      "countryPark": "西貢西郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "少於 20",
+      "lat": 22.4375253301,
+      "lng": 114.3334114446
+    },
+    {
+      "siteId": "SKW/C/311",
+      "name": "怡庭營地",
+      "nameEn": "Yee Ting Campsite",
+      "countryPark": "西貢西郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.4062617605,
+      "lng": 114.325220307
+    },
+    {
+      "siteId": "SM/C/001",
+      "name": "鉛礦坳營地",
+      "nameEn": "Lead Mine Pass Campsite",
+      "countryPark": "城門郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "少於 20",
+      "lat": 22.4113213059,
+      "lng": 114.1577881472
+    },
+    {
+      "siteId": "TL/C/301",
+      "name": "田夫仔營地",
+      "nameEn": "Tin Fu Tsai Campsite",
+      "countryPark": "大欖郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "20-50",
+      "lat": 22.390084884,
+      "lng": 114.0660434111
+    },
+    {
+      "siteId": "TL/C/302",
+      "name": "河背營地",
+      "nameEn": "Ho Pui Campsite",
+      "countryPark": "大欖郊野公園",
+      "waterSource": "溪澗(季節性水源)",
+      "tentSpace": "少於 20",
+      "lat": 22.4099594527,
+      "lng": 114.071699921
+    },
+    {
+      "siteId": "TL/C/401",
+      "name": "荃錦營地",
+      "nameEn": "Twisk Campsite",
+      "countryPark": "大欖郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "20-50",
+      "lat": 22.4068047921,
+      "lng": 114.1032322241
+    },
+    {
+      "siteId": "TLF/C/101",
+      "name": "東龍洲營地",
+      "nameEn": "Tung Lung Chau Campsite",
+      "countryPark": "東龍洲炮台特別地區",
+      "waterSource": "水喉",
+      "tentSpace": "少於 20",
+      "lat": 22.2554857949,
+      "lng": 114.2959332565
+    },
+    {
+      "siteId": "TMS/C/001",
+      "name": "扶輪公園營地",
+      "nameEn": "Rotary Park Campsite",
+      "countryPark": "大帽山郊野公園",
+      "waterSource": "水喉",
+      "tentSpace": "少於 20",
+      "lat": 22.4050702308,
+      "lng": 114.1050953053
+    }
+  ]
+}

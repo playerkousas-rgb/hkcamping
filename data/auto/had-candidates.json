@@ -1,0 +1,1158 @@
+{
+  "fetchedAt": "2026-10-27T04:58:27.497Z",
+  "note": "持牌賓館中與戶外/渡假相關的鄉郊候選（已剔除大型酒店），審閱後可提升入 data.csv（type=民宿，座標已備）",
+  "premisesCount": 50,
+  "operatorCount": 27,
+  "operators": [
+    {
+      "name": "香港青年協會領袖學院營舍",
+      "area": "北區",
+      "district": "北區",
+      "units": 1,
+      "phones": [
+        "2169 0255"
+      ],
+      "licences": [
+        "H/6461"
+      ],
+      "sampleLat": 22.49497112,
+      "sampleLng": 114.14006699
+    },
+    {
+      "name": "梁紹榮度假村",
+      "area": "大嶼山其他",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "2980 2321"
+      ],
+      "licences": [
+        "H/4069"
+      ],
+      "sampleLat": 22.23792207,
+      "sampleLng": 113.96439148
+    },
+    {
+      "name": "銀景渡假中心",
+      "area": "梅窩／銀礦灣",
+      "district": "離島",
+      "units": 4,
+      "phones": [
+        "2984 8081"
+      ],
+      "licences": [
+        "H/3752",
+        "H/4016",
+        "H/4012",
+        "H/3756"
+      ],
+      "sampleLat": 22.26563913,
+      "sampleLng": 113.99675798
+    },
+    {
+      "name": "海景渡假樂園",
+      "area": "梅窩／銀礦灣",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "2984 8877"
+      ],
+      "licences": [
+        "H/2900"
+      ],
+      "sampleLat": 22.27158506,
+      "sampleLng": 113.99937396
+    },
+    {
+      "name": "優閒渡假屋",
+      "area": "南丫島",
+      "district": "離島",
+      "units": 4,
+      "phones": [
+        "2982 4580"
+      ],
+      "licences": [
+        "H/3177",
+        "H/3467",
+        "H/3183",
+        "H/3702"
+      ],
+      "sampleLat": 22.22707718,
+      "sampleLng": 114.11134965
+    },
+    {
+      "name": "文麗華度假屋",
+      "area": "南丫島",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "2982 0220"
+      ],
+      "licences": [
+        "H/1787"
+      ],
+      "sampleLat": 22.22707574,
+      "sampleLng": 114.1100499
+    },
+    {
+      "name": "輝煌渡假屋有限公司",
+      "area": "南丫島",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "2982 2626"
+      ],
+      "licences": [
+        "H/6187"
+      ],
+      "sampleLat": 22.22690052,
+      "sampleLng": 114.11149426
+    },
+    {
+      "name": "新輝渡假屋",
+      "area": "塘福",
+      "district": "離島",
+      "units": 3,
+      "phones": [
+        "2886 2891"
+      ],
+      "licences": [
+        "H/1944",
+        "H/3387",
+        "H/1943"
+      ],
+      "sampleLat": 22.2279099,
+      "sampleLng": 113.93051906
+    },
+    {
+      "name": "好好渡假屋",
+      "area": "塘福",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "9668 4787"
+      ],
+      "licences": [
+        "H/2085"
+      ],
+      "sampleLat": 22.22866922,
+      "sampleLng": 113.93280976
+    },
+    {
+      "name": "雅景渡假公司",
+      "area": "塘福",
+      "district": "離島",
+      "units": 1,
+      "phones": [],
+      "licences": [
+        "H/1918"
+      ],
+      "sampleLat": 22.2279176,
+      "sampleLng": 113.9308372
+    },
+    {
+      "name": "保良局賽馬會北潭涌度假營",
+      "area": "西貢",
+      "district": "西貢",
+      "units": 1,
+      "phones": [
+        "2792 4302"
+      ],
+      "licences": [
+        "H/2215"
+      ],
+      "sampleLat": 22.39540009,
+      "sampleLng": 114.32042425
+    },
+    {
+      "name": "伸手助人協會樟木頭老人度假中心",
+      "area": "西貢",
+      "district": "西貢",
+      "units": 1,
+      "phones": [
+        "2640 8810"
+      ],
+      "licences": [
+        "H/2801"
+      ],
+      "sampleLat": 22.43236404,
+      "sampleLng": 114.25037874
+    },
+    {
+      "name": "保良局賽馬會大棠渡假村(第三期)",
+      "area": "元朗",
+      "district": "元朗",
+      "units": 1,
+      "phones": [
+        "2478 1332"
+      ],
+      "licences": [
+        "H/5133"
+      ],
+      "sampleLat": 22.41191334,
+      "sampleLng": 114.0330341
+    },
+    {
+      "name": "保良局賽馬會大棠渡假村",
+      "area": "元朗",
+      "district": "元朗",
+      "units": 1,
+      "phones": [
+        "2478 1332"
+      ],
+      "licences": [
+        "H/2535"
+      ],
+      "sampleLat": 22.41156672,
+      "sampleLng": 114.03115991
+    },
+    {
+      "name": "富記度假村",
+      "area": "長洲",
+      "district": "離島",
+      "units": 10,
+      "phones": [
+        "2981 0093"
+      ],
+      "licences": [
+        "H/3202",
+        "H/5484",
+        "H/5484",
+        "H/3822",
+        "H/3328",
+        "H/3264",
+        "H/4382",
+        "H/1523",
+        "H/3430",
+        "H/3204"
+      ],
+      "sampleLat": 22.21229319,
+      "sampleLng": 114.02894871
+    },
+    {
+      "name": "海景渡假屋",
+      "area": "長洲",
+      "district": "離島",
+      "units": 3,
+      "phones": [
+        "2986 9368",
+        "9271 5501"
+      ],
+      "licences": [
+        "H/3744",
+        "H/4556",
+        "H/3017"
+      ],
+      "sampleLat": 22.21171085,
+      "sampleLng": 114.02909286
+    },
+    {
+      "name": "芳姐可口渡假屋",
+      "area": "長洲",
+      "district": "離島",
+      "units": 3,
+      "phones": [
+        "2981 7170"
+      ],
+      "licences": [
+        "H/5079",
+        "H/3731",
+        "H/5084"
+      ],
+      "sampleLat": 22.21203492,
+      "sampleLng": 114.0289548
+    },
+    {
+      "name": "住得好長洲北帝廟渡假屋",
+      "area": "長洲",
+      "district": "離島",
+      "units": 2,
+      "phones": [
+        "2986 9990"
+      ],
+      "licences": [
+        "H/4536",
+        "H/4531"
+      ],
+      "sampleLat": 22.21210464,
+      "sampleLng": 114.02815945
+    },
+    {
+      "name": "海靖旅舍",
+      "area": "長洲",
+      "district": "離島",
+      "units": 2,
+      "phones": [
+        "9668 5116"
+      ],
+      "licences": [
+        "H/4179",
+        "H/4393"
+      ],
+      "sampleLat": 22.21261194,
+      "sampleLng": 114.02890376
+    },
+    {
+      "name": "住得好(維也納)渡假旅館",
+      "area": "長洲",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "2986 9990"
+      ],
+      "licences": [
+        "H/6153"
+      ],
+      "sampleLat": 22.20869656,
+      "sampleLng": 114.0302666
+    },
+    {
+      "name": "日與夜渡假屋",
+      "area": "長洲",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "9520 5300"
+      ],
+      "licences": [
+        "H/5667"
+      ],
+      "sampleLat": 22.21097772,
+      "sampleLng": 114.02777066
+    },
+    {
+      "name": "有利渡假屋",
+      "area": "長洲",
+      "district": "離島",
+      "units": 1,
+      "phones": [],
+      "licences": [
+        "H/1643"
+      ],
+      "sampleLat": 22.21190755,
+      "sampleLng": 114.02890935
+    },
+    {
+      "name": "住得好長洲花園渡假屋",
+      "area": "長洲",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "2986 9990"
+      ],
+      "licences": [
+        "H/4051"
+      ],
+      "sampleLat": 22.20861238,
+      "sampleLng": 114.03004848
+    },
+    {
+      "name": "晴天旅舍",
+      "area": "長洲",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "9125 5095"
+      ],
+      "licences": [
+        "H/6224"
+      ],
+      "sampleLat": 22.2123415,
+      "sampleLng": 114.02895823
+    },
+    {
+      "name": "海天渡假屋",
+      "area": "長洲",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "9304 3163"
+      ],
+      "licences": [
+        "H/4928"
+      ],
+      "sampleLat": 22.20530728,
+      "sampleLng": 114.02722104
+    },
+    {
+      "name": "偉記渡假屋",
+      "area": "長洲",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "9209 9286"
+      ],
+      "licences": [
+        "H/3400"
+      ],
+      "sampleLat": 22.20546739,
+      "sampleLng": 114.02751085
+    },
+    {
+      "name": "德盛渡假屋",
+      "area": "長洲",
+      "district": "離島",
+      "units": 1,
+      "phones": [
+        "9194 6710"
+      ],
+      "licences": [
+        "H/6126"
+      ],
+      "sampleLat": 22.21156238,
+      "sampleLng": 114.02900895
+    }
+  ],
+  "premises": [
+    {
+      "objectId": 38,
+      "name": "住得好(維也納)渡假旅館",
+      "nameEn": "B&B VIENNA GUEST HOUSE (CHEUNG CHAU)",
+      "address": "長洲東灣路85號1-2字樓",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2986 9990",
+      "fax": "2986 9980",
+      "email": "info@ibnb.com.hk",
+      "lat": 22.20869656,
+      "lng": 114.0302666,
+      "licenceNo": "H/6153",
+      "lastUpdate": "2025-12-24 11:29:46"
+    },
+    {
+      "objectId": 69,
+      "name": "日與夜渡假屋",
+      "nameEn": "DAY & NIGHT RESORT",
+      "address": "長洲北社七里1號後座地下",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "9520 5300",
+      "fax": "",
+      "email": "falconyeung@yahoo.com.hk",
+      "lat": 22.21097772,
+      "lng": 114.02777066,
+      "licenceNo": "H/5667",
+      "lastUpdate": "2025-12-24 11:26:00"
+    },
+    {
+      "objectId": 101,
+      "name": "海景渡假屋",
+      "nameEn": "SEAVIEW HOLIDAY HOUSE",
+      "address": "長洲長洲地段第1491號東堤小築11座地下B室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2986 9368",
+      "fax": "",
+      "email": "",
+      "lat": 22.21171085,
+      "lng": 114.02909286,
+      "licenceNo": "H/3744",
+      "lastUpdate": "2025-12-24 11:15:49"
+    },
+    {
+      "objectId": 157,
+      "name": "富記度假村",
+      "nameEn": "FU KEE HORIZON RESORT",
+      "address": "長洲長洲地段第1491號東堤小築7座1-2字樓C室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 0093",
+      "fax": "2981 0603",
+      "email": "ccfukee@gmail.com",
+      "lat": 22.21229319,
+      "lng": 114.02894871,
+      "licenceNo": "H/3202",
+      "lastUpdate": "2025-12-24 11:01:02"
+    },
+    {
+      "objectId": 172,
+      "name": "芳姐可口渡假屋",
+      "nameEn": "FONG CHE HO HAU SUMMER HOUSE",
+      "address": "長洲長洲地段第1491號東堤小築9座地下B室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 7170",
+      "fax": "",
+      "email": "brendafung182838@yahoo.com.hk",
+      "lat": 22.21203492,
+      "lng": 114.0289548,
+      "licenceNo": "H/5079",
+      "lastUpdate": "2025-12-24 10:55:43"
+    },
+    {
+      "objectId": 176,
+      "name": "有利渡假屋",
+      "nameEn": "YAU LEE HOLIDAY CENTRE",
+      "address": "長洲長洲地段第1491號東堤小築12座1字樓E室、11座地下C&D室&2字樓A&B室&10座地下D室&1字樓C室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "",
+      "fax": "",
+      "email": "",
+      "lat": 22.21190755,
+      "lng": 114.02890935,
+      "licenceNo": "H/1643",
+      "lastUpdate": "2025-12-24 10:54:09"
+    },
+    {
+      "objectId": 246,
+      "name": "新輝渡假屋",
+      "nameEn": "SUN FAI RESORT HOUSE",
+      "address": "大嶼山1866地段塘福村149號地下-2字樓",
+      "district": "離島",
+      "area": "塘福",
+      "phone": "2886 2891",
+      "fax": "2915 9592",
+      "email": "sunfaitrans@yahoo.com.hk",
+      "lat": 22.2279099,
+      "lng": 113.93051906,
+      "licenceNo": "H/1944",
+      "lastUpdate": "2025-12-24 10:45:16"
+    },
+    {
+      "objectId": 279,
+      "name": "住得好長洲北帝廟渡假屋",
+      "nameEn": "B & B PAK TAI TEMPLE HOLIDAY FLAT",
+      "address": "長洲北社街2J號地下",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2986 9990",
+      "fax": "2986 9980",
+      "email": "info@ibnb.com.hk",
+      "lat": 22.21210464,
+      "lng": 114.02815945,
+      "licenceNo": "H/4536",
+      "lastUpdate": "2025-12-24 10:37:48"
+    },
+    {
+      "objectId": 293,
+      "name": "文麗華度假屋",
+      "nameEn": "MAN LAI WAH RESORT",
+      "address": "南丫島榕樹灣寶華園2號",
+      "district": "離島",
+      "area": "南丫島",
+      "phone": "2982 0220",
+      "fax": "",
+      "email": "manlaiwahhotel@gmail.com",
+      "lat": 22.22707574,
+      "lng": 114.1100499,
+      "licenceNo": "H/1787",
+      "lastUpdate": "2025-12-24 10:34:10"
+    },
+    {
+      "objectId": 329,
+      "name": "海靖旅舍",
+      "nameEn": "HOI CHING",
+      "address": "長洲長洲地段第1491號東堤小築第5座1字樓D室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "9668 5116",
+      "fax": "",
+      "email": "",
+      "lat": 22.21261194,
+      "lng": 114.02890376,
+      "licenceNo": "H/4179",
+      "lastUpdate": "2025-12-24 10:27:12"
+    },
+    {
+      "objectId": 484,
+      "name": "富記度假村",
+      "nameEn": "FU KEE HORIZON RESORT",
+      "address": "長洲長洲地段第1491號東堤小築11座1字樓H4室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 0093",
+      "fax": "2981 0603",
+      "email": "ccfukee@gmail.com",
+      "lat": 22.2114924,
+      "lng": 114.02919686,
+      "licenceNo": "H/5484",
+      "lastUpdate": "2025-12-24 09:21:49"
+    },
+    {
+      "objectId": 547,
+      "name": "優閒渡假屋",
+      "nameEn": "BALI HOLIDAY RESORT",
+      "address": "南丫島榕樹灣大街8號2字樓",
+      "district": "離島",
+      "area": "南丫島",
+      "phone": "2982 4580",
+      "fax": "2982 1044",
+      "email": "bali@netvigator.com",
+      "lat": 22.22707718,
+      "lng": 114.11134965,
+      "licenceNo": "H/3177",
+      "lastUpdate": "2025-12-24 09:08:31"
+    },
+    {
+      "objectId": 557,
+      "name": "保良局賽馬會大棠渡假村(第三期)",
+      "nameEn": "PO LEUNG KUK JOCKEY CLUB TAI TONG HOLIDAY CAMP (PHASE III)",
+      "address": "新界元朗大棠山道31號",
+      "district": "元朗",
+      "area": "元朗",
+      "phone": "2478 1332",
+      "fax": "2442 3869",
+      "email": "tt@poleungkuk.org.hk",
+      "lat": 22.41191334,
+      "lng": 114.0330341,
+      "licenceNo": "H/5133",
+      "lastUpdate": "2025-12-24 09:05:37"
+    },
+    {
+      "objectId": 559,
+      "name": "保良局賽馬會北潭涌度假營",
+      "nameEn": "PO LEUNG KUK JOCKEY CLUB PAK TAM CHUNG HOLIDAY CAMP",
+      "address": "新界西貢約257, 地段 675",
+      "district": "西貢",
+      "area": "西貢",
+      "phone": "2792 4302",
+      "fax": "2792 0917",
+      "email": "ptc@poleungkuk.org.hk",
+      "lat": 22.39540009,
+      "lng": 114.32042425,
+      "licenceNo": "H/2215",
+      "lastUpdate": "2025-12-23 12:19:16"
+    },
+    {
+      "objectId": 623,
+      "name": "銀景渡假中心",
+      "nameEn": "SILVERVIEW RESORT HOLIDAY",
+      "address": "大嶼山梅窩銀礦灣路8號銀景中心第19座1&2字樓",
+      "district": "離島",
+      "area": "梅窩／銀礦灣",
+      "phone": "2984 8081",
+      "fax": "2984 8112",
+      "email": "",
+      "lat": 22.26563913,
+      "lng": 113.99675798,
+      "licenceNo": "H/3752",
+      "lastUpdate": "2025-12-24 08:52:45"
+    },
+    {
+      "objectId": 628,
+      "name": "住得好長洲北帝廟渡假屋",
+      "nameEn": "B & B PAK TAI TEMPLE HOLIDAY FLAT",
+      "address": "長洲北社街2H號地下",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2986 9990",
+      "fax": "2986 9980",
+      "email": "info@ibnb.com.hk",
+      "lat": 22.21214885,
+      "lng": 114.02812352,
+      "licenceNo": "H/4531",
+      "lastUpdate": "2025-12-24 08:49:30"
+    },
+    {
+      "objectId": 646,
+      "name": "海靖旅舍",
+      "nameEn": "HOI CHING",
+      "address": "長洲長洲地段第1491號東堤小築第5座地下A室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "",
+      "fax": "",
+      "email": "",
+      "lat": 22.21294241,
+      "lng": 114.02884619,
+      "licenceNo": "H/4393",
+      "lastUpdate": "2025-12-24 08:44:16"
+    },
+    {
+      "objectId": 661,
+      "name": "銀景渡假中心",
+      "nameEn": "SILVERVIEW RESORT HOLIDAY",
+      "address": "大嶼山梅窩銀礦灣路8號銀景中心第18座1&2字樓",
+      "district": "離島",
+      "area": "梅窩／銀礦灣",
+      "phone": "2984 8081",
+      "fax": "2984 8112",
+      "email": "",
+      "lat": 22.26559477,
+      "lng": 113.99665519,
+      "licenceNo": "H/4016",
+      "lastUpdate": "2025-12-24 08:41:20"
+    },
+    {
+      "objectId": 708,
+      "name": "輝煌渡假屋有限公司",
+      "nameEn": "SUN RISE HOLIDAY RESORT LIMITED",
+      "address": "南丫島榕樹灣大街15 號1字樓及2字樓",
+      "district": "離島",
+      "area": "南丫島",
+      "phone": "2982 2626",
+      "fax": "2982 0636",
+      "email": "",
+      "lat": 22.22690052,
+      "lng": 114.11149426,
+      "licenceNo": "H/6187",
+      "lastUpdate": "2025-12-23 12:22:36"
+    },
+    {
+      "objectId": 709,
+      "name": "住得好長洲花園渡假屋",
+      "nameEn": "B & B GARDEN HOLIDAY FLAT (CHEUNG CHAU)",
+      "address": "長洲東灣路84號1-2字樓",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2986 9990",
+      "fax": "2986 9980",
+      "email": "info@ibnb.com.hk",
+      "lat": 22.20861238,
+      "lng": 114.03004848,
+      "licenceNo": "H/4051",
+      "lastUpdate": "2025-12-24 08:34:56"
+    },
+    {
+      "objectId": 790,
+      "name": "銀景渡假中心",
+      "nameEn": "SILVERVIEW RESORT HOLIDAY",
+      "address": "大嶼山梅窩銀礦灣路8號銀景中心第17座1&2字樓",
+      "district": "離島",
+      "area": "梅窩／銀礦灣",
+      "phone": "2984 8081",
+      "fax": "2984 8112",
+      "email": "",
+      "lat": 22.26559477,
+      "lng": 113.99665519,
+      "licenceNo": "H/4012",
+      "lastUpdate": "2025-12-24 08:20:27"
+    },
+    {
+      "objectId": 818,
+      "name": "伸手助人協會樟木頭老人度假中心",
+      "nameEn": "HELPING HAND CHEUNG MUK TAU HOLIDAY CENTRE FOR THE ELDERLY",
+      "address": "新界西貢樟木頭北年華路",
+      "district": "西貢",
+      "area": "西貢",
+      "phone": "2640 8810",
+      "fax": "2640 7990",
+      "email": "holidaycentre@helpinghand.org.hk",
+      "lat": 22.43236404,
+      "lng": 114.25037874,
+      "licenceNo": "H/2801",
+      "lastUpdate": "2025-12-24 08:18:31"
+    },
+    {
+      "objectId": 852,
+      "name": "優閒渡假屋",
+      "nameEn": "BALI HOLIDAY RESORT",
+      "address": "南丫島榕樹灣大街7號1字樓",
+      "district": "離島",
+      "area": "南丫島",
+      "phone": "2982 4580",
+      "fax": "2982 1044",
+      "email": "bali@netvigator.com",
+      "lat": 22.22710332,
+      "lng": 114.11123809,
+      "licenceNo": "H/3467",
+      "lastUpdate": "2025-12-24 08:10:01"
+    },
+    {
+      "objectId": 866,
+      "name": "新輝渡假屋",
+      "nameEn": "SUN FAI RESORT HOUSE",
+      "address": "大嶼山塘福村149A號地下-2字樓",
+      "district": "離島",
+      "area": "塘福",
+      "phone": "2886 2891",
+      "fax": "2915 9592",
+      "email": "sunfaitrams@yahoo.com.hk",
+      "lat": 22.22780137,
+      "lng": 113.93041256,
+      "licenceNo": "H/3387",
+      "lastUpdate": "2025-12-24 08:07:35"
+    },
+    {
+      "objectId": 898,
+      "name": "富記度假村",
+      "nameEn": "FU KEE HORIZON RESORT",
+      "address": "長洲長洲地段第1491號 東堤小築16座1字樓B室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 0093",
+      "fax": "2981 0603",
+      "email": "ccfukee@gmail.com",
+      "lat": 22.2112249,
+      "lng": 114.02927717,
+      "licenceNo": "H/5484",
+      "lastUpdate": "2025-12-23 12:23:05"
+    },
+    {
+      "objectId": 906,
+      "name": "好好渡假屋",
+      "nameEn": "HO HO HOLIDAY RESORT",
+      "address": "大嶼山塘福村14號地下-2字樓",
+      "district": "離島",
+      "area": "塘福",
+      "phone": "9668 4787",
+      "fax": "",
+      "email": "",
+      "lat": 22.22866922,
+      "lng": 113.93280976,
+      "licenceNo": "H/2085",
+      "lastUpdate": "2025-12-24 08:05:08"
+    },
+    {
+      "objectId": 908,
+      "name": "梁紹榮度假村",
+      "nameEn": "SYDNEY LEONG HOLIDAY LODGE",
+      "address": "大嶼山南區䃟石灣10A號",
+      "district": "離島",
+      "area": "大嶼山其他",
+      "phone": "2980 2321",
+      "fax": "2980 2163",
+      "email": "cmp@ywca.org.hk",
+      "lat": 22.23792207,
+      "lng": 113.96439148,
+      "licenceNo": "H/4069",
+      "lastUpdate": "2025-12-24 14:14:36"
+    },
+    {
+      "objectId": 938,
+      "name": "富記度假村",
+      "nameEn": "FU KEE HORIZON RESORT",
+      "address": "長洲長洲地段第1491號東堤小築第11座地下-2字樓E室、地下-2字樓F室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 0093",
+      "fax": "2981 0603",
+      "email": "ccfukee@gmail.com",
+      "lat": 22.21159349,
+      "lng": 114.02914535,
+      "licenceNo": "H/3822",
+      "lastUpdate": "2025-12-23 17:56:24"
+    },
+    {
+      "objectId": 952,
+      "name": "晴天旅舍",
+      "nameEn": "SUNBEAM HOSTEL",
+      "address": "長洲長洲地段1491號東堤小築7座1字樓B室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "9125 5095",
+      "fax": "",
+      "email": "",
+      "lat": 22.2123415,
+      "lng": 114.02895823,
+      "licenceNo": "H/6224",
+      "lastUpdate": "2025-12-23 17:51:25"
+    },
+    {
+      "objectId": 992,
+      "name": "海景渡假屋",
+      "nameEn": "SEA VIEW RESORT",
+      "address": "長洲中學路2號海景樓地下",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "9271 5501",
+      "fax": "2512 2493",
+      "email": "",
+      "lat": 22.20535449,
+      "lng": 114.02680919,
+      "licenceNo": "H/4556",
+      "lastUpdate": "2025-12-23 17:45:18"
+    },
+    {
+      "objectId": 1041,
+      "name": "新輝渡假屋",
+      "nameEn": "SUN FAI RESORT HOUSE",
+      "address": "大嶼山塘福村148號地下-2字樓",
+      "district": "離島",
+      "area": "塘福",
+      "phone": "2886 2891",
+      "fax": "2915 9592",
+      "email": "sunfaitrans@yahoo.com.hk",
+      "lat": 22.22794047,
+      "lng": 113.93042977,
+      "licenceNo": "H/1943",
+      "lastUpdate": "2025-12-23 17:28:16"
+    },
+    {
+      "objectId": 1080,
+      "name": "富記度假村",
+      "nameEn": "FU KEE HORIZON RESORT",
+      "address": "長洲長洲地段第1491號東堤小築13座1字樓C室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 0093",
+      "fax": "2981 0603",
+      "email": "ccfukee@gmail.com",
+      "lat": 22.21134793,
+      "lng": 114.02922514,
+      "licenceNo": "H/3328",
+      "lastUpdate": "2025-12-23 17:23:08"
+    },
+    {
+      "objectId": 1101,
+      "name": "雅景渡假公司",
+      "nameEn": "FAIR VIEW HOLIDAY RESORT COMPANY",
+      "address": "大嶼山塘福第328約1407地段",
+      "district": "離島",
+      "area": "塘福",
+      "phone": "",
+      "fax": "",
+      "email": "",
+      "lat": 22.2279176,
+      "lng": 113.9308372,
+      "licenceNo": "H/1918",
+      "lastUpdate": "2026-05-06 11:47:01"
+    },
+    {
+      "objectId": 1165,
+      "name": "海景渡假屋",
+      "nameEn": "SEA VIEW HOLIDAY HOUSE",
+      "address": "長洲長洲地段第1491號東堤小築13座地下C室、1字樓D室& 2字樓C&D室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2986 9368",
+      "fax": "",
+      "email": "",
+      "lat": 22.21135065,
+      "lng": 114.02923483,
+      "licenceNo": "H/3017",
+      "lastUpdate": "2025-12-23 16:11:44"
+    },
+    {
+      "objectId": 1172,
+      "name": "海天渡假屋",
+      "nameEn": "OCEAN SKY RESORT",
+      "address": "長洲中興新街22號地下",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "9304 3163",
+      "fax": "2512 2493",
+      "email": "",
+      "lat": 22.20530728,
+      "lng": 114.02722104,
+      "licenceNo": "H/4928",
+      "lastUpdate": "2025-12-23 16:11:21"
+    },
+    {
+      "objectId": 1227,
+      "name": "銀景渡假中心",
+      "nameEn": "SILVERVIEW RESORT HOLIDAY",
+      "address": "大嶼山梅窩銀礦灣路8號銀景中心第20座1&2字樓",
+      "district": "離島",
+      "area": "梅窩／銀礦灣",
+      "phone": "2984 8081",
+      "fax": "2984 8112",
+      "email": "",
+      "lat": 22.26559477,
+      "lng": 113.99665519,
+      "licenceNo": "H/3756",
+      "lastUpdate": "2025-12-23 15:46:33"
+    },
+    {
+      "objectId": 1273,
+      "name": "富記度假村",
+      "nameEn": "FU KEE HORIZON RESORT",
+      "address": "長洲長洲地段第1491號東堤小築第9座2字樓B室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 0093",
+      "fax": "2981 0603",
+      "email": "ccfukee@gmail.com",
+      "lat": 22.21204308,
+      "lng": 114.02898777,
+      "licenceNo": "H/3264",
+      "lastUpdate": "2025-12-23 15:38:40"
+    },
+    {
+      "objectId": 1274,
+      "name": "偉記渡假屋",
+      "nameEn": "WAI KEE RESORT HOUSE",
+      "address": "長洲中興新街7號1字樓",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "9209 9286",
+      "fax": "",
+      "email": "ngsocc@gmail.com",
+      "lat": 22.20546739,
+      "lng": 114.02751085,
+      "licenceNo": "H/3400",
+      "lastUpdate": "2025-12-23 15:37:58"
+    },
+    {
+      "objectId": 1289,
+      "name": "優閒渡假屋",
+      "nameEn": "BALI HOLIDAY RESORT",
+      "address": "南丫島榕樹灣大街7號2字樓",
+      "district": "離島",
+      "area": "南丫島",
+      "phone": "2982 4580",
+      "fax": "2982 1044",
+      "email": "bali@netvigator.com",
+      "lat": 22.22710332,
+      "lng": 114.11123906,
+      "licenceNo": "H/3183",
+      "lastUpdate": "2025-12-23 15:11:05"
+    },
+    {
+      "objectId": 1299,
+      "name": "富記度假村",
+      "nameEn": "FU KEE HORIZON RESORT",
+      "address": "長洲長洲地段第1491號東堤小築第9座地下C室及1字樓C室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 0093",
+      "fax": "2981 0603",
+      "email": "ccfukee@gmail.com",
+      "lat": 22.21199522,
+      "lng": 114.02898685,
+      "licenceNo": "H/4382",
+      "lastUpdate": "2025-12-23 15:09:01"
+    },
+    {
+      "objectId": 1307,
+      "name": "德盛渡假屋",
+      "nameEn": "TAK SHING RESORT HOUSE",
+      "address": "長洲長洲地段第1491號 東堤小築12座2字樓F室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "9194 6710",
+      "fax": "",
+      "email": "cctakshing@gmail.com",
+      "lat": 22.21156238,
+      "lng": 114.02900895,
+      "licenceNo": "H/6126",
+      "lastUpdate": "2025-12-23 15:14:31"
+    },
+    {
+      "objectId": 1365,
+      "name": "富記度假村",
+      "nameEn": "FU KEE HORIZON RESORT",
+      "address": "長洲長洲地段第1491號東堤小築第11座地下A室&第9座地下D室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 0093",
+      "fax": "2981 0603",
+      "email": "ccfukee@gmail.com",
+      "lat": 22.2117605,
+      "lng": 114.02907341,
+      "licenceNo": "H/1523",
+      "lastUpdate": "2025-12-23 14:53:11"
+    },
+    {
+      "objectId": 1449,
+      "name": "保良局賽馬會大棠渡假村",
+      "nameEn": "PO LEUNG KUK JOCKEY CLUB TAI TONG HOLIDAY CAMP",
+      "address": "新界元朗大棠山路31號",
+      "district": "元朗",
+      "area": "元朗",
+      "phone": "2478 1332",
+      "fax": "2442 3869",
+      "email": "tt@poleungkuk.org.hk",
+      "lat": 22.41156672,
+      "lng": 114.03115991,
+      "licenceNo": "H/2535",
+      "lastUpdate": "2025-12-23 14:37:39"
+    },
+    {
+      "objectId": 1464,
+      "name": "優閒渡假屋",
+      "nameEn": "BALI HOLIDAY RESORT",
+      "address": "南丫島榕樹灣大街8號1字樓",
+      "district": "離島",
+      "area": "南丫島",
+      "phone": "2982 4580",
+      "fax": "2982 1044",
+      "email": "bali@netvigator.com",
+      "lat": 22.22707537,
+      "lng": 114.11134383,
+      "licenceNo": "H/3702",
+      "lastUpdate": "2025-12-23 14:29:19"
+    },
+    {
+      "objectId": 1509,
+      "name": "芳姐可口渡假屋",
+      "nameEn": "FONG CHE HO HAU SUMMER HOUSE",
+      "address": "長洲長洲地段第1491號東堤小築12座1字樓D室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "",
+      "fax": "",
+      "email": "",
+      "lat": 22.21166109,
+      "lng": 114.02899302,
+      "licenceNo": "H/3731",
+      "lastUpdate": "2025-12-23 14:15:04"
+    },
+    {
+      "objectId": 1582,
+      "name": "香港青年協會領袖學院營舍",
+      "nameEn": "THE HKFYG LEADERSHIP INSTITUTE LODGE",
+      "address": "新界粉嶺馬會道302號, Hostel Block, 地下(部份)，1字樓及天台",
+      "district": "北區",
+      "area": "北區",
+      "phone": "2169 0255",
+      "fax": "2169 0603",
+      "email": "info@leadershipinstitute.hk",
+      "lat": 22.49497112,
+      "lng": 114.14006699,
+      "licenceNo": "H/6461",
+      "lastUpdate": "2025-12-23 15:35:47"
+    },
+    {
+      "objectId": 1731,
+      "name": "富記度假村",
+      "nameEn": "FU KEE HORIZON RESORT",
+      "address": "長洲長洲地段第1491號東堤小築7座1字樓D室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 0093",
+      "fax": "2981 0603",
+      "email": "ccfukee@gmail.com",
+      "lat": 22.21224713,
+      "lng": 114.02894197,
+      "licenceNo": "H/3430",
+      "lastUpdate": "2025-12-23 12:41:30"
+    },
+    {
+      "objectId": 1742,
+      "name": "富記度假村",
+      "nameEn": "FU KEE HORIZON RESORT",
+      "address": "長洲長洲地段第1491號東堤小築11座1字樓H3室& 2字樓G&H室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 0093",
+      "fax": "2981 0603",
+      "email": "ccfukee@gmail.com",
+      "lat": 22.2114707,
+      "lng": 114.02917555,
+      "licenceNo": "H/3204",
+      "lastUpdate": "2025-12-23 12:40:45"
+    },
+    {
+      "objectId": 1762,
+      "name": "芳姐可口渡假屋",
+      "nameEn": "FONG CHE HO HAU SUMMER HOUSE",
+      "address": "長洲長洲地段1491號東堤小築11座1字樓D室",
+      "district": "離島",
+      "area": "長洲",
+      "phone": "2981 7170",
+      "fax": "",
+      "email": "brendafung182838@yahoo.com.hk",
+      "lat": 22.21162416,
+      "lng": 114.0291075,
+      "licenceNo": "H/5084",
+      "lastUpdate": "2025-12-23 12:33:29"
+    },
+    {
+      "objectId": 1782,
+      "name": "海景渡假樂園",
+      "nameEn": "SEAVIEW HOLIDAY RESORT",
+      "address": "大嶼山梅窩東灣頭路11號1-3字樓",
+      "district": "離島",
+      "area": "梅窩／銀礦灣",
+      "phone": "2984 8877",
+      "fax": "2984 8787",
+      "email": "sv.seaviewholidayresort@gmail.com",
+      "lat": 22.27158506,
+      "lng": 113.99937396,
+      "licenceNo": "H/2900",
+      "lastUpdate": "2025-12-23 12:37:21"
+    }
+  ]
+}
