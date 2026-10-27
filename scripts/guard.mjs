@@ -43,7 +43,8 @@ const REQUIRED = [
   '.github/workflows/sync-data.yml', '.github/workflows/sync-had.yml',
   '.github/workflows/guard.yml', '.github/PULL_REQUEST_TEMPLATE.md',
   'scripts/guard.mjs', 'scripts/smoke.test.mjs',
-  'data/auto/weather.json',
+  'tools-sync-conditions.mjs',
+  'data/auto/weather.json', 'data/auto/conditions.json',
 ];
 const missing = REQUIRED.filter((f) => !exists(f));
 missing.length ? bad('必要檔案齊全', `缺：${missing.join(', ')}`) : ok('必要檔案齊全', `${REQUIRED.length} 個`);
@@ -147,6 +148,8 @@ try {
     [daily.includes('contents: write') && monthly.includes('contents: write'), 'contents: write 權限'],
     [monthly.includes('data/auto/had-') && !monthly.includes('git add data.csv'), '月更唔碰 data.csv'],
     [guardYml.includes('scripts/guard.mjs'), 'guard CI 存在'],
+    [daily.includes('tools-sync-conditions.mjs') && daily.includes('conditions.json'),
+      '每日 sync 有該區天氣／潮汐'],
   ];
   const failed = checks.filter(([pass]) => !pass).map(([, name]) => name);
   failed.length ? bad('workflow 合約', failed.join('; ')) : ok('workflow 合約', `${checks.length} 項全過`);
@@ -179,6 +182,33 @@ try {
     : ok('約數 + 官方欄位', `free ${counts.free} / estimate ${counts.estimate} / enquiry ${counts.enquiry}；官方欄位 41/41`);
 } catch (e) {
   bad('約數 + 官方欄位', e.message);
+}
+
+/* ---------- 10. 該區天氣／潮汐／日光（v1.2.0） ---------- */
+try {
+  const box = { window: {} };
+  vm.createContext(box);
+  vm.runInContext(read('data.js'), box);
+  const sites = box.window.CAMPSITES || [];
+  const cond = box.window.CAMP_CONDITIONS;
+  const app = read('app.js');
+  const html = read('index.html');
+  const withStation = sites.filter((x) => x.weatherStation && x.rainDistrict).length;
+  const withTide = sites.filter((x) => x.tideStation).length;
+  const checks = [
+    [withStation === 108, `108 筆都有就近氣象站（現 ${withStation}）`],
+    [withTide > 0, `沿岸營地有潮汐站（${withTide} 筆）`],
+    [cond && cond.districtWeather?.rainfall?.length === 18, 'conditions 有 18 區雨量'],
+    [cond && cond.districtWeather?.temperature?.length > 20, 'conditions 有氣溫站'],
+    [cond && Object.keys(cond.tides?.stations || {}).length === 8, 'conditions 有 8 潮汐站'],
+    [app.includes('function sunTimesHKT'), '純 JS 日出日落公式存在'],
+    [html.includes('localPanel') && html.includes('localConditions'), '該區天氣面板存在'],
+  ];
+  const failed = checks.filter(([p]) => !p).map(([, n]) => n);
+  failed.length ? bad('該區天氣／潮汐／日光', failed.join('; '))
+    : ok('該區天氣／潮汐／日光', `108 區站配對／${withTide} 潮汐／8 站快照／日光公式`);
+} catch (e) {
+  bad('該區天氣／潮汐／日光', e.message);
 }
 
 /* ---------- 總結 ---------- */

@@ -11,6 +11,8 @@
 功能：分區地圖（Leaflet + OpenStreetMap）、類型/分區/費用/交通/設施/訊號篩選、
 全文搜尋（可搜營運機構）、價格排序、我的最愛（瀏覽器本地記錄，無須登入）、
 **週末天氣列**（天文台九天預報 PSR 降雨概率，連地圖 pin 標記；每日 Actions 自動更新）、
+**該區天氣**（18 區實況雨量 + 就近氣象站氣溫）、**潮汐**（8 個官方站高低潮）、
+**日出日落**（天文公式計算，誤差 ≤3 分鐘）、
 **未核實收費一律加「約」**、官方水源／營位規模徽章、同埋「訂營＋出發前準備」清單。
 
 ## 資料來源與可信度
@@ -22,6 +24,9 @@
 | 康文署 4 度假營營費與地址 | [康文署度假營官方網頁](https://www.lcsd.gov.hk/tc/camp/) |
 | NGO 營舍名單、地址、設施、座標 | [康文署資助非政府機構營舍頁面](https://www.lcsd.gov.hk/tc/camp/sngocc.html) 及各機構官網 |
 | 持牌賓館/渡假屋名單、座標、牌照號碼 | [牌照事務處持牌酒店及賓館名單](https://www.hadla.gov.hk/psi/licensed-hotels-and-guesthouses/)（CSDI LLHG 圖層，月更，見 `tools-sync-had.mjs`） |
+| **該區實況天氣**（18 區雨量 + 27 站氣溫） | 天文台 [`weather.php?dataType=rhrread`](https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc)，每小時更新，見 `tools-sync-conditions.mjs` |
+| **潮汐高低潮**（8 站全年預測） | 天文台 [`opendata.php?dataType=HLT`](https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HLT&station=QUB&year=2026&month=10&rformat=json)，每年更新，HKO 已計好唔使自己估 |
+| **日出／日落時間** | 純 JS 天文公式（`app.js` 嘅 `sunTimesHKT()`，NOAA/SunCalc），零 API；已用天文台 [`SRS`](https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=SRS&year=2026&rformat=json) 五個錨點驗證，最大誤差 3 分鐘 |
 | 絕大部分營地經緯度 | OpenStreetMap（經 Nominatim 查詢的 camp_site 點位，見 `geocache.json`） |
 | 小部分無 OSM 點位者 | 按官方地址定位（已在 `tools-geocode*.mjs` 註明），誤差約數百米 |
 
@@ -39,6 +44,23 @@
 > 另外 `priceUnit` 有「每人每晚起／每營位每晚／每間每晚起／每人每課程起」等唔同單位，
 > **價格排序只作粗略參考**，唔可以直接比較。核實後可把個別列嘅 `priceSource` 改成 `official`（前端唔加「約」）。
 
+### 🌡 該區天氣・🌊 潮汐・🌇 日光（v1.2.0）
+
+撳任何卡片嘅 **「🌡 該區天氣」** 掣，會彈出一個面板，顯示三樣嘢：
+
+1. **該區實況** — `rhrread` 嘅 18 區過去一小時雨量 + 就近自動氣象站一分鐘平均氣溫。
+2. **今日日光** — 日出／日落 HKT + 「建議幾點前紮營」（用純 JS 天文公式按日期計，任何年份都用得）。
+3. **潮汐** — 就近潮汐站嘅今日／週末高低潮時間同高度（HKO 官方 `HLT` 預測，唔係自己估）。
+
+> ⚠️ **「就近站」唔係營地實測**：`build-data.mjs` 按 `district` + `area` 關鍵字配對
+> 最近嘅自動氣象站／潮汐站。山區氣溫可以比市區站低幾度；東平洲、西貢東等冇潮汐站嘅地方
+> 用大埔滘／高流灣代替，潮差同時間可以有偏差。面板已標明「就近站」，
+> **正式活動前請再上天文台分區天氣／潮汐預報確認**。
+>
+> 潮汐站只用 8 個仍運作嘅站（鰂魚涌、高流灣、大埔滘、長洲、石壁、大澳、赤鱲角東、尖鼻咀）。
+> 官方標明**芝麻灣（1997 停）、樂安排（1999 停）**兩個站預測誤差較大，故不採用。
+> 初始快照只含 2026-10-27 至 11-04 共 9 日；每日 `sync-data.yml` 會補齊當月＋下月全部日子。
+
 ## 專案結構
 
 ```
@@ -54,10 +76,13 @@ hk-camp-database/
 │   ├── weather.json          天文台警告 + 九天預報（含週末降雨概率）
 │   ├── had-guesthouses.json  牌照處 1,807 間持牌酒店賓館快照（CSDI LLHG，含座標）
 │   ├── had-candidates.json   鄉郊渡假類候選（27 經營者／50 處所）
-│   └── had-diff-report.md    賓館月更報告＋民宿合規警示＋營舍持牌名單
+│   ├── had-diff-report.md    賓館月更報告＋民宿合規警示＋營舍持牌名單
+│   └── conditions.json       該區實況天氣（18 區雨量 + 27 站氣溫）＋ 8 潮汐站高低潮
 ├── tools-sync-afcd.mjs  # CSDI 營地同步 + 差異檢查
 ├── tools-sync-weather.mjs # 天文台天氣快照
 ├── tools-sync-had.mjs   # 持牌賓館月更同步（CSDI＋HAD CSV，只出快照唔改 data.csv）
+├── tools-sync-conditions.mjs # 該區天氣（rhrread）＋潮汐（HLT 8 站）每日同步
+├── data/auto/conditions.json # 該區天氣／潮汐快照（每日 Actions 更新）
 ├── .github/workflows/sync-data.yml # 每日 00:30 HKT 自動同步（cron '30 16 * * *' UTC）
 ├── .github/workflows/sync-had.yml  # 每月 2 號 01:15 HKT 月更（cron '15 17 1 * *' UTC）
 ├── .github/workflows/guard.yml # push / PR / 每週一跑 guard（S12 / F14）
@@ -126,9 +151,9 @@ python3 -m http.server 8000
 ## 品質守護（commit 前跑）
 
 ```bash
-npm run guard       # 9 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位
-npm test            # 7 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章
-npm run build:site  # 產生 dist/（4 個檔，約 144KB，含天氣快照 + CSDI 官方欄位）
+npm run guard       # 10 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光
+npm test            # 8 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式
+npm run build:site  # 產生 dist/（4 個檔，約 202KB，含天氣 + conditions 快照 + CSDI 官方欄位）
 ```
 
 `guard.yml` 喺 push、PR 同每週一自動跑同一條；五大鐵律 S／F／A／W／V 嘅適用範圍同例外，

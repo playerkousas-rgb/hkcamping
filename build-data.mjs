@@ -96,6 +96,67 @@ if (existsSync(AFCD_PATH)) {
   }
 }
 
+/**
+ * 該區天氣配對（v1.2.0）
+ * rhrread 嘅 27 個自動氣象站 + 18 區雨量 → 每個營地按 district / area 配對就近站。
+ * 呢個配對係人工策展嘅「就近參考」，唔係營地實測；前端必須標明。
+ */
+const DISTRICT_STATION = {
+  '北區': '打鼓嶺', '大埔區': '大埔', '西貢區': '西貢', '沙田區': '沙田',
+  '荃灣區': '荃灣可觀', '元朗區': '元朗公園', '屯門區': '屯門',
+  '離島區': '長洲', '東區': '筲箕灣', '南區': '黃竹坑',
+};
+const AREA_STATION_RULES = [
+  ['大美督', '大美督'], ['船灣', '大美督'], ['東平洲', '大美督'],
+  ['馬鞍山', '沙田'], ['烏溪沙', '沙田'], ['昂平', '西貢'],
+  ['東涌', '赤鱲角'], ['大嶼山昂坪', '赤鱲角'], ['梅窩', '長洲'],
+  ['南丫', '長洲'], ['坪洲', '長洲'], ['長洲', '長洲'],
+  ['大澳', '赤鱲角'], ['東龍洲', '西貢'], ['赤柱', '赤柱'],
+  ['柴灣', '筲箕灣'], ['薄扶林', '黃竹坑'],
+  ['大棠', '元朗公園'], ['大帽山', '荃灣可觀'], ['城門', '荃灣城門谷'],
+];
+const RAIN_ALIAS = {
+  '北區': '北區', '大埔區': '大埔', '西貢區': '西貢', '沙田區': '沙田',
+  '荃灣區': '荃灣', '元朗區': '元朗', '屯門區': '屯門',
+  '離島區': '離島區', '東區': '東區', '南區': '南區',
+};
+
+/**
+ * 潮汐站配對（v1.2.0）
+ * 8 個仍運作嘅 HKO 潮汐站，按 area 關鍵字配對；配唔到就 null（唔顯示潮汐）。
+ * 呢個係「就近站參考」，尤其東平洲／西貢東呢類無站地區誤差較大，前端必須標明。
+ */
+const TIDE_RULES = [
+  // 西貢東／糧船灣／萬宜 → 高流灣
+  ['浪茄', 'KLW'], ['白腊', 'KLW'], ['鹹田', 'KLW'], ['大浪西', 'KLW'],
+  ['萬宜', 'KLW'], ['糧船灣', 'KLW'], ['西貢東', 'KLW'], ['曝罟', 'KLW'],
+  ['大浪灣', 'SPW'],
+  // 吐露港／大埔／沙田／馬鞍山 → 大埔滘
+  ['東平洲', 'TPK'], ['船灣', 'TPK'], ['大美督', 'TPK'], ['荔枝莊', 'TPK'],
+  ['汀角', 'TPK'], ['馬鞍山', 'TPK'], ['烏溪沙', 'TPK'], ['海下', 'TPK'],
+  ['灣仔半島', 'TPK'], ['猴塘溪', 'TPK'], ['大灘', 'TPK'], ['黃石', 'TPK'],
+  // 后海灣／元朗／屯門 → 尖鼻咀
+  ['大棠', 'TBT'], ['田夫仔', 'TBT'], ['河背', 'TBT'], ['大欖', 'TBT'],
+  // 大嶼山西／南 → 大澳／石壁／赤鱲角東
+  ['大澳', 'TAO'], ['煎魚灣', 'TAO'], ['牙鷹角', 'TAO'], ['萬丈布', 'TAO'],
+  ['狗嶺涌', 'TAO'], ['昂坪', 'TAO'],
+  ['石壁', 'SPW'], ['籮箕灣', 'SPW'], ['芝麻灣', 'SPW'], ['十塱', 'SPW'],
+  ['塘福', 'SPW'], ['下長沙', 'SPW'], ['貝澳', 'SPW'], ['南山', 'CCH'],
+  ['東涌', 'CLK'], ['䃟石灣', 'CLK'], ['白富田', 'CLK'], ['石欖洲', 'CLK'],
+  // 長洲／南丫／坪洲 → 長洲
+  ['長洲', 'CCH'], ['南丫', 'CCH'], ['坪洲', 'CCH'], ['梅窩', 'CCH'],
+  // 維港兩岸 → 鰂魚涌
+  ['柴灣', 'QUB'], ['筲箕灣', 'QUB'], ['赤柱', 'QUB'], ['聖士提反', 'QUB'],
+];
+function stationFor(obj) {
+  for (const [kw, st] of AREA_STATION_RULES) if (obj.area.includes(kw)) return st;
+  return DISTRICT_STATION[obj.district] || '香港天文台';
+}
+function tideStationFor(obj) {
+  for (const [kw, code] of TIDE_RULES) if (obj.area.includes(kw)) return code;
+  return null;
+}
+
 const raw = readFileSync(CSV_PATH, 'utf8');
 const [header, ...dataRows] = parseCSV(raw).filter((r) => r.some((c) => c.trim() !== ''));
 
@@ -139,6 +200,10 @@ const records = dataRows.map((cols) => {
     countryPark: afcd?.countryPark || null,
     waterSource: afcd?.waterSource || null,
     tentSpace: afcd?.tentSpace || null,
+    // v1.2.0：該區天氣／潮汐配對（就近站，唔係營地實測）
+    weatherStation: stationFor(obj),
+    rainDistrict: RAIN_ALIAS[obj.district] || null,
+    tideStation: tideStationFor(obj),
     booking: obj.booking === '是',
     bookingUrl: obj.bookingUrl || '',
     infoUrl: obj.infoUrl || '',
@@ -170,11 +235,26 @@ if (existsSync(WEATHER_PATH)) {
   }
 }
 
+// 該區天氣 + 潮汐（data/auto/conditions.json），每日 Actions 更新
+const CONDITIONS_PATH = join(__dirname, 'data', 'auto', 'conditions.json');
+let conditions = null;
+if (existsSync(CONDITIONS_PATH)) {
+  try {
+    conditions = JSON.parse(readFileSync(CONDITIONS_PATH, 'utf8'));
+  } catch (e) {
+    console.warn(`⚠ conditions.json 無法解析，該區天氣／潮汐會隱藏：${e.message}`);
+  }
+}
+
+// 日出日落用純 JS 天文公式喺前端計（sunTimesHKT()，見 app.js），
+// 任何年份都用得、零 API、file:// 都行；已用 HKO 官方 SRS 2026 值做驗證錨點。
 const output =
   banner +
   'window.CAMPSITES = ' + JSON.stringify(records, null, 2) + ';\n\n' +
   '// 天文台快照（data/auto/weather.json），由 GitHub Actions 每日更新後 rebuild\n' +
-  'window.CAMP_WEATHER = ' + JSON.stringify(weather, null, 2) + ';\n';
+  'window.CAMP_WEATHER = ' + JSON.stringify(weather, null, 2) + ';\n\n' +
+  '// 該區天氣 + 潮汐（data/auto/conditions.json），每日 Actions 更新\n' +
+  'window.CAMP_CONDITIONS = ' + JSON.stringify(conditions, null, 2) + ';\n';
 
 // --check：只比較、唔寫檔，畀 guard / CI 用（F14 / S12）
 if (process.argv.includes('--check')) {

@@ -52,8 +52,11 @@ gh run list -R playerkousas-rgb/hkcamping --limit 5
 
 ## 三、專案關鍵合約（改動前必讀）
 
-- 編輯源：`data.csv`（108 筆，19 欄）＋ `data/auto/weather.json` → `node build-data.mjs` → `data.js`
-  （前端讀 `window.CAMPSITES` 同 `window.CAMP_WEATHER`；後者係嵌入快照，唔使 fetch）。
+- 編輯源：`data.csv`（108 筆，19 欄）＋ `data/auto/weather.json` ＋ `data/auto/conditions.json`
+  → `node build-data.mjs` → `data.js`（前端讀 `window.CAMPSITES`／`CAMP_WEATHER`／`CAMP_CONDITIONS`；全部嵌入快照，唔使 fetch）。
+- `build-data.mjs` 亦會按 `district`／`area` 配對 `weatherStation`／`rainDistrict`／`tideStation` 落每筆營地
+  （**就近站，唔係營地實測**）；改 `data.csv` 嘅 area 名時要檢查配對仲啱唔啱。
+- 日出日落係 `app.js` 嘅 `sunTimesHKT()` 純 JS 天文公式，零 API；已用 HKO 官方 SRS 2026 驗證（誤差 ≤3 分鐘）。
 - `price: null`＝面議／電話查詢（**唔係免費**；免費係 `0`）。
 - `priceSource` 係 v1.1.0 加嘅收費可信度欄：`free`（官方免費 41）／`estimate`（約數未核實 44，前端顯示「約 $」）／`enquiry`（面議 23）／`official`（已核實）。**未核實一律 `estimate`**，唔好靜靜改做 `official`。
 - `build-data.mjs` 會按營地名稱將 `data/auto/afcd-campsites.json` 嘅官方 `waterSource`／`tentSpace`／`countryPark` 嵌入 41 筆漁護署營地（其他營地為 `null`）；改 CSV 營地名時要留意配對。

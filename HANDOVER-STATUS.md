@@ -16,11 +16,21 @@
 （merge commit `1727ba1`），PR #4（文件更新）亦已合併。`gh workflow list` 確認三條 workflow 全部 `active`；
 `main` 上嘅 guard push run `40462553486` **success**。
 
-**v1.1.0（新 branch `arena/b909a4c2-hkcamping`）**：用戶質問「價錢點嚟、係咪作出嚟」→
+**v1.1.0（branch `arena/b909a4c2-hkcamping`，PR #5）**：用戶質問「價錢點嚟、係咪作出嚟」→
 查證後確認 `data.csv` 由初始 commit 已有、P0–P3 完全冇改過；但有 44 筆有銀碼資料係**人手估算約數**。
 處理：`data.csv` 加 `priceSource` 欄（free 41／estimate 44／enquiry 23），前端一律加「約」+ 橙色警句；
 同時 join CSDI **官方**水源／營位規模／郊野公園落 41 筆營地；新增「訂營＋出發前準備」清單。
 詳見 `README.md`「收費可信度」一節。
+
+**v1.2.0（同一 branch，PR #5 續）**：用戶問「該區天氣／潮水／蚊患／日落／寵物」能唔能做到。
+我實測咗 5 個政府 API（HKO `rhrread`／`HLT`／`SRS`、食環署 CSDI 蚊患、漁護署寵物法例）後，
+用戶決定 **做 ① 該區天氣 ② 潮汐 ④ 日落；唔做 ③ 蚊患 ⑤ 寵物**。
+- **該區天氣**：`rhrread` 18 區雨量 + 27 站氣溫，按 `district`/`area` 配對 108 筆營地
+- **潮汐**：HKO `HLT` 8 站官方高低潮（75 個沿岸營地有站），初始快照 9 日真實數據
+- **日落**：純 JS 天文公式，零 API，HKO SRS 五錨點驗證誤差 ≤3 分鐘
+- **蚊患**：CSDI 圖層實測 `PERIOD=2021-09`（5 年前舊數據），最新只喺新聞稿 HTML → 唔做，避免誤導
+- **寵物**：法例清晰但個別場地規矩無 API → 唔做，只保留通用法例提示
+- 新增 `tools-sync-conditions.mjs` 每日同步；guard 10/10、test 8/8 全綠。
 
 ## 二、舊交接文件嘅過時資料（已修正）
 
