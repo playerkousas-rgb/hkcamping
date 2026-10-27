@@ -47,6 +47,12 @@ hk-camp-database/
 ├── tools-sync-had.mjs   # 持牌賓館月更同步（CSDI＋HAD CSV，只出快照唔改 data.csv）
 ├── .github/workflows/sync-data.yml # 每日 00:30 HKT 自動同步（cron '30 16 * * *' UTC）
 ├── .github/workflows/sync-had.yml  # 每月 2 號 01:15 HKT 月更（cron '15 17 1 * *' UTC）
+├── .github/workflows/guard.yml # push / PR / 每週一跑 guard（S12 / F14）
+├── .github/PULL_REQUEST_TEMPLATE.md / .github/dependabot.yml
+├── scripts/guard.mjs     # 本機 + CI 同一條守護檢查（S/F/A/W/V/G）
+├── scripts/smoke.test.mjs # 模擬 DOM 前端啟動測試（零依賴）
+├── VERSIONS.md           # 雙版號登記表
+├── HANDOVER-STATUS.md    # 交接體檢對照
 ├── tools-geocode*.mjs    # Nominatim 地理編碼腳本（三個批次，建檔時用）
 ├── geocache.json         # 地理編碼快取（含 OSM 點位來源）
 ├── index.html / styles.css / app.js
@@ -102,6 +108,17 @@ python3 -m http.server 8000
 ```
 
 然後瀏覽器開 `http://localhost:8000`（直接雙擊 index.html 也可以，資料走 data.js 而非 fetch）。
+
+## 品質守護（commit 前跑）
+
+```bash
+npm run guard       # 8 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約
+npm test            # 模擬 DOM 執行 data.js + app.js，確認 108 筆渲染
+npm run build:site  # 產生 dist/（4 個檔，約 113KB）
+```
+
+`guard.yml` 喺 push、PR 同每週一自動跑同一條；五大鐵律 S／F／A／W／V 嘅適用範圍同例外，
+見 [HANDOVER-STATUS.md](HANDOVER-STATUS.md)。
 
 ## 部署到 Vercel（Git + Vercel + Script 方案）
 

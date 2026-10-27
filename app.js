@@ -3,6 +3,8 @@
   'use strict';
 
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
+  // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
+  const APP_VERSION = '1.0.0';
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -343,7 +345,16 @@
     host.appendChild(free);
   }
 
+  /* ---------- 版號顯示（W1 / V1） ---------- */
+  function renderVersion() {
+    const badge = document.getElementById('versionBadge');
+    const foot = document.getElementById('appVersion');
+    if (badge) badge.textContent = `v${APP_VERSION}`;
+    if (foot) foot.textContent = APP_VERSION;
+  }
+
   /* ---------- 啟動 ---------- */
+  renderVersion();
   if (!SITES.length) {
     document.getElementById('resultCount').textContent = '⚠ 未能載入 data.js，請先執行 node build-data.mjs';
   } else {
