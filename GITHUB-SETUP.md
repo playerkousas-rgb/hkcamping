@@ -13,6 +13,7 @@
 | 可見性 | **Public**（公開 repo → Actions 分鐘無限） |
 | Default branch | `main`；Arena 工作分支 `arena/dcfac2cc-hkcamping` |
 | 基準 commit | `254a7c6`「Add files via upload」（單一 commit，23 個檔） |
+| 交接修補 | PR [#1](https://github.com/playerkousas-rgb/hkcamping/pull/1) 已合併（merge commit `1727ba1`），P0–P3 四個 commit 落咗 `main` |
 | 登入 | `gh auth status` = `playerkousas-rgb`，Git HTTPS 已配置，唔使 device flow／PAT |
 | 內容 | 108 筆營地、19 欄 `data.csv`、`data/auto/` 六份快照、前端三件套、三支同步腳本 |
 
@@ -36,11 +37,15 @@
 
 ```bash
 gh workflow list -R playerkousas-rgb/hkcamping
-# 應見 Camp Data Sync / HAD Guesthouse Sync / guard
+# 實測：Camp Data Sync / HAD Guesthouse Sync / guard 全部 active
 
-gh workflow run "Camp Data Sync" -R playerkousas-rgb/hkcamping
 gh run list -R playerkousas-rgb/hkcamping --limit 5
+# 實測：main 上 guard push run success
 ```
+
+⚠️ **Arena token 無 `actions: write`**：`gh workflow run "Camp Data Sync" --ref main` 回 403
+「Resource not accessible by integration」，所以我觸發唔到手動 dispatch。
+請去 **GitHub → Actions → Camp Data Sync → Run workflow** 撳一次（或等每日 00:30 HKT 自動跑）。
 
 預期：綠剔；`data/auto/afcd-diff-report.md` 0 跟進事項；`weather.json` 有九日預報。
 喺本地 sandbox 無法實測（只准連 github／npm／pypi，CSDI／HKO／HAD 唔通），所以要喺 Actions 度驗。
