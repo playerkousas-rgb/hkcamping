@@ -88,6 +88,42 @@
 > 官方標明**芝麻灣（1997 停）、樂安排（1999 停）**兩個站預測誤差較大，故不採用。
 > 初始快照只含 2026-10-27 至 11-04 共 9 日；每日 `sync-data.yml` 會補齊當月＋下月全部日子。
 
+## 瘦身機制（S 系列對照）
+
+> 對照 [playerkousas-rgb/readme → docs/01-slim.md](https://github.com/playerkousas-rgb/readme/blob/main/docs/01-slim.md)。
+> 硬數字全部由 `scripts/guard.mjs`（第 13 項）同 `npm run slim` 把守，**唔靠人眼**。
+
+| 規則 | 本專案做法 | 實測 |
+|---|---|---|
+| **S1** `api/` 零 runtime 依賴 | 冇 `api/`，亦冇任何 serverless function | `dependencies` 空白 ✅ |
+| **S2** `.vercelignore` | 擋 `.git/`、`.github/`、`scripts/`、`*.md`、`tools-*.mjs`、`geocache.json`、HAD 大快照 | 上傳面只剩 build 需要嘅檔 ✅ |
+| **S3** `package.json` 極簡 | 零 dependencies；`vercel.json` 已加 `installCommand: npm install --include=dev`（build 階段唔會缺 devDeps） | ✅ |
+| **S4** 只部署最終產物 | `framework: null`、`outputDirectory: dist`、`build-site.mjs` 只抄 4 個檔 | `dist/` = 4 檔 ✅ |
+| **S5** 死重零容忍 | `npm run slim` 掃 `*.bak/*.tmp/*.old/*.log/*.zip` 等 | 現時 **0 個** ✅ |
+| **S6** 圖片／媒體 | 全站零圖片（emoji ＋ Leaflet CDN），冇大圖要壓 | N/A ✅ |
+| **S7** CI 硬攔體積 | guard 檢 `dist < 5MB`、單檔 `<1MB`，另加**自家預算** `data.js < 250KB`、`dist < 1MB` | `data.js 128.3KB`／`dist 211.9KB` ✅ |
+| **S8** 部署衛生 | Production branch = `main`、關閉非 main preview、retention 7 日（Dashboard 設定，見 [GITHUB-SETUP.md](GITHUB-SETUP.md)） | ⚠️ 要人手撳 |
+| **S9** 上載面配額 | 冇上載功能 | N/A ✅ |
+| **S10** Git 瘦身 | `.gitignore` 擋 `node_modules/`、`dist/`、`.env*`、binary；單檔 <1MB | 最大檔 `had-guesthouses.json` 783.9KB（未部署，只做月更報告） ✅ |
+| **S11** payload 瘦身 | **v1.5.0 重點**：`data.js` 只嵌入前端真正用嘅部分 | 見下 ✅ |
+| **S12** 自動化守護 | `guard.mjs` 13 項 ＋ `guard.yml`（push／PR／每週一）＋ `npm test` 13 個 | ✅ |
+
+### S11 實際做咗乜（v1.5.0，data.js 396KB → 128KB）
+
+| 問題 | 之前 | 之後 |
+|---|---|---|
+| JSON 用 `null, 2` pretty-print | 每層縮排白位佔咗一半體積 | `JSON.stringify(x)` compact |
+| OCF 快照連 `hourly` 一齊嵌 | 前端**完全冇用** hourly（只用 `daily`） | 只嵌 `daily` ＋站名／座標／modelTime |
+| 潮汐嵌晒當月＋下月 **61 日 × 8 站** | 前端只用「今日、週末、九日預報」 | 只留**快照當日 −2 ~ ＋20 日**（用快照自己嘅 `fetchedAt` 做基準，`--check` 唔會因跨日假爆） |
+| `seed`／`seedNote` 註解 | 每次都嵌入 | 只留 `notes`／`officialNotesUrl`（UI 免責聲明要用） |
+
+**成果**：`data.js` 396.3 KB → **128.3 KB（−68%）**；`dist/` 479.9 KB → **211.9 KB（−56%）**；
+實際傳輸（gzip）全站約 **47 KB**。原始快照 `data/auto/*.json` 冇改動，仍然係完整官方數據。
+
+```bash
+npm run slim     # 瘦身報告：最重 10 個檔、dist 逐檔、gzip、預算同死重掃描
+```
+
 ## 我們平常用的系統（技術棧對照）
 
 > 呢個 repo 沿用 [playerkousas-rgb/readme](https://github.com/playerkousas-rgb/readme) 真理倉嘅
@@ -231,9 +267,9 @@ python3 -m http.server 8000 --bind 0.0.0.0
 ## 品質守護（commit 前跑）
 
 ```bash
-npm run guard       # 12 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡
+npm run guard       # 13 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算
 npm test            # 13 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸、週末排行、我的足跡、入站人次
-npm run build:site  # 產生 dist/（4 個檔，約 257KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
+npm run build:site  # 產生 dist/（4 個檔，約 212KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
 ```
 
 > **測試唔會鎖死當日官方數據**（v1.4.1）：`npm test` 驗嘅係不變量（日數下限、數值範圍、排序），
@@ -254,7 +290,7 @@ npm run build:site  # 產生 dist/（4 個檔，約 257KB，含天氣 + conditio
    `index.html` 已嵌入 `/_vercel/insights/script.js`，開啟後就有全站訪客／瀏覽量；
    頁尾顯示嘅「你第 N 次到訪」係本機累計，唔會上傳任何個人資料
 
-`build-site.mjs` 只會輸出 4 個檔（約 257KB）入 `dist/`；`.vercelignore` 擋走工具、文件同大快照。
+`build-site.mjs` 只會輸出 4 個檔（約 212KB）入 `dist/`；`.vercelignore` 擋走工具、文件同大快照。
 本機想驗收同一份產物：`npm run build:site` 後用任何 static server 開 `dist/`。
 詳細交接同 Vercel 連接口限制見 [GITHUB-SETUP.md](GITHUB-SETUP.md)。
 

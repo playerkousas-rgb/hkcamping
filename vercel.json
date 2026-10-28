@@ -3,6 +3,7 @@
   "framework": null,
   "buildCommand": "node build-site.mjs",
   "outputDirectory": "dist",
+  "installCommand": "npm install --include=dev",
   "cleanUrls": true,
   "regions": ["hkg1"],
   "headers": [

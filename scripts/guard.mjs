@@ -270,6 +270,33 @@ try {
   bad('入站人次／週末排行／足跡', e.message);
 }
 
+/* ---------- 13. 瘦身預算（S5 / S6 / S7 / S10 / S11） ---------- */
+try {
+  const out = execFileSync(process.execPath, ['scripts/slim-report.mjs'], {
+    cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  const dataLine = out.split('\n').find((l) => l.includes('data.js') && l.includes('/'));
+  const distLine = out.split('\n').find((l) => l.includes('dist 合計'));
+  const dataJs = statSync(join(ROOT, 'data.js')).size;
+  let dist = 0;
+  for (const f of ['index.html', 'styles.css', 'app.js', 'data.js']) {
+    dist += statSync(join(ROOT, 'dist', f)).size;
+  }
+  const js = read('data.js');
+  const checks = [
+    [dataJs < 250 * 1024, `data.js < 250KB（現 ${(dataJs / 1024).toFixed(1)}KB）`],
+    [dist < 1024 * 1024, `dist 合計 < 1MB（現 ${(dist / 1024).toFixed(1)}KB）`],
+    [!js.includes('"hourly"'), 'data.js 冇嵌入 OCF hourly（前端冇用）'],
+    [!js.includes('"seedNote"'), 'data.js 冇嵌入快照種子註解'],
+    [out.includes('全部在預算內'), 'slim-report 全部在預算內'],
+  ];
+  const failed = checks.filter(([p2]) => !p2).map(([, n]) => n);
+  if (failed.length) bad('瘦身預算', failed.join('; '));
+  else ok('瘦身預算', `data.js ${(dataJs / 1024).toFixed(1)}KB／dist ${(dist / 1024).toFixed(1)}KB（S6/S7/S11）`);
+} catch (e) {
+  bad('瘦身預算', (e.stdout || e.message || '').toString().trim().split('\n').slice(-3).join(' '));
+}
+
 /* ---------- 總結 ---------- */
 console.log('\n=== hkcamping guard ===');
 for (const r of results) {

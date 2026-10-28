@@ -21,3 +21,4 @@
 | 1.3.0 | 2026-10-27 | **未來九日該區預報**（HKO OCF 自動分區天氣預報，12 站 × 10 日降雨概率／溫度／天氣），頂部時間軸 + 卡片面板；`tools-sync-ocf.mjs` 每日同步；加入「自動生成、未經人手修訂」官方免責 | S / F / A / W / V |
 | 1.4.0 | 2026-10-27 | **入站人次**（Vercel Web Analytics 全站無 cookie 統計 + 頁尾本機累計）、**週末唔落雨排行**（OCF 分區站降雨概率，地圖 pin 同步）、**我的足跡**（localStorage，可篩選／清除）；README 補「我們平常用的系統」技術棧同台灣營火部落對照；guard 12 項、test 12 項 | S / F / A / W / V |
 | 1.4.1 | 2026-10-28 | **修 CI 假失敗**：OCF smoke test 唔再鎖死「10 日／某一日官方實數」（每日 00:30 同步會令快照變 9 日、日期翻新 → main 上 guard CI 紅）；改為驗不變量 + 新增合成快照渲染測試（降雨分級／溫度四捨五入／無 PoP 容錯）；13/13 | F / V |
+| 1.5.0 | 2026-10-28 | **瘦身機制（S 系列）落地**：`data.js` 由 396KB → **128KB**、`dist` 由 480KB → **212KB**（-56%）——embed 改 compact JSON、OCF 去掉冇用嘅 hourly／seed、潮汐只保留快照當日 −2 ~ ＋20 日（原本 61 日全嵌）；新增 `scripts/slim-report.mjs`（`npm run slim`）同 guard 第 13 項「瘦身預算」硬攔；`vercel.json` 加 `installCommand`（S3） | S / F / V |
