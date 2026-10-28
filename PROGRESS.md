@@ -362,6 +362,34 @@ test 21/21、`npm run ui` 28/28（第 E 段驗：widget 有嵌、卡片冇多餘
 
 ---
 
+### v1.12.1 — 刪大圖＋PNG 減色瘦身（2026-10-28）
+
+用戶：「照用 PNG 同唔洗大圖，就只是用作 APP 內 ICON 和 FAVICON 讓 WEBSITE 讀取而已」
+
+**全部保持 PNG／ICO，唔轉 AVIF** —— 試過度，四個位一轉就壞：
+
+| 位 | 一轉 AVIF 就 |
+|---|---|
+| `apple-touch-icon` | iOS 主畫面變白板（iOS 只認 PNG） |
+| `manifest` icons | Android「安裝應用程式」可能失效 |
+| `favicon.ico` | 書籤冇圖（必須 ICO） |
+| `og:image` | WhatsApp／FB 唔支援 → 貼連結又變一行字 |
+
+**做咗兩件事省位：**
+
+1. **刪 `icon-1024.png`（378 KB）** —— 全 repo 冇任何檔案引用佢。
+   只有上 App Store／Play Store 提交審查才需要，要時用 `logo/` 原圖另存就得。
+2. **減色**（`-dither None -colors`）：
+   - icon-512／maskable-512：256 → **48 色**（98.7 → 46.6 KB）
+   - icon-192／maskable-192／apple-touch：256 → **32 色**（15.8 → 5.2–5.3 KB）
+   - og-image：256 → **64 色**（128.5 → 114 KB）
+
+肉眼對照過 300px 放大版，睇唔出分別（天空漸變有極輕微 banding，圖標尺寸下不可見）。
+
+**結果：dist 982 KB → 467.5 KB（−52%），圖標資料夾 632 KB → 244 KB。**
+
+驗收：guard **18/18**、test **21/21**、ui **112/112**。
+
 ### v1.12.0 — 彩色露營 Logo（2026-10-28）
 
 用戶：「有露營感覺多 D 同唔好得 2 隻色甘單調」，再補「完成後就合併到 MAIN」。

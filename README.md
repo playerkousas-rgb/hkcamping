@@ -107,7 +107,7 @@
 > 官方標明**芝麻灣（1997 停）、樂安排（1999 停）**兩個站預測誤差較大，故不採用。
 > 初始快照只含 2026-10-27 至 11-04 共 9 日；每日 `sync-data.yml` 會補齊當月＋下月全部日子。
 
-## App Icon／favicon（v1.12.0）
+## App Icon／favicon（v1.12.1）
 
 加落手機主畫面、Android 安裝、瀏覽器分頁、WhatsApp 分享 —— 四個位都要圖，唔係就會出白板。
 
@@ -129,16 +129,37 @@
 
 ### 檔案
 
-| 檔案 | 用途 |
-|---|---|
-| `icons/favicon.ico` | 16／32／48 三合一（舊瀏覽器、書籤） |
-| `icons/favicon-16.png` | **專為 16px 手繪**：橙日＋白帳篷＋綠地三層色，唔係縮細版 |
-| `icons/favicon-32.png` | 瀏覽器分頁 |
-| `icons/apple-touch-icon.png` （180） | iOS「加入主畫面」 |
-| `icons/icon-192.png`／`icon-512.png` | Android／PWA；亦係網站 header 個 56px logo |
-| `icons/icon-maskable-192.png`／`-512.png` | Android maskable（全出血場景，裁圓形都唔會切走帳篷／營火） |
-| `icons/og-image.png` （1200×630） | WhatsApp／Signal／Facebook 預覽圖（漸變底 + 居中圖標） |
-| `manifest.webmanifest` | `standalone`、`theme_color #1B4D28`、4 個 icon（含 maskable） |
+**只有 9 個檔，全部 PNG／ICO** —— 每個都係「真係有嘢讀佢」先留：
+
+| 檔案 | 尺寸 | 體積 | 邊個讀佢 |
+|---|---|---:|---|
+| `icons/favicon.ico` | 16／32／48 | 15.1 KB | 書籤、舊瀏覽器 |
+| `icons/favicon-16.png` | 16×16 | 0.5 KB | 瀏覽器分頁（**手繪三層色版**） |
+| `icons/favicon-32.png` | 32×32 | 1.6 KB | 瀏覽器分頁（Retina） |
+| `icons/apple-touch-icon.png` | 180×180 | 5.2 KB | **iOS「加入主畫面」** |
+| `icons/icon-192.png` | 192×192 | 5.3 KB | Android／PWA／網站 header logo |
+| `icons/icon-512.png` | 512×512 | 46.6 KB | Android／PWA／PWA 安裝 |
+| `icons/icon-maskable-192.png` | 192×192 | 5.3 KB | Android 裁圓形 |
+| `icons/icon-maskable-512.png` | 512×512 | 46.6 KB | Android 裁圓形 |
+| `icons/og-image.png` | 1200×630 | 114 KB | WhatsApp／Signal／FB 分享預覽 |
+| `manifest.webmanifest` | — | — | Android「安裝應用程式」 |
+
+**冇 1024×1024**：冇任何檔案引用佢，只有「上 App Store／Play Store」提交審查才需要。
+要上架時先用 `logo/` 個原圖另存一張就得，唔使長期擺喺 repo（378 KB）。
+
+### 為咩唔轉 AVIF／WebP
+
+試過，但**四個位會即刻壞**：
+
+| 位 | 支援 | 一轉 AVIF 就 |
+|---|---|---|
+| `apple-touch-icon` | 只認 PNG | iOS 主畫面**變白板** |
+| `manifest` icons | Android 主要用 PNG | 「安裝應用程式」可能失效 |
+| `favicon.ico` | 必須 ICO | 書籤冇圖 |
+| `og:image` | WhatsApp／FB 唔支援 AVIF | 貼連結**又變一行字** |
+
+AVIF 只適合放喺**有 fallback 嘅 `<img>`**（即係 header 個 logo 可以，但只省 13 KB，唔值）。
+所以全部保持 PNG，改用**減色**（256 → 32／48 色）省位，肉眼睇唔出分別。
 
 ### 三個踩過嘅坑（都係實測睇返出嚟）
 
