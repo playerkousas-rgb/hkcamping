@@ -6,7 +6,7 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.9.2';
+  const APP_VERSION = '1.10.0';
 
 
   const TYPE_META = {
@@ -199,6 +199,7 @@
     const rain = (dw.rainfall || []).find((x) => x.district === site.rainDistrict);
     return {
       station: site.weatherStation || '—',
+      km: Number.isFinite(site.weatherKm) ? site.weatherKm : null,
       tempC: temp ? temp.c : null,
       rainMm: rain ? rain.mm : null,
       rainDistrict: site.rainDistrict || '—',
@@ -898,7 +899,8 @@
     if (dr && (dr.tempC !== null || dr.rainMm !== null)) {
       const big = mk('div', 'local-big', dr.tempC !== null ? `${dr.tempC}°C` : '—');
       box1.appendChild(big);
-      box1.appendChild(mk('div', 'local-sub', `就近氣象站：${dr.station}（一分鐘平均氣溫）`));
+      box1.appendChild(mk('div', 'local-sub',
+        `就近氣象站：${dr.station}${dr.km !== null ? `（直線約 ${dr.km} 公里）` : ''}（一分鐘平均氣溫）`));
       box1.appendChild(mk('div', 'local-sub',
         `${dr.rainDistrict} 過去一小時雨量：${dr.rainMm !== null ? `${dr.rainMm} mm` : '—'}`));
       const link = mk('a', 'local-link', '天文台分區天氣 ↗');
@@ -931,7 +933,8 @@
     const ocfSt = OCF?.stations?.[site.ocfStation];
     if (ocfSt && Array.isArray(ocfSt.daily) && ocfSt.daily.length) {
       const boxOcf = mk('section', 'local-box local-box-wide');
-      boxOcf.appendChild(mk('h4', '', `📅 未來九日（${ocfSt.name}站 · 天文台 OCF）`));
+      const ocfKm = Number.isFinite(site.ocfKm) ? ` · 直線約 ${site.ocfKm} 公里` : '';
+      boxOcf.appendChild(mk('h4', '', `📅 未來九日（${ocfSt.name}站${ocfKm} · 天文台 OCF）`));
       const strip = mk('div', 'local-forecast-strip');
       ocfSt.daily.slice(0, 9).forEach((d) => {
         const [emoji, label] = ocfWeather(d.weather);

@@ -11,6 +11,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { HKO_STATION_COORDS, OCF_STATION_COORDS, nearestStation, round1 } from './lib/stations.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CSV_PATH = join(__dirname, 'data.csv');
@@ -96,25 +97,29 @@ if (existsSync(AFCD_PATH)) {
   }
 }
 
+// 天文台 OCF 自動分區九日預報（data/auto/ocf-forecast.json），每日 Actions 更新。
+// 早啲讀，因為配站要用佢嘅座標。
+const OCF_PATH = join(__dirname, 'data', 'auto', 'ocf-forecast.json');
+let ocf = null;
+if (existsSync(OCF_PATH)) {
+  try {
+    ocf = JSON.parse(readFileSync(OCF_PATH, 'utf8'));
+  } catch (e) {
+    console.warn(`⚠ ocf-forecast.json 無法解析，九日預報會隱藏：${e.message}`);
+  }
+}
+
 /**
- * 該區天氣配對（v1.2.0）
- * rhrread 嘅 27 個自動氣象站 + 18 區雨量 → 每個營地按 district / area 配對就近站。
- * 呢個配對係人工策展嘅「就近參考」，唔係營地實測；前端必須標明。
+ * 該區天氣配對（v1.10.0：改用營地座標）
+ * v1.2.0–v1.9.2 用「地區名關鍵字」，會撞名（大嶼山大浪灣 → 筲箕灣）同唔一致
+ * （東涌配荃灣，但屯門更近）。而家一律「座標 → 直線最近站」，距離寫埋落資料俾前端顯示。
+ * 仍然係「就近站參考」，唔係營地實測；前端必須標明。
  */
-const DISTRICT_STATION = {
-  '北區': '打鼓嶺', '大埔區': '大埔', '西貢區': '西貢', '沙田區': '沙田',
-  '荃灣區': '荃灣可觀', '元朗區': '元朗公園', '屯門區': '屯門',
-  '離島區': '長洲', '東區': '筲箕灣', '南區': '黃竹坑',
-};
-const AREA_STATION_RULES = [
-  ['大美督', '大美督'], ['船灣', '大美督'], ['東平洲', '大美督'],
-  ['馬鞍山', '沙田'], ['烏溪沙', '沙田'], ['昂平', '西貢'],
-  ['東涌', '赤鱲角'], ['大嶼山昂坪', '赤鱲角'], ['梅窩', '長洲'],
-  ['南丫', '長洲'], ['坪洲', '長洲'], ['長洲', '長洲'],
-  ['大澳', '赤鱲角'], ['東龍洲', '西貢'], ['赤柱', '赤柱'],
-  ['柴灣', '筲箕灣'], ['薄扶林', '黃竹坑'],
-  ['大棠', '元朗公園'], ['大帽山', '荃灣可觀'], ['城門', '荃灣城門谷'],
-];
+function stationFor(lat, lng) {
+  const hit = nearestStation(lat, lng, HKO_STATION_COORDS);
+  return hit || { name: '香港天文台', km: null };
+}
+
 const RAIN_ALIAS = {
   '北區': '北區', '大埔區': '大埔', '西貢區': '西貢', '沙田區': '沙田',
   '荃灣區': '荃灣', '元朗區': '元朗', '屯門區': '屯門',
@@ -148,45 +153,20 @@ const TIDE_RULES = [
   // 維港兩岸 → 鰂魚涌
   ['柴灣', 'QUB'], ['筲箕灣', 'QUB'], ['赤柱', 'QUB'], ['聖士提反', 'QUB'],
 ];
-function stationFor(obj) {
-  for (const [kw, st] of AREA_STATION_RULES) if (obj.area.includes(kw)) return st;
-  return DISTRICT_STATION[obj.district] || '香港天文台';
-}
 function tideStationFor(obj) {
   for (const [kw, code] of TIDE_RULES) if (obj.area.includes(kw)) return code;
   return null;
 }
 
 /**
- * OCF 自動分區預報配對（v1.3.0）
- * 12 個 HKO OCF 站（實測有效 code）→ 每個營地按 district / area 配對就近站。
+ * OCF 自動分區預報配對（v1.10.0：改用營地座標）
+ * 12 個 HKO OCF 站（有降雨概率嘅站）→ 揀直線最近。
+ * 註：天文台仲有「昂坪（NGP）」站，但佢只有氣溫、冇降雨概率，所以唔可以入呢個配對。
  * 呢個係「就近站參考」，山區／外島同站點可以有明顯差異；前端必須標明。
  */
-const OCF_DISTRICT = {
-  '北區': 'TKL',    // 打鼓嶺
-  '大埔區': 'TPO',  // 大埔
-  '西貢區': 'SEK',  // 西貢
-  '沙田區': 'SHA',  // 沙田
-  '荃灣區': 'TWN',  // 荃灣
-  '元朗區': 'LFS',  // 流浮山
-  '屯門區': 'TUN',  // 屯門
-  '離島區': 'CCH',  // 長洲
-  '東區': 'SKW',    // 筲箕灣
-  '南區': 'HKS',    // 黃竹坑
-};
-const OCF_AREA_RULES = [
-  ['馬鞍山', 'SHA'], ['烏溪沙', 'SHA'],
-  ['將軍澳', 'JKB'], ['飛鵝山', 'JKB'], ['井欄樹', 'JKB'],
-  ['東涌', 'TWN'], ['大嶼山昂坪', 'TWN'], ['䃟石灣', 'TWN'],
-  ['赤柱', 'HKS'], ['大潭', 'HKS'], ['聖士提反', 'HKS'], ['薄扶林', 'HKS'],
-  ['柴灣', 'SKW'], ['大浪灣', 'SKW'],
-  ['大棠', 'LFS'], ['大帽山', 'TWN'], ['城門', 'TWN'],
-  ['大美督', 'TPO'], ['船灣', 'TPO'], ['東平洲', 'TPO'], ['荔枝莊', 'TPO'],
-  ['白沙灣', 'SEK'], ['大網仔', 'SEK'], ['北潭', 'SEK'], ['萬宜', 'SEK'],
-];
-function ocfStationFor(obj) {
-  for (const [kw, code] of OCF_AREA_RULES) if (obj.area.includes(kw)) return code;
-  return OCF_DISTRICT[obj.district] || 'HKO';
+function ocfStationFor(lat, lng) {
+  const hit = nearestStation(lat, lng, OCF_STATION_COORDS);
+  return hit || { name: 'HKO', km: null };
 }
 
 const raw = readFileSync(CSV_PATH, 'utf8');
@@ -215,6 +195,10 @@ const records = dataRows.map((cols) => {
     throw new Error(`「${obj.name}」priceSource 無效：${priceSource}`);
   }
 
+  // v1.10.0：配站全部用座標（唔再用區名關鍵字）
+  const wStation = stationFor(lat, lng);   // → 天文台 rhrread 氣溫站（中文名）
+  const oStation = ocfStationFor(lat, lng); // → OCF 分區站（代號，例 CCH）
+
   const afcd = obj.operator === '漁農自然護理署' ? afcdByName.get(norm(obj.name)) : null;
 
   return {
@@ -235,11 +219,13 @@ const records = dataRows.map((cols) => {
     // v1.9.0：裝備要求（全自備／場地提供）同最近補給點（未核實就留空，唔亂填）
     gear: obj.gear || '',
     supply: obj.supply || '',
-    // v1.2.0：該區天氣／潮汐配對（就近站，唔係營地實測）
-    weatherStation: stationFor(obj),
+    // v1.10.0：該區天氣／潮汐配對（營地座標 → 直線最近站，唔係營地實測）
+    weatherStation: wStation.name,
+    weatherKm: round1(wStation.km),
     rainDistrict: RAIN_ALIAS[obj.district] || null,
     tideStation: tideStationFor(obj),
-    ocfStation: ocfStationFor(obj),
+    ocfStation: oStation.name,
+    ocfKm: round1(oStation.km),
     booking: obj.booking === '是',
     bookingUrl: obj.bookingUrl || '',
     infoUrl: obj.infoUrl || '',
@@ -284,17 +270,6 @@ if (existsSync(CONDITIONS_PATH)) {
 
 // 日出日落用純 JS 天文公式喺前端計（sunTimesHKT()，見 app.js），
 // 任何年份都用得、零 API、file:// 都行；已用 HKO 官方 SRS 2026 值做驗證錨點。
-// 天文台 OCF 自動分區九日預報（data/auto/ocf-forecast.json），每日 Actions 更新
-const OCF_PATH = join(__dirname, 'data', 'auto', 'ocf-forecast.json');
-let ocf = null;
-if (existsSync(OCF_PATH)) {
-  try {
-    ocf = JSON.parse(readFileSync(OCF_PATH, 'utf8'));
-  } catch (e) {
-    console.warn(`⚠ ocf-forecast.json 無法解析，九日預報會隱藏：${e.message}`);
-  }
-}
-
 /* ---------- S5 / S11 瘦身：前端只用一小部分資料，唔好整份快照嵌入 ---------- */
 // 前端實際需要：
 //   conditions → districtWeather（18 區雨量／氣溫）＋ 潮汐「今日～＋9 日後」

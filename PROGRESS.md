@@ -12,10 +12,10 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.9.2**（PR #11，待合併） |
-| 工作分支 | `arena/55d0a674-hkcamping`（今次，PR #11） |
-| 基準 main | `0683ed4`（PR #10 合併點 = v1.9.1） |
-| 當前 PR | [#11](https://github.com/playerkousas-rgb/hkcamping/pull/11)（v1.9.2 補給字眼）**待合併** |
+| 現行版本 | **v1.10.0**（PR #12，待合併） |
+| 工作分支 | `arena/6e140eb5-hkcamping`（今次，PR #12） |
+| 基準 main | `0683ed4`（PR #11 合併點 = v1.9.2） |
+| 當前 PR | [#12](https://github.com/playerkousas-rgb/hkcamping/pull/12)（v1.10.0 天氣站座標配對）**待合併** |
 
 ---
 
@@ -361,6 +361,33 @@ test 21/21、`npm run ui` 28/28（第 E 段驗：widget 有嵌、卡片冇多餘
 - 營位數字只有漁護署 41 個營地有官方數字；其餘 67 筆（NGO／民宿）冇，篩選時唔會出現。
 
 ---
+
+### v1.10.0 — 天氣站改用營地座標配對（2026-10-28）
+
+用戶問：「是否整個大嶼山都無天氣站？為什麼南山白富田那些也算長洲？」再補：「我是指以營地座標來匹配天氣站點」。
+
+查證（逐個試天文台 OCF 原始檔）：
+
+| 代號 | 站 | 有咩 |
+|---|---|---|
+| CCH | 長洲 | 降雨概率、天氣圖示、氣溫、風 |
+| **NGP** | **昂坪**（22.259, 113.913） | 只有 9 日**氣溫**（冇雨）→ 唔可以入落雨配對 |
+| CLK | 赤鱲角 | ❌ 404 |
+
+改動：
+
+- 新增 `lib/stations.mjs`：27 個氣溫站 + 12 個 OCF 站官方座標（天文台 stn.htm，DMS→十進制）
+- `build-data.mjs`：刪走 `DISTRICT_STATION`／`AREA_STATION_RULES`／`OCF_DISTRICT`／`OCF_AREA_RULES`，改 `nearestStation()`；每筆加 `ocfKm`／`weatherKm`
+- `app.js`：天氣面板「就近氣象站：長洲（直線約 7 公里）」、OCF 標題「長洲站 · 直線約 7 公里」
+- guard 第 17 項：每次重算 108 筆最近站 + 守住大浪灣唔可以再係 SKW
+
+修好嘅錯配：大浪灣（大嶼山）筲箕灣 37 km → 長洲 15.4 km；昂坪 荃灣 → 長洲 13.1 km；
+東涌 荃灣 → 屯門 12.3 km；南丫島 → 黃竹坑 ~6.8 km。
+
+**陷阱**：`data/auto/ocf-forecast.json` 自帶座標唔可靠 —— SEK「西貢」寫成 22.436,114.085（其實係石崗，差 20 km），
+用咗會令大棠、河背配去「西貢」。座標一律用官方表。
+
+驗收：guard **17/17**、test **21/21**、ui **99/99**（新增 R 段 6 項）。
 
 ### v1.9.2 — 補給字眼改用「士多＋餐廳」（2026-10-28）
 
