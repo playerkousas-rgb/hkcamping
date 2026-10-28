@@ -122,10 +122,25 @@ test('v1.2.0：該區天氣／潮汐／日出日落公式', () => {
   assert.equal(C.districtWeather.rainfall.length, 18);
   assert.equal(C.districtWeather.temperature.length, 27);
   assert.equal(Object.keys(C.tides.stations).length, 8);
-  // 潮汐 seed 抽查（QUB 2026-10-27 應對得上官方 0342/1026/1509/2147）
-  const q = C.tides.stations.QUB.days['2026-10-27'];
-  assert.equal(q.map((e) => e.time).join(','), '03:42,10:26,15:09,21:47');
-  assert.equal(q.map((e) => e.type).join(','), 'L,H,L,H');
+  // 潮汐：唔鎖死某一日（build 會按快照日期裁走舊日子），改驗結構 + 覆蓋範圍
+  const qDays = C.tides.stations.QUB.days;
+  const qDates = Object.keys(qDays).sort();
+  assert.ok(qDates.length >= 10, `QUB 潮汐日數應 ≥10（現 ${qDates.length}）`);
+  for (const d of qDates) {
+    assert.match(d, /^\d{4}-\d{2}-\d{2}$/);
+    const ev = qDays[d];
+    // 一日可以係 1–4 次（潮汐週期有時會啱啱跨出當日）
+    assert.ok(ev.length >= 1 && ev.length <= 4, `${d} 高低潮事件數 ${ev.length}`);
+    for (const e of ev) {
+      assert.match(e.time, /^\d{2}:\d{2}$/, `${d} 時間格式 ${e.time}`);
+      assert.ok(Number.isFinite(e.height) && e.height >= -1 && e.height <= 4, `${d} 高度 ${e.height}`);
+      assert.ok(e.type === 'H' || e.type === 'L', `${d} 漲退 ${e.type}`);
+    }
+  }
+  // 視窗要覆蓋「今日」（用快照自身日期，唔用 now）
+  const anchor = new Date(Date.parse(sandbox.CAMP_CONDITIONS.fetchedAt) + 8 * 3600 * 1000)
+    .toISOString().slice(0, 10);
+  assert.ok(qDates.includes(anchor), `潮汐涵蓋快照當日 ${anchor}`);
   // 日出日落純 JS 公式：對照 HKO 官方 SRS，容許 3 分鐘誤差
   const toMin = (t) => { const [a, b] = t.split(':').map(Number); return a * 60 + b; };
   for (const [d, r, s] of [

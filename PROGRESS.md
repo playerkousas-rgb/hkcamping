@@ -12,7 +12,7 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.4.1** |
+| 現行版本 | **v1.5.0** |
 | 工作分支 | `arena/31d2c3e0-hkcamping`（今次）；上一輪 `arena/b909a4c2-hkcamping`（PR #5，已合併） |
 | 基準 main | `dd5be13`（PR #5 合併點） |
 | 當前 PR | [#5](https://github.com/playerkousas-rgb/hkcamping/pull/5) **已合併**（v1.1.0–v1.3.0）；本輪 v1.4.0 喺新分支，待開 PR |
@@ -116,6 +116,23 @@
 
 ---
 
+### v1.5.0 — 瘦身機制（S 系列）落地（2026-10-28）
+
+用戶問「這 APP 有設定瘦身機制那些吧」→ 逐條對 `docs/01-slim.md` 後**發現真問題**：
+`data.js` 由 177KB 脹到 **396KB**（每日同步後），`dist` 479.9KB —— 佔 S6/S7 上限雖然遠，但屬 S11「payload 瘦身」失守。
+
+**三個根因同修法**：
+1. 嵌入快照用 `JSON.stringify(x, null, 2)` → 縮排白位佔一半 → 改 compact
+2. OCF 連 `hourly` 一齊嵌（前端只用 `daily`）→ 唔再嵌
+3. 潮汐嵌晒 8 站 × 61 日 → 只留快照當日 −2 ~ ＋20 日（用 `fetchedAt` 做基準，`--check` 唔會跨日假爆）
+
+**成果**：`data.js` 396.3 → **128.3KB（−68%）**、`dist` 479.9 → **211.9KB（−56%）**、gzip 全站 ≈47KB。
+**新機制**：`scripts/slim-report.mjs`（`npm run slim`）＋ guard 第 13 項「瘦身預算」（硬攔 data.js>250KB／dist>1MB／
+誤嵌 hourly／死重檔）；`vercel.json` 加 `installCommand`（S3）。
+**順手修**：潮汐 smoke test 唔再鎖死 `2026-10-27`（同 v1.4.1 同類問題），改驗結構＋覆蓋範圍。
+
+---
+
 ## 四、全部官方數據源（無第三方）
 
 | 資料 | 來源 | 更新 |
@@ -134,16 +151,16 @@
 ## 五、驗收結果（本機 + CI）
 
 ```
-npm run guard       → 12/12 全綠
+npm run guard       → 13/13 全綠
 npm test            → 13/13 全綠
-npm run build:site  → dist/ 4 個檔，256.4 KB（S6 上限 5MB）
+npm run build:site  → dist/ 4 個檔，211.9 KB（S6 上限 5MB）
 node --check        → 全部 JS 通過
 PR #5 guard CI      → pass
 Live preview        → / /index.html /styles.css /app.js /data.js 全部 200
 ```
 
-Guard 12 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／dist 體積／單檔 <1MB／
-零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡。
+Guard 13 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／dist 體積／單檔 <1MB／
+零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算。
 
 ---
 
@@ -176,7 +193,7 @@ Guard 12 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／di
 ## 八、部署／驗收指令備忘
 
 ```bash
-npm run guard                 # 12 項
+npm run guard                 # 13 項
 npm test                      # 13 項
 npm run build:site            # 產生 dist/（Vercel 正式產物）
 npm run dev                   # http://localhost:8000 本機預覽

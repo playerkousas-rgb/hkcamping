@@ -292,15 +292,70 @@ if (existsSync(OCF_PATH)) {
   }
 }
 
+/* ---------- S5 / S11 瘦身：前端只用一小部分資料，唔好整份快照嵌入 ---------- */
+// 前端實際需要：
+//   conditions → districtWeather（18 區雨量／氣溫）＋ 潮汐「今日～＋9 日後」
+//   ocf        → 每站 daily（九日預報）；hourly 前端完全冇用 → 唔嵌入
+//   weather    → 原封不動（本身只有 2KB）
+// 視窗用「快照自己嘅 fetchedAt」做基準（唔用 now），否則 --check 一日就會假爆。
+const hktDateOf = (iso) => {
+  const t = Date.parse(iso || '');
+  if (!Number.isFinite(t)) return null;
+  return new Date(t + 8 * 3600 * 1000).toISOString().slice(0, 10);
+};
+const shiftDate = (iso, n) => {
+  const [y, m, d] = iso.split('-').map(Number);
+  const t = new Date(Date.UTC(y, m - 1, d) + n * 86400000);
+  return t.toISOString().slice(0, 10);
+};
+
+function slimConditions(src) {
+  if (!src || typeof src !== 'object') return src;
+  const anchor = hktDateOf(src.fetchedAt);
+  const out = { fetchedAt: src.fetchedAt, districtWeather: src.districtWeather };
+  if (!src.tides || typeof src.tides !== 'object') return out;
+  const from = anchor ? shiftDate(anchor, -2) : null;   // 容許少少回看
+  const to = anchor ? shiftDate(anchor, 20) : null;     // 九日預報＋週末一定夠
+  const stations = {};
+  for (const [code, st] of Object.entries(src.tides.stations || {})) {
+    const days = {};
+    for (const [d, events] of Object.entries(st.days || {})) {
+      if (from && to && (d < from || d > to)) continue;
+      days[d] = events;
+    }
+    stations[code] = { name: st.name, days };
+  }
+  out.tides = { ...src.tides, stations };
+  return out;
+}
+
+function slimOcf(src) {
+  if (!src || typeof src !== 'object') return src;
+  const stations = {};
+  for (const [code, st] of Object.entries(src.stations || {})) {
+    stations[code] = {
+      code: st.code, name: st.name, lat: st.lat, lng: st.lng,
+      modelTime: st.modelTime, lastModified: st.lastModified,
+      daily: st.daily,             // hourly／seed 等前端冇用 → 唔嵌入
+    };
+  }
+  return {
+    fetchedAt: src.fetchedAt, source: src.source, notes: src.notes,
+    officialNotesUrl: src.officialNotesUrl, stations,
+  };
+}
+
+const compact = (v) => JSON.stringify(v);
+
 const output =
   banner +
-  'window.CAMPSITES = ' + JSON.stringify(records, null, 2) + ';\n\n' +
+  'window.CAMPSITES = ' + compact(records) + ';\n\n' +
   '// 天文台快照（data/auto/weather.json），由 GitHub Actions 每日更新後 rebuild\n' +
-  'window.CAMP_WEATHER = ' + JSON.stringify(weather, null, 2) + ';\n\n' +
+  'window.CAMP_WEATHER = ' + compact(weather) + ';\n\n' +
   '// 該區天氣 + 潮汐（data/auto/conditions.json），每日 Actions 更新\n' +
-  'window.CAMP_CONDITIONS = ' + JSON.stringify(conditions, null, 2) + ';\n\n' +
+  'window.CAMP_CONDITIONS = ' + compact(slimConditions(conditions)) + ';\n\n' +
   '// 天文台 OCF 自動分區九日預報（data/auto/ocf-forecast.json），每日 Actions 更新\n' +
-  'window.CAMP_OCF = ' + JSON.stringify(ocf, null, 2) + ';\n';
+  'window.CAMP_OCF = ' + compact(slimOcf(ocf)) + ';\n';
 
 // --check：只比較、唔寫檔，畀 guard / CI 用（F14 / S12）
 if (process.argv.includes('--check')) {
