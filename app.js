@@ -6,7 +6,7 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.9.1';
+  const APP_VERSION = '1.9.2';
 
 
   const TYPE_META = {
@@ -498,26 +498,26 @@
       : '<span class="prep-badge gear ok">🛏 有房有床（裝備唔使自己帶）</span>';
   }
 
-  /* 補給（v1.9.1）：官方冇「最近超市」資料，所以唔亂填 —— 有核實過就顯示，冇就開地圖。
-     用戶實測（2026-10-28）兩個問題：
-       ① 撳完「附近補給」入到 Google 地圖，見唔到營地本身喺邊 → 加一個「📍 營地位置」掣（同一格）。
-          Google 地圖一條網址擺唔到「自訂標記 + 搜尋」兩樣，所以拆做兩個掣。
-       ② 原本 query「超級市場 OR 士多」Google 唔認得 OR，會派中環嘅超市出嚟 → 改用
-          改為「士多 + 地區名」並把縮放由 14 拉到 15，令結果集中喺營地附近。 */
+  /* 補給（v1.9.2）：官方冇「最近超市」資料，所以唔亂填 —— 有核實過就寫出嚟，冇就開地圖。
+     ① v1.9.1：加「📍 營地位置」掣 —— Google 一條網址擺唔到「自訂標記＋搜尋」兩樣。
+     ② v1.9.1：唔再用 `OR`（Google 唔認，會派中環超市）。
+     ③ v1.9.2（用戶問「用食肆或者商鋪呢？」）：加「餐廳」。
+        原因：鄉郊士多十間有八間兼做食肆，Google 多數將佢哋標做 restaurant
+        —— 例：三椏村「Fat Kee Store & Restaurant」＝發記士多，只搜「士多」會漏咗佢。
+        「商鋪」唔用：Google 冇呢個分類，只會派市區地舖／商場，對露營補給冇用。 */
+  const SUPPLY_QUERY_TERMS = ['士多', '餐廳'];
+
   function supplyLine(s) {
     const area = (s.area || '').replace(/^.*?·\s*/, '').trim();
-    /* 用「士多 + 地區名」兩個詞：詞越少，Google 越少機會「搵唔到」；
-       純類別詞（超級市場／便利店）會令佢跳去最近嘅市區派結果。 */
-    const q = ['士多', area].filter(Boolean).join(' ');
+    const q = [...SUPPLY_QUERY_TERMS, area].filter(Boolean).join(' ');
     const searchUrl = 'https://www.google.com/maps/search/' + encodeURIComponent(q)
       + `/@${s.lat},${s.lng},15z`;
     const pinUrl = `https://www.google.com/maps/place/${s.lat},${s.lng}/@${s.lat},${s.lng},15z`;
     return '<div class="supply-line">'
-      + (s.supply
-        ? `<span class="supply-known">🛒 最近補給：${s.supply}</span>`
-        : `<a class="supply-search" href="${searchUrl}" target="_blank" rel="noopener"`
-          + ' title="Google 地圖即時搜尋（已對準營地附近）；官方冇補給點數據，唔會亂填一個錯地址">'
-          + '🛒 搵附近超市／士多 ↗</a>')
+      + (s.supply ? `<span class="supply-known">🛒 最近補給：${s.supply}</span>` : '')
+      + `<a class="supply-search" href="${searchUrl}" target="_blank" rel="noopener"`
+      + ' title="Google 地圖即時搜尋：士多＋食肆（鄉郊士多好多兼做餐廳，Google 分類唔一致）；唔會亂填一個錯地址">'
+      + `${s.supply ? '🔍 再搵其他' : '🛒 搵附近超市／士多／食肆'} ↗</a>`
       + `<a class="supply-pin" href="${pinUrl}" target="_blank" rel="noopener"`
       + ' title="喺 Google 地圖睇返營地本身嘅位置，對比返補給點有幾遠">'
       + '📍 營地位置 ↗</a>'
