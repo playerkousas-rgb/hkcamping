@@ -74,14 +74,21 @@ for (const r of records) {
 /* ---------- 3. 設施用詞：同一概念唔可以散成幾個 chip ---------- */
 const FACILITY_GROUPS = {
   燒烤設施: ['燒烤', '燒烤爐', '燒烤場', '海景燒烤場'],
-  廁所: ['廁所', '旱廁', '洗手間'],
-  浴室: ['浴室', '獨立浴室', '淋浴'],
+  廁所: ['廁所', '洗手間'],              // 沖水廁所（屋企式）
   停車位: ['停車位', '停車場'],
-  廚房: ['廚房', '自助廚房', '中央廚房'],
-  泳池: ['泳池', '室外泳池', '室內泳池'],
+  廚房: ['廚房', '自助廚房'],            // 可以自己煮
+  泳池: ['泳池', '室外泳池'],
   攀石: ['攀石牆', '攀岩牆', '攀石場'],
   草地: ['草地', '草坪', '營地草坪'],
   繩網: ['繩網', '繩網陣', '挑戰網陣'],
+  球場: ['球場', '籃球場', '足球場'],
+};
+/* 實質差別大，唔准同任何嘢合併（合併就會誤導用戶） */
+const NO_MERGE = {
+  旱廁: '得個坑／無沖水，同沖水廁所係兩件事',
+  獨立浴室: '民宿屋內私人浴室，同營地公用浴室唔同',
+  中央廚房: '通常職員／到會專用，未必畀營友自己煮',
+  熱水淋浴: '有熱水沖涼，同「有浴室」唔等於同一件事',
 };
 // app.js 要用同一張表（避免兩邊走樣）
 const app = readFileSync(join(ROOT, 'app.js'), 'utf8');
@@ -93,6 +100,24 @@ for (const [group, members] of Object.entries(FACILITY_GROUPS)) {
     err(`app.js 分組「${group}」未包含「${present[0]}」`);
   }
 }
+// NO_MERGE：呢幾樣唔可以出現喺任何分組（否則篩選層就會誤導）
+for (const [term, why] of Object.entries(NO_MERGE)) {
+  for (const [group, members] of Object.entries(FACILITY_GROUPS)) {
+    if (members.includes(term)) {
+      err(`「${term}」唔准合併入「${group}」（${why}）`);
+    }
+  }
+  const appGroups = (app.match(/const FACILITY_GROUPS = \{[\s\S]*?\n  \};/) || [''])[0];
+  if (appGroups.includes(`'${term}'`)) {
+    err(`app.js 把「${term}」編入分組（${why}）`);
+  }
+}
+// app.js 嘅 NO_MERGE 清單要同 audit 一致
+const appNoMerge = (app.match(/const NO_MERGE = \[([^\]]*)\]/) || [])[1] || '';
+for (const term of Object.keys(NO_MERGE)) {
+  if (!appNoMerge.includes(`'${term}'`)) err(`app.js NO_MERGE 缺「${term}」`);
+}
+
 // 裸寫「燒烤」（唔講爐定場）唔可以再出現喺篩選用嘅 facilities
 for (const r of records) {
   if (list(r.facilities).includes('燒烤')) {

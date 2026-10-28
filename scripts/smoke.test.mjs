@@ -340,15 +340,19 @@ test('v1.6.0：設施用詞分組 — 燒烤／廁所／攀石等只出一個 ch
   const chips = doc.getElementById('tagChips').children;
   const names = chips.map((c) => c.innerHTML.split(' <')[0]);
 
-  // 舊寫法唔可以再獨立成 chip（呢個就係「分成 3 樣」嘅問題）
-  for (const legacy of ['燒烤', '燒烤爐', '燒烤場', '旱廁', '獨立浴室', '攀石牆', '攀岩牆', '攀石場', '停車場', '草坪']) {
+  // 真．同義詞唔可以再獨立成 chip
+  for (const legacy of ['燒烤', '燒烤爐', '燒烤場', '攀石牆', '攀岩牆', '攀石場', '停車場', '草坪']) {
     assert.ok(!names.includes(legacy), `「${legacy}」唔應該再獨立成 chip`);
+  }
+  // 但實質唔同嘅一定要分開（v1.6.1）
+  for (const keep of ['旱廁', '獨立浴室', '中央廚房', '熱水淋浴']) {
+    assert.ok(names.includes(keep), `「${keep}」必須保持獨立 chip，唔准合併`);
   }
 
   const A = sandbox.CAMPSITES;
   const members = {
     '燒烤設施': ['燒烤', '燒烤爐', '燒烤場'],
-    '廁所': ['廁所', '旱廁'],
+    '廁所': ['廁所'],                       // 只計沖水廁所，旱廁另計
     '攀石': ['攀石牆', '攀岩牆', '攀石場'],
     '繩網': ['繩網', '繩網陣', '挑戰網陣'],
   };
@@ -382,4 +386,48 @@ test('v1.6.0：康文署 6 筆連 SmartPLAY 同自己場地頁，唔再全部同
   // 每個場地頁唔應該完全一樣
   const uniqInfo = new Set(lcsd.map((s) => s.infoUrl));
   assert.equal(uniqInfo.size, lcsd.length, '6 個場地要有 6 個唔同嘅官方頁');
+});
+
+
+test('v1.6.1：旱廁同沖水廁所分開 — 篩選獨立、數量正確、卡片有警告徽章', () => {
+  const { sandbox, doc } = boot();
+  const A = sandbox.CAMPSITES;
+  const chips = doc.getElementById('tagChips').children;
+  const chipCount = (label) => {
+    const c = chips.find((x) => x.innerHTML.startsWith(label + ' '));
+    return c ? Number((c.innerHTML.match(/chip-count">(\d+)/) || [])[1]) : null;
+  };
+
+  const dry = A.filter((s) => s.facilities.includes('旱廁'));
+  const flush = A.filter((s) => s.facilities.includes('廁所'));
+  assert.equal(dry.length, 16, '旱廁應為 16 筆');
+  assert.equal(flush.length, 32, '沖水廁所應為 32 筆');
+  assert.equal(A.filter((s) => s.facilities.includes('旱廁') && s.facilities.includes('廁所')).length, 0,
+    '冇營地可以同時係旱廁同沖水廁所');
+
+  assert.equal(chipCount('廁所'), 32, '「廁所」chip 只可以計沖水廁所');
+  assert.equal(chipCount('旱廁'), 16, '「旱廁」要係獨立 chip');
+
+  // 卡片：旱廁要有警告樣式，沖水廁所係普通樣式
+  const cards = doc.getElementById('cardGrid').children;
+  const dryCards = cards.filter((c) => c.innerHTML.includes('🕳 旱廁（無沖水）'));
+  const flushCards = cards.filter((c) => c.innerHTML.includes('🚻 沖水廁所'));
+  assert.equal(dryCards.length, 16);
+  assert.equal(flushCards.length, 32);
+  assert.match(dryCards[0].innerHTML, /prep-badge warn" title="旱廁/);
+  assert.ok(!flushCards.some((c) => c.innerHTML.includes('旱廁')));
+});
+
+test('v1.6.1：獨立浴室（民宿私人）同浴室（營地公用）分開', () => {
+  const { sandbox, doc } = boot();
+  const A = sandbox.CAMPSITES;
+  const chips = doc.getElementById('tagChips').children;
+  const names = chips.map((c) => c.innerHTML.split(' <')[0]);
+  assert.ok(names.includes('浴室'));
+  assert.ok(names.includes('獨立浴室'));
+  assert.equal(A.filter((s) => s.facilities.includes('浴室')).length, 1);
+  assert.equal(A.filter((s) => s.facilities.includes('獨立浴室')).length, 5);
+  // 民宿嘅私人浴室唔應該被當成營地公用浴室
+  assert.ok(A.filter((s) => s.facilities.includes('獨立浴室'))
+    .every((s) => s.type === '民宿'));
 });

@@ -12,7 +12,7 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.6.0** |
+| 現行版本 | **v1.6.1** |
 | 工作分支 | `arena/31d2c3e0-hkcamping`（今次）；上一輪 `arena/b909a4c2-hkcamping`（PR #5，已合併） |
 | 基準 main | `dd5be13`（PR #5 合併點） |
 | 當前 PR | [#5](https://github.com/playerkousas-rgb/hkcamping/pull/5) **已合併**（v1.1.0–v1.3.0）；本輪 v1.4.0 喺新分支，待開 PR |
@@ -151,6 +151,27 @@
 （free 但有價／enquiry 但有價／露營有冷氣／booking=否但有 bookingUrl）、座標出界；
 guard 加第 14 項「資料一致性」硬攔；smoke test 加 3 個（用詞分組／交通用詞／康文署連結）→ 16 個。
 
+### v1.6.1 — 修正過度合併（用戶指正，2026-10-28）
+
+用戶指出：「廁所和旱廁是很不同的應該要分開。廁所是像屋企那種的，旱廁可能只是有個洞。」
+**完全正確，我 v1.6.0 合併錯咗。**
+
+數據核實：`廁所` 32 筆、`旱廁` 16 筆，**零重疊**；16 個旱廁全部係漁護署偏遠露營點
+（三椏涌、嶂上、白腊、元五墳、曝罟灣、昂平馬鞍山、白富田、十塱、籮箕灣、石欖洲、
+大浪灣大嶼山、狗嶺涌、萬丈布、牙鷹角、煎魚灣、石壁）。
+
+**修法**：
+- `廁所` chip 只計沖水廁所（32）；`旱廁` 變獨立 chip（16）
+- 同一個原則套落其他「似同義但實質唔同」嘅組：
+  `獨立浴室`（民宿私人，5）vs `浴室`（營地公用，1）、
+  `中央廚房`（未必畀營友煮，1）vs `廚房`／`自助廚房`（可以自己煮，5）、
+  `熱水淋浴`（19）保持獨立
+- 新增 `NO_MERGE` 白名單：呢四樣一旦被編入任何分組，`npm run audit` 直接 FAIL
+  （已做負向測試：故意把旱廁編入廁所 → 成功捉到）
+- **卡片加廁所類型徽章**：`🕳 旱廁（無沖水）` 用警告色 + hover 提示自備水／濕紙巾；
+  `🚻 沖水廁所` 普通樣式 → 用戶一眼分得出
+- smoke test +2（旱廁與廁所分開、獨立浴室與浴室分開）→ **18 個**
+
 ---
 
 ## 四、全部官方數據源（無第三方）
@@ -172,7 +193,7 @@ guard 加第 14 項「資料一致性」硬攔；smoke test 加 3 個（用詞�
 
 ```
 npm run guard       → 14/14 全綠
-npm test            → 16/16 全綠
+npm test            → 18/18 全綠
 npm run build:site  → dist/ 4 個檔，211.9 KB（S6 上限 5MB）
 node --check        → 全部 JS 通過
 PR #5 guard CI      → pass
@@ -214,7 +235,7 @@ Guard 14 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／di
 
 ```bash
 npm run guard                 # 14 項
-npm test                      # 16 項 + npm run audit
+npm test                      # 18 項 + npm run audit
 npm run build:site            # 產生 dist/（Vercel 正式產物）
 npm run dev                   # http://localhost:8000 本機預覽
 node build-data.mjs --check   # 驗 data.js 同 data.csv／各快照是否同步

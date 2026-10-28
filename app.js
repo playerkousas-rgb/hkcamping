@@ -4,7 +4,7 @@
 
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.6.0';
+  const APP_VERSION = '1.6.1';
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -21,17 +21,21 @@
    *       **篩選層收斂成一個 chip**，count 同配對都用全部同義詞。
    */
   const FACILITY_GROUPS = {
+    // 只合併「真正同一樣嘢」；有實質差別嘅一律唔准合併（見下方 NO_MERGE）。
     '燒烤設施': ['燒烤', '燒烤爐', '燒烤場'],
-    '廁所': ['廁所', '旱廁'],
-    '浴室': ['浴室', '獨立浴室', '淋浴'],
+    '廁所': ['廁所', '洗手間'],            // 沖水廁所（屋企式）
     '停車位': ['停車位', '停車場'],
-    '廚房': ['廚房', '自助廚房', '中央廚房'],
+    '廚房': ['廚房', '自助廚房'],          // 可以自己煮嘢食
     '泳池': ['泳池', '室外泳池'],
     '攀石': ['攀石牆', '攀岩牆', '攀石場'],
     '草地': ['草地', '草坪', '營地草坪'],
     '繩網': ['繩網', '繩網陣', '挑戰網陣'],
     '球場': ['球場', '籃球場', '足球場'],
   };
+  /* 唔准同任何嘢合併嘅設施：實質差別好大，合併就會誤導。
+   * 旱廁 = 得個窿／無沖水；廁所 = 沖水。獨立浴室 = 民宿屋內私人浴室；浴室 = 營地公用。
+   * 中央廚房 = 通常職員／到會用，未必畀營友自己煮。熱水淋浴 = 有熱水沖涼（同浴室兩件事）。 */
+  const NO_MERGE = ['旱廁', '獨立浴室', '中央廚房', '熱水淋浴', '淋浴'];
   const GROUP_OF = {};
   Object.entries(FACILITY_GROUPS).forEach(([group, members]) => {
     members.forEach((m) => { GROUP_OF[m] = group; });
@@ -485,6 +489,21 @@
     return `<div class="prep-badges">${water}${tent}</div>`;
   }
 
+  /* 廁所類型徽章（v1.6.1）：
+   * 旱廁（得個窿、無沖水）同沖水廁所係兩件事，唔可以混為一談，
+   * 所以卡片會分開標示，旱廁用警告色提醒要自備水／濕紙巾。
+   */
+  function toiletBadge(s) {
+    const all = [...s.facilities, ...s.tags];
+    const dry = all.includes('旱廁');
+    const flush = all.includes('廁所');
+    if (!dry && !flush) return '';
+    const parts = [];
+    if (dry) parts.push('<span class="prep-badge warn" title="旱廁：通常只係一個坑／無沖水，請自備水、濕紙巾同消毒用品">🕳 旱廁（無沖水）</span>');
+    if (flush) parts.push('<span class="prep-badge" title="沖水廁所">🚻 沖水廁所</span>');
+    return `<div class="prep-badges">${parts.join('')}</div>`;
+  }
+
   function renderCards(sites) {
     const grid = document.getElementById('cardGrid');
     const empty = document.getElementById('emptyState');
@@ -517,6 +536,7 @@
         </div>
         ${s.priceSource === 'estimate'
           ? '<div class="price-caveat">約數 · 未逐筆核實，落訂前請向場地官網／電話確認</div>' : ''}
+        ${toiletBadge(s)}
         ${prepBadges(s)}
         <div class="prep-badges foot-line"${visit ? '' : ' hidden'}>
           <span class="prep-badge foot">👣 去過 · 上次 <span class="foot-last">${visit ? visit.last : ''}</span></span>
