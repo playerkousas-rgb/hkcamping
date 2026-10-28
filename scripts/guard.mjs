@@ -19,6 +19,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const results = [];
 const ok = (name, detail = '') => results.push({ pass: true, name, detail });
 const bad = (name, detail = '') => results.push({ pass: false, name, detail });
+const warn = (name, detail = '') => results.push({ pass: true, warn: true, name, detail });
 const exists = (p) => existsSync(join(ROOT, p));
 const read = (p) => readFileSync(join(ROOT, p), 'utf8');
 
@@ -297,10 +298,95 @@ try {
   bad('瘦身預算', (e.stdout || e.message || '').toString().trim().split('\n').slice(-3).join(' '));
 }
 
+/* ---------- 14. 資料一致性（v1.6.0：交通用詞／康文署連結／設施分組） ---------- */
+try {
+  const out = execFileSync(process.execPath, ['scripts/audit-data.mjs'], {
+    cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  const app = read('app.js');
+  const csv = read('data.csv');
+  const checks = [
+    [out.includes('ERROR 0 項'), 'audit-data 冇 ERROR'],
+    [!/(^|;)地鐵(;|$)/m.test(csv) && !/(^|;)東鐵(;|$)/m.test(csv), 'data.csv 冇「地鐵／東鐵」舊稱'],
+    [!csv.includes('/clpss/'), 'data.csv 冇舊版 CLPSS 連結'],
+    [csv.includes('smartplay.lcsd.gov.hk'), '康文署 bookingUrl 指向 SmartPLAY'],
+    [app.includes('FACILITY_GROUPS') && app.includes('canonTag'), 'app.js 有設施分組（燒烤／廁所／攀石…）'],
+    [app.includes("'燒烤設施': ['燒烤', '燒烤爐', '燒烤場']"), '燒烤三個舊寫法已收斂為一個 chip'],
+  ];
+  const failed = checks.filter(([p2]) => !p2).map(([, n]) => n);
+  const warnLine = (out.match(/WARN (\d+) 項/) || [])[1] || '0';
+  if (failed.length) bad('資料一致性', failed.join('; '));
+  else ok('資料一致性', `交通用詞、康文署連結、設施分組合併（WARN ${warnLine} 項 http 連結）`);
+} catch (e) {
+  bad('資料一致性', (e.stdout || e.message || '').toString().trim().split('\n').slice(-6).join(' '));
+}
+
+/* ---------- 15. 回報（v1.7.2：只用 Scout Admin 統一回報 widget） ---------- */
+try {
+  const app = read('app.js');
+  const html = read('index.html');
+  const readme = read('README.md');
+  const tag = (html.match(/<script[^>]*scout-admin-blue\.vercel\.app\/widget\.js[^>]*>/) || [])[0] || '';
+  const dataApp = (tag.match(/data-app="([^"]*)"/) || [])[1] || '';
+  const fetchCount = (app.match(/\bfetch\s*\(/g) || []).length;
+
+  const checks = [
+    [tag !== '', 'index.html 有嵌 Scout Admin 統一回報 widget'],
+    [dataApp.trim() !== '', `widget 有 data-app（來源＝${dataApp || '未設'}）`],
+    [dataApp.trim() === '營地資料庫', 'data-app 用正式名稱（後台膠囊會顯示呢個）'],
+    [fetchCount === 0 && !/XMLHttpRequest/.test(app), '前端回復零 fetch／零 XHR（回報由 widget 自己送）'],
+    [!html.includes('id="reportDialog"'), '冇自寫報料表單（避免多一套表單令後台難睇）'],
+    [!/(api[_-]?key|secret|bearer)\s*[:=]\s*['"][^'"]{8,}/i.test(app), 'app.js 冇 secret／key'],
+    [/Scout Admin/.test(readme), 'README 有寫回報去邊'],
+  ];
+  const failed = checks.filter(([p]) => !p).map(([, n]) => n);
+  if (failed.length) bad('回報（Scout Admin）', failed.join('; '));
+  else ok('回報（Scout Admin）', `一行 widget，來源「${dataApp}」；本站零 fetch、零表單`);
+} catch (e) {
+  bad('回報（Scout Admin）', (e.message || '').toString().slice(0, 160));
+}
+
+/* ---------- 16. 裝備／補給（v1.9.0） ---------- */
+try {
+  const app = read('app.js');
+  const csv = read('data.csv');
+  const lines = csv.trim().split('\n');
+  const head = lines[0].split(',');
+  const iGear = head.indexOf('gear');
+  const iSupply = head.indexOf('supply');
+  const iType = head.indexOf('type');
+  const rows = lines.slice(1).map((l) => l.split(','));
+
+  const problems = [];
+  if (iGear < 0) problems.push('data.csv 冇 gear 欄');
+  if (iSupply < 0) problems.push('data.csv 冇 supply 欄');
+  if (iGear >= 0) {
+    const empty = rows.filter((r) => !r[iGear]).length;
+    if (empty) problems.push(`${empty} 筆冇 gear 值`);
+    const wrong = rows.filter((r) => {
+      const isCamp = r[iType] === '露營';
+      return isCamp ? r[iGear] !== '全自備' : r[iGear] !== '場地提供';
+    }).length;
+    if (wrong) problems.push(`${wrong} 筆 gear 同類型唔一致（露營＝全自備，其餘＝場地提供）`);
+  }
+  if (!app.includes('function gearBadge')) problems.push('app.js 冇 gearBadge');
+  if (!app.includes('function supplyLine')) problems.push('app.js 冇 supplyLine');
+  if (!/google\.com\/maps\/search/.test(app)) problems.push('補給冇地圖搜尋連結');
+
+  const gearCount = {};
+  if (iGear >= 0) rows.forEach((r) => { gearCount[r[iGear]] = (gearCount[r[iGear]] || 0) + 1; });
+  const supplyFilled = iSupply >= 0 ? rows.filter((r) => r[iSupply]).length : 0;
+
+  if (problems.length) results.push({ pass: false, name: '裝備／補給', detail: problems.join('; ') });
+  else ok('裝備／補給', `全自備 ${gearCount['全自備'] || 0}／場地提供 ${gearCount['場地提供'] || 0}；已核實補給點 ${supplyFilled} 筆（其餘用地圖搜，唔亂填）`);
+} catch (e) {
+  results.push({ pass: false, name: '裝備／補給', detail: (e.message || '').toString().slice(0, 160) });
+}
+
 /* ---------- 總結 ---------- */
 console.log('\n=== hkcamping guard ===');
 for (const r of results) {
-  console.log(`${r.pass ? '✅' : '❌'} ${r.name}${r.detail ? ` — ${r.detail}` : ''}`);
+  console.log(`${r.pass ? (r.warn ? '⚠️ ' : '✅') : '❌'} ${r.name}${r.detail ? ` — ${r.detail}` : ''}`);
 }
 const failed = results.filter((r) => !r.pass).length;
 console.log(`\n${results.length - failed}/${results.length} 項通過${failed ? `，${failed} 項 FAIL` : '，全部綠'}`);

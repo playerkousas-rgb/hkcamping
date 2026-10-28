@@ -2,9 +2,12 @@
 (function () {
   'use strict';
 
+  // 回報（v1.7.2）：唔喺呢邊實作 —— 用 Scout Admin 嘅統一回報 widget（見 index.html 最底一行），
+  //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.5.0';
+  const APP_VERSION = '1.9.0';
+
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -13,6 +16,35 @@
     '民宿': { color: '#6a1b9a', short: '民' },
   };
   const SIGNAL_ORDER = ['良好', '一般', '微弱', '無'];
+
+  /* ---------- 設施／特色用詞分組（v1.6.0）----------
+   * 問題：資料層同一樣嘢有幾個寫法（燒烤／燒烤爐／燒烤場、廁所／旱廁、攀石牆／攀岩牆／攀石場…），
+   * 側欄就會出幾個 chip，用戶撳「燒烤爐」見唔到有「燒烤場」嘅營地 → 以為資料矛盾。
+   * 做法：**資料層保留官方精確用詞**（卡片照顯示「旱廁」等實情），
+   *       **篩選層收斂成一個 chip**，count 同配對都用全部同義詞。
+   */
+  const FACILITY_GROUPS = {
+    // 只合併「真正同一樣嘢」；有實質差別嘅一律唔准合併（見下方 NO_MERGE）。
+    '燒烤設施': ['燒烤', '燒烤爐', '燒烤場'],
+    '廁所': ['廁所', '洗手間'],            // 沖水廁所（屋企式）
+    '停車位': ['停車位', '停車場'],
+    '廚房': ['廚房', '自助廚房'],          // 可以自己煮嘢食
+    '泳池': ['泳池', '室外泳池'],
+    '攀石': ['攀石牆', '攀岩牆', '攀石場'],
+    '草地': ['草地', '草坪', '營地草坪'],
+    '繩網': ['繩網', '繩網陣', '挑戰網陣'],
+    '球場': ['球場', '籃球場', '足球場'],
+  };
+  /* 唔准同任何嘢合併嘅設施：實質差別好大，合併就會誤導。
+   * 旱廁 = 得個窿／無沖水；廁所 = 沖水。獨立浴室 = 民宿屋內私人浴室；浴室 = 營地公用。
+   * 中央廚房 = 通常職員／到會用，未必畀營友自己煮。熱水淋浴 = 有熱水沖涼（同浴室兩件事）。 */
+  const NO_MERGE = ['旱廁', '獨立浴室', '中央廚房', '熱水淋浴', '淋浴'];
+  const GROUP_OF = {};
+  Object.entries(FACILITY_GROUPS).forEach(([group, members]) => {
+    members.forEach((m) => { GROUP_OF[m] = group; });
+  });
+  // 任何設施／標籤 → 篩選層嘅代表詞（唔在分組表就原樣返回）
+  const canonTag = (t) => GROUP_OF[t] || t;
   const FAV_KEY = 'hkcamp_favourites';
   const FOOT_KEY = 'hkcamp_footprints';   // 我的足跡：{ id: { first, last } }
   const VISIT_KEY = 'hkcamp_visits';      // 入站人次（本機累計）
@@ -220,6 +252,8 @@
     transports: new Set(),
     tags: new Set(),
     signals: new Set(),
+    tents: new Set(),      // 營位規模（團體／童軍 planning 用）
+    gears: new Set(),      // 裝備要求（全自備／場地提供）
     freeOnly: false,
     maxPrice: 1500,
     query: '',
@@ -238,7 +272,10 @@
 
   const savedFavs = readJson(FAV_KEY, []);
   const favs = new Set(Array.isArray(savedFavs) ? savedFavs.filter((id) => typeof id === 'string') : []);
-  const saveFavs = () => localStorage.setItem(FAV_KEY, JSON.stringify([...favs]));
+  // 私隱模式／無痕視窗會令 setItem 直接拋錯；拋咗就會連個撳鈕都死，所以一定要包。
+  const saveFavs = () => {
+    try { localStorage.setItem(FAV_KEY, JSON.stringify([...favs])); } catch { /* 私隱模式：收藏只留喺記憶體 */ }
+  };
 
   // 我的足跡：只記低「去過邊個營地 + 第一次／最後一次日期」，全部留喺瀏覽器。
   const footprints = (() => {
@@ -263,8 +300,13 @@
   const uniq = (arr) => [...new Set(arr)].filter(Boolean);
   const districts = uniq(SITES.map((s) => s.district));
   const transports = uniq(SITES.flatMap((s) => s.transport));
-  const allTags = uniq(SITES.flatMap((s) => [...s.facilities, ...s.tags]));
+  // 篩選層用代表詞（燒烤爐／燒烤場 → 燒烤設施），排序後再顯示
+  const allTags = uniq(SITES.flatMap((s) => [...s.facilities, ...s.tags]).map(canonTag));
   const signals = SIGNAL_ORDER.filter((sig) => SITES.some((s) => s.signal === sig));
+  // 營位規模（只有漁護署 41 個營地有官方數字；其餘唔顯示呢個 chip）
+  const GEAR_LEVELS = ['全自備', '場地提供'].filter((g) => SITES.some((s) => s.gear === g));
+  const TENT_LEVELS = ['少於 20', '20-50', '多於 50']
+    .filter((lv) => SITES.some((s) => s.tentSpace === lv));
   const types = Object.keys(TYPE_META).filter((t) => SITES.some((s) => s.type === t));
 
   /* ---------- 篩選 ---------- */
@@ -274,8 +316,10 @@
     if (skipGroup !== 'transport' && state.transports.size &&
         !s.transport.some((t) => state.transports.has(t))) return false;
     if (skipGroup !== 'tag' && state.tags.size &&
-        ![...s.facilities, ...s.tags].some((t) => state.tags.has(t))) return false;
+        ![...s.facilities, ...s.tags].map(canonTag).some((t) => state.tags.has(t))) return false;
     if (skipGroup !== 'signal' && state.signals.size && !state.signals.has(s.signal)) return false;
+    if (skipGroup !== 'tent' && state.tents.size && !state.tents.has(s.tentSpace)) return false;
+    if (skipGroup !== 'gear' && state.gears.size && !state.gears.has(s.gear)) return false;
 
     if (skipGroup !== 'price') {
       if (state.freeOnly && s.price !== 0) return false;
@@ -298,12 +342,13 @@
   }
 
   /* ---------- Chip 元件 ---------- */
-  function makeChip(label, set, value, count) {
+  function makeChip(label, set, value, count, hint) {
     const btn = document.createElement('button');
     btn.className = 'chip';
     btn.type = 'button';
     btn.setAttribute('aria-pressed', set.has(value) ? 'true' : 'false');
     btn.innerHTML = `${label}` + (count != null ? ` <span class="chip-count">${count}</span>` : '');
+    if (hint) btn.title = hint;
     btn.addEventListener('click', () => {
       set.has(value) ? set.delete(value) : set.add(value);
       render();
@@ -321,11 +366,15 @@
           if (group === 'type') return s.type === v;
           if (group === 'district') return s.district === v;
           if (group === 'transport') return s.transport.includes(v);
-          if (group === 'tag') return [...s.facilities, ...s.tags].includes(v);
+          if (group === 'tag') return [...s.facilities, ...s.tags].map(canonTag).includes(v);
           if (group === 'signal') return s.signal === v;
+          if (group === 'tent') return s.tentSpace === v;
+          if (group === 'gear') return s.gear === v;
           return false;
         }).length;
-        host.appendChild(makeChip(v, set, v, count));
+        const members = FACILITY_GROUPS[v];
+        const hint = group === 'tag' && members ? `包含：${members.join('／')}` : '';
+        host.appendChild(makeChip(v, set, v, count, hint));
       });
     };
 
@@ -334,6 +383,8 @@
     mount('transportChips', transports, state.transports, 'transport');
     mount('tagChips', allTags, state.tags, 'tag');
     mount('signalChips', signals, state.signals, 'signal');
+    mount('tentChips', TENT_LEVELS, state.tents, 'tent');
+    mount('gearChips', GEAR_LEVELS, state.gears, 'gear');
     document.getElementById('favCount').textContent = favs.size;
     document.getElementById('favToggle').setAttribute('aria-pressed', state.favOnly ? 'true' : 'false');
 
@@ -439,6 +490,26 @@
     return `${approx}$${s.price} ${s.priceUnit || ''}`.trim();
   }
 
+  /* 裝備要求（v1.9.0）：露營＝全部自己帶；宿營／民宿／Glamping＝有房有床 */
+  function gearBadge(s) {
+    if (!s.gear) return '';
+    return s.gear === '全自備'
+      ? '<span class="prep-badge gear">🎒 裝備全自備（帳篷・睡袋・煮食）</span>'
+      : '<span class="prep-badge gear ok">🛏 有房有床（裝備唔使自己帶）</span>';
+  }
+
+  /* 補給（v1.9.0）：官方冇「最近超市」資料，所以唔亂填 —— 有核實過就顯示，冇就開地圖 */
+  function supplyLine(s) {
+    const url = 'https://www.google.com/maps/search/' + encodeURIComponent('超級市場 OR 士多')
+      + `/@${s.lat},${s.lng},14z`;
+    const label = s.supply
+      ? `🛒 最近補給：${s.supply}`
+      : '🛒 附近補給（開地圖搵最近超市／士多）';
+    return `<a class="supply-line" href="${url}" target="_blank" rel="noopener"`
+      + ' title="官方冇補給點資料；呢度用地圖即時搜，唔會亂填一個錯地址">'
+      + `${label}</a>`;
+  }
+
   /* 官方 CSDI 欄位 → 出發前準備提示（只喺漁護署營地有值） */
   function prepBadges(s) {
     if (!s.waterSource && !s.tentSpace) return '';
@@ -454,6 +525,21 @@
       ? `<span class="prep-badge ${small ? 'warn' : ''}">⛺ ${s.tentSpace} 營位${small ? ' · 假日易滿' : ''}</span>`
       : '';
     return `<div class="prep-badges">${water}${tent}</div>`;
+  }
+
+  /* 廁所類型徽章（v1.6.1）：
+   * 旱廁（得個窿、無沖水）同沖水廁所係兩件事，唔可以混為一談，
+   * 所以卡片會分開標示，旱廁用警告色提醒要自備水／濕紙巾。
+   */
+  function toiletBadge(s) {
+    const all = [...s.facilities, ...s.tags];
+    const dry = all.includes('旱廁');
+    const flush = all.includes('廁所');
+    if (!dry && !flush) return '';
+    const parts = [];
+    if (dry) parts.push('<span class="prep-badge warn" title="旱廁：通常只係一個坑／無沖水，請自備水、濕紙巾同消毒用品">🕳 旱廁（無沖水）</span>');
+    if (flush) parts.push('<span class="prep-badge" title="沖水廁所">🚻 沖水廁所</span>');
+    return `<div class="prep-badges">${parts.join('')}</div>`;
   }
 
   function renderCards(sites) {
@@ -481,6 +567,8 @@
         <h3>${s.name}</h3>
         <div class="place">📍 ${s.district} · ${s.area}${s.operator ? ` · 🏛 ${s.operator}` : ''}</div>
         <div class="place signal-dot">📶 訊號：${s.signal || '不詳'}</div>
+        ${s.transport && s.transport.length
+          ? `<div class="place transport-line">🚌 ${s.transport.join('・')}</div>` : ''}
         <div class="price-line">
           <span class="price ${s.price === 0 ? 'free' : ''}">${priceText(s)}</span>
           ${s.booking ? '<span class="price-unit">· 需預訂</span>'
@@ -488,6 +576,9 @@
         </div>
         ${s.priceSource === 'estimate'
           ? '<div class="price-caveat">約數 · 未逐筆核實，落訂前請向場地官網／電話確認</div>' : ''}
+        ${toiletBadge(s)}
+        <div class="prep-badges">${gearBadge(s)}</div>
+        ${supplyLine(s)}
         ${prepBadges(s)}
         <div class="prep-badges foot-line"${visit ? '' : ' hidden'}>
           <span class="prep-badge foot">👣 去過 · 上次 <span class="foot-last">${visit ? visit.last : ''}</span></span>
@@ -564,7 +655,7 @@
   /* ---------- 主渲染 ---------- */
   function activeFilterCount() {
     return state.types.size + state.districts.size + state.transports.size +
-      state.tags.size + state.signals.size +
+      state.tags.size + state.signals.size + state.tents.size + state.gears.size +
       (state.freeOnly ? 1 : 0) + (state.favOnly ? 1 : 0) + (state.footOnly ? 1 : 0) +
       (state.maxPrice < 1500 ? 1 : 0) + (state.query.trim() ? 1 : 0);
   }
@@ -628,7 +719,7 @@
 
     const clearAll = () => {
       state.types.clear(); state.districts.clear(); state.transports.clear();
-      state.tags.clear(); state.signals.clear();
+      state.tags.clear(); state.signals.clear(); state.tents.clear(); state.gears.clear();
       state.freeOnly = false; state.favOnly = false; state.footOnly = false;
       state.maxPrice = 1500; state.query = '';
       document.getElementById('freeOnly').checked = false;

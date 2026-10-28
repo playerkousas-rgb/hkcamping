@@ -1,23 +1,25 @@
 {
   "name": "hk-camp-database",
-  "version": "1.5.0",
+  "version": "1.9.0",
   "private": true,
   "license": "UNLICENSED",
   "description": "香港露營・宿營・民宿資料庫（靜態網站，CSV 驅動）",
   "scripts": {
+    "dev": "node build-data.mjs && python3 -m http.server 8000 --bind 0.0.0.0",
     "build": "node build-data.mjs",
     "build:site": "node build-site.mjs",
     "check": "node build-data.mjs --check",
     "guard": "node scripts/guard.mjs",
+    "slim": "node scripts/slim-report.mjs",
+    "audit": "node scripts/audit-data.mjs",
     "test": "node --test scripts/*.test.mjs",
+    "sync": "node tools-sync-afcd.mjs && node tools-sync-weather.mjs && node tools-sync-had.mjs && node tools-sync-conditions.mjs && node tools-sync-ocf.mjs && node build-data.mjs",
     "sync:afcd": "node tools-sync-afcd.mjs",
     "sync:weather": "node tools-sync-weather.mjs",
     "sync:had": "node tools-sync-had.mjs",
     "sync:conditions": "node tools-sync-conditions.mjs",
     "sync:ocf": "node tools-sync-ocf.mjs",
-    "sync": "node tools-sync-afcd.mjs && node tools-sync-weather.mjs && node tools-sync-had.mjs && node tools-sync-conditions.mjs && node tools-sync-ocf.mjs && node build-data.mjs",
-    "dev": "node build-data.mjs && python3 -m http.server 8000 --bind 0.0.0.0",
-    "slim": "node scripts/slim-report.mjs"
+    "ui": "node scripts/ui-check.mjs"
   },
   "engines": {
     "node": ">=18"
