@@ -352,11 +352,38 @@ console.log('\n【Q】露營新手／家長 — 要唔要自己帶裝備？邊�
 
   eq(cards.filter((c) => /🎒 裝備全自備/.test(c.innerHTML)).length, 45, '45 張卡標「裝備全自備」（全部露營）');
   eq(cards.filter((c) => /🛏 有房有床/.test(c.innerHTML)).length, 63, '63 張卡標「有房有床」（宿營／民宿／Glamping）');
-  eq(d.querySelectorAll('.supply-line').length, 108, '每張卡都有「附近補給」入口');
+  eq(d.querySelectorAll('.supply-line').length, 108, '每張卡都有「補給」入口');
+  eq(d.querySelectorAll('.supply-line .supply-pin').length, 108, '每張卡都有「📍 營地位置」（v1.9.1 修：唔會唔知營地喺邊）');
 
-  const link = d.querySelector('.supply-line');
-  /google\.com\/maps\/search/.test(link?.getAttribute('href') || '') ? ok('補給連結用地圖即時搜（唔會亂填錯地址）') : bad('補給連結有問題');
-  /@2[0-9]\./.test(link?.getAttribute('href') || '') ? ok('地圖已定位去該營地座標附近') : bad('地圖冇帶座標');
+  const line = d.querySelector('.supply-line');
+  const search = line?.querySelector('.supply-search');
+  const pin = line?.querySelector('.supply-pin');
+  const searchHref = search?.getAttribute('href') || '';
+  const pinHref = pin?.getAttribute('href') || '';
+  /^https:\/\/www\.google\.com\/maps\/search\//.test(searchHref) ? ok('補給連結用地圖即時搜（唔會亂填錯地址）') : bad('補給搜尋連結有問題');
+  /@2[0-9]\.[0-9]+,\s*11[0-9]\.[0-9]+,15z$/.test(searchHref) ? ok('搜尋已定位到營地座標 + 放大到 15 級（唔會跳去中環）') : bad(`搜尋冇帶座標／縮放：${searchHref.slice(0, 90)}`);
+  /%E5%A3%AB%E5%A4%9A/.test(searchHref) ? ok('搜尋字眼有「士多」') : bad('搜尋字眼冇「士多」');
+  /超級市場(%20|\+| )OR/.test(searchHref) ? bad('仲有「OR」（Google 唔認）') : ok('冇再寫 Google 唔認嘅「OR」');
+  /^https:\/\/www\.google\.com\/maps\/place\/2[0-9]\.[0-9]+,11[0-9]\.[0-9]+\//.test(pinHref) ? ok('「營地位置」用 place 網址釘住營地') : bad(`營地位置連結有問題：${pinHref.slice(0, 90)}`);
+
+  const sites = dom.window.CAMPSITES || [];
+  if (sites.length) {
+    const badPins = cards.filter((c) => {
+      const href = c.querySelector('.supply-pin')?.getAttribute('href') || '';
+      const m = href.match(/place\/([\d.]+),([\d.]+)/);
+      return !m || !sites.some((s) => `${s.lat},${s.lng}` === `${m[1]},${m[2]}`);
+    }).length;
+    eq(badPins, 0, '108 個「營地位置」都同自己嗰個營地座標一致（唔會釘錯場）');
+
+    const badArea = cards.filter((c) => {
+      const href = decodeURIComponent(c.querySelector('.supply-search')?.getAttribute('href') || '');
+      const m = (c.querySelector('.supply-pin')?.getAttribute('href') || '').match(/place\/([\d.]+),([\d.]+)/);
+      const site = m && sites.find((s) => `${s.lat},${s.lng}` === `${m[1]},${m[2]}`);
+      const area = site ? String(site.area || '').replace(/^.*?·\s*/, '').trim() : '';
+      return !area || !href.includes(area);
+    }).length;
+    eq(badArea, 0, '108 條搜尋都帶住自己嗰個地區名（唔會派去中環）');
+  }
 
   const chips = [...d.querySelectorAll('#gearChips .chip')];
   eq(chips.length, 2, '側欄有「全自備／場地提供」兩個 chip');

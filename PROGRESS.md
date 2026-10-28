@@ -12,10 +12,10 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.9.0**（PR #9，待合併） |
-| 工作分支 | `arena/944b532d-hkcamping`（今次，PR #9） |
-| 基準 main | `3bd63d7`（PR #8 合併點 = v1.5.0） |
-| 當前 PR | [#9](https://github.com/playerkousas-rgb/hkcamping/pull/9)（v1.6.0 ～ v1.9.0）**待合併** |
+| 現行版本 | **v1.9.1**（PR #10，待合併） |
+| 工作分支 | `arena/c7ab9e29-hkcamping`（今次，PR #10） |
+| 基準 main | `d3a55bc`（PR #9 合併點 = v1.9.0） |
+| 當前 PR | [#10](https://github.com/playerkousas-rgb/hkcamping/pull/10)（v1.9.1 補給修正）**待合併** |
 
 ---
 
@@ -361,6 +361,21 @@ test 21/21、`npm run ui` 28/28（第 E 段驗：widget 有嵌、卡片冇多餘
 - 營位數字只有漁護署 41 個營地有官方數字；其餘 67 筆（NGO／民宿）冇，篩選時唔會出現。
 
 ---
+
+### v1.9.1 — 補給連結實測修正（2026-10-28）
+
+用戶手機實測 `hkcamping.vercel.app` 回報兩個問題：
+
+| 用戶原話 | 真實原因 | 修法 |
+|---|---|---|
+| 「我點近近補給時根本沒有標出營地位置」 | Google 地圖**搜尋網址唔會顯示自訂標記**，只顯示搜尋結果 | 補給格加第二個掣「📍 營地位置」→ `/maps/place/<lat>,<lng>` |
+| 「GOOGLE 地圖 SEARCH 很多時候會找不到士多」 | query 係 `超級市場 OR 士多`——**Google 唔認 `OR`**，會派最近嘅市區超市 | 改 `士多 <area>`；縮放 14→15 級 |
+
+- `app.js` `supplyLine()` 重寫：回傳 `<div class="supply-line">` 兩個掣（`supply` 有值就顯示文字＋位置掣）。
+- `styles.css`：`.supply-line` 改 flex wrap；手機上每個掣 ≥34px 高（唔會撞手）。
+- `scripts/guard.mjs` 第 16 項加 3 條：要有 `maps/place`、唔准再見 `'超級市場 OR 士多'`、query 要帶 `s.area`。
+- `scripts/ui-check.mjs` Q 段 7 → 13 項；總數 **83 → 89**。
+- 驗收：guard **16/16**、test **21/21**、ui **89/89**、dist **226.1 KB**。
 
 ### v1.9.0 — 裝備要求 ＋ 補給（2026-10-28）
 
