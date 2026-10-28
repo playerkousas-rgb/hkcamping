@@ -69,7 +69,7 @@
 | 鐵律 | 本專案點做 | 狀態 |
 |---|---|---|
 | **S 瘦身** | 零 runtime dependencies；`dist/` 只 4 檔 ≈256KB（含天氣／實況／OCF 快照）；`.vercelignore` 擋大快照／工具／文件；`regions: ["hkg1"]`；單檔全數 <1MB（最大 784KB） | ✅ |
-| **F 防呆** | `build-data.mjs` 查 id 重複／經緯度；`--check` 可執行驗收；同步腳本 fail-closed 保留舊快照；workflow 有變更先 commit；`guard.mjs` 12 項本機＋CI 同一條；smoke test 12 個 | ✅ |
+| **F 防呆** | `build-data.mjs` 查 id 重複／經緯度；`--check` 可執行驗收；同步腳本 fail-closed 保留舊快照；workflow 有變更先 commit；`guard.mjs` 12 項本機＋CI 同一條；smoke test 13 個 | ✅ |
 | **A 安全** | 純靜態、無登入、無寫入面、無 server、零 secret；入站人次用 Vercel Web Analytics（無 cookie／無第三方 tracker），頁面顯示嘅本機次數唔上傳；`vercel.json` 加 nosniff／frame／referrer／permissions headers。**例外**：A3–A10（session／RLS／超管／限流）唔適用，因為冇身份同可寫 API；已喺本檔寫明 | ✅（例外已申報） |
 | **W 版權** | `index.html` meta `copyright` ＋頁尾 `© SCOUT SYSTEM`。**例外**：本專案無 AI 生成圖，W2/W3 隱形水印唔適用；OSM／天文台／通訊辦數據只做連結同署名，不轉載版權圖層 | ✅（例外已申報） |
 | **V 雙版號** | 多檔站無單一 `app_vX.Y.html`，改用 `package.json`／meta／`APP_VERSION`／`VERSIONS.md` 四處對照，guard 自動驗 | ✅ |
@@ -81,7 +81,7 @@
 
 ```bash
 npm run guard     # 12 項全綠（必要檔／版號／版權／data.js／dist／單檔／secret／workflow／約數／該區天氣／OCF／入站人次+排行+足跡）
-npm test          # 12 個 smoke test 全綠：模擬 DOM 載入 data.js + app.js，108 筆渲染、雙版號、price null、天氣列、OCF、週末排行、我的足跡、入站人次
+npm test          # 13 個 smoke test 全綠：模擬 DOM 載入 data.js + app.js，108 筆渲染、雙版號、price null、天氣列、OCF、週末排行、我的足跡、入站人次
 npm run build:site  # dist/ 4 檔 ≈256.4KB
 npm run dev       # http://localhost:8000 本機預覽（已 bind 0.0.0.0，Arena live preview 用得到）
 # 實測 HTTP：/ /index.html /styles.css /app.js /data.js 全部 200，data.js 含 CAMP_WEATHER／CAMP_CONDITIONS／CAMP_OCF
