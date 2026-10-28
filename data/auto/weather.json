@@ -1,34 +1,16 @@
 {
   "source": "香港天文台 open data (data.weather.gov.hk)",
-  "fetchedAt": "2026-10-27T20:49:57.306Z",
-  "hkoUpdateTime": "2026-10-28T04:10:00+08:00",
-  "activeWarnings": [
-    {
-      "code": "WMSGNL",
-      "name": "強烈季候風信號",
-      "actionCode": "ISSUE"
-    }
-  ],
+  "fetchedAt": "2026-10-28T21:13:44.970Z",
+  "hkoUpdateTime": "2026-10-29T00:00:00+08:00",
+  "activeWarnings": [],
   "forecast": [
-    {
-      "date": "20261028",
-      "week": "星期三",
-      "weather": "部分時間有陽光，早晚有一兩陣雨。",
-      "minTemp": 24,
-      "maxTemp": 28,
-      "minRh": 60,
-      "maxRh": 85,
-      "icon": 51,
-      "psr": "低",
-      "wind": "東風4至5級，離岸及高地6級。"
-    },
     {
       "date": "20261029",
       "week": "星期四",
-      "weather": "初時部分時間多雲。日間大致天晴。",
-      "minTemp": 24,
+      "weather": "大致多雲，初時有一兩陣微雨。日間漸轉天晴及乾燥。",
+      "minTemp": 25,
       "maxTemp": 29,
-      "minRh": 60,
+      "minRh": 55,
       "maxRh": 85,
       "icon": 51,
       "psr": "低",
@@ -44,14 +26,14 @@
       "maxRh": 85,
       "icon": 50,
       "psr": "低",
-      "wind": "東至東北風3至4級。"
+      "wind": "東風3至4級。"
     },
     {
       "date": "20261031",
       "week": "星期六",
-      "weather": "大致天晴。日間乾燥。",
+      "weather": "大致天晴。日間乾燥。晚上部分時間多雲。",
       "minTemp": 25,
-      "maxTemp": 30,
+      "maxTemp": 29,
       "minRh": 55,
       "maxRh": 85,
       "icon": 51,
@@ -73,11 +55,11 @@
     {
       "date": "20261102",
       "week": "星期一",
-      "weather": "部分時間有陽光。日間乾燥。稍後有一兩陣微雨。",
+      "weather": "大致多雲。日間部分時間有陽光。早晚有一兩陣微雨。",
       "minTemp": 25,
       "maxTemp": 31,
-      "minRh": 55,
-      "maxRh": 85,
+      "minRh": 60,
+      "maxRh": 90,
       "icon": 51,
       "psr": "低",
       "wind": "東至東北風3至4級。"
@@ -98,7 +80,7 @@
       "date": "20261104",
       "week": "星期三",
       "weather": "大致多雲，日間部分時間有陽光。",
-      "minTemp": 24,
+      "minTemp": 25,
       "maxTemp": 29,
       "minRh": 60,
       "maxRh": 85,
@@ -109,23 +91,35 @@
     {
       "date": "20261105",
       "week": "星期四",
-      "weather": "大致多雲，日間部分時間有陽光。",
-      "minTemp": 24,
+      "weather": "部分時間有陽光。",
+      "minTemp": 25,
       "maxTemp": 29,
       "minRh": 60,
       "maxRh": 85,
       "icon": 51,
       "psr": "低",
-      "wind": "東至東北風4至5級。"
+      "wind": "東至東北風3至4級。"
+    },
+    {
+      "date": "20261106",
+      "week": "星期五",
+      "weather": "大致多雲，日間短暫時間有陽光。",
+      "minTemp": 25,
+      "maxTemp": 28,
+      "minRh": 65,
+      "maxRh": 85,
+      "icon": 52,
+      "psr": "低",
+      "wind": "東至東北風4級，間中5級。"
     }
   ],
   "weekendRainRisk": [
     {
       "date": "20261031",
       "week": "星期六",
-      "weather": "大致天晴。日間乾燥。",
+      "weather": "大致天晴。日間乾燥。晚上部分時間多雲。",
       "minTemp": 25,
-      "maxTemp": 30,
+      "maxTemp": 29,
       "minRh": 55,
       "maxRh": 85,
       "icon": 51,
