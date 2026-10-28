@@ -12,10 +12,10 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.6.2**（PR #9，待合併） |
+| 現行版本 | **v1.6.3**（PR #9，待合併） |
 | 工作分支 | `arena/944b532d-hkcamping`（今次，PR #9） |
 | 基準 main | `3bd63d7`（PR #8 合併點 = v1.5.0） |
-| 當前 PR | [#9](https://github.com/playerkousas-rgb/hkcamping/pull/9)（v1.6.0／1.6.1／1.6.2）**待合併** |
+| 當前 PR | [#9](https://github.com/playerkousas-rgb/hkcamping/pull/9)（v1.6.0／1.6.1／1.6.2／1.6.3）**待合併** |
 
 ---
 
@@ -206,6 +206,21 @@ jsdom 只係 **devDependency、要自己裝**，唔入 `dist/`、唔上客戶端
 **關於「要唔要防呆」**：呢個 app 冇後端、冇帳號、冇 DB，所以後端類防呆（session／限流／原子寫入／
 secret 代理）**一條都冇加，亦唔應該加**。落嘅只有兩種：資料正確性（build／CI 期，0 byte 上線）
 同瀏覽器環境差異（私隱模式、斷網，各 3 行）。兩樣加埋都唔會令網站變重。
+
+---
+
+### v1.6.3 — 頁尾清走開發者字眼（2026-10-28）
+
+用戶貼出頁尾三行話「刪走」。呢三行本來係寫畀自己睇嘅，唔應該出現喺公眾頁：
+
+| 刪咗 | 點解 |
+|---|---|
+| `資料格式：data.csv → node build-data.mjs → data.js` | 開發流程，訪客睇唔明 |
+| `價格與設施資料請於正式發佈前核實` | 呢句係**出街前嘅 TODO 提醒**，貼喺公開頁等於同訪客講「呢個站啲資料未核實」 |
+| 入站人次後面嗰段長解釋（`（只計呢個瀏覽器…無 cookie 統計）`）＋其 CSS | 太技術；數字本身已經有 `title` 提示 |
+
+**保留**（唔可以刪）：`© SCOUT SYSTEM`、版號、`地圖由 Leaflet + OpenStreetMap 提供`（OSM 授權要求署名）、
+`天氣數據由香港天文台提供`（資料來源）、入站人次數字。
 
 ---
 

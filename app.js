@@ -4,7 +4,7 @@
 
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.6.2';
+  const APP_VERSION = '1.6.3';
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },

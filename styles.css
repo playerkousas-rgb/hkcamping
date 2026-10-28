@@ -482,7 +482,6 @@ code {
 .site-footer p { margin: 4px 0; }
 .site-footer code { background: rgba(255,255,255,0.12); color: #fff; }
 .visit-line { margin-top: 10px !important; color: rgba(255,255,255,0.9); }
-.visit-note { color: rgba(255,255,255,0.55); font-size: 0.76rem; }
 
 /* ===== 週末唔落雨排行（v1.4.0） ===== */
 .rank-panel {
