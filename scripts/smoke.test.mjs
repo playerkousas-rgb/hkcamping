@@ -432,31 +432,40 @@ test('v1.6.1：獨立浴室（民宿私人）同浴室（營地公用）分開',
     .every((s) => s.type === '民宿'));
 });
 
-test('v1.7.0：報料表單 — 未接駁時全站唔會出死撳鈕', () => {
-  const { doc } = boot();
-  const cards = doc.getElementById('cardGrid').children;
-  assert.equal(cards.filter((c) => c.innerHTML.includes('data-action="report"')).length, 0);
-});
-
-test('v1.7.0：接駁 REPORT_ENDPOINT 之後，每張卡都有報料掣', () => {
-  const src = readFileSync(join(ROOT, 'app.js'), 'utf8')
-    .replace("const REPORT_ENDPOINT = '';", "const REPORT_ENDPOINT = 'https://script.google.com/macros/s/AKfyTESTID/exec';");
-  const { doc } = boot({}, { appSrc: src });
+test('v1.7.1：每張卡都有「✏️ 報料」，來源標記為「營地資料庫」', () => {
+  const { doc, sandbox } = boot();
   const cards = doc.getElementById('cardGrid').children;
   assert.equal(cards.filter((c) => c.innerHTML.includes('data-action="report"')).length, 108);
+  assert.equal(sandbox.__hkcampReport.REPORT_SOURCE_APP, '營地資料庫');
 });
 
-test('v1.7.0：報料用原生 form POST — 零 fetch／零 key／蜜罐喺兩邊都有', () => {
+test('v1.7.1：payload 只送 Scout Admin 契約嗰 8 個欄位（多一個會整污糟人哋張 Sheet）', () => {
+  const { sandbox } = boot();
+  const api = sandbox.__hkcampReport;
+  const site = { id: 'a01', name: '流水響營地', district: '北區', area: '流水響' };
+  const p = api.buildReportPayload(site, { type: '設施', detail: '燒烤爐拆走咗', contact: 'a@b.hk' });
+
+  // vm 內建嘅 array 同 node 主 realm 唔同 prototype，所以用字串比對
+  assert.equal(Object.keys(p).sort().join(','), api.REPORT_FIELDS.slice().sort().join(','));
+  assert.equal(api.REPORT_FIELDS.slice().sort().join(','),
+    'contact,desc,name,severity,sourceApp,title,troopId,type');
+  assert.equal(p.type, 'issue');
+  assert.equal(p.sourceApp, '營地資料庫');
+  assert.match(p.title, /^【設施】流水響營地（a01）/);
+  assert.match(p.desc, /燒烤爐拆走咗/);
+  assert.match(p.desc, /分區：北區/);
+  assert.equal(p.contact, 'a@b.hk');
+});
+
+test('v1.7.1：全站只有一個 fetch（回報端點）、no-cors、零 key', () => {
   const html = readFileSync(join(ROOT, 'index.html'), 'utf8');
   const app = readFileSync(join(ROOT, 'app.js'), 'utf8');
-  const gas = readFileSync(join(ROOT, 'apps-script/report-form/Code.gs'), 'utf8');
-  const formTag = (html.match(/<form[^>]*id="reportForm"[^>]*>/) || [])[0] || '';
-  assert.match(formTag, /method="POST"/i);
-  assert.match(formTag, /target="_blank"/i);
-  assert.match(html, /name="hp"/);
-  assert.ok(!/\bfetch\s*\(/.test(app), '前端唔應該有 fetch');
-  assert.ok(!/XMLHttpRequest/.test(app), '前端唔應該有 XHR');
-  assert.match(gas, /function doPost/);
-  assert.match(gas, /hp/);
-  assert.match(gas, /CacheService/);
+  assert.equal((app.match(/\bfetch\s*\(/g) || []).length, 1, '只准一個 fetch');
+  assert.match(app, /fetch\(REPORT_ENDPOINT/);
+  assert.match(app, /mode:\s*'no-cors'/);
+  assert.match(app, /script\.google\.com\/macros\/s\/[\w-]+\/exec/);
+  assert.match(html, /id="reportDialog"/);
+  assert.match(html, /name="detail"/);
+  assert.ok(!html.includes('name="hp"'), '唔好送 hp，admin 會當新 column');
+  assert.ok(!/ XMLHttpRequest/.test(app));
 });

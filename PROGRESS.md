@@ -12,10 +12,10 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.7.0**（PR #9，待合併） |
+| 現行版本 | **v1.7.1**（PR #9，待合併） |
 | 工作分支 | `arena/944b532d-hkcamping`（今次，PR #9） |
 | 基準 main | `3bd63d7`（PR #8 合併點 = v1.5.0） |
-| 當前 PR | [#9](https://github.com/playerkousas-rgb/hkcamping/pull/9)（v1.6.0 ～ v1.7.0）**待合併** |
+| 當前 PR | [#9](https://github.com/playerkousas-rgb/hkcamping/pull/9)（v1.6.0 ～ v1.7.1）**待合併** |
 
 ---
 
@@ -251,6 +251,33 @@ guard 第 15 項驗：端點格式、前端零 fetch／XHR、蜜罐攔喺兩邊�
 未接駁時係 **⚠️ WARN 唔係 FAIL**——因為「未部署」係合法狀態。
 
 **驗證**：guard 15/15、test 21/21、`npm run ui` 21/21、dist 221.1KB。
+
+---
+
+### v1.7.1 — 回報改為接入 Scout Admin（2026-10-28）
+
+用戶指正兩件事：① 唔想為呢個站多開一套要睇嘅後台 ② 擔心 GitHub Actions 用得太多。
+第二點見下面「資源用量」。第一點直接改咗設計。
+
+**改咗乜**：刪走 `apps-script/report-form/`（自己嗰支 GAS + 自己張 Sheet），
+改為送去 **Scout Admin**（`playerkousas-rgb/scout-admin`）——即係圖書館、支部系統、專章系統用緊嗰個接收端。
+
+| 項目 | v1.7.0（自己開） | v1.7.1（接入 admin） |
+|---|---|---|
+| 後台 | 多一個 Google Sheet 要睇 | 同其他系統同一個後台，多一個「營地資料庫」膠囊 |
+| payload | 自己定 | `SCOUT_ADMIN.md §〇` 統一回報格式 v1 |
+| 欄位 | `siteId`／`hp` 等自訂 → 會喺 admin Sheet 長出新 column | **只准**契約嗰 8 個，guard 硬性驗 |
+| 傳輸 | 原生 form POST（開新分頁） | `fetch` + `no-cors`（同 admin `widget.js` 一致） |
+| 程式碼 | 自寫 `Code.gs` ~120 行 | 0 行後端，只係前端 20 行 |
+
+**payload**：`{ type:'issue', sourceApp:'營地資料庫', title:'【設施】流水響營地（a01）', desc:'類型／營地／分區＋用戶輸入', severity:'中', troopId:'', name:'', contact:'' }`
+——標題自動帶營地名同代號，你喺後台一眼睇到係邊個場，唔使報料人自己打。
+
+**驗證**：`npm run ui` 加咗第 E 段（34 pass）——真撳報料掣、填詳情、送出，再攔截個 fetch 驗 payload：
+型別、來源、8 個欄位、標題格式、端點 URL 全部中。guard 15/15、test 21/21。
+
+**資源用量（回應「會唔會畀 GitHub 覺得濫用」）**：呢個 repo 由開倉到現在 44 次 run、合共 **11.7 分鐘**。
+公開 repo 嘅 Actions 分鐘係**無限免費**；估算每月約 25 分鐘（每日同步 30 秒 + push 時 guard 15 秒）。
 
 ---
 

@@ -7,7 +7,7 @@
   <meta name="description" content="香港營地、宿營營舍、Glamping 與民宿渡假屋資料庫，按分區、費用、設施、交通篩選，附地圖分布。" />
   <meta name="author" content="SCOUT SYSTEM" />
   <meta name="copyright" content="© SCOUT SYSTEM" />
-  <meta name="version" content="1.7.0" />
+  <meta name="version" content="1.7.1" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -16,7 +16,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <div>
-      <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.7.0</span></h1>
+      <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.7.1</span></h1>
       <p class="tagline">漁護署營地 ・ Glamping ・ 宿營營舍 ・ 離島渡假屋 — 搵營地、plan 活動一站看清</p>
     </div>
     <div class="header-stats" id="headerStats"></div>
@@ -231,7 +231,7 @@
 </div>
 
 <dialog class="report-dialog" id="reportDialog" aria-labelledby="reportTitle">
-  <form method="POST" id="reportForm" target="_blank">
+  <form id="reportForm" novalidate>
     <h2 id="reportTitle">✏️ 報料／更正</h2>
     <p class="report-site">關於：<b id="reportSiteName"></b></p>
 
@@ -252,19 +252,12 @@
     </label>
 
     <label class="report-field">點稱呼你？（選填）
-      <input type="text" name="contact" maxlength="60" autocomplete="off" placeholder="可以留低電話／IG，方便我跟進" />
+      <input type="text" name="contact" maxlength="60" autocomplete="off" placeholder="可以留低電郵／電話，方便我跟進" />
     </label>
 
-    <!-- 蜜罐：真人睇唔到，機器人會填 → 有值就當垃圾 -->
-    <input type="text" name="hp" class="report-hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-
-    <input type="hidden" name="siteId" value="" />
-    <input type="hidden" name="siteName" value="" />
-    <input type="hidden" name="from" value="hkcamping" />
-
-    <p class="report-note">送出會開新分頁確認。<b>報料唔會即時公開</b>，會先存入管理員嘅 Google Sheet，
-      人手核對後才更新資料。請唔好填個人資料，除非你想我哋聯絡你。</p>
-    <p class="report-done" id="reportDone" hidden>✅ 已送出，多謝報料！</p>
+    <p class="report-note">報料會送去 <b>Scout Admin</b> 後台（同其他系統同一個地方），
+      <b>唔會即時公開</b>；管理員核對後才更新資料。請唔好填個人資料，除非你想我哋聯絡你。</p>
+    <p class="report-done" id="reportDone" hidden></p>
 
     <div class="report-actions">
       <button type="button" id="reportCancel">取消</button>
@@ -275,7 +268,7 @@
 
 <footer class="site-footer">
   <div class="container">
-    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.7.0</span></p>
+    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.7.1</span></p>
     <p>地圖由 Leaflet + OpenStreetMap 提供 · 天氣數據由香港天文台提供</p>
     <p class="visit-line"><span id="visitCount">👣 入站人次統計中…</span></p>
   </div>

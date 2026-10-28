@@ -321,36 +321,33 @@ try {
   bad('資料一致性', (e.stdout || e.message || '').toString().trim().split('\n').slice(-6).join(' '));
 }
 
-/* ---------- 15. 報料表單（v1.7.0：公開端點，前端唔可以有任何 secret） ---------- */
+/* ---------- 15. 回報（v1.7.1：統一送去 Scout Admin） ---------- */
 try {
   const app = read('app.js');
   const html = read('index.html');
-  const gasPath = join(ROOT, 'apps-script/report-form/Code.gs');
-  const gas = existsSync(gasPath) ? readFileSync(gasPath, 'utf8') : '';
   const endpoint = (app.match(/const REPORT_ENDPOINT = '([^']*)'/) || [])[1];
+  const fields = (app.match(/const REPORT_FIELDS = \[([^\]]*)\]/) || [])[1] || '';
+  const fetchCount = (app.match(/\bfetch\s*\(/g) || []).length;
+  const contract = ['type', 'sourceApp', 'title', 'desc', 'severity', 'troopId', 'name', 'contact'];
 
   const checks = [
-    [endpoint !== undefined, 'app.js 有 REPORT_ENDPOINT 設定位'],
-    // 前端維持零 API 呼叫：寫入靠原生 form POST，唔用 fetch → 冇 CORS、斷網都有瀏覽器錯誤頁
-    [!/\bfetch\s*\(/.test(app) && !/XMLHttpRequest/.test(app), '前端零 fetch／XHR（只用原生 form POST）'],
-    [html.includes('method="POST"') && /id="reportForm"[\s\S]{0,200}?target="_blank"/.test(html.replace(/\n/g, ' '))
-      || /method="POST"[\s\S]{0,200}?target="_blank"/.test(html), '表單用 POST + target="_blank"（官網唔會被導走）'],
-    [html.includes('name="hp"'), '有蜜罐欄位（hp）擋機器人'],
+    [/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(endpoint || ''), `回報端點格式正確（${(endpoint || '').slice(0, 46)}…）`],
+    [/const REPORT_SOURCE_APP = '(營地資料庫|[^']+)'/.test(app), '有 sourceApp（後台靠佢分來源）'],
+    // 只准送 admin 契約嗰 8 個欄位：多送一個就會喺 admin 張 Sheet 自動長出新 column
+    [fields.replace(/['\s]/g, '').split(',').filter(Boolean).sort().join(',') === contract.slice().sort().join(','),
+      'payload 欄位同 Scout Admin 契約一致（只 8 個，唔會整污糟人哋張 Sheet）'],
+    [fetchCount === 1 && /fetch\(REPORT_ENDPOINT/.test(app), `全站只有 ${fetchCount} 個 fetch，而且只去回報端點`],
+    [/mode:\s*'no-cors'/.test(app), '用 no-cors（Apps Script 冇 CORS header）'],
     [html.includes('id="reportDialog"') && app.includes('function openReport'), '報料對話框已接駁'],
-    // 公開端點：任何 key／secret 都唔可以落前端
-    [!/(api[_-]?key|secret|token|bearer)\s*[:=]\s*['"][^'"]{8,}/i.test(app), 'app.js 冇 secret／key'],
-    [gas.includes('function doPost'), 'GAS 有 doPost'],
-    [gas.includes('CacheService') && gas.includes('TYPES.indexOf'), 'GAS 有去重 + 類型白名單'],
-    [/^[=+\-@]/.test('=1') && gas.includes('/^[=+\\-@]/'), 'GAS 有擋公式注入（= + - @ 前置單引號）'],
-    [gas.includes('hp'), 'GAS 自己再驗一次蜜罐（唔信前端）'],
+    [html.includes('name="detail"') && html.includes('name="contact"'), '表單有詳情／聯絡欄'],
+    [!html.includes('name="hp"'), '冇蜜罐欄（admin 會當新 column，唔應該送）'],
+    [!/(api[_-]?key|secret|bearer)\s*[:=]\s*['"][^'"]{8,}/i.test(app), 'app.js 冇 secret／key（端點本身公開）'],
   ];
   const failed = checks.filter(([p]) => !p).map(([, n]) => n);
-  if (failed.length) bad('報料表單', failed.join('; '));
-  else if (!endpoint) warn('報料表單', '未接駁（REPORT_ENDPOINT 留空 → 撳鈕隱藏，部署 Apps Script 後貼網址）');
-  else if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(endpoint)) bad('報料表單', `REPORT_ENDPOINT 格式唔啱：${endpoint}`);
-  else ok('報料表單', 'GAS 端點已接駁、前端零 fetch、蜜罐 + 去重 + 公式注入防護齊');
+  if (failed.length) bad('回報（Scout Admin）', failed.join('; '));
+  else ok('回報（Scout Admin）', '同其他系統同一接收端、同一 payload；前端只有 1 個 fetch（no-cors）');
 } catch (e) {
-  bad('報料表單', (e.message || '').toString().slice(0, 160));
+  bad('回報（Scout Admin）', (e.message || '').toString().slice(0, 160));
 }
 
 /* ---------- 總結 ---------- */

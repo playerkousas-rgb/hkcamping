@@ -132,16 +132,15 @@ npm run dev       # http://localhost:8000 本機預覽（已 bind 0.0.0.0，Aren
 **防呆範圍界定**：本 app 無後端、無帳號、無資料庫 → 後端類防呆（session／限流／原子寫入／secret 代理）一律唔加。
 只加「資料正確性」（build／CI 期）同「瀏覽器環境差異」（私隱模式、斷網）兩種。
 
-## 八、報料表單（v1.7.0）— 全站唯一會寫入伺服器嘅功能
+## 八、回報（v1.7.1）— 接入 Scout Admin，唔另開後台
 
 | 項目 | 實情 |
 |---|---|
-| 位置 | `apps-script/report-form/`（`Code.gs` + 部署說明） |
-| 接駁 | `app.js` → `REPORT_ENDPOINT`；留空＝功能隱藏 |
-| 寫入 | Google Sheet 一個工作表；**網站唔會讀返**，冇公開留言 |
-| 前端 | 原生 `form POST target="_blank"`；**零 fetch／零 XHR／零 key** |
-| 驗證 | 前端只係方便，真正驗證喺 `Code.gs`（長度／白名單／蜜罐／去重／公式注入） |
-| 限制 | `/exec` 公開、收唔到 IP、無 CORS 白名單 → 擋業餘垃圾，擋唔到針對性攻擊 |
-| guard | 第 15 項；未接駁＝⚠️ WARN（合法狀態），格式錯／前端有 fetch＝❌ FAIL |
+| 接收端 | Scout Admin 嗰支 Apps Script（同圖書館／支部／專章共用），`sourceApp = '營地資料庫'` |
+| 後台 | 後台自動多一個「營地資料庫」膠囊，未閱數一眼睇到 |
+| payload | 統一回報格式 v1，**只准 8 個欄位**（多一個會喺 admin 張 Sheet 自動加 column） |
+| 前端 | 1 個 `fetch`，`mode:'no-cors'`，零 key；`no-cors` 讀唔到回應 → 只可以講「已送出」 |
+| 為咩唔自己開 | 用戶唔想多一個地方睇；統一之後維修點只有一個 |
+| 如果 admin 改契約 | 改 `app.js` 嘅 `buildReportPayload` + `REPORT_FIELDS`，guard 第 15 項會即刻紅 |
 
-> 如果日後要「公開留言」，唔可以喺呢個基礎上加：要先有審批、刪除、私隱政策同真正嘅限流。
+> 呢個係全站**唯一**對外寫入。其餘所有功能（篩選、天氣、足跡、入站人次）都係純前端／靜態。

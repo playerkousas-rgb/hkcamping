@@ -581,10 +581,9 @@ code {
 .report-field textarea:focus, .report-field select:focus, .report-field input:focus {
   outline: 2px solid var(--green-700); outline-offset: 1px;
 }
-/* 蜜罐欄位：真人絕對唔會見到 */
-.report-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .report-note { margin: 0; font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
 .report-done { margin: 0; font-size: 0.86rem; color: #2e7d32; font-weight: 600; }
+.report-done.fail { color: #c62828; }
 .report-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 2px; }
 .report-actions button {
   font-family: inherit; font-size: 0.9rem; padding: 8px 16px; border-radius: 8px;

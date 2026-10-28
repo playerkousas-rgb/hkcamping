@@ -36,7 +36,7 @@ const { JSDOM, VirtualConsole, requestInterceptor } = jsdom;
 const offline = requestInterceptor(async (request) =>
   /^https?:/i.test(request.url) ? new Response('', { status: 503 }) : undefined);
 
-async function boot({ privateMode = false } = {}) {
+async function boot({ privateMode = false, onFetch = null } = {}) {
   const caught = [];
   const vc = new VirtualConsole();
   // 只捉「程式真係拋錯」，唔捉資源載入失敗（斷網本來就載唔到 CDN）
@@ -53,7 +53,7 @@ async function boot({ privateMode = false } = {}) {
     pretendToBeVisual: true,
     virtualConsole: vc,
     beforeParse(win) {
-      win.fetch = () => Promise.reject(new Error('offline'));
+      win.fetch = onFetch ? onFetch : () => Promise.reject(new Error('offline'));
       Object.defineProperty(win.navigator, 'onLine', { get: () => false });
       if (privateMode) {
         Object.defineProperty(win, 'localStorage', {
@@ -153,6 +153,46 @@ console.log('\n【D】一般用戶 — 手機可讀性');
   const mq = (css.match(/@media[^{]*max-width:\s*\d+px/g) || []).length;
   mq > 0 ? ok(`有 ${mq} 個手機斷點`) : bad('冇任何手機斷點');
   /flex-wrap:\s*wrap/.test(css) ? ok('chip 識換行（窄螢幕唔會爆版）') : bad('chip 冇 flex-wrap');
+}
+
+console.log('\n【E】一般用戶 — 撳「✏️ 報料」真係送得出（送去 Scout Admin）');
+{
+  const sent = [];
+  const { dom } = await boot({ onFetch: (url, opts) => { sent.push({ url, opts }); return Promise.resolve({ ok: true }); } });
+  const d = dom.window.document;
+  const btn = d.querySelector('#cardGrid [data-action="report"]');
+  btn ? ok('卡片有「✏️ 報料」掣') : bad('卡片冇報料掣');
+  btn?.click();
+  const dlg = d.getElementById('reportDialog');
+  const opened = dlg.hasAttribute('open') || dlg.open === true;
+  opened ? ok('撳完開到報料對話框') : bad('撳完冇開對話框');
+  eq(d.getElementById('reportSiteName').textContent.includes('（a01）'), true, '對話框顯示營地名同代號');
+
+  const form = d.getElementById('reportForm');
+  // 空詳情唔應該送
+  form.dispatchEvent(new dom.window.Event('submit', { cancelable: true, bubbles: true }));
+  eq(sent.length, 0, '詳情留空 → 唔會亂送');
+
+  form.elements.type.value = '設施';
+  form.elements.detail.value = '燒烤爐拆走咗';
+  form.elements.contact.value = 'scout@example.hk';
+  form.dispatchEvent(new dom.window.Event('submit', { cancelable: true, bubbles: true }));
+  await new Promise((r) => setTimeout(r, 50));
+
+  eq(sent.length, 1, '填好之後送咗一次');
+  if (sent.length) {
+    const payload = JSON.parse(sent[0].opts.body);
+    eq(sent[0].opts.mode, 'no-cors', '用 no-cors（Apps Script 冇 CORS header）');
+    eq(payload.type, 'issue', 'type = issue');
+    eq(payload.sourceApp, '營地資料庫', '來源APP = 營地資料庫（後台靠佢分膠囊）');
+    eq(Object.keys(payload).sort().join(','), 'contact,desc,name,severity,sourceApp,title,troopId,type', '只送契約嗰 8 個欄位');
+    eq(payload.title, '【設施】流水響營地（a01）', '標題帶營地名同代號');
+    eq(payload.contact, 'scout@example.hk', '聯絡方式有帶');
+    /\/macros\/s\/[\w-]+\/exec$/.test(sent[0].url) ? ok('送去 Scout Admin 嘅 /exec 端點') : bad(`端點唔對：${sent[0].url}`);
+  }
+  const done = d.getElementById('reportDone');
+  /已送出/.test(done.textContent) ? ok('用戶見到「已送出」') : bad(`用戶見到「${done.textContent}」`);
+  dom.window.close();
 }
 
 console.log(`\n=== 一般用戶角度：${pass} pass / ${fail} fail ===`);
