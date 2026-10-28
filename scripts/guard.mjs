@@ -427,6 +427,95 @@ try {
   results.push({ pass: false, name: '天氣站用地標座標配對', detail: (e.message || '').toString().slice(0, 160) });
 }
 
+/* ---------- 18. App Icon／favicon／PWA manifest（v1.11.0） ---------- */
+try {
+  const html = read('index.html');
+  const problems = [];
+  const need = [
+    ['icons/favicon.ico', 'favicon.ico'],
+    ['icons/favicon-16.png', '16px favicon'],
+    ['icons/favicon-32.png', '32px favicon'],
+    ['icons/apple-touch-icon.png', 'iOS 主畫面圖示（180×180）'],
+    ['icons/icon-192.png', 'Android 192'],
+    ['icons/icon-512.png', 'Android 512'],
+    ['icons/icon-maskable-192.png', 'maskable 192'],
+    ['icons/icon-maskable-512.png', 'maskable 512'],
+    ['icons/og-image.png', '分享預覽圖'],
+    ['manifest.webmanifest', 'PWA manifest'],
+    ['robots.txt', 'robots.txt'],
+  ];
+  for (const [f, label] of need) {
+    if (!existsSync(join(ROOT, f))) problems.push(`冇 ${f}（${label}）`);
+  }
+
+  // index.html 要有齊 link／meta，否則 iOS／Android 唔會用我哋嘅圖
+  const mustHave = [
+    ['rel="apple-touch-icon"', 'iOS 主畫面 icon link'],
+    ['rel="manifest"', 'manifest link'],
+    ['rel="icon"', 'favicon link'],
+    ['og:image', '分享預覽 og:image'],
+    ['name="theme-color"', 'theme-color'],
+  ];
+  for (const [needle, label] of mustHave) {
+    if (!html.includes(needle)) problems.push(`index.html 冇 ${needle}（${label}）`);
+  }
+
+  // 圖示尺寸要真係啱（iOS 會因為尺寸唔啱而唔用）
+  const sizeOf = (f) => {
+    const out = execFileSync('identify', ['-format', '%w %h', join(ROOT, f)]).toString().trim().split(' ');
+    return [Number(out[0]), Number(out[1])];
+  };
+  const expect = {
+    'icons/apple-touch-icon.png': 180,
+    'icons/icon-192.png': 192,
+    'icons/icon-512.png': 512,
+    'icons/icon-maskable-192.png': 192,
+    'icons/icon-maskable-512.png': 512,
+    'icons/favicon-16.png': 16,
+    'icons/favicon-32.png': 32,
+  };
+  let checked = 0;
+  for (const [f, n] of Object.entries(expect)) {
+    if (!existsSync(join(ROOT, f))) continue;
+    try {
+      const [w, h] = sizeOf(f);
+      if (w !== n || h !== n) problems.push(`${f} 尺寸 ${w}×${h}（應為 ${n}×${n}）`);
+      checked += 1;
+    } catch (e) {
+      problems.push(`${f} 讀唔到尺寸（${e.message}）`);
+    }
+  }
+
+  // manifest 要係合法 JSON，icon 路徑要存在
+  let mf = null;
+  try {
+    mf = JSON.parse(read('manifest.webmanifest'));
+  } catch (e) {
+    problems.push('manifest.webmanifest 唔係合法 JSON');
+  }
+  if (mf) {
+    if (!mf.name || !mf.short_name) problems.push('manifest 缺 name／short_name');
+    if (mf.display !== 'standalone') problems.push('manifest display 唔係 standalone');
+    const icons = mf.icons || [];
+    if (icons.length < 4) problems.push('manifest icons 少過 4 個');
+    if (!icons.some((i) => String(i.purpose).includes('maskable'))) problems.push('manifest 冇 maskable icon');
+    for (const i of icons) {
+      const rel = String(i.src || '').replace(/^\//, '');
+      if (!rel || !existsSync(join(ROOT, rel))) problems.push(`manifest 指去唔存在嘅 ${i.src}`);
+    }
+  }
+
+  // dist 一定要有圖（Vercel 部署嘅係 dist）
+  const distIcons = existsSync(join(ROOT, 'dist', 'icons'))
+    ? readdirSync(join(ROOT, 'dist', 'icons')).length : 0;
+  if (distIcons < 8) problems.push(`dist/icons 得 ${distIcons} 個檔（要先 npm run build:site）`);
+
+  if (problems.length) results.push({ pass: false, name: 'App icon／favicon', detail: problems.join('; ') });
+  else ok('App icon／favicon', `${checked} 個尺寸全對；manifest ${(mf?.icons || []).length} 個 icon（含 maskable）；dist 有 ${distIcons} 個圖`);
+} catch (e) {
+  results.push({ pass: false, name: 'App icon／favicon', detail: (e.message || '').toString().slice(0, 160) });
+}
+
 /* ---------- 總結 ---------- */
 console.log('\n=== hkcamping guard ===');
 for (const r of results) {

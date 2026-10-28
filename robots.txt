@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hkcamping.vercel.app/sitemap.xml

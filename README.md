@@ -107,6 +107,44 @@
 > 官方標明**芝麻灣（1997 停）、樂安排（1999 停）**兩個站預測誤差較大，故不採用。
 > 初始快照只含 2026-10-27 至 11-04 共 9 日；每日 `sync-data.yml` 會補齊當月＋下月全部日子。
 
+## App Icon／favicon（v1.11.0）
+
+加落手機主畫面、Android 安裝、瀏覽器分頁、WhatsApp 分享 —— 四個位都要圖，唔係就會出白板。
+
+### 設計
+
+| 元素 | 意思 |
+|---|---|
+| 深綠滿版底 `#1B4D28` | 郊野公園嘅山林 |
+| 奶白 **A 形帳篷** | 露營；A 字同時對應資料庫嘅三角排序 |
+| 帳篷中間嘅深綠門 | 透氣、唔會變成一團白色 |
+| 頂上圓點 | 營火／太陽（同時令 16px 都認得出） |
+| 底下一條波浪線 | 香港係海島 —— 離島營地佔全資料庫四成 |
+
+### 檔案
+
+| 檔案 | 用途 |
+|---|---|
+| `icons/favicon.ico` | 16／32／48 三合一（舊瀏覽器、IE、書籤） |
+| `icons/favicon-16.png` | **專為 16px 手繪嘅簡化版**（去波浪線、加粗帳篷），唔係縮細版 |
+| `icons/favicon-32.png` | 瀏覽器分頁 |
+| `icons/apple-touch-icon.png` （180） | iOS「加入主畫面」 |
+| `icons/icon-192.png`／`icon-512.png` | Android／PWA |
+| `icons/icon-maskable-192.png`／`-512.png` | Android **maskable**（系統會裁成圓形／水滴形，所以符號只佔中間 80%） |
+| `icons/og-image.png` （1200×630） | WhatsApp／Signal／Facebook 貼連結嘅預覽圖 |
+| `manifest.webmanifest` | `standalone`、`theme_color #1B4D28`、4 個 icon（含 maskable） |
+
+### 點解要 maskable 同 OG
+
+- **maskable**：Android 唔會直接用你嘅方形圖，會先裁成圓形。冇 maskable 版就會裁走帳篷頂。
+- **og:image**：要**絕對網址**（`https://hkcamping.vercel.app/icons/og-image.png`），
+  用相對路徑分享平台攞唔到 → 貼落 Whatsapp 淨係得一行字。
+
+### 驗收
+
+guard 第 18 項會**逐個用 `identify` 量實際像素**（180 要真係 180×180，唔係 512 縮），
+再讀 manifest 確認 icon 路徑存在；`npm run ui` S 段 10 項驗 HTML 有冇齊 meta。
+
 ## 裝備同補給（v1.9.2）
 
 ### 要唔要自己帶裝備
@@ -456,7 +494,7 @@ python3 -m http.server 8000 --bind 0.0.0.0
 >
 > 之前 v1.7.0–v1.7.1 試過自寫 GAS 同自寫表單，兩版都刪走咗。結論：**回報係 admin 嘅責任，唔係呢個站嘅。**
 
-### 用邊啲身份測（`npm run ui` A–R）
+### 用邊啲身份測（`npm run ui` A–S）
 
 **情境類（A–H）**
 
@@ -491,10 +529,10 @@ python3 -m http.server 8000 --bind 0.0.0.0
 ## 品質守護（commit 前跑）
 
 ```bash
-npm run guard       # 17 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算／資料一致性／回報 widget 來源／裝備補給／天氣站座標配對
+npm run guard       # 18 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算／資料一致性／回報 widget 來源／裝備補給／天氣站座標配對／App icon 尺寸
 npm test            # 21 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸、週末排行、我的足跡、入站人次、設施用詞分組、交通用詞、康文署連結、旱廁與廁所分開、獨立浴室與浴室分開、回報交畀 Scout Admin
 npm run build:site  # 產生 dist/（4 個檔，約 215KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
-npm run ui          # 99 項「17 種身份」實測（要先 npm i -D jsdom）— 見下
+npm run ui          # 109 項「17 種身份」實測（要先 npm i -D jsdom）— 見下
 ```
 
 ### 「程序員」同「一般用戶」兩種檢測（v1.6.2）
@@ -506,7 +544,7 @@ npm run ui          # 99 項「17 種身份」實測（要先 npm i -D jsdom）�
 | 角度 | 邊個做 | 點跑 | 守乜 |
 |---|---|---|---|
 | **程序員** | 自動、CI 必跑 | `npm run guard`（14 項）、`npm test`（18 項） | 資料本身有冇矛盾、版號四處有冇同步、頁尾版權 |
-| **一般用戶** | 自動、人手決定幾時跑 | `npm i -D jsdom && npm run ui`（99 項，A–R 十八段） | 見下面「用邊啲身份測」 |
+| **一般用戶** | 自動、人手決定幾時跑 | `npm i -D jsdom && npm run ui`（109 項，A–S 十九段） | 見下面「用邊啲身份測」 |
 
 **兩個都係 build／測試期先跑，網站本身仍然係零 runtime dependency，`dist/` 一個 byte 都冇多。**
 
