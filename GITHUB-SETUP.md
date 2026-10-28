@@ -89,6 +89,24 @@ gh run list -R playerkousas-rgb/hkcamping --limit 5
 
 每次 push 到 `main` 自動部署；Preview 建議只開 main、retention 7 日（S8）。
 
+### 實測狀態（2026-10-28）
+
+| 項目 | 實測結果 | 判斷 |
+|---|---|---|
+| Vercel 專案 | `hkcamping`（team `team_zEECl1SNjWNQVbtX5e81VBFO`）已接 GitHub | ✅ Git Import 已完成 |
+| Build | 合併 commit `413b725` 嘅部署狀態 = **success / Ready** | ✅ 建置正常（`node build-site.mjs` → dist 4 檔） |
+| `hkcamping.vercel.app` | **404 DEPLOYMENT_NOT_FOUND** | ⚠️ 未有 production 部署指向此網域 |
+| `hkcamping-git-main-…vercel.app` 等 | 全部跳去 **Vercel 登入頁**（Protected Deployment） | ⚠️ Deployment Protection 開住 |
+
+**要在 Dashboard 撳兩下（Arena 連接口 token 係 `limited: true`，改唔到專案設定）**：
+
+1. **Project → Settings → Git → Production Branch** 設為 `main`
+   → 之後每次 push main 就會出 Production 部署，`hkcamping.vercel.app` 先會生效
+2. **Project → Settings → Deployment Protection → Vercel Authentication → Disable**
+   （或至少設定只保護 Preview）→ 否則任何人（包括你自己喺無痕視窗）開網址都會被要求登入
+
+撳完可以喺 **Deployments → 最新一次 → ⋯ → Redeploy** 即刻重新部署，唔使再 push。
+
 **入站人次**：Dashboard → 專案 → **Analytics → Enable**（Hobby 免費額度）。
 `index.html` 已嵌入 `/_vercel/insights/script.js`，Vercel 會自動 serve；本機或其他 host 會 404，
 瀏覽器會靜靜跳過，唔影響功能。頁尾「你第 N 次到訪」係本機 `localStorage` 累計，唔會上傳。
