@@ -108,3 +108,26 @@ npm run dev       # http://localhost:8000 本機預覽（已 bind 0.0.0.0，Aren
 - **branch protection**：GitHub API 俾 403，我呢個 token 睇唔到設定；建議喺 repo Settings 開「Require PR + guard CI 綠」。
 - **NGO 改動偵測 + Telegram/ntfy 通知**：`AUTOMATION.md` 路線圖第 4 步，未做。
 - **CSDI 關閉設施圖層**：舊 dataset ID 已 404，要重新搵新 ID（路線圖第 5 步）。
+
+## 七、檢測方法：程序員式 ＋ 一般用戶式（v1.6.2 起）
+
+對照真理倉 [docs/17 §1 六角度](https://github.com/playerkousas-rgb/readme/blob/main/docs/17-final-check-and-tutorial.md)。
+
+| 角度 | 工具 | 頻率 | 現況 |
+|---|---|---|---|
+| ① Vercel | `vercel.json` + GitHub check | 每次 PR | ✅ |
+| ② Git | `.github/workflows/guard.yml` | push／PR／每週一 | ✅ |
+| ③ 程序員 | `npm run guard`（14）＋ `npm test`（18） | 每次改動、CI 必跑 | ✅ |
+| ④ 系統架構師 | guard 第 2 項「雙版號一致」 | 每次改動 | ✅ |
+| ⑤ AI Agent | README／PROGRESS／VERSIONS／本檔 | 每版更新 | ✅ |
+| ⑥ 一般用戶 | `npm run ui`（21 項，要 `npm i -D jsdom`） | 人手，出版前 | ✅ |
+
+**③ 要證明捉得到**：變異測試（故意整壞 → 應該 FAIL → 還原）。現時三個基準變異：
+旱廁併入廁所、版號唔同步、刪 `© SCOUT SYSTEM`。
+
+**⑥ 點解唔用真理倉嗰支 `audit_single_html_v1.0.mjs`**：嗰支係審**單一 HTML 檔**（Canvas 交付形態），
+要求「檔名帶 `_vX.Y`」同「`APP_VERSION` 寫喺同一份 HTML 內」。本專案係多檔靜態站（`index.html` + `app.js` + `data.js`），
+版號由 guard 釘死四處同步，所以呢兩條唔適用；其餘（斷網、私隱模式、真撳 chip、手機）由自家 `scripts/ui-check.mjs` 覆蓋。
+
+**防呆範圍界定**：本 app 無後端、無帳號、無資料庫 → 後端類防呆（session／限流／原子寫入／secret 代理）一律唔加。
+只加「資料正確性」（build／CI 期）同「瀏覽器環境差異」（私隱模式、斷網）兩種。

@@ -1,6 +1,6 @@
 {
   "name": "hk-camp-database",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "private": true,
   "license": "UNLICENSED",
   "description": "香港露營・宿營・民宿資料庫（靜態網站，CSV 驅動）",
@@ -18,7 +18,8 @@
     "sync:weather": "node tools-sync-weather.mjs",
     "sync:had": "node tools-sync-had.mjs",
     "sync:conditions": "node tools-sync-conditions.mjs",
-    "sync:ocf": "node tools-sync-ocf.mjs"
+    "sync:ocf": "node tools-sync-ocf.mjs",
+    "ui": "node scripts/ui-check.mjs"
   },
   "engines": {
     "node": ">=18"

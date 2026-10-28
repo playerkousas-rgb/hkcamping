@@ -12,10 +12,10 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.6.1** |
-| 工作分支 | `arena/31d2c3e0-hkcamping`（今次）；上一輪 `arena/b909a4c2-hkcamping`（PR #5，已合併） |
-| 基準 main | `dd5be13`（PR #5 合併點） |
-| 當前 PR | [#5](https://github.com/playerkousas-rgb/hkcamping/pull/5) **已合併**（v1.1.0–v1.3.0）；本輪 v1.4.0 喺新分支，待開 PR |
+| 現行版本 | **v1.6.2**（PR #9，待合併） |
+| 工作分支 | `arena/944b532d-hkcamping`（今次，PR #9） |
+| 基準 main | `3bd63d7`（PR #8 合併點 = v1.5.0） |
+| 當前 PR | [#9](https://github.com/playerkousas-rgb/hkcamping/pull/9)（v1.6.0／1.6.1／1.6.2）**待合併** |
 
 ---
 
@@ -171,6 +171,41 @@ guard 加第 14 項「資料一致性」硬攔；smoke test 加 3 個（用詞�
 - **卡片加廁所類型徽章**：`🕳 旱廁（無沖水）` 用警告色 + hover 提示自備水／濕紙巾；
   `🚻 沖水廁所` 普通樣式 → 用戶一眼分得出
 - smoke test +2（旱廁與廁所分開、獨立浴室與浴室分開）→ **18 個**
+
+### v1.6.2 — 「程序員」＋「一般用戶」兩種檢測（2026-10-28）
+
+用戶問：「你有用 README 的程序員式和不同用戶的方式檢測嗎？」→ 之前只做咗程序員式，
+一般用戶式一直係「等你自己開手機睇」。今次補齊，一補就補出一個真 bug。
+
+**捉到嘅 bug（`app.js`）**：`saveFavs` 直接寫 `localStorage.setItem` 冇包 try/catch。
+無痕視窗／私隱模式一撳「收藏」就拋 `SecurityError`，成個 click handler 死 → 按鈕冇反應。
+`saveFootprints` 同入站人次本身有包，係呢一個漏咗。已補 3 行。
+
+**新增 `npm run ui`（`scripts/ui-check.mjs`，21 項）**：
+- A 斷網：所有 CDN 斷開都仲要 108 張卡、頁尾版權版號、Console 零 error
+- B 私隱模式：`localStorage` 一掂就 throw，撳收藏／撳足跡唔可以死
+- C 真撳 chip：廁所 32 張、旱廁 16 張、旱廁卡有 🕳
+- D 手機：viewport、6 個斷點、chip 識換行
+
+jsdom 只係 **devDependency、要自己裝**，唔入 `dist/`、唔上客戶端；`npm test` 仍然零依賴。
+
+**六角度結果（真理倉 `docs/17`）**：
+
+| 角度 | 結果 |
+|---|---|
+| ① Vercel | ✅ CI 綠、`regions=hkg1`、`installCommand --include=dev` |
+| ② Git | ✅ 無 secret、CI workflow 存在、PR check 全綠 |
+| ③ 程序員 | ✅ guard 14/14、test 18/18 |
+| ④ 系統架構師 | ✅ 版號四處同步（另有變異測試驗證 guard 捉得到） |
+| ⑤ AI Agent | ✅ README／PROGRESS／VERSIONS／HANDOVER 入口齊 |
+| ⑥ 一般用戶 | ✅ 21/21（`npm run ui`）；真理倉個 `audit_single_html_v1.0.mjs` 係審**單檔 HTML**，我哋係多檔站，所以「檔名要 `_vX.Y`」同「APP_VERSION 要寫喺 HTML 內」兩條唔適用，其餘用自家 `ui-check` 覆蓋 |
+
+**變異測試（證明守護係真嘅，唔係印個 ✅）**：故意整壞 → ① 旱廁併入廁所（guard FAIL＋2 個 test fail）
+② `index.html` 版號改 1.6.0（guard FAIL）③ 刪 `© SCOUT SYSTEM`（guard FAIL）→ 三個全捉到，還原後全綠。
+
+**關於「要唔要防呆」**：呢個 app 冇後端、冇帳號、冇 DB，所以後端類防呆（session／限流／原子寫入／
+secret 代理）**一條都冇加，亦唔應該加**。落嘅只有兩種：資料正確性（build／CI 期，0 byte 上線）
+同瀏覽器環境差異（私隱模式、斷網，各 3 行）。兩樣加埋都唔會令網站變重。
 
 ---
 

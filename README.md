@@ -345,8 +345,31 @@ python3 -m http.server 8000 --bind 0.0.0.0
 ```bash
 npm run guard       # 14 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算／資料一致性
 npm test            # 18 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸、週末排行、我的足跡、入站人次、設施用詞分組、交通用詞、康文署連結、旱廁與廁所分開、獨立浴室與浴室分開
-npm run build:site  # 產生 dist/（4 個檔，約 212KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
+npm run build:site  # 產生 dist/（4 個檔，約 215KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
+npm run ui          # 21 項「一般用戶」實測（要先 npm i -D jsdom）— 見下
 ```
+
+### 「程序員」同「一般用戶」兩種檢測（v1.6.2）
+
+跟真理倉 [docs/17](https://github.com/playerkousas-rgb/readme/blob/main/docs/17-final-check-and-tutorial.md) 的六角度。呢個專案冇後端，
+所以**後端類防呆（session／限流／原子寫入／secret 代理）一條都唔加**——加咗都無嘢守。
+實際落嘅係另外兩種：
+
+| 角度 | 邊個做 | 點跑 | 守乜 |
+|---|---|---|---|
+| **程序員** | 自動、CI 必跑 | `npm run guard`（14 項）、`npm test`（18 項） | 資料本身有冇矛盾、版號四處有冇同步、頁尾版權 |
+| **一般用戶** | 自動、人手決定幾時跑 | `npm i -D jsdom && npm run ui`（21 項） | 斷網開到嗎？私隱模式撳收藏會唔會死？chip 撳落去數字啱唔啱？ |
+
+**兩個都係 build／測試期先跑，網站本身仍然係零 runtime dependency，`dist/` 一個 byte 都冇多。**
+
+`npm run ui` 用 jsdom 模擬真瀏覽器：斷開所有 CDN（模擬斷網）、令 `localStorage` 一掂就拋錯（模擬無痕視窗），
+再真係 `.click()` 篩選 chip 睇返幾多張卡。**v1.6.2 就係呢個測試捉到 `saveFavs` 冇包 try/catch**——
+私隱模式下一撳「收藏」會令成個 app 停擺。jsdom 係 devDependency，唔會入 `dist/`、唔會上 Vercel 客戶端；
+唔想裝都跑得 `guard` 同 `test`，只係冇咗這一層。
+
+> 守護有冇用，要證明佢捉得到。每次改完跑三個**變異測試**（故意整壞再還原）：
+> ① 把「旱廁」編入廁所分組 ② `index.html` 版號改細一版 ③ 刪走頁尾 `© SCOUT SYSTEM`
+> —— 三個都應該 FAIL。三個全部過到＝守護係真嘅，唔係印個 ✅ 出嚟。
 
 > **測試唔會鎖死當日官方數據**（v1.4.1）：`npm test` 驗嘅係不變量（日數下限、數值範圍、排序），
 > 唔會寫死「某一日官方實測值」或「每站 10 日」——因為 `sync-data.yml` 每日 00:30 HKT 都會翻新快照。

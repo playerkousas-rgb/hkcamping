@@ -4,7 +4,7 @@
 
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.6.1';
+  const APP_VERSION = '1.6.2';
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -267,7 +267,10 @@
 
   const savedFavs = readJson(FAV_KEY, []);
   const favs = new Set(Array.isArray(savedFavs) ? savedFavs.filter((id) => typeof id === 'string') : []);
-  const saveFavs = () => localStorage.setItem(FAV_KEY, JSON.stringify([...favs]));
+  // 私隱模式／無痕視窗會令 setItem 直接拋錯；拋咗就會連個撳鈕都死，所以一定要包。
+  const saveFavs = () => {
+    try { localStorage.setItem(FAV_KEY, JSON.stringify([...favs])); } catch { /* 私隱模式：收藏只留喺記憶體 */ }
+  };
 
   // 我的足跡：只記低「去過邊個營地 + 第一次／最後一次日期」，全部留喺瀏覽器。
   const footprints = (() => {
