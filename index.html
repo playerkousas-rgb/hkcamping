@@ -7,7 +7,7 @@
   <meta name="description" content="香港營地、宿營營舍、Glamping 與民宿渡假屋資料庫，按分區、費用、設施、交通篩選，附地圖分布。" />
   <meta name="author" content="SCOUT SYSTEM" />
   <meta name="copyright" content="© SCOUT SYSTEM" />
-  <meta name="version" content="1.7.1" />
+  <meta name="version" content="1.7.2" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -16,7 +16,7 @@
 <header class="site-header">
   <div class="container header-inner">
     <div>
-      <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.7.1</span></h1>
+      <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.7.2</span></h1>
       <p class="tagline">漁護署營地 ・ Glamping ・ 宿營營舍 ・ 離島渡假屋 — 搵營地、plan 活動一站看清</p>
     </div>
     <div class="header-stats" id="headerStats"></div>
@@ -230,45 +230,9 @@
   </main>
 </div>
 
-<dialog class="report-dialog" id="reportDialog" aria-labelledby="reportTitle">
-  <form id="reportForm" novalidate>
-    <h2 id="reportTitle">✏️ 報料／更正</h2>
-    <p class="report-site">關於：<b id="reportSiteName"></b></p>
-
-    <label class="report-field">邊方面嘅資料？
-      <select name="type" required>
-        <option value="收費">收費／價錢</option>
-        <option value="設施">設施（有冇、開唔開）</option>
-        <option value="交通">交通／點去</option>
-        <option value="營業狀態">開門／收咗／裝修</option>
-        <option value="預訂">預訂方法</option>
-        <option value="其他">其他</option>
-      </select>
-    </label>
-
-    <label class="report-field">詳細情形（最多 500 字）
-      <textarea name="detail" rows="5" maxlength="500" required
-        placeholder="例：11 月去過，燒烤爐已經拆走，改成兩個流動廁所。"></textarea>
-    </label>
-
-    <label class="report-field">點稱呼你？（選填）
-      <input type="text" name="contact" maxlength="60" autocomplete="off" placeholder="可以留低電郵／電話，方便我跟進" />
-    </label>
-
-    <p class="report-note">報料會送去 <b>Scout Admin</b> 後台（同其他系統同一個地方），
-      <b>唔會即時公開</b>；管理員核對後才更新資料。請唔好填個人資料，除非你想我哋聯絡你。</p>
-    <p class="report-done" id="reportDone" hidden></p>
-
-    <div class="report-actions">
-      <button type="button" id="reportCancel">取消</button>
-      <button type="submit" class="btn-primary">送出報料</button>
-    </div>
-  </form>
-</dialog>
-
 <footer class="site-footer">
   <div class="container">
-    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.7.1</span></p>
+    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.7.2</span></p>
     <p>地圖由 Leaflet + OpenStreetMap 提供 · 天氣數據由香港天文台提供</p>
     <p class="visit-line"><span id="visitCount">👣 入站人次統計中…</span></p>
   </div>
@@ -280,5 +244,9 @@
 <script defer src="/_vercel/insights/script.js"></script>
 <script src="data.js"></script>
 <script src="app.js"></script>
+<!-- 回報：沿用 Scout Admin 嘅統一回報 widget（同圖書館／支部／專章系統同一支）。
+     data-app 決定後台顯示嘅來源膠囊；widget 自己處理 UI、payload 同送出，
+     呢個站唔使寫任何表單、唔使開後端。載入失敗（斷網／被封）＝乜都唔顯示，唔影響網站。 -->
+<script defer src="https://scout-admin-blue.vercel.app/widget.js" data-app="營地資料庫"></script>
 </body>
 </html>

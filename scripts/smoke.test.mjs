@@ -432,40 +432,24 @@ test('v1.6.1：獨立浴室（民宿私人）同浴室（營地公用）分開',
     .every((s) => s.type === '民宿'));
 });
 
-test('v1.7.1：每張卡都有「✏️ 報料」，來源標記為「營地資料庫」', () => {
-  const { doc, sandbox } = boot();
+test('v1.7.2：卡片冇自寫報料表單（回報交畀 Scout Admin widget）', () => {
+  const { doc } = boot();
   const cards = doc.getElementById('cardGrid').children;
-  assert.equal(cards.filter((c) => c.innerHTML.includes('data-action="report"')).length, 108);
-  assert.equal(sandbox.__hkcampReport.REPORT_SOURCE_APP, '營地資料庫');
+  assert.equal(cards.filter((c) => c.innerHTML.includes('data-action="report"')).length, 0);
 });
 
-test('v1.7.1：payload 只送 Scout Admin 契約嗰 8 個欄位（多一個會整污糟人哋張 Sheet）', () => {
-  const { sandbox } = boot();
-  const api = sandbox.__hkcampReport;
-  const site = { id: 'a01', name: '流水響營地', district: '北區', area: '流水響' };
-  const p = api.buildReportPayload(site, { type: '設施', detail: '燒烤爐拆走咗', contact: 'a@b.hk' });
-
-  // vm 內建嘅 array 同 node 主 realm 唔同 prototype，所以用字串比對
-  assert.equal(Object.keys(p).sort().join(','), api.REPORT_FIELDS.slice().sort().join(','));
-  assert.equal(api.REPORT_FIELDS.slice().sort().join(','),
-    'contact,desc,name,severity,sourceApp,title,troopId,type');
-  assert.equal(p.type, 'issue');
-  assert.equal(p.sourceApp, '營地資料庫');
-  assert.match(p.title, /^【設施】流水響營地（a01）/);
-  assert.match(p.desc, /燒烤爐拆走咗/);
-  assert.match(p.desc, /分區：北區/);
-  assert.equal(p.contact, 'a@b.hk');
-});
-
-test('v1.7.1：全站只有一個 fetch（回報端點）、no-cors、零 key', () => {
+test('v1.7.2：index.html 有一行 Scout Admin widget，來源標明「營地資料庫」', () => {
   const html = readFileSync(join(ROOT, 'index.html'), 'utf8');
+  const tag = (html.match(/<script[^>]*scout-admin-blue\.vercel\.app\/widget\.js[^>]*>/) || [])[0] || '';
+  assert.ok(tag, '要有 widget script 標籤');
+  assert.match(tag, /data-app="營地資料庫"/);
+  assert.match(tag, /defer/);
+  assert.ok(!html.includes('id="reportDialog"'), '唔應該再有自寫對話框');
+});
+
+test('v1.7.2：前端零 fetch／零 XHR（回報由 widget 自己送，本站唔使後端）', () => {
   const app = readFileSync(join(ROOT, 'app.js'), 'utf8');
-  assert.equal((app.match(/\bfetch\s*\(/g) || []).length, 1, '只准一個 fetch');
-  assert.match(app, /fetch\(REPORT_ENDPOINT/);
-  assert.match(app, /mode:\s*'no-cors'/);
-  assert.match(app, /script\.google\.com\/macros\/s\/[\w-]+\/exec/);
-  assert.match(html, /id="reportDialog"/);
-  assert.match(html, /name="detail"/);
-  assert.ok(!html.includes('name="hp"'), '唔好送 hp，admin 會當新 column');
-  assert.ok(!/ XMLHttpRequest/.test(app));
+  assert.equal((app.match(/\bfetch\s*\(/g) || []).length, 0);
+  assert.ok(!/XMLHttpRequest/.test(app));
+  assert.ok(!/REPORT_ENDPOINT/.test(app));
 });

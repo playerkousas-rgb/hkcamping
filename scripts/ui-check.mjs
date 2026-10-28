@@ -155,43 +155,21 @@ console.log('\n【D】一般用戶 — 手機可讀性');
   /flex-wrap:\s*wrap/.test(css) ? ok('chip 識換行（窄螢幕唔會爆版）') : bad('chip 冇 flex-wrap');
 }
 
-console.log('\n【E】一般用戶 — 撳「✏️ 報料」真係送得出（送去 Scout Admin）');
+console.log('\n【E】一般用戶 — 回報交畀 Scout Admin widget（本站零表單）');
 {
-  const sent = [];
-  const { dom } = await boot({ onFetch: (url, opts) => { sent.push({ url, opts }); return Promise.resolve({ ok: true }); } });
+  const html = readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const app = readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+  const tag = (html.match(/<script[^>]*scout-admin-blue\.vercel\.app\/widget\.js[^>]*>/) || [])[0] || '';
+  tag ? ok('已嵌 Scout Admin 統一回報 widget') : bad('未嵌 widget');
+  /data-app="營地資料庫"/.test(tag) ? ok('來源標明「營地資料庫」（後台膠囊靠佢分）') : bad('widget 冇 data-app');
+  /defer/.test(tag) ? ok('用 defer 載入，唔會阻住頁面') : bad('widget 冇 defer');
+  !html.includes('id="reportDialog"') ? ok('冇自寫報料表單（少一套表單，後台好睇啲）') : bad('仲有自寫表單');
+  (app.match(/\bfetch\s*\(/g) || []).length === 0 ? ok('app.js 零 fetch（回報由 widget 自己送）') : bad('app.js 仲有 fetch');
+
+  const { dom } = await boot();
   const d = dom.window.document;
-  const btn = d.querySelector('#cardGrid [data-action="report"]');
-  btn ? ok('卡片有「✏️ 報料」掣') : bad('卡片冇報料掣');
-  btn?.click();
-  const dlg = d.getElementById('reportDialog');
-  const opened = dlg.hasAttribute('open') || dlg.open === true;
-  opened ? ok('撳完開到報料對話框') : bad('撳完冇開對話框');
-  eq(d.getElementById('reportSiteName').textContent.includes('（a01）'), true, '對話框顯示營地名同代號');
-
-  const form = d.getElementById('reportForm');
-  // 空詳情唔應該送
-  form.dispatchEvent(new dom.window.Event('submit', { cancelable: true, bubbles: true }));
-  eq(sent.length, 0, '詳情留空 → 唔會亂送');
-
-  form.elements.type.value = '設施';
-  form.elements.detail.value = '燒烤爐拆走咗';
-  form.elements.contact.value = 'scout@example.hk';
-  form.dispatchEvent(new dom.window.Event('submit', { cancelable: true, bubbles: true }));
-  await new Promise((r) => setTimeout(r, 50));
-
-  eq(sent.length, 1, '填好之後送咗一次');
-  if (sent.length) {
-    const payload = JSON.parse(sent[0].opts.body);
-    eq(sent[0].opts.mode, 'no-cors', '用 no-cors（Apps Script 冇 CORS header）');
-    eq(payload.type, 'issue', 'type = issue');
-    eq(payload.sourceApp, '營地資料庫', '來源APP = 營地資料庫（後台靠佢分膠囊）');
-    eq(Object.keys(payload).sort().join(','), 'contact,desc,name,severity,sourceApp,title,troopId,type', '只送契約嗰 8 個欄位');
-    eq(payload.title, '【設施】流水響營地（a01）', '標題帶營地名同代號');
-    eq(payload.contact, 'scout@example.hk', '聯絡方式有帶');
-    /\/macros\/s\/[\w-]+\/exec$/.test(sent[0].url) ? ok('送去 Scout Admin 嘅 /exec 端點') : bad(`端點唔對：${sent[0].url}`);
-  }
-  const done = d.getElementById('reportDone');
-  /已送出/.test(done.textContent) ? ok('用戶見到「已送出」') : bad(`用戶見到「${done.textContent}」`);
+  eq(d.querySelectorAll('#cardGrid [data-action="report"]').length, 0, '卡片冇多餘報料掣');
+  eq(d.querySelectorAll('#cardGrid .card').length, 108, 'widget 載入失敗都唔影響 108 張卡');
   dom.window.close();
 }
 

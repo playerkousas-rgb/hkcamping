@@ -132,15 +132,15 @@ npm run dev       # http://localhost:8000 本機預覽（已 bind 0.0.0.0，Aren
 **防呆範圍界定**：本 app 無後端、無帳號、無資料庫 → 後端類防呆（session／限流／原子寫入／secret 代理）一律唔加。
 只加「資料正確性」（build／CI 期）同「瀏覽器環境差異」（私隱模式、斷網）兩種。
 
-## 八、回報（v1.7.1）— 接入 Scout Admin，唔另開後台
+## 八、回報（v1.7.2）— 一行 Scout Admin widget，本站零後端
 
 | 項目 | 實情 |
 |---|---|
-| 接收端 | Scout Admin 嗰支 Apps Script（同圖書館／支部／專章共用），`sourceApp = '營地資料庫'` |
-| 後台 | 後台自動多一個「營地資料庫」膠囊，未閱數一眼睇到 |
-| payload | 統一回報格式 v1，**只准 8 個欄位**（多一個會喺 admin 張 Sheet 自動加 column） |
-| 前端 | 1 個 `fetch`，`mode:'no-cors'`，零 key；`no-cors` 讀唔到回應 → 只可以講「已送出」 |
-| 為咩唔自己開 | 用戶唔想多一個地方睇；統一之後維修點只有一個 |
-| 如果 admin 改契約 | 改 `app.js` 嘅 `buildReportPayload` + `REPORT_FIELDS`，guard 第 15 項會即刻紅 |
+| 做法 | `index.html` 一行 `<script defer src="…/widget.js" data-app="營地資料庫">` |
+| 後台 | 同圖書館／支部／專章同一個後台，多一個「營地資料庫」膠囊 |
+| 本站負責 | **乜都唔使**：零表單、零 fetch、零 key、零部署 |
+| 失敗模式 | widget 載入唔到 = 右下角唔出掣，網站照用 108 張卡 |
+| guard | 第 15 項：有冇嵌 widget／data-app 啱唔啱／前端係唔係真係零 fetch／有冇偷偷加返自寫表單 |
 
-> 呢個係全站**唯一**對外寫入。其餘所有功能（篩選、天氣、足跡、入站人次）都係純前端／靜態。
+> 歷史：v1.7.0 自己開 GAS + Sheet，v1.7.1 改送 admin 但仍自寫表單，v1.7.2 全部刪走改用官方 widget。
+> **結論：回報係 admin 嘅責任，唔係呢個站嘅。**

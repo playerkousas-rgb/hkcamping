@@ -2,22 +2,12 @@
 (function () {
   'use strict';
 
+  // 回報（v1.7.2）：唔喺呢邊實作 —— 用 Scout Admin 嘅統一回報 widget（見 index.html 最底一行），
+  //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.7.1';
+  const APP_VERSION = '1.7.2';
 
-  /* ---------- 回報（v1.7.1）：統一送去 Scout Admin ----------
-   * 同圖書館／支部系統／專章系統用**同一個接收端、同一個 payload、同一組欄位**，
-   * 所以後台會多一個「營地資料庫」膠囊，一個地方睇晒所有系統嘅回報。
-   * 規格：scout-admin/SCOUT_ADMIN.md §〇 統一回報格式 v1
-   *   { type, sourceApp, title, desc, severity, troopId, name, contact }
-   * 多送一個欄位就會喺 admin 張 Sheet 自動長出新 column，所以**只准送上面 8 個**。
-   * 用 fetch + no-cors：Apps Script 冇 CORS header，送得到但讀唔到回應
-   * ——同 admin 自己支 widget.js 完全一樣做法。網址本身公開，唔係 secret。
-   */
-  const REPORT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxj5BDDGgjs559smkK4Z5aYImWYeXbN5af8U1ObON0z9WnsN6QJW4I1XWolhs5kQ_H-UQ/exec';
-  const REPORT_SOURCE_APP = '營地資料庫';
-  const REPORT_FIELDS = ['type', 'sourceApp', 'title', 'desc', 'severity', 'troopId', 'name', 'contact'];
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -569,7 +559,6 @@
           ${s.booking && s.bookingUrl ? `<a href="${s.bookingUrl}" target="_blank" rel="noopener">📅 預訂</a>` : ''}
           ${s.booking && !s.bookingUrl && s.infoUrl ? `<a href="${s.infoUrl}" target="_blank" rel="noopener">📅 預訂查詢</a>` : ''}
           ${!s.booking && s.infoUrl ? `<a href="${s.infoUrl}" target="_blank" rel="noopener">ℹ 官方資料</a>` : ''}
-          ${REPORT_ENDPOINT ? `<button data-action="report" type="button" title="發現資料過時／有錯？報畀我哋知">✏️ 報料</button>` : ''}
         </div>`;
 
       card.querySelector('.fav-btn').addEventListener('click', (e) => {
@@ -600,8 +589,6 @@
         else renderFilters();
       });
       card.querySelector('[data-action="locate"]').addEventListener('click', () => flyTo(s.id));
-      const reportBtn = card.querySelector('[data-action="report"]');
-      if (reportBtn) reportBtn.addEventListener('click', () => openReport(s));
       card.querySelector('[data-action="local"]').addEventListener('click', () => {
         localSiteId = s.id;
         renderLocalConditions(s);
@@ -1195,99 +1182,6 @@
       + '全站真實人次由 Vercel Web Analytics 以無 cookie 方式統計（詳見 README）。';
   }
 
-  /* ---------- 回報：payload 組裝 + 對話框 ---------- */
-
-  /** 純函數：卡片 + 用戶輸入 → 統一回報 payload（唔掂 DOM，方便測試） */
-  function buildReportPayload(site, input) {
-    const type = String(input.type || '其他');
-    const detail = String(input.detail || '').trim().slice(0, 1500);
-    const title = `【${type}】${site.name}（${site.id}）`.slice(0, 120);
-    const desc = [
-      `類型：${type}`,
-      `營地：${site.name}（${site.id}）`,
-      `分區：${site.district} / ${site.area}`,
-      '',
-      detail,
-      '',
-      `— 由 ${REPORT_SOURCE_APP} 卡片回報`,
-    ].join('\n');
-    return {
-      type: 'issue',
-      sourceApp: REPORT_SOURCE_APP,
-      title,
-      desc: desc.slice(0, 4000),
-      severity: '中',
-      troopId: '',
-      name: '',
-      contact: String(input.contact || '').trim().slice(0, 120),
-    };
-  }
-
-  let reportSite = null;
-
-  function openReport(site) {
-    const dlg = document.getElementById('reportDialog');
-    const form = document.getElementById('reportForm');
-    if (!dlg || !form) return;
-    reportSite = site;
-    const title = document.getElementById('reportSiteName');
-    if (title) title.textContent = `${site.name}（${site.id}）`;
-    if (form.elements.detail) form.elements.detail.value = '';
-    if (form.elements.contact) form.elements.contact.value = '';
-    const msg = document.getElementById('reportDone');
-    if (msg) { msg.hidden = true; msg.className = 'report-done'; msg.textContent = ''; }
-    if (typeof dlg.showModal === 'function') dlg.showModal();
-    else dlg.setAttribute('open', '');
-  }
-
-  function sendReport(payload) {
-    // no-cors：讀唔到回應，只能靠 promise 有冇 reject（同 admin widget 一致）
-    return fetch(REPORT_ENDPOINT, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-  }
-
-  function initReportDialog() {
-    const dlg = document.getElementById('reportDialog');
-    const form = document.getElementById('reportForm');
-    if (!dlg || !form) return;
-    const close = () => {
-      if (typeof dlg.close === 'function') dlg.close();
-      else dlg.removeAttribute('open');
-    };
-    const msgEl = () => document.getElementById('reportDone');
-    document.getElementById('reportCancel')?.addEventListener('click', close);
-    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!reportSite) return;
-      const el = msgEl();
-      const payload = buildReportPayload(reportSite, {
-        type: form.elements.type ? form.elements.type.value : '其他',
-        detail: form.elements.detail ? form.elements.detail.value : '',
-        contact: form.elements.contact ? form.elements.contact.value : '',
-      });
-      if (!String(form.elements.detail ? form.elements.detail.value : '').trim()) {
-        if (el) { el.hidden = false; el.className = 'report-done fail'; el.textContent = '✏️ 請先填詳細情形。'; }
-        return;
-      }
-      if (el) { el.hidden = false; el.className = 'report-done'; el.textContent = '送出中…'; }
-      sendReport(payload).then(() => {
-        if (el) el.textContent = '✅ 已送出，多謝報料！管理員喺 Scout Admin 後台會見到。';
-        setTimeout(close, 900);
-      }).catch(() => {
-        if (el) { el.className = 'report-done fail'; el.textContent = '❌ 送唔出（可能斷網），請遲啲再試。'; }
-      });
-    });
-  }
-
-  // 測試／除錯用：唔影響 UI，唔會暴露任何 key
-  window.__hkcampReport = { buildReportPayload, REPORT_FIELDS, REPORT_SOURCE_APP };
-
   /* ---------- 版號顯示（W1 / V1） ---------- */
   function renderVersion() {
     const badge = document.getElementById('versionBadge');
@@ -1299,7 +1193,6 @@
   /* ---------- 啟動 ---------- */
   renderVersion();
   initVisitCounter();
-  initReportDialog();
   renderWeather();
   renderForecastRegionOptions();
   renderForecast();

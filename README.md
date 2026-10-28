@@ -341,34 +341,34 @@ python3 -m http.server 8000 --bind 0.0.0.0
 
 然後瀏覽器開 `http://localhost:8000`（直接雙擊 index.html 也可以，資料走 data.js 而非 fetch）。
 
-## 回報／報料（v1.7.1 — 接入 Scout Admin）
+## 回報（v1.7.2 — 一行 widget，本站零表單）
 
-卡片右下多一粒「✏️ 報料」。撳落去填「邊方面 + 詳情」（+ 可選聯絡），送出後直接入
-**Scout Admin 後台**——同圖書館、支部系統、專章系統**同一個接收端、同一組欄位**，
-所以後台會多一個「營地資料庫」膠囊，**一個地方睇晒所有系統嘅回報**。
+```html
+<script defer src="https://scout-admin-blue.vercel.app/widget.js" data-app="營地資料庫"></script>
+```
+
+就係咁多。右下角一個「🐛💬 回報 · 意見」掣，撳落去係**你熟悉嗰個** Scout Admin 表單——
+同圖書館、支部系統、專章系統**一模一樣**，唔會多一套介面要學。
 
 | 項目 | 做法 |
 |---|---|
-| 傳輸 | `fetch(REPORT_ENDPOINT, { mode:'no-cors' })` → Scout Admin 嗰支 Apps Script |
-| payload | 只送 admin 契約嗰 8 個：`type / sourceApp / title / desc / severity / troopId / name / contact` |
-| 來源 | `sourceApp = '營地資料庫'`（後台靠佢分膠囊） |
-| 標題 | 自動帶 `【設施】流水響營地（a01）`，你喺後台一眼睇到係邊個場 |
-| 前置資料 | 詳情會自動加「類型／營地／分區」幾行，唔使報料人自己打 |
-| 安全 | 端點本身公開（admin 支 `widget.js` 都係寫死喺前端），**冇 key、冇 secret**；`no-cors` 讀唔到回應，所以只可以講「已送出」 |
+| 來源 | `data-app="營地資料庫"` → 後台多一個「營地資料庫」膠囊，一眼分到邊個系統 |
+| payload | 用 admin 本身嗰套（`SCOUT_ADMIN.md §〇`），本專案唔自己定 |
+| 本專案負責 | **乜都唔使**：冇表單、冇 fetch、冇後端、冇 key |
+| 斷網／被封 | widget 載入唔到＝右下角乜都唔出，**網站照用**（108 張卡照樣渲染） |
 
-> **為咩唔自己開一個 GAS**：多一套就要多一個地方睇。統一落 Scout Admin 之後，
-> 你喺後台見到「營地資料庫（3）」就知道有 3 條未閱，撳一下就篩到。
+> **點解唔自己寫表單**：每多一套表單，後台就多一種睇法。用戶（你）講得好準——
+> 來源膠囊已經夠分辨，寧願全站用同一個介面。
 >
-> **為咩唔多送欄位**：admin 個 `doPost` 對未知欄位會**自動喺 Sheet 加新 column**，
-> 所以 guard 第 15 項硬性驗 payload 只可以有嗰 8 個 key，防止我哋靜靜雞整污糟人哋張表。
+> 之前 v1.7.0–v1.7.1 試過自寫 GAS 同自寫表單，兩版都刪走咗。結論：**回報係 admin 嘅責任，唔係呢個站嘅。**
 
 ## 品質守護（commit 前跑）
 
 ```bash
-npm run guard       # 15 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算／資料一致性／回報接入 Scout Admin
-npm test            # 21 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸、週末排行、我的足跡、入站人次、設施用詞分組、交通用詞、康文署連結、旱廁與廁所分開、獨立浴室與浴室分開、回報 payload 契約
+npm run guard       # 15 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算／資料一致性／回報 widget 來源
+npm test            # 21 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸、週末排行、我的足跡、入站人次、設施用詞分組、交通用詞、康文署連結、旱廁與廁所分開、獨立浴室與浴室分開、回報交畀 Scout Admin
 npm run build:site  # 產生 dist/（4 個檔，約 215KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
-npm run ui          # 34 項「一般用戶」實測（要先 npm i -D jsdom）— 見下
+npm run ui          # 28 項「一般用戶」實測（要先 npm i -D jsdom）— 見下
 ```
 
 ### 「程序員」同「一般用戶」兩種檢測（v1.6.2）
@@ -380,7 +380,7 @@ npm run ui          # 34 項「一般用戶」實測（要先 npm i -D jsdom）�
 | 角度 | 邊個做 | 點跑 | 守乜 |
 |---|---|---|---|
 | **程序員** | 自動、CI 必跑 | `npm run guard`（14 項）、`npm test`（18 項） | 資料本身有冇矛盾、版號四處有冇同步、頁尾版權 |
-| **一般用戶** | 自動、人手決定幾時跑 | `npm i -D jsdom && npm run ui`（34 項） | 斷網開到嗎？私隱模式撳收藏會唔會死？chip 撳落去數字啱唔啱？ |
+| **一般用戶** | 自動、人手決定幾時跑 | `npm i -D jsdom && npm run ui`（28 項） | 斷網開到嗎？私隱模式撳收藏會唔會死？chip 撳落去數字啱唔啱？ |
 
 **兩個都係 build／測試期先跑，網站本身仍然係零 runtime dependency，`dist/` 一個 byte 都冇多。**
 

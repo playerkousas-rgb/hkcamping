@@ -562,32 +562,3 @@ code {
   .site-header h1 { font-size: 1.25rem; }
   #map { height: 320px; }
 }
-
-/* ---------- 報料表單（v1.7.0）---------- */
-.report-dialog {
-  border: none; border-radius: 14px; padding: 0; max-width: 480px; width: calc(100% - 32px);
-  box-shadow: 0 18px 60px rgba(0,0,0,0.28); color: var(--ink); background: var(--card);
-}
-.report-dialog::backdrop { background: rgba(20,32,26,0.45); }
-.report-dialog form { padding: 20px 22px 22px; display: flex; flex-direction: column; gap: 12px; }
-.report-dialog h2 { margin: 0; font-size: 1.12rem; }
-.report-site { margin: 0; font-size: 0.9rem; color: var(--muted); }
-.report-field { display: flex; flex-direction: column; gap: 5px; font-size: 0.86rem; font-weight: 600; }
-.report-field select, .report-field textarea, .report-field input[type="text"] {
-  font-family: inherit; font-size: 0.92rem; font-weight: 400;
-  border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px;
-  background: #faf9f4; color: var(--ink); resize: vertical;
-}
-.report-field textarea:focus, .report-field select:focus, .report-field input:focus {
-  outline: 2px solid var(--green-700); outline-offset: 1px;
-}
-.report-note { margin: 0; font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
-.report-done { margin: 0; font-size: 0.86rem; color: #2e7d32; font-weight: 600; }
-.report-done.fail { color: #c62828; }
-.report-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 2px; }
-.report-actions button {
-  font-family: inherit; font-size: 0.9rem; padding: 8px 16px; border-radius: 8px;
-  border: 1px solid var(--line); background: #faf9f4; color: var(--ink); cursor: pointer;
-  min-height: 40px;
-}
-.report-actions button:hover { border-color: var(--green-700); }

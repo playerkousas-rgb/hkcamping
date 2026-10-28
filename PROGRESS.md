@@ -12,10 +12,10 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.7.1**（PR #9，待合併） |
+| 現行版本 | **v1.7.2**（PR #9，待合併） |
 | 工作分支 | `arena/944b532d-hkcamping`（今次，PR #9） |
 | 基準 main | `3bd63d7`（PR #8 合併點 = v1.5.0） |
-| 當前 PR | [#9](https://github.com/playerkousas-rgb/hkcamping/pull/9)（v1.6.0 ～ v1.7.1）**待合併** |
+| 當前 PR | [#9](https://github.com/playerkousas-rgb/hkcamping/pull/9)（v1.6.0 ～ v1.7.2）**待合併** |
 
 ---
 
@@ -278,6 +278,32 @@ guard 第 15 項驗：端點格式、前端零 fetch／XHR、蜜罐攔喺兩邊�
 
 **資源用量（回應「會唔會畀 GitHub 覺得濫用」）**：呢個 repo 由開倉到現在 44 次 run、合共 **11.7 分鐘**。
 公開 repo 嘅 Actions 分鐘係**無限免費**；估算每月約 25 分鐘（每日同步 30 秒 + push 時 guard 15 秒）。
+
+---
+
+### v1.7.2 — 唔再自寫表單，回報只留一行 widget（2026-10-28）
+
+用戶：「應該唔洗寫自己表單，回報時自動帶入來自邊個 APP 我就識睇，唔係太多表單 ADMIN 嗰邊仲難睇。」
+
+**照做，兩版自寫嘅嘢全部刪走**：
+
+| 刪走 | 原因 |
+|---|---|
+| 自寫報料對話框（`<dialog>` + 14 個欄位 + CSS 約 1.4KB） | 多一套介面要學，admin 睇落唔一致 |
+| `buildReportPayload`／`sendReport`／`fetch` 20 行 | 冇必要自己組 payload，admin 本身有規格 |
+| 卡片「✏️ 報料」掣 | 全站一個入口就夠 |
+| `apps-script/report-form/`（v1.7.0 已刪） | 自己開 Sheet = 多一個地方睇 |
+
+**留低嘅**：`index.html` 最底一行
+
+```html
+<script defer src="https://scout-admin-blue.vercel.app/widget.js" data-app="營地資料庫"></script>
+```
+
+`data-app` 就係「來自邊個 APP」，後台膠囊照樣分得到。本站變返**零 fetch、零表單、零後端**。
+
+**驗證**：guard 15/15（第 15 項改為驗 widget 有冇嵌、data-app 係唔係正式名稱、前端係唔係真係零 fetch）、
+test 21/21、`npm run ui` 28/28（第 E 段驗：widget 有嵌、卡片冇多餘掣、widget 載入失敗都照出 108 張卡）。
 
 ---
 
