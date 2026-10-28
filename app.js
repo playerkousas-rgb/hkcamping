@@ -6,7 +6,7 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.8.0';
+  const APP_VERSION = '1.9.0';
 
 
   const TYPE_META = {
@@ -253,6 +253,7 @@
     tags: new Set(),
     signals: new Set(),
     tents: new Set(),      // 營位規模（團體／童軍 planning 用）
+    gears: new Set(),      // 裝備要求（全自備／場地提供）
     freeOnly: false,
     maxPrice: 1500,
     query: '',
@@ -303,6 +304,7 @@
   const allTags = uniq(SITES.flatMap((s) => [...s.facilities, ...s.tags]).map(canonTag));
   const signals = SIGNAL_ORDER.filter((sig) => SITES.some((s) => s.signal === sig));
   // 營位規模（只有漁護署 41 個營地有官方數字；其餘唔顯示呢個 chip）
+  const GEAR_LEVELS = ['全自備', '場地提供'].filter((g) => SITES.some((s) => s.gear === g));
   const TENT_LEVELS = ['少於 20', '20-50', '多於 50']
     .filter((lv) => SITES.some((s) => s.tentSpace === lv));
   const types = Object.keys(TYPE_META).filter((t) => SITES.some((s) => s.type === t));
@@ -317,6 +319,7 @@
         ![...s.facilities, ...s.tags].map(canonTag).some((t) => state.tags.has(t))) return false;
     if (skipGroup !== 'signal' && state.signals.size && !state.signals.has(s.signal)) return false;
     if (skipGroup !== 'tent' && state.tents.size && !state.tents.has(s.tentSpace)) return false;
+    if (skipGroup !== 'gear' && state.gears.size && !state.gears.has(s.gear)) return false;
 
     if (skipGroup !== 'price') {
       if (state.freeOnly && s.price !== 0) return false;
@@ -366,6 +369,7 @@
           if (group === 'tag') return [...s.facilities, ...s.tags].map(canonTag).includes(v);
           if (group === 'signal') return s.signal === v;
           if (group === 'tent') return s.tentSpace === v;
+          if (group === 'gear') return s.gear === v;
           return false;
         }).length;
         const members = FACILITY_GROUPS[v];
@@ -380,6 +384,7 @@
     mount('tagChips', allTags, state.tags, 'tag');
     mount('signalChips', signals, state.signals, 'signal');
     mount('tentChips', TENT_LEVELS, state.tents, 'tent');
+    mount('gearChips', GEAR_LEVELS, state.gears, 'gear');
     document.getElementById('favCount').textContent = favs.size;
     document.getElementById('favToggle').setAttribute('aria-pressed', state.favOnly ? 'true' : 'false');
 
@@ -485,6 +490,26 @@
     return `${approx}$${s.price} ${s.priceUnit || ''}`.trim();
   }
 
+  /* 裝備要求（v1.9.0）：露營＝全部自己帶；宿營／民宿／Glamping＝有房有床 */
+  function gearBadge(s) {
+    if (!s.gear) return '';
+    return s.gear === '全自備'
+      ? '<span class="prep-badge gear">🎒 裝備全自備（帳篷・睡袋・煮食）</span>'
+      : '<span class="prep-badge gear ok">🛏 有房有床（裝備唔使自己帶）</span>';
+  }
+
+  /* 補給（v1.9.0）：官方冇「最近超市」資料，所以唔亂填 —— 有核實過就顯示，冇就開地圖 */
+  function supplyLine(s) {
+    const url = 'https://www.google.com/maps/search/' + encodeURIComponent('超級市場 OR 士多')
+      + `/@${s.lat},${s.lng},14z`;
+    const label = s.supply
+      ? `🛒 最近補給：${s.supply}`
+      : '🛒 附近補給（開地圖搵最近超市／士多）';
+    return `<a class="supply-line" href="${url}" target="_blank" rel="noopener"`
+      + ' title="官方冇補給點資料；呢度用地圖即時搜，唔會亂填一個錯地址">'
+      + `${label}</a>`;
+  }
+
   /* 官方 CSDI 欄位 → 出發前準備提示（只喺漁護署營地有值） */
   function prepBadges(s) {
     if (!s.waterSource && !s.tentSpace) return '';
@@ -552,6 +577,8 @@
         ${s.priceSource === 'estimate'
           ? '<div class="price-caveat">約數 · 未逐筆核實，落訂前請向場地官網／電話確認</div>' : ''}
         ${toiletBadge(s)}
+        <div class="prep-badges">${gearBadge(s)}</div>
+        ${supplyLine(s)}
         ${prepBadges(s)}
         <div class="prep-badges foot-line"${visit ? '' : ' hidden'}>
           <span class="prep-badge foot">👣 去過 · 上次 <span class="foot-last">${visit ? visit.last : ''}</span></span>
@@ -628,7 +655,7 @@
   /* ---------- 主渲染 ---------- */
   function activeFilterCount() {
     return state.types.size + state.districts.size + state.transports.size +
-      state.tags.size + state.signals.size + state.tents.size +
+      state.tags.size + state.signals.size + state.tents.size + state.gears.size +
       (state.freeOnly ? 1 : 0) + (state.favOnly ? 1 : 0) + (state.footOnly ? 1 : 0) +
       (state.maxPrice < 1500 ? 1 : 0) + (state.query.trim() ? 1 : 0);
   }
@@ -692,7 +719,7 @@
 
     const clearAll = () => {
       state.types.clear(); state.districts.clear(); state.transports.clear();
-      state.tags.clear(); state.signals.clear(); state.tents.clear();
+      state.tags.clear(); state.signals.clear(); state.tents.clear(); state.gears.clear();
       state.freeOnly = false; state.favOnly = false; state.footOnly = false;
       state.maxPrice = 1500; state.query = '';
       document.getElementById('freeOnly').checked = false;

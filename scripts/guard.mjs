@@ -346,6 +346,43 @@ try {
   bad('回報（Scout Admin）', (e.message || '').toString().slice(0, 160));
 }
 
+/* ---------- 16. 裝備／補給（v1.9.0） ---------- */
+try {
+  const app = read('app.js');
+  const csv = read('data.csv');
+  const lines = csv.trim().split('\n');
+  const head = lines[0].split(',');
+  const iGear = head.indexOf('gear');
+  const iSupply = head.indexOf('supply');
+  const iType = head.indexOf('type');
+  const rows = lines.slice(1).map((l) => l.split(','));
+
+  const problems = [];
+  if (iGear < 0) problems.push('data.csv 冇 gear 欄');
+  if (iSupply < 0) problems.push('data.csv 冇 supply 欄');
+  if (iGear >= 0) {
+    const empty = rows.filter((r) => !r[iGear]).length;
+    if (empty) problems.push(`${empty} 筆冇 gear 值`);
+    const wrong = rows.filter((r) => {
+      const isCamp = r[iType] === '露營';
+      return isCamp ? r[iGear] !== '全自備' : r[iGear] !== '場地提供';
+    }).length;
+    if (wrong) problems.push(`${wrong} 筆 gear 同類型唔一致（露營＝全自備，其餘＝場地提供）`);
+  }
+  if (!app.includes('function gearBadge')) problems.push('app.js 冇 gearBadge');
+  if (!app.includes('function supplyLine')) problems.push('app.js 冇 supplyLine');
+  if (!/google\.com\/maps\/search/.test(app)) problems.push('補給冇地圖搜尋連結');
+
+  const gearCount = {};
+  if (iGear >= 0) rows.forEach((r) => { gearCount[r[iGear]] = (gearCount[r[iGear]] || 0) + 1; });
+  const supplyFilled = iSupply >= 0 ? rows.filter((r) => r[iSupply]).length : 0;
+
+  if (problems.length) results.push({ pass: false, name: '裝備／補給', detail: problems.join('; ') });
+  else ok('裝備／補給', `全自備 ${gearCount['全自備'] || 0}／場地提供 ${gearCount['場地提供'] || 0}；已核實補給點 ${supplyFilled} 筆（其餘用地圖搜，唔亂填）`);
+} catch (e) {
+  results.push({ pass: false, name: '裝備／補給', detail: (e.message || '').toString().slice(0, 160) });
+}
+
 /* ---------- 總結 ---------- */
 console.log('\n=== hkcamping guard ===');
 for (const r of results) {

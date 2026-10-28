@@ -597,3 +597,12 @@ code {
   .fav-btn, .foot-btn { min-width: 40px; min-height: 40px; }
 }
 .transport-line { font-size: 0.8rem; color: var(--muted); }
+
+/* ---------- v1.9.0：裝備／補給 ---------- */
+.prep-badge.gear { background: #eef2ea; color: #3b4a36; border: 1px solid #d7dfcd; }
+.prep-badge.gear.ok { background: #e8f1fb; color: #174a7a; border-color: #cfe0f2; }
+.supply-line {
+  display: inline-block; margin: 6px 0 2px; font-size: 0.8rem;
+  color: #174a7a; text-decoration: none; border-bottom: 1px dashed #9dbcd8;
+}
+.supply-line:hover { color: #0d3358; border-bottom-style: solid; }

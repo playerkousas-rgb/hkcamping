@@ -343,5 +343,31 @@ console.log('\n【H】老花／大字／對比度');
   dom.window.close();
 }
 
-console.log(`\n=== 身份實測 A–P：${pass} pass / ${fail} fail ===`);
+console.log('\n【Q】露營新手／家長 — 要唔要自己帶裝備？邊度補給？');
+{
+  const { dom } = await boot();
+  const d = dom.window.document;
+  const cards = [...d.querySelectorAll('#cardGrid .card')];
+  const allHtml = cards.map((c) => c.innerHTML).join('\n');
+
+  eq(cards.filter((c) => /🎒 裝備全自備/.test(c.innerHTML)).length, 45, '45 張卡標「裝備全自備」（全部露營）');
+  eq(cards.filter((c) => /🛏 有房有床/.test(c.innerHTML)).length, 63, '63 張卡標「有房有床」（宿營／民宿／Glamping）');
+  eq(d.querySelectorAll('.supply-line').length, 108, '每張卡都有「附近補給」入口');
+
+  const link = d.querySelector('.supply-line');
+  /google\.com\/maps\/search/.test(link?.getAttribute('href') || '') ? ok('補給連結用地圖即時搜（唔會亂填錯地址）') : bad('補給連結有問題');
+  /@2[0-9]\./.test(link?.getAttribute('href') || '') ? ok('地圖已定位去該營地座標附近') : bad('地圖冇帶座標');
+
+  const chips = [...d.querySelectorAll('#gearChips .chip')];
+  eq(chips.length, 2, '側欄有「全自備／場地提供」兩個 chip');
+  const selfChip = chips.find((c) => /全自備/.test(c.textContent));
+  if (selfChip) {
+    selfChip.click();
+    eq(d.querySelectorAll('#cardGrid .card').length, 45, '撳「全自備」→ 45 個場');
+    selfChip.click();
+  }
+  dom.window.close();
+}
+
+console.log(`\n=== 身份實測 A–Q：${pass} pass / ${fail} fail ===`);
 process.exit(fail ? 1 : 0);

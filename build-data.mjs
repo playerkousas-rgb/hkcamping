@@ -232,6 +232,9 @@ const records = dataRows.map((cols) => {
     countryPark: afcd?.countryPark || null,
     waterSource: afcd?.waterSource || null,
     tentSpace: afcd?.tentSpace || null,
+    // v1.9.0：裝備要求（全自備／場地提供）同最近補給點（未核實就留空，唔亂填）
+    gear: obj.gear || '',
+    supply: obj.supply || '',
     // v1.2.0：該區天氣／潮汐配對（就近站，唔係營地實測）
     weatherStation: stationFor(obj),
     rainDistrict: RAIN_ALIAS[obj.district] || null,
