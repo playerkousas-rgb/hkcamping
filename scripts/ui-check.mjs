@@ -173,5 +173,71 @@ console.log('\n【E】一般用戶 — 回報交畀 Scout Admin widget（本站�
   dom.window.close();
 }
 
+console.log('\n【F】冇開 JavaScript 嘅用戶');
+{
+  const html = readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const noScript = (html.match(/<noscript>([\s\S]*?)<\/noscript>/) || [])[1] || '';
+  noScript ? ok('有 <noscript> 提示') : bad('冇 <noscript>，關咗 JS 只會見到「載入中…」');
+  /JavaScript/.test(noScript) ? ok('提示講明要開 JavaScript') : bad('提示冇講原因');
+  /data\.csv/.test(noScript) ? ok('提示有替代方案（直接開 data.csv）') : bad('提示冇替代方案');
+
+  // 真係唔跑 JS 載入一次：唔應該爆炸，而且 noscript 內容要喺 DOM
+  const dom = await JSDOM.fromFile(path.join(ROOT, 'index.html'), {
+    runScripts: 'outside-only',
+    resources: { interceptors: [offline] },
+    pretendToBeVisual: true,
+  });
+  const d = dom.window.document;
+  /JavaScript/.test(d.body.textContent) ? ok('無 JS 時見到提示文字') : bad('無 JS 時見唔到提示');
+  eq(d.querySelectorAll('#cardGrid .card').length, 0, '無 JS 時列表係空（已知限制，有提示補救）');
+  dom.window.close();
+}
+
+console.log('\n【G】鍵盤／螢幕報讀用戶');
+{
+  const html = readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const css = readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  /<html lang="zh/.test(html) ? ok('html lang 已設定（報讀器用粵語）') : bad('冇 lang');
+  /id="resultCount"[^>]*role="status"[^>]*aria-live="polite"/.test(html)
+    ? ok('篩選結果有 role=status + aria-live（報讀器會讀「共 N 個結果」）')
+    : bad('結果數字唔會報出嚟');
+  /:focus-visible/.test(css) ? ok('有 :focus-visible 焦點框（鍵盤見到自己去到邊）') : bad('冇焦點樣式，鍵盤用家迷路');
+  /class="skip-link" href="#mainContent"/.test(html) ? ok('有「跳去主要內容」skip link') : bad('冇 skip link');
+  /id="mainContent"/.test(html) ? ok('skip link 目標存在') : bad('skip link 目標唔存在');
+
+  const { dom } = await boot();
+  const d = dom.window.document;
+  const interactive = [...d.querySelectorAll('button, a[href], select, input')];
+  const noName = interactive.filter((el) => {
+    const txt = (el.textContent || '').trim();
+    // 包喺 <label> 入面、或者有 for="id" 嘅 label，都算有名
+    const labelled = (el.labels && el.labels.length > 0) || !!el.closest('label');
+    return !txt && !labelled && !el.getAttribute('aria-label') && !el.getAttribute('title') && !el.getAttribute('placeholder');
+  });
+  eq(noName.length, 0, `${interactive.length} 個可操作元素全部有名（報讀器讀得到）`);
+  eq(d.querySelectorAll('h1').length, 1, '只有一個 h1');
+  d.querySelectorAll('img:not([alt])').length === 0 ? ok('所有圖都有 alt') : bad('有圖冇 alt');
+  dom.window.close();
+}
+
+console.log('\n【H】老花／大字／對比度');
+{
+  const css = readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  const px = (css.match(/font-size:\s*[\d.]+px/g) || []).length;
+  const rem = (css.match(/font-size:\s*[\d.]+rem/g) || []).length;
+  eq(px, 0, `字級全部用 rem（${rem} 處），瀏覽器放大字會跟住放大`);
+
+  const v = (name) => (css.match(new RegExp(`--${name}:\\s*(#[0-9a-fA-F]{6})`)) || [])[1];
+  const hex = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255);
+  const lin = (c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
+  const lum = (h) => { const [r, g, b] = hex(h).map(lin); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+  const ratio = (a, b) => { const l1 = lum(a), l2 = lum(b); return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05); };
+
+  const ink = ratio(v('ink'), v('bg'));
+  const muted = ratio(v('muted'), v('bg'));
+  ink >= 4.5 ? ok(`正文對比 ${ink.toFixed(2)}:1（AA 要 4.5）`) : bad(`正文對比只有 ${ink.toFixed(2)}:1`);
+  muted >= 4.5 ? ok(`次要文字對比 ${muted.toFixed(2)}:1`) : bad(`次要文字對比只有 ${muted.toFixed(2)}:1（達唔到 AA）`);
+}
+
 console.log(`\n=== 一般用戶角度：${pass} pass / ${fail} fail ===`);
 process.exit(fail ? 1 : 0);

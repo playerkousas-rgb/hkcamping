@@ -8,7 +8,7 @@
   --blue-700: #1565c0;
   --purple-700: #6a1b9a;
   --ink: #20271f;
-  --muted: #6b7568;
+  --muted: #666f63;   /* v1.7.3：深咗少少，令次要文字對 --bg 由 4.33:1 升到 4.71:1（WCAG AA 要 4.5）*/
   --line: #dfe4dc;
   --bg: #f5f3ec;
   --card: #ffffff;
@@ -561,4 +561,22 @@ code {
   #sortSelect { width: 100%; }
   .site-header h1 { font-size: 1.25rem; }
   #map { height: 320px; }
+}
+
+/* ---------- 無障礙（v1.7.3）：鍵盤／螢幕報讀／無 JS ---------- */
+:where(a, button, select, input, textarea, [tabindex]):focus-visible {
+  outline: 3px solid #1565c0;
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.skip-link {
+  position: absolute; left: -9999px; top: 0; z-index: 9999;
+  background: var(--green-700); color: #fff; padding: 10px 16px;
+  border-radius: 0 0 8px 0; font-weight: 700; text-decoration: none;
+}
+.skip-link:focus { left: 0; }
+.noscript-note {
+  max-width: 720px; margin: 18px auto; padding: 14px 18px;
+  background: #fff8e1; border: 1px solid #ffe082; border-radius: 10px;
+  font-size: 0.9rem; line-height: 1.7; color: #5d4037;
 }

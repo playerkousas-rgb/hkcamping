@@ -120,7 +120,7 @@ npm run dev       # http://localhost:8000 本機預覽（已 bind 0.0.0.0，Aren
 | ③ 程序員 | `npm run guard`（14）＋ `npm test`（18） | 每次改動、CI 必跑 | ✅ |
 | ④ 系統架構師 | guard 第 2 項「雙版號一致」 | 每次改動 | ✅ |
 | ⑤ AI Agent | README／PROGRESS／VERSIONS／本檔 | 每版更新 | ✅ |
-| ⑥ 一般用戶 | `npm run ui`（21 項，要 `npm i -D jsdom`） | 人手，出版前 | ✅ |
+| ⑥ 一般用戶 | `npm run ui`（44 項，A–H 八種身份，要 `npm i -D jsdom`） | 人手，出版前 | ✅ |
 
 **③ 要證明捉得到**：變異測試（故意整壞 → 應該 FAIL → 還原）。現時三個基準變異：
 旱廁併入廁所、版號唔同步、刪 `© SCOUT SYSTEM`。

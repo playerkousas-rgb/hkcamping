@@ -7,16 +7,18 @@
   <meta name="description" content="香港營地、宿營營舍、Glamping 與民宿渡假屋資料庫，按分區、費用、設施、交通篩選，附地圖分布。" />
   <meta name="author" content="SCOUT SYSTEM" />
   <meta name="copyright" content="© SCOUT SYSTEM" />
-  <meta name="version" content="1.7.2" />
+  <meta name="version" content="1.7.3" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
+<a class="skip-link" href="#mainContent">跳去主要內容</a>
+
 <header class="site-header">
   <div class="container header-inner">
     <div>
-      <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.7.2</span></h1>
+      <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.7.3</span></h1>
       <p class="tagline">漁護署營地 ・ Glamping ・ 宿營營舍 ・ 離島渡假屋 — 搵營地、plan 活動一站看清</p>
     </div>
     <div class="header-stats" id="headerStats"></div>
@@ -162,7 +164,7 @@
         <input type="checkbox" id="freeOnly" /> 只看免費
       </label>
       <div class="slider-line">
-        <input type="range" id="maxPrice" min="0" max="1500" step="50" value="1500" />
+        <input type="range" id="maxPrice" min="0" max="1500" step="50" value="1500" aria-label="最高價格（每晚，港幣）" />
         <div class="slider-labels">
           <span>$0</span>
           <span id="maxPriceLabel">$1500 或以上</span>
@@ -199,7 +201,7 @@
   </aside>
 
   <!-- 主內容 -->
-  <main class="main">
+  <main class="main" id="mainContent" tabindex="-1">
     <div class="toolbar">
       <input type="search" id="searchInput" placeholder="搜尋營地名稱、地區、設施（如：熱水淋浴、海灘、寵物）…" />
       <select id="sortSelect" aria-label="排序">
@@ -210,7 +212,7 @@
     </div>
 
     <div class="result-bar">
-      <span id="resultCount">載入中…</span>
+      <span id="resultCount" role="status" aria-live="polite">載入中…</span>
       <button class="btn-text" id="toggleMapText">▣ 隱藏地圖</button>
     </div>
 
@@ -232,7 +234,7 @@
 
 <footer class="site-footer">
   <div class="container">
-    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.7.2</span></p>
+    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.7.3</span></p>
     <p>地圖由 Leaflet + OpenStreetMap 提供 · 天氣數據由香港天文台提供</p>
     <p class="visit-line"><span id="visitCount">👣 入站人次統計中…</span></p>
   </div>
@@ -242,6 +244,13 @@
 <!-- 全站入站人次：Vercel Web Analytics，喺 Vercel Dashboard → Analytics 撳 Enable 後生效。
      本機／非 Vercel host 會 404，瀏覽器會靜靜跳過，唔影響任何功能；零 cookie、零 secret。 -->
 <script defer src="/_vercel/insights/script.js"></script>
+<noscript>
+  <div class="noscript-note">
+    <b>呢個網站要開 JavaScript 先睇到營地名單。</b><br />
+    瀏覽器設定 → 私隱／安全性 → 允許 JavaScript，再重新載入。
+    原始資料仍然可以直接睇：<code>data.csv</code>（108 個營地，Excel 開得）。
+  </div>
+</noscript>
 <script src="data.js"></script>
 <script src="app.js"></script>
 <!-- 回報：沿用 Scout Admin 嘅統一回報 widget（同圖書館／支部／專章系統同一支）。
