@@ -297,6 +297,29 @@ try {
   bad('瘦身預算', (e.stdout || e.message || '').toString().trim().split('\n').slice(-3).join(' '));
 }
 
+/* ---------- 14. 資料一致性（v1.6.0：交通用詞／康文署連結／設施分組） ---------- */
+try {
+  const out = execFileSync(process.execPath, ['scripts/audit-data.mjs'], {
+    cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  const app = read('app.js');
+  const csv = read('data.csv');
+  const checks = [
+    [out.includes('ERROR 0 項'), 'audit-data 冇 ERROR'],
+    [!/(^|;)地鐵(;|$)/m.test(csv) && !/(^|;)東鐵(;|$)/m.test(csv), 'data.csv 冇「地鐵／東鐵」舊稱'],
+    [!csv.includes('/clpss/'), 'data.csv 冇舊版 CLPSS 連結'],
+    [csv.includes('smartplay.lcsd.gov.hk'), '康文署 bookingUrl 指向 SmartPLAY'],
+    [app.includes('FACILITY_GROUPS') && app.includes('canonTag'), 'app.js 有設施分組（燒烤／廁所／攀石…）'],
+    [app.includes("'燒烤設施': ['燒烤', '燒烤爐', '燒烤場']"), '燒烤三個舊寫法已收斂為一個 chip'],
+  ];
+  const failed = checks.filter(([p2]) => !p2).map(([, n]) => n);
+  const warnLine = (out.match(/WARN (\d+) 項/) || [])[1] || '0';
+  if (failed.length) bad('資料一致性', failed.join('; '));
+  else ok('資料一致性', `交通用詞、康文署連結、設施分組合併（WARN ${warnLine} 項 http 連結）`);
+} catch (e) {
+  bad('資料一致性', (e.stdout || e.message || '').toString().trim().split('\n').slice(-6).join(' '));
+}
+
 /* ---------- 總結 ---------- */
 console.log('\n=== hkcamping guard ===');
 for (const r of results) {

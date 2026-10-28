@@ -334,3 +334,52 @@ test('v1.4.0：入站人次喺本機累計，唔會假裝全站數字', () => {
   assert.match(text, /首次 2026-10-01/);
   assert.match(text, /本機紀錄/);
 });
+
+test('v1.6.0：設施用詞分組 — 燒烤／廁所／攀石等只出一個 chip，數量係聯集', () => {
+  const { sandbox, doc } = boot();
+  const chips = doc.getElementById('tagChips').children;
+  const names = chips.map((c) => c.innerHTML.split(' <')[0]);
+
+  // 舊寫法唔可以再獨立成 chip（呢個就係「分成 3 樣」嘅問題）
+  for (const legacy of ['燒烤', '燒烤爐', '燒烤場', '旱廁', '獨立浴室', '攀石牆', '攀岩牆', '攀石場', '停車場', '草坪']) {
+    assert.ok(!names.includes(legacy), `「${legacy}」唔應該再獨立成 chip`);
+  }
+
+  const A = sandbox.CAMPSITES;
+  const members = {
+    '燒烤設施': ['燒烤', '燒烤爐', '燒烤場'],
+    '廁所': ['廁所', '旱廁'],
+    '攀石': ['攀石牆', '攀岩牆', '攀石場'],
+    '繩網': ['繩網', '繩網陣', '挑戰網陣'],
+  };
+  for (const [group, group_members] of Object.entries(members)) {
+    const chip = chips.find((c) => c.innerHTML.startsWith(group));
+    assert.ok(chip, `要有「${group}」chip`);
+    const expect = A.filter((s) =>
+      [...s.facilities, ...s.tags].some((t) => group_members.includes(t))).length;
+    const got = Number((chip.innerHTML.match(/chip-count">(\d+)/) || [])[1]);
+    assert.equal(got, expect, `${group} 數量應為同義詞聯集 ${expect}（現 ${got}）`);
+  }
+});
+
+test('v1.6.0：交通用詞只有「港鐵」，冇「地鐵／東鐵」', () => {
+  const { sandbox } = boot();
+  const bad = sandbox.CAMPSITES.filter((s) =>
+    s.transport.some((t) => ['地鐵', '東鐵', '西鐵', '馬鐵', '輕鐵'].includes(t)));
+  assert.equal(bad.length, 0, `舊稱：${bad.map((s) => `${s.id} ${s.name}`).join('、')}`);
+  assert.ok(sandbox.CAMPSITES.some((s) => s.transport.includes('港鐵')));
+});
+
+test('v1.6.0：康文署 6 筆連 SmartPLAY 同自己場地頁，唔再全部同一個萬能連結', () => {
+  const { sandbox } = boot();
+  const lcsd = sandbox.CAMPSITES.filter((s) => s.id.startsWith('l'));
+  assert.equal(lcsd.length, 6);
+  for (const s of lcsd) {
+    assert.ok(s.bookingUrl.includes('smartplay.lcsd.gov.hk'), `${s.id} bookingUrl 應為 SmartPLAY`);
+    assert.ok(!s.bookingUrl.includes('/clpss/'), `${s.id} 唔應該用舊 CLPSS`);
+    assert.match(s.infoUrl, /lcsd\.gov\.hk\/tc\/(camp|campsites|watersport)\//, `${s.id} infoUrl 要指向自己場地`);
+  }
+  // 每個場地頁唔應該完全一樣
+  const uniqInfo = new Set(lcsd.map((s) => s.infoUrl));
+  assert.equal(uniqInfo.size, lcsd.length, '6 個場地要有 6 個唔同嘅官方頁');
+});

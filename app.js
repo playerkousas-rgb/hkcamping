@@ -4,7 +4,7 @@
 
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.5.0';
+  const APP_VERSION = '1.6.0';
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -13,6 +13,31 @@
     '民宿': { color: '#6a1b9a', short: '民' },
   };
   const SIGNAL_ORDER = ['良好', '一般', '微弱', '無'];
+
+  /* ---------- 設施／特色用詞分組（v1.6.0）----------
+   * 問題：資料層同一樣嘢有幾個寫法（燒烤／燒烤爐／燒烤場、廁所／旱廁、攀石牆／攀岩牆／攀石場…），
+   * 側欄就會出幾個 chip，用戶撳「燒烤爐」見唔到有「燒烤場」嘅營地 → 以為資料矛盾。
+   * 做法：**資料層保留官方精確用詞**（卡片照顯示「旱廁」等實情），
+   *       **篩選層收斂成一個 chip**，count 同配對都用全部同義詞。
+   */
+  const FACILITY_GROUPS = {
+    '燒烤設施': ['燒烤', '燒烤爐', '燒烤場'],
+    '廁所': ['廁所', '旱廁'],
+    '浴室': ['浴室', '獨立浴室', '淋浴'],
+    '停車位': ['停車位', '停車場'],
+    '廚房': ['廚房', '自助廚房', '中央廚房'],
+    '泳池': ['泳池', '室外泳池'],
+    '攀石': ['攀石牆', '攀岩牆', '攀石場'],
+    '草地': ['草地', '草坪', '營地草坪'],
+    '繩網': ['繩網', '繩網陣', '挑戰網陣'],
+    '球場': ['球場', '籃球場', '足球場'],
+  };
+  const GROUP_OF = {};
+  Object.entries(FACILITY_GROUPS).forEach(([group, members]) => {
+    members.forEach((m) => { GROUP_OF[m] = group; });
+  });
+  // 任何設施／標籤 → 篩選層嘅代表詞（唔在分組表就原樣返回）
+  const canonTag = (t) => GROUP_OF[t] || t;
   const FAV_KEY = 'hkcamp_favourites';
   const FOOT_KEY = 'hkcamp_footprints';   // 我的足跡：{ id: { first, last } }
   const VISIT_KEY = 'hkcamp_visits';      // 入站人次（本機累計）
@@ -263,7 +288,8 @@
   const uniq = (arr) => [...new Set(arr)].filter(Boolean);
   const districts = uniq(SITES.map((s) => s.district));
   const transports = uniq(SITES.flatMap((s) => s.transport));
-  const allTags = uniq(SITES.flatMap((s) => [...s.facilities, ...s.tags]));
+  // 篩選層用代表詞（燒烤爐／燒烤場 → 燒烤設施），排序後再顯示
+  const allTags = uniq(SITES.flatMap((s) => [...s.facilities, ...s.tags]).map(canonTag));
   const signals = SIGNAL_ORDER.filter((sig) => SITES.some((s) => s.signal === sig));
   const types = Object.keys(TYPE_META).filter((t) => SITES.some((s) => s.type === t));
 
@@ -274,7 +300,7 @@
     if (skipGroup !== 'transport' && state.transports.size &&
         !s.transport.some((t) => state.transports.has(t))) return false;
     if (skipGroup !== 'tag' && state.tags.size &&
-        ![...s.facilities, ...s.tags].some((t) => state.tags.has(t))) return false;
+        ![...s.facilities, ...s.tags].map(canonTag).some((t) => state.tags.has(t))) return false;
     if (skipGroup !== 'signal' && state.signals.size && !state.signals.has(s.signal)) return false;
 
     if (skipGroup !== 'price') {
@@ -298,12 +324,13 @@
   }
 
   /* ---------- Chip 元件 ---------- */
-  function makeChip(label, set, value, count) {
+  function makeChip(label, set, value, count, hint) {
     const btn = document.createElement('button');
     btn.className = 'chip';
     btn.type = 'button';
     btn.setAttribute('aria-pressed', set.has(value) ? 'true' : 'false');
     btn.innerHTML = `${label}` + (count != null ? ` <span class="chip-count">${count}</span>` : '');
+    if (hint) btn.title = hint;
     btn.addEventListener('click', () => {
       set.has(value) ? set.delete(value) : set.add(value);
       render();
@@ -321,11 +348,13 @@
           if (group === 'type') return s.type === v;
           if (group === 'district') return s.district === v;
           if (group === 'transport') return s.transport.includes(v);
-          if (group === 'tag') return [...s.facilities, ...s.tags].includes(v);
+          if (group === 'tag') return [...s.facilities, ...s.tags].map(canonTag).includes(v);
           if (group === 'signal') return s.signal === v;
           return false;
         }).length;
-        host.appendChild(makeChip(v, set, v, count));
+        const members = FACILITY_GROUPS[v];
+        const hint = group === 'tag' && members ? `包含：${members.join('／')}` : '';
+        host.appendChild(makeChip(v, set, v, count, hint));
       });
     };
 

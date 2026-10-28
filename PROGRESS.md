@@ -12,7 +12,7 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.5.0** |
+| 現行版本 | **v1.6.0** |
 | 工作分支 | `arena/31d2c3e0-hkcamping`（今次）；上一輪 `arena/b909a4c2-hkcamping`（PR #5，已合併） |
 | 基準 main | `dd5be13`（PR #5 合併點） |
 | 當前 PR | [#5](https://github.com/playerkousas-rgb/hkcamping/pull/5) **已合併**（v1.1.0–v1.3.0）；本輪 v1.4.0 喺新分支，待開 PR |
@@ -133,6 +133,26 @@
 
 ---
 
+### v1.6.0 — 修資料矛盾（用戶實測發現，2026-10-28）
+
+用戶指出三點，全部證實係真：
+1. **「香港已經沒有港鐵東鐵」** → `data.csv` 有 4 筆寫「地鐵」、1 筆寫「東鐵」（n30 青協領袖學院）。
+   香港 2007 年兩鐵合併後只有**港鐵**，只分路線（東鐵綫／屯馬綫／東涌綫…）→ 全部統一為「港鐵」。
+2. **「康文署的營地不能直連，會轉駁到康文署其他頁面」** → 6 筆 `bookingUrl` 全部係
+   `lcsd.gov.hk/clpss/tc/Index.do`（舊 CLPSS 系統入口，已由 SmartPLAY 取代）。
+   → 改成 SmartPLAY（`www.smartplay.lcsd.gov.hk`，官方唯一網域）＋ 各自場地頁
+   （`p_ng_po`／`p_lymp`／`p_lmhv`／`p_skorc`／`p_tktorc`／創興水上活動中心訂營頁）。
+3. **「燒烤／燒烤爐／燒烤場分成 3 樣」** → 確認係篩選層碎片化：撳「燒烤爐」見唔到有「燒烤場」嘅營地，
+   睇落就好似「可以燒烤但冇爐冇場」。**資料層保留官方精確用詞，篩選層收斂成一個 chip**
+   （燒烤設施 56／廁所 48／攀石 7／繩網 9…），數量用同義詞聯集。同類問題一次過處理：
+   停車場、自助廚房、中央廚房、室外泳池、攀岩牆、攀石場、草坪、營地草坪、繩網陣、挑戰網陣。
+
+**新增防呆**：`scripts/audit-data.mjs`（`npm run audit`）——捉舊稱、CLPSS 連結、欄位自相矛盾
+（free 但有價／enquiry 但有價／露營有冷氣／booking=否但有 bookingUrl）、座標出界；
+guard 加第 14 項「資料一致性」硬攔；smoke test 加 3 個（用詞分組／交通用詞／康文署連結）→ 16 個。
+
+---
+
 ## 四、全部官方數據源（無第三方）
 
 | 資料 | 來源 | 更新 |
@@ -151,16 +171,16 @@
 ## 五、驗收結果（本機 + CI）
 
 ```
-npm run guard       → 13/13 全綠
-npm test            → 13/13 全綠
+npm run guard       → 14/14 全綠
+npm test            → 16/16 全綠
 npm run build:site  → dist/ 4 個檔，211.9 KB（S6 上限 5MB）
 node --check        → 全部 JS 通過
 PR #5 guard CI      → pass
 Live preview        → / /index.html /styles.css /app.js /data.js 全部 200
 ```
 
-Guard 13 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／dist 體積／單檔 <1MB／
-零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算。
+Guard 14 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／dist 體積／單檔 <1MB／
+零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算／資料一致性。
 
 ---
 
@@ -193,8 +213,8 @@ Guard 13 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／di
 ## 八、部署／驗收指令備忘
 
 ```bash
-npm run guard                 # 13 項
-npm test                      # 13 項
+npm run guard                 # 14 項
+npm test                      # 16 項 + npm run audit
 npm run build:site            # 產生 dist/（Vercel 正式產物）
 npm run dev                   # http://localhost:8000 本機預覽
 node build-data.mjs --check   # 驗 data.js 同 data.csv／各快照是否同步
