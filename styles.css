@@ -613,3 +613,15 @@ code {
 @media (max-width: 760px) {
   .supply-line a { min-height: 34px; display: inline-flex; align-items: center; }
 }
+
+/* ---------- v1.12.0：彩色露營 logo（日出・松樹・營火） ---------- */
+.header-brand { display: flex; align-items: center; gap: 14px; }
+.brand-logo {
+  width: 56px; height: 56px; border-radius: 13px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22);
+  flex: 0 0 auto;
+}
+@media (max-width: 760px) {
+  .header-brand { gap: 10px; align-items: flex-start; }
+  .brand-logo { width: 44px; height: 44px; border-radius: 10px; }
+}

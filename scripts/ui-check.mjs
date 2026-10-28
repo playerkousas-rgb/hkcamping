@@ -455,6 +455,17 @@ console.log('\n【S】加落手機主畫面／分享連結 — 有冇圖？');
   [...title].length <= 6 ? ok(`主畫面名「${title}」（${[...title].length} 字，唔會截字）`) : bad(`主畫面名太長：${title}`);
 
   /manifest\.webmanifest/.test(head) ? ok('manifest 路徑正確') : bad('manifest 路徑有問題');
+
+  /* v1.12.0：header 有彩色 logo，而且唔可以搶讀屏焦點（alt="" + aria-hidden） */
+  const logo = d.querySelector('header .brand-logo');
+  if (!logo) bad('header 冇 logo 圖');
+  else {
+    /\/icons\/icon-\d+\.png$/.test(logo.getAttribute('src') || '') ? ok('header logo 指向 icon PNG') : bad('header logo 路徑怪');
+    logo.getAttribute('alt') === '' && logo.getAttribute('aria-hidden') === 'true'
+      ? ok('logo 用 alt="" + aria-hidden（唔會令讀屏重複讀標題）')
+      : bad('logo 冇正確標記，讀屏會讀多餘內容');
+    Number(logo.getAttribute('width')) >= 40 ? ok('logo 有寫死 width（避免版面跳動 CLS）') : bad('logo 冇寫死尺寸');
+  }
   dom.window.close();
 }
 
