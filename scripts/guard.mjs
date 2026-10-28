@@ -375,7 +375,11 @@ try {
   if (!/google\.com\/maps\/search/.test(app)) problems.push('補給冇地圖搜尋連結');
   if (!/google\.com\/maps\/place/.test(app)) problems.push('補給格冇「營地位置」連結（用地圖 place 網址釘住營地）');
   if (/'超級市場 OR 士多'/.test(app)) problems.push('補給 query 仲有「OR」（Google 唔認，會派錯城市）');
-  if (!/s\.area/.test(app.split('function supplyLine')[1] || '')) problems.push('補給 query 冇用地區名錨定位置');
+  const supplyFn = app.split('function supplyLine')[1] || '';
+  if (!/s\.area/.test(supplyFn)) problems.push('補給 query 冇用地區名錨定位置');
+  /* v1.9.2：鄉郊士多好多被 Google 標做 restaurant（例：發記士多 → Fat Kee Store & Restaurant） */
+  if (!/餐廳/.test(supplyFn)) problems.push('補給 query 冇「餐廳」（鄉郊士多好多兼做食肆，只搜士多會漏）');
+  if (/商鋪/.test(supplyFn)) problems.push('補給 query 用咗「商鋪」—— Google 冇呢個分類，只會派市區商場');
 
   const gearCount = {};
   if (iGear >= 0) rows.forEach((r) => { gearCount[r[iGear]] = (gearCount[r[iGear]] || 0) + 1; });

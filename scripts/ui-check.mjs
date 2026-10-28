@@ -364,6 +364,15 @@ console.log('\n【Q】露營新手／家長 — 要唔要自己帶裝備？邊�
   /@2[0-9]\.[0-9]+,\s*11[0-9]\.[0-9]+,15z$/.test(searchHref) ? ok('搜尋已定位到營地座標 + 放大到 15 級（唔會跳去中環）') : bad(`搜尋冇帶座標／縮放：${searchHref.slice(0, 90)}`);
   /%E5%A3%AB%E5%A4%9A/.test(searchHref) ? ok('搜尋字眼有「士多」') : bad('搜尋字眼冇「士多」');
   /超級市場(%20|\+| )OR/.test(searchHref) ? bad('仲有「OR」（Google 唔認）') : ok('冇再寫 Google 唔認嘅「OR」');
+  /%E9%A4%90%E5%BB%B3/.test(searchHref) ? ok('搜尋字眼有「餐廳」（鄉郊士多好多被 Google 標做食肆）') : bad('搜尋字眼冇「餐廳」');
+  /商鋪/.test(d.body.textContent || '') ? bad('仲有「商鋪」（Google 冇呢個分類，只會派商場）') : ok('冇用「商鋪」呢個字');
+
+  const known = cards.filter((c) => /🛒 最近補給：/.test(c.textContent)).length;
+  eq(known, 6, '6 個已核實補給點直接寫出嚟（三椏村／嶂上／浪茄／籮箕灣／昂坪／鹹田灣）');
+  const knownWithSearch = cards
+    .filter((c) => /🛒 最近補給：/.test(c.textContent))
+    .filter((c) => (c.querySelector('.supply-search')?.getAttribute('href') || '').includes('maps/search')).length;
+  eq(knownWithSearch, 6, '有補給點嘅場仍然可以「再搵其他」');
   /^https:\/\/www\.google\.com\/maps\/place\/2[0-9]\.[0-9]+,11[0-9]\.[0-9]+\//.test(pinHref) ? ok('「營地位置」用 place 網址釘住營地') : bad(`營地位置連結有問題：${pinHref.slice(0, 90)}`);
 
   const sites = dom.window.CAMPSITES || [];
