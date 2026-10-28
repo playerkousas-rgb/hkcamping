@@ -210,6 +210,7 @@ npm run slim     # 瘦身報告：最重 10 個檔、dist 逐檔、gzip、預算
 |---|---|---|
 | **Git ＋ GitHub** | 唯一真理來源、版本歷史、PR 審查、`guard.yml` CI 閘 | ✅ 用（`main` ＋ `arena/*` 工作分支） |
 | **GitHub Actions** | `sync-data.yml` 每日 00:30 HKT 同步漁護署／天文台／OCF；`sync-had.yml` 每月持牌賓館；`guard.yml` push／PR／每週一 | ✅ 用（公開 repo，免費額度） |
+| **Google Apps Script** | 只做「報料表單」嘅收集箱（寫入你嘅 Sheet），唔參與網站渲染；未部署時功能自動隱藏 | ⚪ 選用（v1.7.0 起，見 `apps-script/report-form/`） |
 | **Vercel** | 靜態托管（`hkg1`）、`vercel.json` headers、`build-site.mjs` 產 `dist/`、**Web Analytics 入站人次** | ✅ 用（Framework = Other、Output = dist） |
 | **Node.js（零 runtime dependencies）** | `build-data.mjs` 將 CSV＋各快照砌成 `data.js`；`build-site.mjs` 出 4 個部署檔；`guard.mjs`／`smoke.test.mjs` 本機＋CI 同一條 | ✅ 用（`engines: >=18`，`dependencies` 空白） |
 | **Leaflet ＋ OpenStreetMap** | 地圖、pin、popup、fitBounds | ✅ 用（CDN，非 npm 依賴） |
@@ -340,11 +341,30 @@ python3 -m http.server 8000 --bind 0.0.0.0
 
 然後瀏覽器開 `http://localhost:8000`（直接雙擊 index.html 也可以，資料走 data.js 而非 fetch）。
 
+## 報料／更正表單（v1.7.0 — 選用，要自己部署）
+
+網站本身**冇後端**。想收「呢個場啲設施過時咗」嘅報料，先至接一支 Google Apps Script：
+
+1. 跟 [apps-script/report-form/README.md](apps-script/report-form/README.md) 做 5 步（約 5 分鐘）。
+2. 把 `/exec` 網址貼落 `app.js` 嘅 `REPORT_ENDPOINT = ''`。
+3. `npm run guard` → 第 15 項會驗網址格式。
+
+**設計上守住三件事**：
+
+| 原則 | 點做 |
+|---|---|
+| 唔會出死撳鈕 | `REPORT_ENDPOINT` 留空 → 全站唔顯示報料掣（唔係撳完彈「未設定」） |
+| 唔會引入 CORS／key | 用原生 `<form method="POST" target="_blank">`，**零 fetch、零 XHR、零 key**；訪客撳完開新分頁睇 GAS 嘅「多謝」頁 |
+| 前端驗證唔算數 | 前端 `required`／`maxlength` 只係方便；**同一套規則喺 `Code.gs` 再做一次**（長度、類型白名單、蜜罐、10 分鐘去重、`= + - @` 公式注入防護） |
+
+報料**只寫入你張 Sheet，唔會喺網站顯示**——所以唔會有「公開留言被亂寫」嘅問題。
+你核對完自己改 `data.csv`，把 Sheet 嗰行狀態改成「已處理」。
+
 ## 品質守護（commit 前跑）
 
 ```bash
-npm run guard       # 14 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算／資料一致性
-npm test            # 18 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸、週末排行、我的足跡、入站人次、設施用詞分組、交通用詞、康文署連結、旱廁與廁所分開、獨立浴室與浴室分開
+npm run guard       # 15 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡／瘦身預算／資料一致性／報料表單
+npm test            # 21 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸、週末排行、我的足跡、入站人次、設施用詞分組、交通用詞、康文署連結、旱廁與廁所分開、獨立浴室與浴室分開、報料表單
 npm run build:site  # 產生 dist/（4 個檔，約 215KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
 npm run ui          # 21 項「一般用戶」實測（要先 npm i -D jsdom）— 見下
 ```

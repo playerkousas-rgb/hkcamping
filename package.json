@@ -1,6 +1,6 @@
 {
   "name": "hk-camp-database",
-  "version": "1.6.3",
+  "version": "1.7.0",
   "private": true,
   "license": "UNLICENSED",
   "description": "香港露營・宿營・民宿資料庫（靜態網站，CSV 驅動）",

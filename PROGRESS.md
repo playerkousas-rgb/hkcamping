@@ -12,10 +12,10 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.6.3**（PR #9，待合併） |
+| 現行版本 | **v1.7.0**（PR #9，待合併） |
 | 工作分支 | `arena/944b532d-hkcamping`（今次，PR #9） |
 | 基準 main | `3bd63d7`（PR #8 合併點 = v1.5.0） |
-| 當前 PR | [#9](https://github.com/playerkousas-rgb/hkcamping/pull/9)（v1.6.0／1.6.1／1.6.2／1.6.3）**待合併** |
+| 當前 PR | [#9](https://github.com/playerkousas-rgb/hkcamping/pull/9)（v1.6.0 ～ v1.7.0）**待合併** |
 
 ---
 
@@ -221,6 +221,36 @@ secret 代理）**一條都冇加，亦唔應該加**。落嘅只有兩種：資
 
 **保留**（唔可以刪）：`© SCOUT SYSTEM`、版號、`地圖由 Leaflet + OpenStreetMap 提供`（OSM 授權要求署名）、
 `天氣數據由香港天文台提供`（資料來源）、入站人次數字。
+
+---
+
+### v1.7.0 — 報料／更正表單（2026-10-28）
+
+用戶問「如果加 Apps Script 可否加用戶留言？」→ 揀咗**方案 A（報料表單）**，唔係公開留言板。
+
+**點解揀 A**：公開留言要處理公審、私隱、審批、刪除、限流；而個站真正痛點係「呢個場仲有冇燒烤爐／收幾錢」
+——要人報料，唔係要人傾偈。A 只寫入管理員自己張 Sheet，網站唔會顯示任何未核對內容。
+
+**做咗乜**：
+
+| 檔案 | 內容 |
+|---|---|
+| `apps-script/report-form/Code.gs` | `doPost` 收表單、`onOpen` 選單、「匯出待處理做 CSV」；驗證：長度／類型白名單／蜜罐／10 分鐘去重／`= + - @` 公式注入前置單引號 |
+| `apps-script/report-form/README.md` | 5 步部署（開 Sheet → 貼碼 → 部署 → 貼網址 → 試一次），加限制表 |
+| `app.js` | `REPORT_ENDPOINT` 設定；卡片多一粒「✏️ 報料」；`openReport`／`initReportDialog` |
+| `index.html` | `<dialog>` 表單：類型、500 字詳情、聯絡（選填）、蜜罐 `hp`、hidden siteId／siteName |
+| `styles.css` | 對話框樣式（44px 以下唔用，用 40px + `min-height`） |
+
+**關鍵取捨：用原生 `<form method="POST" target="_blank">`，唔用 fetch。**
+GAS 嘅 `/exec` 回應冇 `Access-Control-Allow-Origin`，用 `fetch` 一定要 `mode:'no-cors'`（送出但讀唔到結果），
+或者搞 JSONP。用原生表單就乜都唔使：冇 CORS、冇 key、斷網都會出瀏覽器自己嘅錯誤頁。
+代價係開新分頁睇 GAS 嘅「多謝」頁——但官網本身唔會被導走，用戶撳返轉頭就得。
+
+**防呆**：`REPORT_ENDPOINT` 留空 → 全站唔出報料掣（唔會出一個撳完冇反應嘅死掣）。
+guard 第 15 項驗：端點格式、前端零 fetch／XHR、蜜罐攔喺兩邊、GAS 有 `doPost`／`CacheService`／公式注入防護。
+未接駁時係 **⚠️ WARN 唔係 FAIL**——因為「未部署」係合法狀態。
+
+**驗證**：guard 15/15、test 21/21、`npm run ui` 21/21、dist 221.1KB。
 
 ---
 

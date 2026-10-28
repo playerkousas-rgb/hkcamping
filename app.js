@@ -4,7 +4,20 @@
 
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.6.3';
+  const APP_VERSION = '1.7.0';
+
+  /* ---------- 報料表單（v1.7.0）----------
+   * 貼上 Google Apps Script Web App 嘅 /exec 網址；**留空＝整個功能隱藏**，
+   * 未部署都唔會出一個撳完冇反應嘅死撳鈕（F：防呆）。
+   * 部署步驟見 apps-script/report-form/README.md。
+   *
+   * 安全性：呢個網址本身就係公開嘅（任何人都 POST 得），所以：
+   *   - 唔可以當 secret，前端亦冇任何 key（A 系列）
+   *   - 所有驗證喺 GAS 側再做一次（長度、類型白名單、honeypot、限流）
+   *   - 用原生 <form method="POST" target="_blank">，唔用 fetch → 冇 CORS 問題、
+   *     斷網／JS 出錯都有瀏覽器自己嘅錯誤頁，唔會靜靜死咗
+   */
+  const REPORT_ENDPOINT = '';
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -556,6 +569,7 @@
           ${s.booking && s.bookingUrl ? `<a href="${s.bookingUrl}" target="_blank" rel="noopener">📅 預訂</a>` : ''}
           ${s.booking && !s.bookingUrl && s.infoUrl ? `<a href="${s.infoUrl}" target="_blank" rel="noopener">📅 預訂查詢</a>` : ''}
           ${!s.booking && s.infoUrl ? `<a href="${s.infoUrl}" target="_blank" rel="noopener">ℹ 官方資料</a>` : ''}
+          ${REPORT_ENDPOINT ? `<button data-action="report" type="button" title="發現資料過時／有錯？報畀我哋知">✏️ 報料</button>` : ''}
         </div>`;
 
       card.querySelector('.fav-btn').addEventListener('click', (e) => {
@@ -586,6 +600,8 @@
         else renderFilters();
       });
       card.querySelector('[data-action="locate"]').addEventListener('click', () => flyTo(s.id));
+      const reportBtn = card.querySelector('[data-action="report"]');
+      if (reportBtn) reportBtn.addEventListener('click', () => openReport(s));
       card.querySelector('[data-action="local"]').addEventListener('click', () => {
         localSiteId = s.id;
         renderLocalConditions(s);
@@ -1179,6 +1195,43 @@
       + '全站真實人次由 Vercel Web Analytics 以無 cookie 方式統計（詳見 README）。';
   }
 
+  /* ---------- 報料表單（v1.7.0）---------- */
+  function openReport(site) {
+    const dlg = document.getElementById('reportDialog');
+    const form = document.getElementById('reportForm');
+    if (!dlg || !form || !REPORT_ENDPOINT) return;
+    form.action = REPORT_ENDPOINT;
+    const setVal = (name, v) => { if (form.elements[name]) form.elements[name].value = v; };
+    setVal('siteId', site.id);
+    setVal('siteName', site.name);
+    const title = document.getElementById('reportSiteName');
+    if (title) title.textContent = site.name;
+    const detail = form.elements.detail;
+    if (detail) detail.value = '';
+    const msg = document.getElementById('reportDone');
+    if (msg) msg.hidden = true;
+    if (typeof dlg.showModal === 'function') dlg.showModal();
+    else dlg.setAttribute('open', '');
+  }
+
+  function initReportDialog() {
+    const dlg = document.getElementById('reportDialog');
+    const form = document.getElementById('reportForm');
+    if (!dlg || !form) return;
+    const close = () => {
+      if (typeof dlg.close === 'function') dlg.close();
+      else dlg.removeAttribute('open');
+    };
+    document.getElementById('reportCancel')?.addEventListener('click', close);
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) close(); });
+    // target="_blank"：送出後官網唔會被導走，用戶返到原本個位
+    form.addEventListener('submit', () => {
+      const msg = document.getElementById('reportDone');
+      if (msg) msg.hidden = false;
+      setTimeout(close, 300);
+    });
+  }
+
   /* ---------- 版號顯示（W1 / V1） ---------- */
   function renderVersion() {
     const badge = document.getElementById('versionBadge');
@@ -1190,6 +1243,7 @@
   /* ---------- 啟動 ---------- */
   renderVersion();
   initVisitCounter();
+  initReportDialog();
   renderWeather();
   renderForecastRegionOptions();
   renderForecast();

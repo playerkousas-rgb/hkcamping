@@ -19,6 +19,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const results = [];
 const ok = (name, detail = '') => results.push({ pass: true, name, detail });
 const bad = (name, detail = '') => results.push({ pass: false, name, detail });
+const warn = (name, detail = '') => results.push({ pass: true, warn: true, name, detail });
 const exists = (p) => existsSync(join(ROOT, p));
 const read = (p) => readFileSync(join(ROOT, p), 'utf8');
 
@@ -320,10 +321,42 @@ try {
   bad('資料一致性', (e.stdout || e.message || '').toString().trim().split('\n').slice(-6).join(' '));
 }
 
+/* ---------- 15. 報料表單（v1.7.0：公開端點，前端唔可以有任何 secret） ---------- */
+try {
+  const app = read('app.js');
+  const html = read('index.html');
+  const gasPath = join(ROOT, 'apps-script/report-form/Code.gs');
+  const gas = existsSync(gasPath) ? readFileSync(gasPath, 'utf8') : '';
+  const endpoint = (app.match(/const REPORT_ENDPOINT = '([^']*)'/) || [])[1];
+
+  const checks = [
+    [endpoint !== undefined, 'app.js 有 REPORT_ENDPOINT 設定位'],
+    // 前端維持零 API 呼叫：寫入靠原生 form POST，唔用 fetch → 冇 CORS、斷網都有瀏覽器錯誤頁
+    [!/\bfetch\s*\(/.test(app) && !/XMLHttpRequest/.test(app), '前端零 fetch／XHR（只用原生 form POST）'],
+    [html.includes('method="POST"') && /id="reportForm"[\s\S]{0,200}?target="_blank"/.test(html.replace(/\n/g, ' '))
+      || /method="POST"[\s\S]{0,200}?target="_blank"/.test(html), '表單用 POST + target="_blank"（官網唔會被導走）'],
+    [html.includes('name="hp"'), '有蜜罐欄位（hp）擋機器人'],
+    [html.includes('id="reportDialog"') && app.includes('function openReport'), '報料對話框已接駁'],
+    // 公開端點：任何 key／secret 都唔可以落前端
+    [!/(api[_-]?key|secret|token|bearer)\s*[:=]\s*['"][^'"]{8,}/i.test(app), 'app.js 冇 secret／key'],
+    [gas.includes('function doPost'), 'GAS 有 doPost'],
+    [gas.includes('CacheService') && gas.includes('TYPES.indexOf'), 'GAS 有去重 + 類型白名單'],
+    [/^[=+\-@]/.test('=1') && gas.includes('/^[=+\\-@]/'), 'GAS 有擋公式注入（= + - @ 前置單引號）'],
+    [gas.includes('hp'), 'GAS 自己再驗一次蜜罐（唔信前端）'],
+  ];
+  const failed = checks.filter(([p]) => !p).map(([, n]) => n);
+  if (failed.length) bad('報料表單', failed.join('; '));
+  else if (!endpoint) warn('報料表單', '未接駁（REPORT_ENDPOINT 留空 → 撳鈕隱藏，部署 Apps Script 後貼網址）');
+  else if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(endpoint)) bad('報料表單', `REPORT_ENDPOINT 格式唔啱：${endpoint}`);
+  else ok('報料表單', 'GAS 端點已接駁、前端零 fetch、蜜罐 + 去重 + 公式注入防護齊');
+} catch (e) {
+  bad('報料表單', (e.message || '').toString().slice(0, 160));
+}
+
 /* ---------- 總結 ---------- */
 console.log('\n=== hkcamping guard ===');
 for (const r of results) {
-  console.log(`${r.pass ? '✅' : '❌'} ${r.name}${r.detail ? ` — ${r.detail}` : ''}`);
+  console.log(`${r.pass ? (r.warn ? '⚠️ ' : '✅') : '❌'} ${r.name}${r.detail ? ` — ${r.detail}` : ''}`);
 }
 const failed = results.filter((r) => !r.pass).length;
 console.log(`\n${results.length - failed}/${results.length} 項通過${failed ? `，${failed} 項 FAIL` : '，全部綠'}`);

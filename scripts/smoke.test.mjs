@@ -49,7 +49,7 @@ class FakeDoc {
   createElement(tag) { return new FakeEl(tag); }
 }
 
-function boot(seed = {}) {
+function boot(seed = {}, opts = {}) {
   const doc = new FakeDoc();
   const store = new Map(Object.entries(seed));
   const localStorage = {
@@ -62,7 +62,7 @@ function boot(seed = {}) {
   vm.runInContext('var window = globalThis;', sandbox);
   // 刻意唔提供 window.L → 行地圖 fallback 分支
   vm.runInContext(readFileSync(join(ROOT, 'data.js'), 'utf8'), sandbox, { filename: 'data.js' });
-  vm.runInContext(readFileSync(join(ROOT, 'app.js'), 'utf8'), sandbox, { filename: 'app.js' });
+  vm.runInContext(opts.appSrc || readFileSync(join(ROOT, 'app.js'), 'utf8'), sandbox, { filename: 'app.js' });
   return { sandbox, doc, store };
 }
 
@@ -430,4 +430,33 @@ test('v1.6.1：獨立浴室（民宿私人）同浴室（營地公用）分開',
   // 民宿嘅私人浴室唔應該被當成營地公用浴室
   assert.ok(A.filter((s) => s.facilities.includes('獨立浴室'))
     .every((s) => s.type === '民宿'));
+});
+
+test('v1.7.0：報料表單 — 未接駁時全站唔會出死撳鈕', () => {
+  const { doc } = boot();
+  const cards = doc.getElementById('cardGrid').children;
+  assert.equal(cards.filter((c) => c.innerHTML.includes('data-action="report"')).length, 0);
+});
+
+test('v1.7.0：接駁 REPORT_ENDPOINT 之後，每張卡都有報料掣', () => {
+  const src = readFileSync(join(ROOT, 'app.js'), 'utf8')
+    .replace("const REPORT_ENDPOINT = '';", "const REPORT_ENDPOINT = 'https://script.google.com/macros/s/AKfyTESTID/exec';");
+  const { doc } = boot({}, { appSrc: src });
+  const cards = doc.getElementById('cardGrid').children;
+  assert.equal(cards.filter((c) => c.innerHTML.includes('data-action="report"')).length, 108);
+});
+
+test('v1.7.0：報料用原生 form POST — 零 fetch／零 key／蜜罐喺兩邊都有', () => {
+  const html = readFileSync(join(ROOT, 'index.html'), 'utf8');
+  const app = readFileSync(join(ROOT, 'app.js'), 'utf8');
+  const gas = readFileSync(join(ROOT, 'apps-script/report-form/Code.gs'), 'utf8');
+  const formTag = (html.match(/<form[^>]*id="reportForm"[^>]*>/) || [])[0] || '';
+  assert.match(formTag, /method="POST"/i);
+  assert.match(formTag, /target="_blank"/i);
+  assert.match(html, /name="hp"/);
+  assert.ok(!/\bfetch\s*\(/.test(app), '前端唔應該有 fetch');
+  assert.ok(!/XMLHttpRequest/.test(app), '前端唔應該有 XHR');
+  assert.match(gas, /function doPost/);
+  assert.match(gas, /hp/);
+  assert.match(gas, /CacheService/);
 });
