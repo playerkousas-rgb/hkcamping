@@ -232,9 +232,13 @@ python3 -m http.server 8000 --bind 0.0.0.0
 
 ```bash
 npm run guard       # 12 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡
-npm test            # 12 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸、週末排行、我的足跡、入站人次
+npm test            # 13 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸、週末排行、我的足跡、入站人次
 npm run build:site  # 產生 dist/（4 個檔，約 257KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
 ```
+
+> **測試唔會鎖死當日官方數據**（v1.4.1）：`npm test` 驗嘅係不變量（日數下限、數值範圍、排序），
+> 唔會寫死「某一日官方實測值」或「每站 10 日」——因為 `sync-data.yml` 每日 00:30 HKT 都會翻新快照。
+> 渲染邏輯另有一個**合成快照**測試，完全確定性，數據點變都唔會爆。
 
 `guard.yml` 喺 push、PR 同每週一自動跑同一條；五大鐵律 S／F／A／W／V 嘅適用範圍同例外，
 見 [HANDOVER-STATUS.md](HANDOVER-STATUS.md)。

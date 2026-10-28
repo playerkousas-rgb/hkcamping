@@ -75,8 +75,10 @@ test('data.js 載入 108 筆，前端啟動無例外', () => {
 
 test('雙版號同頁尾版權（V1 / W1）', () => {
   const { doc } = boot();
-  assert.equal(doc.getElementById('versionBadge').textContent, 'v1.4.0');
-  assert.equal(doc.getElementById('appVersion').textContent, '1.4.0');
+  // 唔寫死版號：以 package.json 為單一真相，每次升版都唔使改 test
+  const pkgVersion = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
+  assert.equal(doc.getElementById('versionBadge').textContent, `v${pkgVersion}`);
+  assert.equal(doc.getElementById('appVersion').textContent, pkgVersion);
 });
 
 test('約數標記：44 筆有銀碼卡片顯示「約」+ 警句，免費／面議唔會', () => {
@@ -140,35 +142,101 @@ test('v1.2.0：該區天氣／潮汐／日出日落公式', () => {
   assert.match(doc.getElementById('cardGrid').children[0].innerHTML, /data-action="local"/);
 });
 
-test('v1.3.0：官方 OCF 九日分區預報時間軸', () => {
+test('v1.3.0：官方 OCF 分區預報（對每日同步穩健，唔鎖死某一日官方值）', () => {
   const { sandbox, doc } = boot();
   const A = sandbox.CAMPSITES;
   const O = sandbox.CAMP_OCF;
-  // 12 站、每站 10 日
   assert.equal(Object.keys(O.stations).length, 12);
-  assert.equal(O.stations.SEK.daily.length, 10);
   assert.ok(O.notes.includes('未經人手修訂'));
   // 108 筆全部配對到有效站
   assert.ok(A.every((x) => x.ocfStation && O.stations[x.ocfStation]));
-  // 官方實測值抽驗（2026-10-31 星期六）
-  const sek = O.stations.SEK.daily.find((d) => d.date === '2026-10-31');
-  assert.equal(sek.rainLabel, '20%');
-  assert.equal(sek.max, 30.4);
-  assert.equal(sek.min, 22.5);
-  const lfs = O.stations.LFS.daily.find((d) => d.date === '2026-10-31');
-  assert.equal(lfs.rainLabel, '< 10%');
-  // TWN／SKW 官方無 PoP，要容錯
-  assert.equal(O.stations.TWN.daily[0].rainPct, null);
-  // 九日時間軸有渲染
+
+  // 每站日數：OCF 官方每日出 9–10 日，遇截數可能得 9 日 → 用下限，唔用 == 10
+  const days = O.stations.SEK.daily;
+  assert.ok(days.length >= 8, `每站至少 8 日預報（現 ${days.length}）`);
+
+  // 日期要係 ISO 而且遞增
+  const dates = days.map((d) => d.date);
+  assert.ok(dates.every((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)), `日期格式：${dates[0]}`);
+  assert.deepEqual([...dates], [...dates].sort(), '日期要遞增');
+
+  // 數值合理性（唔比對官方某一日嘅實數，否則每日 00:30 同步就會爆 CI）
+  for (const st of Object.values(O.stations)) {
+    for (const d of st.daily) {
+      assert.ok(d.rainPct === null || (d.rainPct >= 0 && d.rainPct <= 100),
+        `${st.name} ${d.date} 降雨概率 ${d.rainPct}`);
+      if (d.max !== null) assert.ok(d.max > -20 && d.max < 60, `${st.name} 最高溫 ${d.max}`);
+      if (d.min !== null) assert.ok(d.min > -20 && d.min < 60, `${st.name} 最低溫 ${d.min}`);
+      if (d.max !== null && d.min !== null) assert.ok(d.max >= d.min, `${st.name} ${d.date} max<min`);
+    }
+  }
+
+  // TWN／SKW 官方長期只提供溫度、冇降雨概率 → 要容錯成 null
+  assert.ok(O.stations.TWN.daily.every((d) => d.rainPct === null));
+  assert.ok(O.stations.SKW.daily.every((d) => d.rainPct === null));
+
+  // 九日時間軸渲染日數 = 最多營地嗰個站嘅日數
+  const used = {};
+  A.forEach((s) => { used[s.ocfStation] = (used[s.ocfStation] || 0) + 1; });
+  const top = Object.keys(used).sort((a, b) => used[b] - used[a])[0];
   const scroll = doc.getElementById('forecastScroll');
-  assert.equal(scroll.children.length, 10);
+  assert.equal(scroll.children.length, O.stations[top].daily.length);
   const first = scroll.children[0].children.map((c) => c.textContent).join('|');
   assert.match(first, /今日/);
   assert.match(first, /🌧/);
   assert.match(first, /🌇/);
   // 地區選擇器有 option
-  const sel = doc.getElementById('forecastRegion');
-  assert.ok(sel.children.length >= 10);
+  assert.ok(doc.getElementById('forecastRegion').children.length >= 10);
+});
+
+test('v1.4.1：OCF 面板用合成快照渲染（降雨分級／溫度四捨五入／無 PoP 容錯）', () => {
+  // 完全確定性嘅測試：唔讀當日官方快照，CI 唔會因為數據更新而紅
+  const day = (date, rainPct, rainLabel, weather, max, min) =>
+    ({ date, rainPct, rainLabel, weather, max, min });
+  const daily = [
+    day('2026-01-01', 5, '< 10%', 50, 21.4, 15.6),    // low  → 適合
+    day('2026-01-02', 45, '40%', 62, 19.9, 14.4),     // mid  → 帶雨具
+    day('2026-01-03', 65, '60%', 63, 18.2, 13.1),     // high → 唔適宜
+    day('2026-01-04', null, null, 60, 20, 14),        // 官方無 PoP
+  ];
+  const stations = {};
+  ['TKL', 'TPO', 'SEK', 'SHA', 'TWN', 'LFS', 'TUN', 'CCH', 'SKW', 'HKS', 'JKB', 'HKO']
+    .forEach((code, i) => {
+      stations[code] = { code, name: `測試站${i}`, daily: daily.map((d) => ({ ...d })) };
+    });
+
+  const doc = new FakeDoc();
+  const store = new Map();
+  const sandbox = {
+    console,
+    document: doc,
+    localStorage: { getItem: (k) => store.get(k) ?? null, setItem: (k, v) => store.set(k, String(v)), removeItem: () => {} },
+  };
+  vm.createContext(sandbox);
+  vm.runInContext('var window = globalThis;', sandbox);
+  vm.runInContext(readFileSync(join(ROOT, 'data.js'), 'utf8'), sandbox, { filename: 'data.js' });
+  vm.runInContext(`window.CAMP_OCF = ${JSON.stringify({
+    fetchedAt: new Date().toISOString(), stations, notes: '測試快照（未經人手修訂）',
+  })};`, sandbox);
+  vm.runInContext(readFileSync(join(ROOT, 'app.js'), 'utf8'), sandbox, { filename: 'app.js' });
+
+  const scroll = doc.getElementById('forecastScroll');
+  assert.equal(scroll.children.length, 4, '4 日快照應渲染 4 格');
+  const text = (i) => scroll.children[i].children.map((c) => c.textContent).join('|');
+
+  assert.match(text(0), /今日/);
+  assert.match(text(0), /< 10%/);
+  assert.match(text(0), /21° \/ 16°/, '溫度要四捨五入');
+  assert.match(text(0), /適合/);
+
+  assert.match(text(1), /40%/);
+  assert.match(text(1), /帶雨具/);
+
+  assert.match(text(2), /60%/);
+  assert.match(text(2), /唔適宜/);
+
+  assert.match(text(3), /降雨概率 —/, '官方無 PoP 要顯示 —，唔可以當 0');
+  assert.doesNotMatch(text(3), /\b0%/);
 });
 
 test('價格 null 顯示面議，唔會當成免費', () => {

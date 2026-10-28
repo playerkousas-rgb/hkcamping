@@ -12,7 +12,7 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.4.0** |
+| 現行版本 | **v1.4.1** |
 | 工作分支 | `arena/31d2c3e0-hkcamping`（今次）；上一輪 `arena/b909a4c2-hkcamping`（PR #5，已合併） |
 | 基準 main | `dd5be13`（PR #5 合併點） |
 | 當前 PR | [#5](https://github.com/playerkousas-rgb/hkcamping/pull/5) **已合併**（v1.1.0–v1.3.0）；本輪 v1.4.0 喺新分支，待開 PR |
@@ -99,6 +99,21 @@
   README 重複嘅 `data/auto` 行、dist 體積（240.7→256.4KB）同步。
 - guard 加第 12 項；smoke test 加 3 個（週末排行／足跡／入站人次）→ 12/12。
 
+### v1.4.1 — 修 main 上嘅 CI 假失敗（2026-10-28）
+
+**現象**：PR #6 合併後，`main` 上 guard CI 紅燈（step 5 smoke test），但本機 `npm run guard` 全綠。
+**根因**：`scripts/smoke.test.mjs` 寫死咗**種子快照**嘅實數 —— 每站「10 日」、`2026-10-31 SEK 30.4/22.5 20%`、
+`LFS '< 10%'`、`scroll.children.length === 10`。但 `sync-data.yml` 每日 00:30 HKT 會翻新快照
+（實測變成 9 日、日期由 10-28 起）→ **每逢數據更新，CI 就會無故爆**，屬 F 防呆反例。
+**修正**：
+- OCF 測試改為驗**不變量**：12 站、≥8 日、日期 ISO 且遞增、降雨 0–100、最高≥最低、
+  TWN／SKW 恆為 null；時間軸格數用「最多營地嗰個站」嘅日數，唔再寫死 10
+- 新增**合成快照**測試：自建 4 日假快照驗渲染（`< 10%`→適合、40%→帶雨具、60%→唔適宜、
+  無 PoP→「降雨概率 —」且唔會當 0、溫度四捨五入、無 PoP 唔會多出過期提示）
+- 版號測試改為讀 `package.json` 對照，升版唔再爆
+- 已用 `main` **真實 9 日快照**回歸驗證：13/13 綠
+- 版本升至 **v1.4.1**（四處同步）
+
 ---
 
 ## 四、全部官方數據源（無第三方）
@@ -120,7 +135,7 @@
 
 ```
 npm run guard       → 12/12 全綠
-npm test            → 12/12 全綠
+npm test            → 13/13 全綠
 npm run build:site  → dist/ 4 個檔，256.4 KB（S6 上限 5MB）
 node --check        → 全部 JS 通過
 PR #5 guard CI      → pass
@@ -147,7 +162,7 @@ Guard 12 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／di
 
 ## 七、合併後嘅下一步
 
-1. **開 PR 合併 v1.4.0 入 `main`** ← 本次交付
+1. **PR #6 已合併入 `main`**（merge commit `a24d5bf`）；v1.4.1 CI 修復另開 PR
 2. 合併後去 Actions 手動 Run 一次 `Camp Data Sync` 驗收
    （Arena token 無 `actions: write`，API dispatch 回 403，要喺 UI 撳）
 3. **Vercel Git Import**：Vercel 連接口 token `limited: true`，`create_project` 403 → 我開唔到 project，
@@ -162,7 +177,7 @@ Guard 12 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／di
 
 ```bash
 npm run guard                 # 12 項
-npm test                      # 12 項
+npm test                      # 13 項
 npm run build:site            # 產生 dist/（Vercel 正式產物）
 npm run dev                   # http://localhost:8000 本機預覽
 node build-data.mjs --check   # 驗 data.js 同 data.csv／各快照是否同步
