@@ -601,8 +601,15 @@ code {
 /* ---------- v1.9.0：裝備／補給 ---------- */
 .prep-badge.gear { background: #eef2ea; color: #3b4a36; border: 1px solid #d7dfcd; }
 .prep-badge.gear.ok { background: #e8f1fb; color: #174a7a; border-color: #cfe0f2; }
+/* ---------- v1.9.1：補給兩個掣（搜尋 ／ 營地位置） ---------- */
 .supply-line {
-  display: inline-block; margin: 6px 0 2px; font-size: 0.8rem;
-  color: #174a7a; text-decoration: none; border-bottom: 1px dashed #9dbcd8;
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 14px;
+  margin: 6px 0 2px; font-size: 0.8rem;
 }
-.supply-line:hover { color: #0d3358; border-bottom-style: solid; }
+.supply-line a, .supply-known { color: #174a7a; text-decoration: none; border-bottom: 1px dashed #9dbcd8; }
+.supply-line .supply-pin { color: var(--muted); border-bottom-color: var(--line); }
+.supply-line .supply-known { border-bottom-style: dotted; color: #2a4a2a; }
+.supply-line a:hover, .supply-line a:focus-visible { color: #0d3358; border-bottom-style: solid; }
+@media (max-width: 760px) {
+  .supply-line a { min-height: 34px; display: inline-flex; align-items: center; }
+}

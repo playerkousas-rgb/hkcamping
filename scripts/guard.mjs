@@ -371,7 +371,11 @@ try {
   }
   if (!app.includes('function gearBadge')) problems.push('app.js 冇 gearBadge');
   if (!app.includes('function supplyLine')) problems.push('app.js 冇 supplyLine');
+  /* v1.9.1：用戶實測「撳完補給見唔到營地位置」＋「OR 會派中環超市」→ 呢兩條規則要守住 */
   if (!/google\.com\/maps\/search/.test(app)) problems.push('補給冇地圖搜尋連結');
+  if (!/google\.com\/maps\/place/.test(app)) problems.push('補給格冇「營地位置」連結（用地圖 place 網址釘住營地）');
+  if (/'超級市場 OR 士多'/.test(app)) problems.push('補給 query 仲有「OR」（Google 唔認，會派錯城市）');
+  if (!/s\.area/.test(app.split('function supplyLine')[1] || '')) problems.push('補給 query 冇用地區名錨定位置');
 
   const gearCount = {};
   if (iGear >= 0) rows.forEach((r) => { gearCount[r[iGear]] = (gearCount[r[iGear]] || 0) + 1; });
