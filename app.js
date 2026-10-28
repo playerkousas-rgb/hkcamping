@@ -6,7 +6,7 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.10.0';
+  const APP_VERSION = '1.11.0';
 
 
   const TYPE_META = {

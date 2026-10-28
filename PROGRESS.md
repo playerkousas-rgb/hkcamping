@@ -12,10 +12,10 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.10.0**（PR #12，待合併） |
-| 工作分支 | `arena/6e140eb5-hkcamping`（今次，PR #12） |
-| 基準 main | `0683ed4`（PR #11 合併點 = v1.9.2） |
-| 當前 PR | [#12](https://github.com/playerkousas-rgb/hkcamping/pull/12)（v1.10.0 天氣站座標配對）**待合併** |
+| 現行版本 | **v1.11.0**（PR #13，待合併） |
+| 工作分支 | `arena/cb9d5b29-hkcamping`（今次，PR #13） |
+| 基準 main | `786d75f`（PR #12 合併點 = v1.10.0） |
+| 當前 PR | [#13](https://github.com/playerkousas-rgb/hkcamping/pull/13)（v1.11.0 App Icon／favicon）**待合併** |
 
 ---
 
@@ -361,6 +361,27 @@ test 21/21、`npm run ui` 28/28（第 E 段驗：widget 有嵌、卡片冇多餘
 - 營位數字只有漁護署 41 個營地有官方數字；其餘 67 筆（NGO／民宿）冇，篩選時唔會出現。
 
 ---
+
+### v1.11.0 — App Icon／favicon（2026-10-28）
+
+用戶：「幫我畫埋個 LOGO 同 FAVICON 比佢丫，唔係 WEBSITE 個 APP 上架會無圖」
+補一句：「唔要 SVG 直接用 AI 生成」。
+
+- 用 AI 生成 1024×1024 主圖（深綠滿版 #1B4D28 ＋ 奶白 A 形帳篷 ＋ 頂上圓點 ＋ 底下波浪線），
+  再用 ImageMagick 降到 **只兩隻色**（`+dither -remap` 3 色 palette），避免漸變／陰影／雜點，
+  縮到 16px 都仲睇得清。
+- **第一版出錯**：AI 生咗圓角＋圓角外面有白邊 → 加落主畫面會見四個白角。
+  重畫要求「full bleed、四邊滿版、冇白邊」。
+- **16px 用另一個版本**：唔係縮細 1024，係用 `convert -draw` 手繪簡單版
+  （去掉波浪線、帳篷加粗），因為 1024 縮到 16px 一定糊。
+- 新增 `icons/` 10 個檔、`manifest.webmanifest`、`robots.txt`。
+- `index.html` 加 11 個 meta（icon×3、apple-touch-icon、manifest、theme-color、
+  apple-mobile-web-app-title、msapplication×2、og:image×4、twitter:card）。
+- `build-site.mjs` 會一併部署 `icons/`；`vercel.json` icons 一年 immutable。
+- `slim-report.mjs` 修好讀唔到 `dist/icons` 子目錄（EISDIR）。
+- guard 第 18 項：用 `identify` 量實際像素尺寸 ＋ 驗 manifest JSON；ui 加 S 段 10 項。
+
+驗收：guard **18/18**、test **21/21**、ui **109/109**、dist **367.7 KB**（含 10 個圖）。
 
 ### v1.10.0 — 天氣站改用營地座標配對（2026-10-28）
 

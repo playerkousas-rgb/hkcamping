@@ -429,5 +429,34 @@ console.log('\n【R】天氣站配對 — 用營地座標（唔再用區名關�
   dom.window.close();
 }
 
-console.log(`\n=== 身份實測 A–R：${pass} pass / ${fail} fail ===`);
+console.log('\n【S】加落手機主畫面／分享連結 — 有冇圖？');
+{
+  const { dom } = await boot({ onFetch: () => {} });
+  const d = dom.window.document;
+  const head = d.head.innerHTML;
+
+  const has = (sel, label) => {
+    d.querySelector(sel) ? ok(label) : bad(`缺 ${label}`);
+  };
+  has('link[rel="apple-touch-icon"]', '有 iOS 主畫面圖示 link（冇就會用空白／網站截圖）');
+  has('link[rel="manifest"]', '有 PWA manifest（Android「安裝應用程式」要用）');
+  has('link[rel="icon"]', '有 favicon');
+  has('meta[name="theme-color"]', '有 theme-color（Android 狀態欄會用品牌綠色）');
+  has('meta[property="og:image"]', '有 og:image（WhatsApp 貼連結會出圖）');
+  has('meta[name="apple-mobile-web-app-title"]', '有主畫面顯示名（唔會變成超長網址）');
+
+  const apple = d.querySelector('link[rel="apple-touch-icon"]')?.getAttribute('href') || '';
+  /apple-touch-icon\.png$/.test(apple) ? ok(`iOS 圖示指向 ${apple}`) : bad(`iOS 圖示路徑怪：${apple}`);
+
+  const og = d.querySelector('meta[property="og:image"]')?.getAttribute('content') || '';
+  /^https:\/\//.test(og) ? ok('og:image 係完整網址（og 一定要絕對路徑）') : bad('og:image 唔係絕對網址，分享平台會攞唔到圖');
+
+  const title = d.querySelector('meta[name="apple-mobile-web-app-title"]')?.getAttribute('content') || '';
+  [...title].length <= 6 ? ok(`主畫面名「${title}」（${[...title].length} 字，唔會截字）`) : bad(`主畫面名太長：${title}`);
+
+  /manifest\.webmanifest/.test(head) ? ok('manifest 路徑正確') : bad('manifest 路徑有問題');
+  dom.window.close();
+}
+
+console.log(`\n=== 身份實測 A–S：${pass} pass / ${fail} fail ===`);
 process.exit(fail ? 1 : 0);

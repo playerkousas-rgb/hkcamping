@@ -47,13 +47,29 @@ for (const r of rows.slice(0, 10)) {
   console.log(`  ${KB(r.bytes)}  → ${KB(r.gz)} gz  ${r.f}`);
 }
 
+/** dist/ 而家有子目錄（icons/），所以要遞歸；圖片唔再 gzip（PNG 本身已壓縮） */
+function walkDist(dir) {
+  const out = [];
+  for (const e of readdirSync(dir, { withFileTypes: true })) {
+    const full = join(dir, e.name);
+    if (e.isDirectory()) out.push(...walkDist(full));
+    else out.push(relative(join(ROOT, 'dist'), full));
+  }
+  return out.sort();
+}
+
 console.log('\ndist/（Vercel 真正部署嘅嘢）：');
 let distTotal = 0;
 if (existsSync(join(ROOT, 'dist'))) {
-  for (const f of readdirSync(join(ROOT, 'dist')).sort()) {
+  for (const f of walkDist(join(ROOT, 'dist'))) {
     const buf = readFileSync(join(ROOT, 'dist', f));
     distTotal += buf.length;
-    console.log(`  ${KB(buf.length)}  → ${KB(gzipSync(buf).length)} gz  dist/${f}`);
+    const isText = /\.(html|css|js|json|webmanifest|txt)$/i.test(f);
+    const gz = isText ? `  → ${KB(gzipSync(buf).length)} gz` : '  （圖片，唔再壓）';
+    // 圖標逐個列太嘈，只列大檔
+    if (isText || buf.length > 30 * 1024) {
+      console.log(`  ${KB(buf.length)}${gz}  dist/${f}`);
+    }
   }
   console.log(`  ${KB(distTotal)}  合計（S7 硬上限 5120 KB，我哋目標 ${BUDGET.distTotal / 1024} KB）`);
 } else {
