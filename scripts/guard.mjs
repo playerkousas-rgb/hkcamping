@@ -460,10 +460,13 @@ try {
     if (!html.includes(needle)) problems.push(`index.html 冇 ${needle}（${label}）`);
   }
 
-  // 圖示尺寸要真係啱（iOS 會因為尺寸唔啱而唔用）
+  // 圖示尺寸要真係啱（iOS 會因為尺寸唔啱而唔用）。
+  // 自己讀 PNG 嘅 IHDR（唔靠 ImageMagick —— CI 冇裝，而且本站零依賴）
   const sizeOf = (f) => {
-    const out = execFileSync('identify', ['-format', '%w %h', join(ROOT, f)]).toString().trim().split(' ');
-    return [Number(out[0]), Number(out[1])];
+    const buf = readFileSync(join(ROOT, f));
+    const isPng = buf.slice(1, 4).toString() === 'PNG';
+    if (!isPng) throw new Error('唔係 PNG');
+    return [buf.readUInt32BE(16), buf.readUInt32BE(20)];
   };
   const expect = {
     'icons/apple-touch-icon.png': 180,
