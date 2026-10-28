@@ -7,7 +7,7 @@
   <meta name="description" content="香港營地、宿營營舍、Glamping 與民宿渡假屋資料庫，按分區、費用、設施、交通篩選，附地圖分布。" />
   <meta name="author" content="SCOUT SYSTEM" />
   <meta name="copyright" content="© SCOUT SYSTEM" />
-  <meta name="version" content="1.7.3" />
+  <meta name="version" content="1.8.0" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -18,8 +18,9 @@
 <header class="site-header">
   <div class="container header-inner">
     <div>
-      <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.7.3</span></h1>
+      <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.8.0</span></h1>
       <p class="tagline">漁護署營地 ・ Glamping ・ 宿營營舍 ・ 離島渡假屋 — 搵營地、plan 活動一站看清</p>
+      <p class="tagline-en" lang="en">Hong Kong campsite &amp; camp-house database — 108 sites with official data, fees, transport and facilities.</p>
     </div>
     <div class="header-stats" id="headerStats"></div>
   </div>
@@ -188,6 +189,12 @@
     </section>
 
     <section class="filter-group">
+      <h2>營位規模 <span class="h2-note">（團體／童軍）</span></h2>
+      <div class="chip-row" id="tentChips"></div>
+      <p class="filter-note">只有漁護署 41 個指定營地有官方營位數字；冇數字嘅多為民宿／營舍。</p>
+    </section>
+
+    <section class="filter-group">
       <h2>個人清單</h2>
       <div class="chip-row">
         <button class="chip" id="favToggle">⭐ 我的最愛 <span class="chip-count" id="favCount">0</span></button>
@@ -234,7 +241,7 @@
 
 <footer class="site-footer">
   <div class="container">
-    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.7.3</span></p>
+    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.8.0</span></p>
     <p>地圖由 Leaflet + OpenStreetMap 提供 · 天氣數據由香港天文台提供</p>
     <p class="visit-line"><span id="visitCount">👣 入站人次統計中…</span></p>
   </div>

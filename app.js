@@ -6,7 +6,7 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.7.3';
+  const APP_VERSION = '1.8.0';
 
 
   const TYPE_META = {
@@ -252,6 +252,7 @@
     transports: new Set(),
     tags: new Set(),
     signals: new Set(),
+    tents: new Set(),      // 營位規模（團體／童軍 planning 用）
     freeOnly: false,
     maxPrice: 1500,
     query: '',
@@ -301,6 +302,9 @@
   // 篩選層用代表詞（燒烤爐／燒烤場 → 燒烤設施），排序後再顯示
   const allTags = uniq(SITES.flatMap((s) => [...s.facilities, ...s.tags]).map(canonTag));
   const signals = SIGNAL_ORDER.filter((sig) => SITES.some((s) => s.signal === sig));
+  // 營位規模（只有漁護署 41 個營地有官方數字；其餘唔顯示呢個 chip）
+  const TENT_LEVELS = ['少於 20', '20-50', '多於 50']
+    .filter((lv) => SITES.some((s) => s.tentSpace === lv));
   const types = Object.keys(TYPE_META).filter((t) => SITES.some((s) => s.type === t));
 
   /* ---------- 篩選 ---------- */
@@ -312,6 +316,7 @@
     if (skipGroup !== 'tag' && state.tags.size &&
         ![...s.facilities, ...s.tags].map(canonTag).some((t) => state.tags.has(t))) return false;
     if (skipGroup !== 'signal' && state.signals.size && !state.signals.has(s.signal)) return false;
+    if (skipGroup !== 'tent' && state.tents.size && !state.tents.has(s.tentSpace)) return false;
 
     if (skipGroup !== 'price') {
       if (state.freeOnly && s.price !== 0) return false;
@@ -360,6 +365,7 @@
           if (group === 'transport') return s.transport.includes(v);
           if (group === 'tag') return [...s.facilities, ...s.tags].map(canonTag).includes(v);
           if (group === 'signal') return s.signal === v;
+          if (group === 'tent') return s.tentSpace === v;
           return false;
         }).length;
         const members = FACILITY_GROUPS[v];
@@ -373,6 +379,7 @@
     mount('transportChips', transports, state.transports, 'transport');
     mount('tagChips', allTags, state.tags, 'tag');
     mount('signalChips', signals, state.signals, 'signal');
+    mount('tentChips', TENT_LEVELS, state.tents, 'tent');
     document.getElementById('favCount').textContent = favs.size;
     document.getElementById('favToggle').setAttribute('aria-pressed', state.favOnly ? 'true' : 'false');
 
@@ -535,6 +542,8 @@
         <h3>${s.name}</h3>
         <div class="place">📍 ${s.district} · ${s.area}${s.operator ? ` · 🏛 ${s.operator}` : ''}</div>
         <div class="place signal-dot">📶 訊號：${s.signal || '不詳'}</div>
+        ${s.transport && s.transport.length
+          ? `<div class="place transport-line">🚌 ${s.transport.join('・')}</div>` : ''}
         <div class="price-line">
           <span class="price ${s.price === 0 ? 'free' : ''}">${priceText(s)}</span>
           ${s.booking ? '<span class="price-unit">· 需預訂</span>'
@@ -619,7 +628,7 @@
   /* ---------- 主渲染 ---------- */
   function activeFilterCount() {
     return state.types.size + state.districts.size + state.transports.size +
-      state.tags.size + state.signals.size +
+      state.tags.size + state.signals.size + state.tents.size +
       (state.freeOnly ? 1 : 0) + (state.favOnly ? 1 : 0) + (state.footOnly ? 1 : 0) +
       (state.maxPrice < 1500 ? 1 : 0) + (state.query.trim() ? 1 : 0);
   }
@@ -683,7 +692,7 @@
 
     const clearAll = () => {
       state.types.clear(); state.districts.clear(); state.transports.clear();
-      state.tags.clear(); state.signals.clear();
+      state.tags.clear(); state.signals.clear(); state.tents.clear();
       state.freeOnly = false; state.favOnly = false; state.footOnly = false;
       state.maxPrice = 1500; state.query = '';
       document.getElementById('freeOnly').checked = false;

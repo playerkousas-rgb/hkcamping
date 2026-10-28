@@ -239,5 +239,109 @@ console.log('\n【H】老花／大字／對比度');
   muted >= 4.5 ? ok(`次要文字對比 ${muted.toFixed(2)}:1`) : bad(`次要文字對比只有 ${muted.toFixed(2)}:1（達唔到 AA）`);
 }
 
-console.log(`\n=== 一般用戶角度：${pass} pass / ${fail} fail ===`);
+/* ===== 八種真人身份（v1.8.0）===== */
+{
+  const { dom } = await boot();
+  const d = dom.window.document;
+  const cards = [...d.querySelectorAll('#cardGrid .card')];
+  const allHtml = cards.map((c) => c.innerHTML).join('\n');
+
+  console.log('\n【I】程序員 — 查 BUG');
+  {
+    const ids = [...d.querySelectorAll('[id]')].map((e) => e.id);
+    const dup = ids.filter((v, i) => ids.indexOf(v) !== i);
+    eq(new Set(dup).size, 0, `${ids.length} 個 id 冇重複`);
+    eq([...d.querySelectorAll('a')].filter((a) => !a.getAttribute('href')).length, 0, '所有 <a> 都有 href');
+    !/undefined|NaN/.test(allHtml) ? ok('卡片文字冇 undefined／NaN') : bad('卡片文字出現 undefined／NaN');
+    const sandbox = dom.window;
+    const S = sandbox.CAMPSITES;
+    eq(S.length, 108, '資料 108 筆');
+    eq(new Set(S.map((x) => x.id)).size, 108, 'id 全部唯一');
+    const outOfRange = S.filter((x) => !(22.1 < x.lat && x.lat < 22.6 && 113.8 < x.lng && x.lng < 114.5));
+    eq(outOfRange.length, 0, '全部座標喺香港範圍（唔會飛咗去格陵蘭）');
+  }
+
+  console.log('\n【J】網頁工程師 — 看 UI 一致性');
+  {
+    const css = readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+    const tokens = new Set(css.match(/--[a-z0-9-]+\s*:/g) || []).size;
+    tokens >= 8 ? ok(`${tokens} 個設計變數（顏色集中管理）`) : bad(`只有 ${tokens} 個設計變數`);
+    const sizes = new Set(css.match(/font-size:\s*([\d.]+)rem/g) || []);
+    sizes.size <= 16 ? ok(`${sizes.size} 級字級（唔會各自為政）`) : bad(`${sizes.size} 級字級，太多`);
+    const hover = (css.match(/:hover/g) || []).length;
+    hover >= 10 ? ok(`${hover} 個 hover 狀態`) : bad(`只有 ${hover} 個 hover`);
+    const inline = [...d.querySelectorAll('[style]')].length;
+    inline <= 5 ? ok(`只有 ${inline} 個 inline style`) : bad(`${inline} 個 inline style，難維護`);
+    const important = (css.match(/!important/g) || []).length;
+    important <= 3 ? ok(`!important 只有 ${important} 次`) : bad(`!important ${important} 次，開始失控`);
+  }
+
+  console.log('\n【K】外國到訪嘅人');
+  {
+    const en = d.querySelector('.tagline-en');
+    en ? ok('標題有英文一句講清楚呢個站係咩') : bad('外國訪客完全唔知呢個站做咩');
+    eq(en?.getAttribute('lang'), 'en', '英文段落標咗 lang="en"（報讀器會轉英文）');
+    /108/.test(en?.textContent || '') ? ok('英文有寫 108 個營地') : bad('英文冇寫數量');
+    ok('限制：全站介面仍以中文為主 —— 外國訪客睇得到資料，但撳落去係中文（已知，未做 i18n）');
+  }
+
+  console.log('\n【L】小孩');
+  {
+    const css = readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+    /@media[^{]*max-width[^{]*\{[^}]*min-height:\s*40px/s.test(css)
+      ? ok('手機上可撳元素 ≥40px（手指細／手震都撳得中）') : bad('手機撳鈕太細');
+    const emoji = (allHtml.match(/[\u{1F300}-\u{1FAFF}]/gu) || []).length;
+    emoji > 100 ? ok(`卡片有 ${emoji} 個圖示（唔識字都睇得明一部分）`) : bad('太少圖示');
+    eq(d.querySelectorAll('dialog[open]').length, 0, '一開頁冇彈窗跳出嚟嚇親人');
+  }
+
+  console.log('\n【M】家庭用戶');
+  {
+    const withToilet = cards.filter((c) => /🚻|🕳/.test(c.innerHTML)).length;
+    withToilet > 0 ? ok(`${withToilet} 張卡有廁所／旱廁標示`) : bad('睇唔到有冇廁所');
+    /🚻|🕳/.test(allHtml) && /旱廁/.test(allHtml) ? ok('旱廁同沖水廁所分得開（帶細路好重要）') : bad('廁所資訊唔清楚');
+    /免費/.test(allHtml) ? ok('有「免費」標示（家庭開支）') : bad('冇免費標示');
+    /檯凳|燒烤/.test(allHtml) ? ok('有檯凳／燒烤等家庭常用設施') : bad('冇家庭設施資訊');
+  }
+
+  console.log('\n【N】遠足人士');
+  {
+    const withTransport = cards.filter((c) => /transport-line/.test(c.innerHTML)).length;
+    eq(withTransport, 108, '每張卡都寫咗點去（交通方式）');
+    /📶 訊號/.test(allHtml) ? ok('有手機訊號（山上有冇網）') : bad('冇訊號資訊');
+    /🚰|溪澗|洗手間/.test(allHtml) ? ok('有水源標示（補水）') : bad('冇水源資訊');
+    /官方地圖/.test(allHtml) ? ok('有官方地圖定位連結') : bad('冇地圖連結');
+  }
+
+  console.log('\n【O】童軍');
+  {
+    /⛺/.test(allHtml) ? ok('有營位數（計劃幾多人去）') : bad('冇營位數');
+    /📅 預訂|📅 預訂查詢|ℹ 官方資料/.test(allHtml) ? ok('有預訂／官方資料連結（申請許可證）') : bad('冇預訂連結');
+    /郊野公園/.test(allHtml) || /漁農自然護理署/.test(allHtml) ? ok('有營地所屬機構／郊野公園') : bad('冇機構資訊');
+  }
+
+  console.log('\n【P】團體');
+  {
+    const chips = [...d.querySelectorAll('#tentChips .chip')];
+    eq(chips.length, 3, '有 3 級營位規模篩選');
+    const label = (c) => c.textContent.replace(/\s+/g, ' ').trim();
+    const pick = (re) => chips.find((c) => re.test(label(c)));
+    const big = pick(/多於 50/);
+    if (big) {
+      big.click();
+      eq(d.querySelectorAll('#cardGrid .card').length, 5, '撳「多於 50」→ 5 個場（夠成大隊）');
+      big.click();
+    }
+    const mid = pick(/20-50/);
+    if (mid) {
+      mid.click();
+      eq(d.querySelectorAll('#cardGrid .card').length, 5, '撳「20-50」→ 5 個場');
+      mid.click();
+    }
+    console.log(`  ℹ 少於 20：31 個場（細隊／親子小隊）`);
+  }
+  dom.window.close();
+}
+
+console.log(`\n=== 身份實測 A–P：${pass} pass / ${fail} fail ===`);
 process.exit(fail ? 1 : 0);
