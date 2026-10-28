@@ -391,6 +391,42 @@ try {
   results.push({ pass: false, name: '裝備／補給', detail: (e.message || '').toString().slice(0, 160) });
 }
 
+/* ---------- 17. 天氣站配對用座標（v1.10.0） ---------- */
+try {
+  const { HKO_STATION_COORDS, OCF_STATION_COORDS, nearestStation } =
+    await import('../lib/stations.mjs');
+  const box = { window: {} };
+  vm.createContext(box);
+  vm.runInContext(read('data.js'), box);
+  const sites = box.window.CAMPSITES || [];
+
+  const problems = [];
+  if (!Object.keys(OCF_STATION_COORDS).length) problems.push('OCF 座標表空');
+  if (Object.keys(HKO_STATION_COORDS).length < 20) problems.push('氣溫站座標表不足 20 個');
+
+  const badOcf = sites.filter((s) => nearestStation(s.lat, s.lng, OCF_STATION_COORDS).name !== s.ocfStation);
+  const badW = sites.filter((s) => nearestStation(s.lat, s.lng, HKO_STATION_COORDS).name !== s.weatherStation);
+  if (badOcf.length) problems.push(`${badOcf.length} 筆 OCF 配站唔係「座標最近」（例：${badOcf[0].name}）`);
+  if (badW.length) problems.push(`${badW.length} 筆氣溫站配站唔係「座標最近」（例：${badW[0].name}）`);
+
+  const noKm = sites.filter((s) => !Number.isFinite(s.ocfKm) || !Number.isFinite(s.weatherKm)).length;
+  if (noKm) problems.push(`${noKm} 筆冇記錄距離`);
+
+  const maxOcf = Math.max(...sites.map((s) => s.ocfKm || 0));
+  const maxW = Math.max(...sites.map((s) => s.weatherKm || 0));
+  if (maxOcf > 35) problems.push(`最遠 OCF 站 ${maxOcf} km（應該 ≤35）`);
+  if (maxW > 30) problems.push(`最遠氣溫站 ${maxW} km（應該 ≤30）`);
+
+  /* 回歸：大嶼山「大浪灣」唔可以再配到石澳大浪灣嘅筲箕灣（差 37 km） */
+  const tlw = sites.find((s) => s.name.includes('大浪灣') && s.district === '離島區');
+  if (tlw && tlw.ocfStation === 'SKW') problems.push('大嶼山大浪灣又配咗筲箕灣（撞名回歸）');
+
+  if (problems.length) results.push({ pass: false, name: '天氣站用地標座標配對', detail: problems.join('; ') });
+  else ok('天氣站用地標座標配對', `108 筆全部「座標最近」；最遠 OCF ${maxOcf} km／氣溫站 ${maxW} km`);
+} catch (e) {
+  results.push({ pass: false, name: '天氣站用地標座標配對', detail: (e.message || '').toString().slice(0, 160) });
+}
+
 /* ---------- 總結 ---------- */
 console.log('\n=== hkcamping guard ===');
 for (const r of results) {

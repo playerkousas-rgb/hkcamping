@@ -405,5 +405,29 @@ console.log('\n【Q】露營新手／家長 — 要唔要自己帶裝備？邊�
   dom.window.close();
 }
 
-console.log(`\n=== 身份實測 A–Q：${pass} pass / ${fail} fail ===`);
+console.log('\n【R】天氣站配對 — 用營地座標（唔再用區名關鍵字）');
+{
+  const { dom } = await boot({ onFetch: () => {} });
+  const d = dom.window.document;
+  const sites = dom.window.CAMPSITES || [];
+
+  eq(sites.filter((s) => Number.isFinite(s.ocfKm) && Number.isFinite(s.weatherKm)).length, 108,
+    '108 筆都有「直線距離」記錄（km）');
+  eq(sites.filter((s) => !(s.ocfKm <= 35)).length, 0, '冇營地要搵到 35 km 以外先有預報站');
+
+  const tlw = sites.find((s) => s.name.includes('大浪灣') && s.district === '離島區');
+  eq(tlw?.ocfStation, 'CCH', `大嶼山大浪灣配長洲 ${tlw?.ocfKm} km（v1.9.2 前錯配筲箕灣 37 km）`);
+  const nsm = sites.find((s) => s.name === '南山營地');
+  eq(nsm?.ocfStation, 'CCH', `南山 → 長洲 ${nsm?.ocfKm} km（座標最近）`);
+  const tc = sites.find((s) => s.name.includes('東涌戶外'));
+  eq(tc?.ocfStation, 'TUN', `東涌康樂營 → 屯門 ${tc?.ocfKm} km（唔再寫死荃灣）`);
+
+  const btn = d.querySelector('#cardGrid .card [data-action="local"]');
+  btn?.click();
+  const txt = d.querySelector('#localConditions')?.textContent || '';
+  /直線約/.test(txt) ? ok('天氣面板寫明「直線約 X 公里」') : bad('天氣面板冇寫距離');
+  dom.window.close();
+}
+
+console.log(`\n=== 身份實測 A–R：${pass} pass / ${fail} fail ===`);
 process.exit(fail ? 1 : 0);
