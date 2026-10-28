@@ -12,7 +12,9 @@ data/auto/                ← 機器專用，Actions 定時覆寫，人手唔好
   ├─ weather.json           天文台警告 + 九天預報（含週末降雨概率）
   ├─ had-guesthouses.json   牌照處全港 1,807 間持牌酒店賓館快照（CSDI LLHG 圖層，含座標）
   ├─ had-candidates.json    鄉郊渡假類候選（27 經營者／50 處所，已剔除大型酒店）
-  └─ had-diff-report.md     分區統計＋民宿合規覆核＋營舍持牌名單＋候選明細
+  ├─ had-diff-report.md     分區統計＋民宿合規覆核＋營舍持牌名單＋候選明細
+  ├─ conditions.json        該區實況（18 區雨量＋27 站氣溫）＋8 潮汐站高低潮（每日）
+  └─ ocf-forecast.json      天文台 OCF 分區九日預報（12 站 × 10 日，每日）
 
 data.csv                  ← 人工策展層：摘要、標籤、收費、訊號、NGO/民宿資料
         ↓ build-data.mjs
@@ -38,6 +40,7 @@ data.js                   ← 網站唯一讀取嘅合併成品
 | SmartPLAY 度假營空位/預訂 | ❌ 無官方 API | 爬內部 endpoint 有 anti-bot 風險；規則：每月 **20 號 08:30** 放剩餘營位 | 日曆提醒人手睇 |
 | NGO 27 間營舍收費/設施 | ❌ 無 API | 機構官網各異 | 改動偵測 + Telegram/ntfy 通知（見第四節） |
 | 持牌賓館／渡假屋（合規民宿庫） | ✅ 全自動 | CSDI `had_rcd_1639475170528_37262` 圖層 **LLHG**（含座標）＋ HAD CSV 補牌照號，月更 | 每月 |
+| **入站人次**（本站統計） | ✅ 全自動 | Vercel Web Analytics（`/_vercel/insights/script.js`，無 cookie）；頁尾本機累計用 `localStorage` | 即時（Dashboard） |
 | 民宿候選提升入 data.csv | 🟡 人工把關 | `had-candidates.json` 已備座標/電話/牌照，人睇完先入庫 | 跟月更報告 |
 | 無牌平台房源（Airbnb 等） | ❌ 唔收錄 | 第349章無牌經營風險；資料庫民宿分類只收持牌處所 | — |
 | 私人 Glamping 評分/氣氛 | ❌ 無 API | 平台與獨立網站 | 全人工，建議 crowdsource 回報 |
@@ -67,6 +70,9 @@ data.js                   ← 網站唯一讀取嘅合併成品
 | `tools-sync-conditions.mjs` | **v1.2.0 新增**：每日抓 `rhrread`（18 區雨量 + 27 站氣溫）＋ `HLT`（8 站當月＋下月高低潮）→ `data/auto/conditions.json`。`build-data.mjs` 按 `district`/`area` 配對就近氣象站同潮汐站落每筆營地 |
 | `app.js` `sunTimesHKT()` | **v1.2.0 新增**：純 JS 天文公式（NOAA/SunCalc）計日出日落，零 API、任何年份、`file://` 都用得；已用 HKO 官方 SRS 2026 五個錨點驗證，最大誤差 3 分鐘 |
 | `tools-sync-ocf.mjs` | **v1.3.0 新增**：每日抓天文台「自動分區天氣預報」(OCF) 12 個站嘅未來 9–10 日預報（`maps.weather.gov.hk/ocf/dat/<code>.xml`，檔名 .xml 但內容係 JSON）→ `data/auto/ocf-forecast.json`。多模型共識 + 本地觀測校正，每日更新兩次；**電腦自動生成、未經人手修訂**，UI 已標明 |
+| `app.js` `renderWeekendRank()` | **v1.4.0 新增**：用同一個 OCF 快照計本週末（六／日）各分區站最高降雨概率，排「週末唔落雨排行」；地圖 pin 嘅降雨圓點亦改用所屬分區站，唔再全港一個數 |
+| `app.js` 我的足跡 | **v1.4.0 新增**：`localStorage` `hkcamp_footprints`（`{id:{first,last}}`），卡片一撳標記／取消，側欄可篩選／清除；無帳號、無上傳 |
+| `app.js` `initVisitCounter()` ＋ Vercel Analytics | **v1.4.0 新增**：全站人次由 Vercel Web Analytics（無 cookie、無 secret）統計；頁尾顯示本機累計「你第 N 次到訪」。**唔用** CountAPI／hits.sh 等第三方計數器（可停、可被牆、會交 IP 去第三方） |
 
 > **點解用 OCF 而唔用第三方天氣 API**：HKO open data 嘅九天預報（`fnd`）係全港一個數、
 > `rhrread` 分區數據全部係實況，官方一直冇「分區 × 未來多日」嘅 JSON API。

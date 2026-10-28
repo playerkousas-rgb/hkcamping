@@ -16,9 +16,12 @@
 功能：分區地圖（Leaflet + OpenStreetMap）、類型/分區/費用/交通/設施/訊號篩選、
 全文搜尋（可搜營運機構）、價格排序、我的最愛（瀏覽器本地記錄，無須登入）、
 **未來九日該區預報**（天文台 OCF 自動分區天氣預報：12 站降雨概率／溫度／天氣）、
+**週末唔落雨排行**（OCF 12 個分區站本週末最高降雨概率，由低至高；地圖 pin 同步標色）、
 **週末天氣列**（全港 PSR 降雨概率，連地圖 pin 標記）、
 **該區實況**（18 區雨量 + 就近氣象站氣溫）、**潮汐**（8 個官方站高低潮）、
 **日出日落**（天文公式計算，誤差 ≤3 分鐘）、
+**我的足跡**（標記去過邊個營地，只存瀏覽器、可篩選／清除）、
+**入站人次**（Vercel Web Analytics 全站無 cookie 統計 + 頁尾本機累計）、
 **未核實收費一律加「約」**、官方水源／營位規模徽章、同埋「訂營＋出發前準備」清單。
 
 ## 資料來源與可信度
@@ -85,6 +88,58 @@
 > 官方標明**芝麻灣（1997 停）、樂安排（1999 停）**兩個站預測誤差較大，故不採用。
 > 初始快照只含 2026-10-27 至 11-04 共 9 日；每日 `sync-data.yml` 會補齊當月＋下月全部日子。
 
+## 我們平常用的系統（技術棧對照）
+
+> 呢個 repo 沿用 [playerkousas-rgb/readme](https://github.com/playerkousas-rgb/readme) 真理倉嘅
+> **S／F／A／W／V 五大鐵律**同技術棧契約；下面寫明本專案**實際用邊幾套、邊幾套刻意唔用**，
+> 唔會扮用過。規則對照詳見 [HANDOVER-STATUS.md](HANDOVER-STATUS.md)。
+
+| 系統／工具 | 本專案角色 | 狀態 |
+|---|---|---|
+| **Git ＋ GitHub** | 唯一真理來源、版本歷史、PR 審查、`guard.yml` CI 閘 | ✅ 用（`main` ＋ `arena/*` 工作分支） |
+| **GitHub Actions** | `sync-data.yml` 每日 00:30 HKT 同步漁護署／天文台／OCF；`sync-had.yml` 每月持牌賓館；`guard.yml` push／PR／每週一 | ✅ 用（公開 repo，免費額度） |
+| **Vercel** | 靜態托管（`hkg1`）、`vercel.json` headers、`build-site.mjs` 產 `dist/`、**Web Analytics 入站人次** | ✅ 用（Framework = Other、Output = dist） |
+| **Node.js（零 runtime dependencies）** | `build-data.mjs` 將 CSV＋各快照砌成 `data.js`；`build-site.mjs` 出 4 個部署檔；`guard.mjs`／`smoke.test.mjs` 本機＋CI 同一條 | ✅ 用（`engines: >=18`，`dependencies` 空白） |
+| **Leaflet ＋ OpenStreetMap** | 地圖、pin、popup、fitBounds | ✅ 用（CDN，非 npm 依賴） |
+| **香港官方 open data** | 漁護署 CSDI、天文台 `fnd`／`rhrread`／`HLT`／`SRS`／OCF、牌照事務處 LLHG | ✅ 用（全部 keyless、無第三方天氣 API） |
+| **Notion（CSV／資料庫）** | 將來多人協作時嘅資料管理路徑 | 🕓 未用（合約已預留，見下節） |
+| **Google Apps Script（Sheet 當 DB）** | — | ❌ 唔適用：本專案零後端、零寫入面，冇需要 GAS |
+| **Supabase（Postgres／Auth／RLS）** | — | ❌ 未用：冇登入、冇用戶資料；眾包回報係將來路線圖 |
+| **Gemini／Canvas** | — | ❌ 唔適用：冇生成圖／prompt，W2／W3 水印唔適用 |
+
+**跟足嘅五鐵律**：S 瘦身（`dist/` 4 檔 ≈256KB、單檔 <1MB、零 runtime deps）、
+F 防呆（build `--check`、同步腳本 fail-closed、`guard` 12 項硬攔）、
+A 安全（純靜態、無 secret、無登入、無可寫 API）、
+W 版權（meta `copyright` ＋頁尾 `© SCOUT SYSTEM`；OSM／天文台只署名不轉載圖層）、
+V 雙版號（`package.json`／`index.html` meta＋徽章／`app.js APP_VERSION`／`VERSIONS.md` 四處同步）。
+
+### 入站人次點做（v1.4.0）
+
+| 層次 | 做法 | 說明 |
+|---|---|---|
+| **全站真實人次** | [Vercel Web Analytics](https://vercel.com/docs/analytics) — `index.html` 已加 `/_vercel/insights/script.js` | 喺 Vercel Dashboard → 專案 → **Analytics → Enable** 後生效；無 cookie、唔做跨站追蹤，Dashboard 睇訪客／瀏覽量／來源 |
+| **頁面顯示** | 頁尾「👣 入站人次：你第 N 次到訪（本機紀錄，首次 YYYY-MM-DD）」 | 只計**你呢個瀏覽器**（`localStorage` ＋ `sessionStorage`，同一 session 唔重複計），純靜態、零後端、唔會假裝全站數字 |
+| **私隱** | 冇 cookie、冇 IP 儲存、冇第三方 tracker、冇帳號 | 唔想被計：清除瀏覽器網站資料即可；analytics script 喺非 Vercel host 會 404，瀏覽器靜靜跳過 |
+
+> 點解唔用 CountAPI／hits.sh 之類免費計數器？第三方服務可隨時停、可被牆、又會將訪客 IP 交去第三方，
+> 同本專案「全官方數據、零 secret、零追蹤」原則衝突。Vercel 係我哋自己嘅托管平台，最乾淨。
+
+## 台灣參考網站對照（營火部落 → 香港版）
+
+參考 [營火部落・全台平價營地資料庫](https://campfiretw.com/camp-database/) 嘅功能，逐項對照香港情況：
+
+| 台灣網站功能 | 香港版現況（v1.4.0） | 備註 |
+|---|---|---|
+| 按縣市／海拔／價錢／設施篩選 | ✅ 分區／類型／費用／交通／設施／訊號；香港山高 <1,000m，用「就近氣象站」代替海拔帶 | 海拔帶對香港冇意義 |
+| 本週末邊區唔落雨 + 天氣地圖 | ✅ **新增「週末唔落雨排行」**，用天文台 OCF 12 站官方降雨概率；地圖 pin 同步標綠／黃／紅 | 只顯示降雨概率，唔亂報雨量 |
+| 入住／退房日曆、即時空位 | ❌ 冇官方空位 API：康文署 SmartPLAY 有 anti-bot、郊野營人只覆蓋少數營地 | 唔造假日曆；卡片連去官方預訂系統 |
+| 平日／假日價、包區均攤價 | 🟡 只顯示官方／約數單價，唔拆分平日假日 | 香港多數營地唔公開浮動價格 |
+| 我的最愛／我的足跡 | ✅ 我的最愛 ＋ **新增「我的足跡」**（標記去過、篩選、清除），全部 localStorage | 無需登入 |
+| 寵物／雨棚／車泊／洗手間標籤 | 🟡 `data.csv` 已有設施／標籤（如洗手間、停車位），但未逐筆核實寵物同雨棚 | 可持續補資料 |
+| 已停業／列管合法標記 | 🟡 民宿只收持牌處所並每月覆核；營地未有「已停業」欄 | 需人手核實 |
+| 營地相片／評分 | ❌ 未做（版權同假評分風險） | 優先官方圖片或實拍 |
+| 空位通知／收藏分享 | ❌ 未做 | 將來可配 Supabase 眾包 |
+
 ## 專案結構
 
 ```
@@ -108,8 +163,6 @@ hk-camp-database/
 ├── tools-sync-had.mjs   # 持牌賓館月更同步（CSDI＋HAD CSV，只出快照唔改 data.csv）
 ├── tools-sync-conditions.mjs # 該區天氣（rhrread）＋潮汐（HLT 8 站）每日同步
 ├── tools-sync-ocf.mjs   # 天文台 OCF 自動分區九日預報（12 站）每日同步
-├── data/auto/conditions.json # 該區天氣／潮汐快照（每日 Actions 更新）
-├── data/auto/ocf-forecast.json # OCF 九日分區預報快照（每日 Actions 更新）
 ├── .github/workflows/sync-data.yml # 每日 00:30 HKT 自動同步（cron '30 16 * * *' UTC）
 ├── .github/workflows/sync-had.yml  # 每月 2 號 01:15 HKT 月更（cron '15 17 1 * *' UTC）
 ├── .github/workflows/guard.yml # push / PR / 每週一跑 guard（S12 / F14）
@@ -169,8 +222,8 @@ node build-data.mjs --check   # 只驗收 data.js 同 data.csv／weather.json �
 
 ```bash
 npm run dev
-# 或
-python3 -m http.server 8000
+# 或（Arena live preview 要 bind 0.0.0.0）
+python3 -m http.server 8000 --bind 0.0.0.0
 ```
 
 然後瀏覽器開 `http://localhost:8000`（直接雙擊 index.html 也可以，資料走 data.js 而非 fetch）。
@@ -178,9 +231,9 @@ python3 -m http.server 8000
 ## 品質守護（commit 前跑）
 
 ```bash
-npm run guard       # 11 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報
-npm test            # 9 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸
-npm run build:site  # 產生 dist/（4 個檔，約 241KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
+npm run guard       # 12 項：必要檔／雙版號／© SCOUT SYSTEM／data.js 同步／dist 體積／單檔／零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡
+npm test            # 12 個 smoke test：模擬 DOM 執行 data.js + app.js，108 筆渲染、約數標記、官方水源徽章、潮汐種子、日出日落公式、OCF 九日時間軸、週末排行、我的足跡、入站人次
+npm run build:site  # 產生 dist/（4 個檔，約 257KB，含天氣 + conditions + OCF 快照 + CSDI 官方欄位）
 ```
 
 `guard.yml` 喺 push、PR 同每週一自動跑同一條；五大鐵律 S／F／A／W／V 嘅適用範圍同例外，
@@ -193,8 +246,11 @@ npm run build:site  # 產生 dist/（4 個檔，約 241KB，含天氣 + conditio
 3. Framework Preset 選 **Other**；`vercel.json` 已定案，Build Command 會自動讀做
    `node build-site.mjs`、Output Directory `dist`、Region `hkg1`
 4. 按 Deploy，完成後每次 push 到 `main` 自動重新部署，免費額度已足夠
+5. **入站人次**：Vercel Dashboard → 專案 → **Analytics → Enable**（免費 Hobby 額度）。
+   `index.html` 已嵌入 `/_vercel/insights/script.js`，開啟後就有全站訪客／瀏覽量；
+   頁尾顯示嘅「你第 N 次到訪」係本機累計，唔會上傳任何個人資料
 
-`build-site.mjs` 只會輸出 4 個檔（約 113KB）入 `dist/`；`.vercelignore` 擋走工具、文件同大快照。
+`build-site.mjs` 只會輸出 4 個檔（約 257KB）入 `dist/`；`.vercelignore` 擋走工具、文件同大快照。
 本機想驗收同一份產物：`npm run build:site` 後用任何 static server 開 `dist/`。
 詳細交接同 Vercel 連接口限制見 [GITHUB-SETUP.md](GITHUB-SETUP.md)。
 
@@ -214,9 +270,12 @@ npm run build:site  # 產生 dist/（4 個檔，約 241KB，含天氣 + conditio
 - [ ] **逐筆核實 44 筆 `estimate` 收費**，核實後把 `priceSource` 改成 `official`；補上電話與電郵欄位
 - [ ] 合併／改寫 5 筆「分區導覽種子列」民宿（b01–b04/b06），佢哋唔係真實單一經營者，現時嘅 $600–$850 只係區域參考價
 - [x] 對接香港天文台：每日同步 `weather.json`，build 嵌入 `data.js`，天氣列 + 地圖 pin 顯示週末 PSR 降雨概率與溫度（P3 已完成）
+- [x] **週末唔落雨排行**（v1.4.0）：OCF 12 個分區站本週末最高降雨概率，排行榜可撳去九日時間軸
+- [x] **我的足跡**（v1.4.0）：標記去過邊個營地，可篩選／清除，只存瀏覽器
+- [x] **入站人次**（v1.4.0）：Vercel Web Analytics 全站無 cookie 統計 + 頁尾本機累計
 - [ ] 分區實時氣溫／濕度（天文台 1 分鐘 CSV）落返每張營地卡片
 - [ ] 營地相片（注意版權，優先用官方圖片或實拍）
-- [ ] 空位/預訂日曆（康文署康體通、郊野營人、私人營地）
+- [ ] 空位/預訂日曆（康文署康體通、郊野營人、私人營地）——**冇官方空位 API，唔會造假日曆**
 - [ ] 活動專頁：把營地與附近行山徑、水上活動、餐廳串成行程
 - [ ] 增設「營運機構」篩選器及營地比較功能
 

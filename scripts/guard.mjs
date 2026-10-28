@@ -243,6 +243,33 @@ try {
   bad('OCF 九日分區預報', e.message);
 }
 
+/* ---------- 12. 入站人次／週末排行／我的足跡（v1.4.0） ---------- */
+try {
+  const app = read('app.js');
+  const html = read('index.html');
+  const css = read('styles.css');
+  const readme = read('README.md');
+  const checks = [
+    [html.includes('/_vercel/insights/script.js'), 'Vercel Web Analytics script 已嵌入'],
+    [html.includes('id="visitCount"') && app.includes('function initVisitCounter'),
+      '頁尾入站人次（本機累計）已接駁'],
+    [html.includes('id="weekendRankPanel"') && app.includes('function renderWeekendRank'),
+      '週末唔落雨排行面板存在'],
+    [app.includes('function stationWeekendRain') && app.includes('siteWeekendRain'),
+      '排行同地圖 pin 用 OCF 分區站降雨概率'],
+    [html.includes('id="footToggle"') && app.includes('const FOOT_KEY'),
+      '我的足跡（localStorage）已接駁'],
+    [css.includes('.rank-row') && css.includes('.foot-btn'), '新 UI 樣式存在'],
+    [readme.includes('入站人次') && readme.includes('Vercel Web Analytics'),
+      'README 有寫入站人次做法'],
+  ];
+  const failed = checks.filter(([p]) => !p).map(([, n]) => n);
+  failed.length ? bad('入站人次／週末排行／足跡', failed.join('; '))
+    : ok('入站人次／週末排行／足跡', 'Vercel Analytics + 本機累計／OCF 週末排行／localStorage 足跡');
+} catch (e) {
+  bad('入站人次／週末排行／足跡', e.message);
+}
+
 /* ---------- 總結 ---------- */
 console.log('\n=== hkcamping guard ===');
 for (const r of results) {

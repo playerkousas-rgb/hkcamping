@@ -12,10 +12,10 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.3.0** |
-| 工作分支 | `arena/b909a4c2-hkcamping` |
-| 基準 main | `3e608b5`（PR #4 合併點） |
-| 當前 PR | [#5](https://github.com/playerkousas-rgb/hkcamping/pull/5) — 包含 v1.1.0／v1.2.0／v1.3.0 |
+| 現行版本 | **v1.4.0** |
+| 工作分支 | `arena/31d2c3e0-hkcamping`（今次）；上一輪 `arena/b909a4c2-hkcamping`（PR #5，已合併） |
+| 基準 main | `dd5be13`（PR #5 合併點） |
+| 當前 PR | [#5](https://github.com/playerkousas-rgb/hkcamping/pull/5) **已合併**（v1.1.0–v1.3.0）；本輪 v1.4.0 喺新分支，待開 PR |
 
 ---
 
@@ -34,7 +34,7 @@
 
 ---
 
-## 三、PR #5 上嘅三個版本（待合併）
+## 三、PR #5 嘅三個版本（已合併）
 
 ### v1.1.0 — `3859e0a`｜收費可信度
 
@@ -81,6 +81,24 @@
 - 荃灣／筲箕灣兩站官方只提供溫度、冇降雨概率 → 顯示「降雨概率 —」，**唔作數**
 - `tools-sync-ocf.mjs` fail-closed（成功站點 < 8 就保留舊快照）
 
+### v1.4.0 — 入站人次・週末排行・我的足跡（本輪）
+
+用戶要求：① 檢查專案；② README 要寫清楚「我們平常用的系統」；③ 加最普通嘅入站人數計算；
+④ 參考台灣營火部落資料庫睇有冇改善空間。
+
+**交付**：
+- **入站人次**：`index.html` 加 Vercel Web Analytics（`/_vercel/insights/script.js`，無 cookie、零 secret）；
+  頁尾 `#visitCount` 顯示「你第 N 次到訪（本機紀錄，首次 YYYY-MM-DD）」，用 `localStorage` ＋ `sessionStorage`，
+  同一 session 唔重複計。**刻意唔用** CountAPI／hits.sh 之類第三方計數器（可停、可被牆、會交 IP 去第三方）。
+- **週末唔落雨排行**：用 OCF 12 個分區站、本週末（六／日）最高降雨概率，由低至高排；
+  每行可撳去九日時間軸；地圖 pin 嘅降雨圓點改為**該營地所屬分區站**（之前係全港一個數）。
+- **我的足跡**：`localStorage` 記 `{id: {first, last}}`，卡片 👣 一撳標記／取消，側欄可篩選、可清除。
+- **README**：新增「我們平常用的系統（技術棧對照）」（Git／Actions／Vercel／Node 零依賴／Leaflet／官方 open data；
+  Supabase／GAS／Gemini 明確標「唔適用」）、「入站人次點做」、「台灣參考網站對照」三節。
+- **順手修正**：`npm run dev` 改 `python3 -m http.server 8000 --bind 0.0.0.0`（Arena live preview 需要）；
+  README 重複嘅 `data/auto` 行、dist 體積（240.7→256.4KB）同步。
+- guard 加第 12 項；smoke test 加 3 個（週末排行／足跡／入站人次）→ 12/12。
+
 ---
 
 ## 四、全部官方數據源（無第三方）
@@ -101,16 +119,16 @@
 ## 五、驗收結果（本機 + CI）
 
 ```
-npm run guard       → 11/11 全綠
-npm test            → 9/9 全綠
-npm run build:site  → dist/ 4 個檔，240.7 KB（S6 上限 5MB）
+npm run guard       → 12/12 全綠
+npm test            → 12/12 全綠
+npm run build:site  → dist/ 4 個檔，256.4 KB（S6 上限 5MB）
 node --check        → 全部 JS 通過
 PR #5 guard CI      → pass
 Live preview        → / /index.html /styles.css /app.js /data.js 全部 200
 ```
 
-Guard 11 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／dist 體積／單檔 <1MB／
-零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報。
+Guard 12 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／dist 體積／單檔 <1MB／
+零 secret／workflow 合約／約數+官方欄位／該區天氣潮汐日光／OCF 九日預報／入站人次+週末排行+足跡。
 
 ---
 
@@ -129,21 +147,22 @@ Guard 11 項：必要檔／雙版號／`© SCOUT SYSTEM`／`data.js` 同步／di
 
 ## 七、合併後嘅下一步
 
-1. **合併 PR #5 入 `main`** ← 本次交付要做的
-2. 合併後 `main` 上嘅 workflow 就有 OCF／conditions 同步；建議去 Actions 手動 Run 一次 `Camp Data Sync`
+1. **開 PR 合併 v1.4.0 入 `main`** ← 本次交付
+2. 合併後去 Actions 手動 Run 一次 `Camp Data Sync` 驗收
    （Arena token 無 `actions: write`，API dispatch 回 403，要喺 UI 撳）
 3. **Vercel Git Import**：Vercel 連接口 token `limited: true`，`create_project` 403 → 我開唔到 project，
    要你喺 Dashboard 用 Git Import 揀 `playerkousas-rgb/hkcamping`（設定值見 `GITHUB-SETUP.md` §四）
-4. **Dependabot PR #2／#3**（setup-node 4→7、checkout 4→7）— guard CI 已自動驗，揀合併或關閉
-5. 長遠：逐筆核實 44 筆收費、合併 5 筆種子列、補電話／電郵欄位
+4. **Vercel Analytics**：Deploy 後去 Dashboard → 專案 → Analytics → **Enable**，全站入站人次先會開始記
+5. **Dependabot PR #2／#3**（setup-node 4→7、checkout 4→7）— guard CI 已自動驗，揀合併或關閉
+6. 長遠：逐筆核實 44 筆收費、合併 5 筆種子列、補電話／電郵欄位
 
 ---
 
 ## 八、部署／驗收指令備忘
 
 ```bash
-npm run guard                 # 11 項
-npm test                      # 9 項
+npm run guard                 # 12 項
+npm test                      # 12 項
 npm run build:site            # 產生 dist/（Vercel 正式產物）
 npm run dev                   # http://localhost:8000 本機預覽
 node build-data.mjs --check   # 驗 data.js 同 data.csv／各快照是否同步

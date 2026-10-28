@@ -49,9 +49,9 @@ class FakeDoc {
   createElement(tag) { return new FakeEl(tag); }
 }
 
-function boot() {
+function boot(seed = {}) {
   const doc = new FakeDoc();
-  const store = new Map();
+  const store = new Map(Object.entries(seed));
   const localStorage = {
     getItem: (k) => (store.has(k) ? store.get(k) : null),
     setItem: (k, v) => store.set(k, String(v)),
@@ -63,7 +63,7 @@ function boot() {
   // 刻意唔提供 window.L → 行地圖 fallback 分支
   vm.runInContext(readFileSync(join(ROOT, 'data.js'), 'utf8'), sandbox, { filename: 'data.js' });
   vm.runInContext(readFileSync(join(ROOT, 'app.js'), 'utf8'), sandbox, { filename: 'app.js' });
-  return { sandbox, doc };
+  return { sandbox, doc, store };
 }
 
 test('data.js 載入 108 筆，前端啟動無例外', () => {
@@ -75,8 +75,8 @@ test('data.js 載入 108 筆，前端啟動無例外', () => {
 
 test('雙版號同頁尾版權（V1 / W1）', () => {
   const { doc } = boot();
-  assert.equal(doc.getElementById('versionBadge').textContent, 'v1.3.0');
-  assert.equal(doc.getElementById('appVersion').textContent, '1.3.0');
+  assert.equal(doc.getElementById('versionBadge').textContent, 'v1.4.0');
+  assert.equal(doc.getElementById('appVersion').textContent, '1.4.0');
 });
 
 test('約數標記：44 筆有銀碼卡片顯示「約」+ 警句，免費／面議唔會', () => {
@@ -209,4 +209,45 @@ test('無天氣快照時天氣列自動隱藏（fail-closed）', () => {
   vm.runInContext(readFileSync(join(ROOT, 'app.js'), 'utf8'), sandbox, { filename: 'app.js' });
   assert.equal(doc.getElementById('weatherBar').hidden, true);
   assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>108<\/b> 個結果/);
+});
+
+test('v1.4.0：週末唔落雨排行用 OCF 官方站，按降雨概率升序', () => {
+  const { doc } = boot();
+  const panel = doc.getElementById('weekendRankPanel');
+  assert.equal(panel.hidden, false);
+  const rows = doc.getElementById('weekendRankList').children;
+  assert.ok(rows.length >= 8, `排行榜應覆蓋 ≥8 個分區站（現 ${rows.length}）`);
+  // 每行：名次／站名／降雨％／溫度／營地數／例子
+  const pcts = rows.map((r) => Number((r.children[2].textContent.match(/(\d+)%/) || [])[1]));
+  assert.ok(pcts.every(Number.isFinite), '每行都要有降雨概率');
+  assert.deepEqual(pcts, [...pcts].sort((a, b) => a - b), '要由低至高排');
+  assert.match(rows[0].children[4].textContent, /\d+ 個營地/);
+  assert.match(doc.getElementById('weekendRankDates').textContent, /本週末 \d{2}\/\d{2}/);
+});
+
+test('v1.4.0：我的足跡由 localStorage 讀取，卡片有「去過」徽章', () => {
+  const { doc } = boot({
+    hkcamp_footprints: JSON.stringify({ a01: { first: '2026-10-01', last: '2026-10-20' } }),
+  });
+  assert.equal(doc.getElementById('footCount').textContent, 1);
+  assert.equal(doc.getElementById('footClear').hidden, false);
+  const cards = doc.getElementById('cardGrid').children;
+  const visited = cards.filter((c) => c.innerHTML.includes('class="foot-btn on"'));
+  assert.equal(visited.length, 1);
+  assert.match(visited[0].innerHTML, /👣 去過 · 上次/);
+  assert.match(visited[0].innerHTML, /2026-10-20/);
+  // 未去過嘅卡片：徽章容器仍然 hidden，唔會顯示
+  const notVisited = cards.filter((c) => c.innerHTML.includes('class="foot-btn "'));
+  assert.equal(notVisited.length, 107);
+  assert.ok(notVisited.every((c) => c.innerHTML.includes('foot-line" hidden')));
+});
+
+test('v1.4.0：入站人次喺本機累計，唔會假裝全站數字', () => {
+  const { doc } = boot({
+    hkcamp_visits: JSON.stringify({ n: 4, first: '2026-10-01', last: '2026-10-26' }),
+  });
+  const text = doc.getElementById('visitCount').textContent;
+  assert.match(text, /你第 5 次到訪/);
+  assert.match(text, /首次 2026-10-01/);
+  assert.match(text, /本機紀錄/);
 });

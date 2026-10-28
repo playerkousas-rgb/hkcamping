@@ -4,7 +4,7 @@
 
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.3.0';
+  const APP_VERSION = '1.4.0';
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -14,6 +14,8 @@
   };
   const SIGNAL_ORDER = ['良好', '一般', '微弱', '無'];
   const FAV_KEY = 'hkcamp_favourites';
+  const FOOT_KEY = 'hkcamp_footprints';   // 我的足跡：{ id: { first, last } }
+  const VISIT_KEY = 'hkcamp_visits';      // 入站人次（本機累計）
 
   // 通訊辦郊野公園流動網絡覆蓋層（地理資訊地圖）— 政府宣傳「通訊準備夠 郊遊安全樂悠悠」嘅查詢入口
   const OFCA_COVERAGE_URL = 'https://www.map.gov.hk/gm/map/search/faci/__OFCA_MOBILE?lg=tc';
@@ -103,6 +105,53 @@
     };
   }
 
+  /* ---------- 週末（下一個星期六＋星期日）----------
+   * 只用 OCF 快照實際有嘅日期，避免「預測咗一日官方未出」。
+   * 今日係星期日就當今日；否則取下一個星期六（今日星期六就係今日）。
+   */
+  const addDays = (iso, n) => {
+    const [y, m, d] = iso.split('-').map(Number);
+    const t = new Date(Date.UTC(y, m - 1, d) + n * 86400000);
+    return `${t.getUTCFullYear()}-${String(t.getUTCMonth() + 1).padStart(2, '0')}-${String(t.getUTCDate()).padStart(2, '0')}`;
+  };
+  const dowOf = (iso) => {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(Date.UTC(y, m - 1, d)).getUTCDay();
+  };
+  function ocfDates() {
+    if (!OCF || !OCF.stations) return [];
+    return [...new Set(Object.values(OCF.stations)
+      .flatMap((st) => (st.daily || []).map((d) => d.date)))].sort();
+  }
+  function weekendDates() {
+    const dates = ocfDates();
+    if (!dates.length) return [];
+    const today = todayHK();
+    const todayDow = dowOf(today);
+    let sat = today;
+    if (todayDow !== 6 && todayDow !== 0) sat = addDays(today, 6 - todayDow);
+    if (todayDow === 0) return dates.includes(today) ? [today] : [];
+    const sun = addDays(sat, 1);
+    const out = [sat, sun].filter((d) => dates.includes(d));
+    return out.length ? out : dates.filter((d) => d >= today && dowOf(d) === 6).slice(0, 1);
+  }
+  const WEEKEND = weekendDates();
+  const WEEKEND_LABEL = WEEKEND.length
+    ? WEEKEND.map((d) => `${d.slice(5, 7)}/${d.slice(8, 10)}`).join('–')
+    : '';
+
+  // 某個 OCF 站喺週末嘅最高降雨概率（官方冇提供就 null，唔會當 0）
+  function stationWeekendRain(code) {
+    if (!OCF || !code || !WEEKEND.length) return null;
+    const st = OCF.stations?.[code];
+    if (!st) return null;
+    const vals = WEEKEND
+      .map((date) => (st.daily || []).find((d) => d.date === date)?.rainPct)
+      .filter((v) => typeof v === 'number');
+    return vals.length ? Math.max(...vals) : null;
+  }
+  const siteWeekendRain = (site) => stationWeekendRain(site && site.ocfStation);
+
   /* ---------- 該區天氣 + 潮汐（conditions.json，由 build-data.mjs 嵌入） ---------- */
   const CONDITIONS = (window.CAMP_CONDITIONS && typeof window.CAMP_CONDITIONS === 'object')
     ? window.CAMP_CONDITIONS : null;
@@ -176,11 +225,39 @@
     query: '',
     sort: 'default',
     favOnly: false,
+    footOnly: false,
     mapVisible: true,
   };
 
-  const favs = new Set(JSON.parse(localStorage.getItem(FAV_KEY) || '[]'));
+  const readJson = (key, fallback) => {
+    try {
+      const v = JSON.parse(localStorage.getItem(key) || 'null');
+      return v == null ? fallback : v;
+    } catch { return fallback; }
+  };
+
+  const savedFavs = readJson(FAV_KEY, []);
+  const favs = new Set(Array.isArray(savedFavs) ? savedFavs.filter((id) => typeof id === 'string') : []);
   const saveFavs = () => localStorage.setItem(FAV_KEY, JSON.stringify([...favs]));
+
+  // 我的足跡：只記低「去過邊個營地 + 第一次／最後一次日期」，全部留喺瀏覽器。
+  const footprints = (() => {
+    const raw = readJson(FOOT_KEY, {});
+    const out = {};
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
+    Object.entries(raw).forEach(([id, v]) => {
+      if (!v || typeof v !== 'object') return;
+      const first = String(v.first || v.last || '');
+      const last = String(v.last || v.first || '');
+      if (!first && !last) return;
+      out[id] = { first, last };
+    });
+    return out;
+  })();
+  const saveFootprints = () => {
+    try { localStorage.setItem(FOOT_KEY, JSON.stringify(footprints)); } catch { /* 私隱模式 */ }
+  };
+  const footCount = () => Object.keys(footprints).length;
 
   /* ---------- 資料衍生選項 ---------- */
   const uniq = (arr) => [...new Set(arr)].filter(Boolean);
@@ -205,6 +282,7 @@
       if (!state.freeOnly && s.price > state.maxPrice) return false;
     }
     if (state.favOnly && !favs.has(s.id)) return false;
+    if (state.footOnly && !footprints[s.id]) return false;
 
     if (state.query.trim()) {
       const q = state.query.trim().toLowerCase();
@@ -258,6 +336,13 @@
     mount('signalChips', signals, state.signals, 'signal');
     document.getElementById('favCount').textContent = favs.size;
     document.getElementById('favToggle').setAttribute('aria-pressed', state.favOnly ? 'true' : 'false');
+
+    const footEl = document.getElementById('footCount');
+    if (footEl) footEl.textContent = footCount();
+    const footToggle = document.getElementById('footToggle');
+    if (footToggle) footToggle.setAttribute('aria-pressed', state.footOnly ? 'true' : 'false');
+    const footClear = document.getElementById('footClear');
+    if (footClear) footClear.hidden = footCount() === 0;
   }
 
   /* ---------- 地圖 ---------- */
@@ -281,9 +366,15 @@
 
   function pinIcon(site) {
     const meta = TYPE_META[site.type] || { color: '#555', short: '?' };
-    // 週末降雨概率係全港預測，用右上角一點標示（唔係逐營地實測）
-    const dot = WEEKEND_PSR_CLASS
-      ? `<i class="weather-dot ${WEEKEND_PSR_CLASS}" title="週末降雨概率（全港）：${WEEKEND_PSR_TEXT}"></i>`
+    // 週末降雨概率：優先用該營地所屬 OCF 分區站（官方分區預報），冇就退回全港預測。
+    // 只係「落雨機會」，唔係逐營地實測，popup 同排行榜都有寫明。
+    const pct = siteWeekendRain(site);
+    const cls = pct === null ? WEEKEND_PSR_CLASS : `psr-${rainClass(pct)}`;
+    const label = pct === null
+      ? `週末降雨概率（全港）：${WEEKEND_PSR_TEXT}`
+      : `${OCF?.stations?.[site.ocfStation]?.name || site.ocfStation}站週末最高降雨概率：${pct}%（${WEEKEND_LABEL}）`;
+    const dot = cls
+      ? `<i class="weather-dot ${cls}" title="${label}"></i>`
       : '';
     return L.divIcon({
       className: '',
@@ -307,8 +398,14 @@
         ? `<br><a class="popup-link" href="${s.bookingUrl}" target="_blank" rel="noopener">前往預訂頁面 ↗</a>` : '';
       const info = (!s.bookingUrl && s.infoUrl)
         ? `<br><a class="popup-link" href="${s.infoUrl}" target="_blank" rel="noopener">${s.booking ? '預訂查詢（官網）' : '官方資料'} ↗</a>` : '';
-      const weatherLine = WEEKEND_PSR_CLASS
-        ? `<div class="popup-weather"><i class="weather-dot ${WEEKEND_PSR_CLASS}"></i> 週末降雨概率（全港預測）：${WEEKEND_PSR_TEXT}</div>`
+      const pct = siteWeekendRain(s);
+      const pcls = pct === null ? WEEKEND_PSR_CLASS : `psr-${rainClass(pct)}`;
+      const weatherLine = pcls
+        ? `<div class="popup-weather"><i class="weather-dot ${pcls}"></i> ${
+          pct === null
+            ? `週末降雨概率（全港預測）：${WEEKEND_PSR_TEXT}`
+            : `${OCF?.stations?.[s.ocfStation]?.name || s.ocfStation}站（${s.ocfStation}）週末最高降雨概率：${pct}%`
+        }${WEEKEND_LABEL ? ` · ${WEEKEND_LABEL}` : ''}</div>`
         : '';
       marker.bindPopup(
         `<div class="popup-title">${s.name}</div>
@@ -370,10 +467,16 @@
       card.className = 'card';
       const tags = [...s.facilities, ...s.tags].slice(0, 5);
       const isFav = favs.has(s.id);
+      const visit = footprints[s.id] || null;
       card.innerHTML = `
         <div class="card-top">
           <span class="type-badge type-${s.type}">${s.type}</span>
-          <button class="fav-btn" title="加入我的最愛" aria-label="收藏 ${s.name}">${isFav ? '⭐' : '☆'}</button>
+          <span class="card-tools">
+            <button class="foot-btn ${visit ? 'on' : ''}" type="button" aria-pressed="${visit ? 'true' : 'false'}"
+              title="${visit ? `已標記去過 ${visit.last}（再撳取消）` : '標記去過（只存喺呢個瀏覽器）'}"
+              aria-label="標記去過 ${s.name}">👣</button>
+            <button class="fav-btn" title="加入我的最愛" aria-label="收藏 ${s.name}">${isFav ? '⭐' : '☆'}</button>
+          </span>
         </div>
         <h3>${s.name}</h3>
         <div class="place">📍 ${s.district} · ${s.area}${s.operator ? ` · 🏛 ${s.operator}` : ''}</div>
@@ -386,6 +489,9 @@
         ${s.priceSource === 'estimate'
           ? '<div class="price-caveat">約數 · 未逐筆核實，落訂前請向場地官網／電話確認</div>' : ''}
         ${prepBadges(s)}
+        <div class="prep-badges foot-line"${visit ? '' : ' hidden'}>
+          <span class="prep-badge foot">👣 去過 · 上次 <span class="foot-last">${visit ? visit.last : ''}</span></span>
+        </div>
         ${s.tideStation ? `<div class="prep-badges"><span class="prep-badge tide">🌊 潮汐站：${TIDE_STATION_NAMES[s.tideStation] || s.tideStation}</span></div>` : ''}
         <p class="summary">${s.summary}</p>
         <div class="mini-tags">${tags.map((t) => `<span class="mini-tag">${t}</span>`).join('')}</div>
@@ -405,6 +511,27 @@
         saveFavs();
         e.currentTarget.textContent = favs.has(s.id) ? '⭐' : '☆';
         renderFilters();
+      });
+
+      // 我的足跡：再撳一次取消；只寫 localStorage，冇帳號、冇上傳
+      card.querySelector('.foot-btn').addEventListener('click', (e) => {
+        let now = null;
+        if (footprints[s.id]) {
+          delete footprints[s.id];
+        } else {
+          footprints[s.id] = { first: todayHK(), last: todayHK() };
+          now = footprints[s.id];
+        }
+        saveFootprints();
+        e.currentTarget.classList.toggle('on', !!now);
+        e.currentTarget.setAttribute('aria-pressed', now ? 'true' : 'false');
+        e.currentTarget.title = now ? `已標記去過 ${now.last}（再撳取消）` : '標記去過（只存喺呢個瀏覽器）';
+        const line = card.querySelector('.foot-line');
+        const last = card.querySelector('.foot-last');
+        if (line) line.hidden = !now;
+        if (last) last.textContent = now ? now.last : '';
+        if (state.footOnly) render();
+        else renderFilters();
       });
       card.querySelector('[data-action="locate"]').addEventListener('click', () => flyTo(s.id));
       card.querySelector('[data-action="local"]').addEventListener('click', () => {
@@ -438,7 +565,7 @@
   function activeFilterCount() {
     return state.types.size + state.districts.size + state.transports.size +
       state.tags.size + state.signals.size +
-      (state.freeOnly ? 1 : 0) + (state.favOnly ? 1 : 0) +
+      (state.freeOnly ? 1 : 0) + (state.favOnly ? 1 : 0) + (state.footOnly ? 1 : 0) +
       (state.maxPrice < 1500 ? 1 : 0) + (state.query.trim() ? 1 : 0);
   }
 
@@ -479,10 +606,30 @@
       render();
     });
 
+    const footToggle = document.getElementById('footToggle');
+    if (footToggle) {
+      footToggle.addEventListener('click', () => {
+        state.footOnly = !state.footOnly;
+        render();
+      });
+    }
+    const footClear = document.getElementById('footClear');
+    if (footClear) {
+      footClear.addEventListener('click', () => {
+        if (!footCount()) return;
+        if (typeof window.confirm === 'function' &&
+            !window.confirm('清除全部「我的足跡」紀錄？（只影響呢個瀏覽器）')) return;
+        Object.keys(footprints).forEach((id) => delete footprints[id]);
+        saveFootprints();
+        state.footOnly = false;
+        render();
+      });
+    }
+
     const clearAll = () => {
       state.types.clear(); state.districts.clear(); state.transports.clear();
       state.tags.clear(); state.signals.clear();
-      state.freeOnly = false; state.favOnly = false;
+      state.freeOnly = false; state.favOnly = false; state.footOnly = false;
       state.maxPrice = 1500; state.query = '';
       document.getElementById('freeOnly').checked = false;
       document.getElementById('maxPrice').value = 1500;
@@ -857,6 +1004,129 @@
     }
   }
 
+  /* ---------- 週末唔落雨排行（v1.4.0） ----------
+   * 參考台灣營火部落「本週末邊區唔落雨」嘅概念，但只用天文台 OCF 官方分區預報，
+   * 唔會自己估雨量；每行可撳去上方九日時間軸睇該站詳情。
+   */
+  function stationsInUse() {
+    const map = {};
+    SITES.forEach((s) => {
+      if (!s.ocfStation) return;
+      (map[s.ocfStation] = map[s.ocfStation] || []).push(s);
+    });
+    return map;
+  }
+
+  function renderWeekendRank() {
+    const panel = document.getElementById('weekendRankPanel');
+    const host = document.getElementById('weekendRankList');
+    const dates = document.getElementById('weekendRankDates');
+    if (!panel || !host) return;
+    host.replaceChildren();
+
+    if (!OCF || !OCF.stations || !WEEKEND.length) {
+      panel.hidden = true;
+      return;
+    }
+
+    const byStation = stationsInUse();
+    const rows = Object.keys(OCF.stations)
+      .filter((code) => byStation[code])
+      .map((code) => {
+        const st = OCF.stations[code] || {};
+        const days = WEEKEND
+          .map((d) => (st.daily || []).find((x) => x.date === d))
+          .filter(Boolean);
+        const maxs = days.map((d) => d.max).filter((v) => typeof v === 'number');
+        const mins = days.map((d) => d.min).filter((v) => typeof v === 'number');
+        return {
+          code,
+          name: st.name || code,
+          pct: stationWeekendRain(code),
+          count: byStation[code].length,
+          samples: byStation[code].slice(0, 2).map((s) => s.name),
+          max: maxs.length ? Math.max(...maxs) : null,
+          min: mins.length ? Math.min(...mins) : null,
+        };
+      })
+      .filter((r) => r.pct !== null)
+      .sort((a, b) => a.pct - b.pct || b.count - a.count ||
+        a.name.localeCompare(b.name, 'zh-Hant'));
+
+    if (!rows.length) {
+      panel.hidden = true;
+      return;
+    }
+
+    panel.hidden = false;
+    if (dates) dates.textContent = `本週末 ${WEEKEND_LABEL} · 按降雨概率由低至高`;
+
+    rows.forEach((r, i) => {
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = `rank-row ${rainClass(r.pct)}`;
+      row.title = `撳一下睇「${r.name}」站嘅九日預報`;
+      const add = (tag, cls, text) => {
+        const el = document.createElement(tag);
+        if (cls) el.className = cls;
+        if (text != null) el.textContent = text;
+        row.appendChild(el);
+        return el;
+      };
+      add('span', 'rank-no', String(i + 1));
+      add('span', 'rank-name', r.name);
+      add('span', 'rank-rain', `🌧 ${r.pct}%`);
+      add('span', 'rank-temp',
+        r.max !== null && r.min !== null ? `${Math.round(r.max)}° / ${Math.round(r.min)}°` : '—');
+      add('span', 'rank-count', `${r.count} 個營地`);
+      add('span', 'rank-samples', r.samples.join('、'));
+      row.addEventListener('click', () => {
+        forecastCode = r.code;
+        const sel = document.getElementById('forecastRegion');
+        if (sel) sel.value = r.code;
+        renderForecast();
+        const fc = document.getElementById('forecastPanel');
+        if (fc) fc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      host.appendChild(row);
+    });
+  }
+
+  /* ---------- 入站人次（v1.4.0） ----------
+   * 全站真實人次：Vercel Web Analytics（`/_vercel/insights/script.js`，喺 Vercel Dashboard 開）。
+   * 頁面顯示：本機累計入站次數（localStorage），同一 browser session 只計一次。
+   * 純靜態、零後端、零 secret、無 cookie；唔會假裝全站數字。
+   */
+  function initVisitCounter() {
+    const el = document.getElementById('visitCount');
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(VISIT_KEY) || '{}') || {}; } catch { saved = {}; }
+    let n = Math.max(0, Math.floor(Number(saved.n) || 0));
+    const first = saved.first ? String(saved.first) : todayHK();
+
+    let counted = false;
+    try {
+      if (typeof sessionStorage !== 'undefined' && sessionStorage) {
+        counted = sessionStorage.getItem('hkcamp_visit_counted') === '1';
+        if (!counted) sessionStorage.setItem('hkcamp_visit_counted', '1');
+      }
+    } catch { counted = false; }
+
+    if (!counted) {
+      n += 1;
+      try {
+        localStorage.setItem(VISIT_KEY, JSON.stringify({ n, first, last: todayHK() }));
+      } catch { /* 私隱模式：唔影響網站運作 */ }
+    }
+
+    if (!el) return;
+    el.textContent = n > 0
+      ? `👣 入站人次：你第 ${n} 次到訪（本機紀錄，首次 ${first}）`
+      : '👣 入站人次統計中';
+    el.title = '「入站人次」喺呢度顯示嘅係你喺呢個瀏覽器嘅累計到訪次數，只存喺本機、唔會上傳；'
+      + '全站真實人次由 Vercel Web Analytics 以無 cookie 方式統計（詳見 README）。';
+  }
+
   /* ---------- 版號顯示（W1 / V1） ---------- */
   function renderVersion() {
     const badge = document.getElementById('versionBadge');
@@ -867,9 +1137,11 @@
 
   /* ---------- 啟動 ---------- */
   renderVersion();
+  initVisitCounter();
   renderWeather();
   renderForecastRegionOptions();
   renderForecast();
+  renderWeekendRank();
   if (!SITES.length) {
     document.getElementById('resultCount').textContent = '⚠ 未能載入 data.js，請先執行 node build-data.mjs';
   } else {
