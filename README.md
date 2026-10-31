@@ -348,7 +348,7 @@ npm run guard     # 第 14 項「資料一致性」會自動跑上面嗰個
 | **S9** 上載面配額 | 冇上載功能 | N/A ✅ |
 | **S10** Git 瘦身 | `.gitignore` 擋 `node_modules/`、`dist/`、`.env*`、binary；單檔 <1MB | 最大檔 `had-guesthouses.json` 783.9KB（未部署，只做月更報告） ✅ |
 | **S11** payload 瘦身 | **v1.5.0 重點**：`data.js` 只嵌入前端真正用嘅部分 | 見下 ✅ |
-| **S12** 自動化守護 | `guard.mjs` 18 項 ＋ `guard.yml`（push／PR／每週一）＋ `npm test` 31 個；交通 workflow 另跑 A–W UI tests | ✅ |
+| **S12** 自動化守護 | `guard.mjs` 18 項 ＋ `guard.yml`（push／PR／每週一）＋ `npm test` 32 個；交通 workflow 另跑 A–W UI tests | ✅ |
 
 ### S11 實際做咗乜（v1.5.0，data.js 396KB → 128KB）
 
@@ -570,7 +570,7 @@ python3 -m http.server 8000 --bind 0.0.0.0
 
 ```bash
 npm run guard       # guard 靜態守護（含交通快照自動發布、fail-closed 建置與快取標頭）
-npm test            # 31 個 smoke／POC／快照測試，含 108 個營地發布驗證及 16 項比較欄位
+npm test            # 32 個 smoke／POC／快照測試，含 108 個營地發布驗證及 16 項比較欄位
 npm run build:site  # 產生 dist/（5 個核心檔 + icons，體積由 guard 驗收）
 npm run ui          # 158 項 A–W 情境實測（先 npm i -D jsdom@^26）；CI 使用暫時安裝，不加入網站依賴
 ```
@@ -583,7 +583,7 @@ npm run ui          # 158 項 A–W 情境實測（先 npm i -D jsdom@^26）；C
 
 | 角度 | 邊個做 | 點跑 | 守乜 |
 |---|---|---|---|
-| **程序員** | 自動、CI 必跑 | `npm run guard`（18 項）、`npm test`（31 項） | 資料本身有冇矛盾、版號四處有冇同步、交通來源／快照／部署合約 |
+| **程序員** | 自動、CI 必跑 | `npm run guard`（18 項）、`npm test`（32 項） | 資料本身有冇矛盾、版號四處有冇同步、交通來源／快照／部署合約 |
 | **一般用戶** | 本機可手動；CI 自動跑 | `npm i -D jsdom@^26 && npm run ui`（158 項，A–W 23 段；交通 workflow 暫時安裝 jsdom） | 見下面「用邊啲身份測」 |
 
 **兩個都係 build／測試期先跑，網站本身仍然係零 runtime dependency，`dist/` 一個 byte 都冇多。**

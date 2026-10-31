@@ -83,7 +83,7 @@ data.csv                  ← 現有靜態基礎資料（歷史上有人工策�
 | `app.js` `sunTimesHKT()` | **v1.2.0 新增**：純 JS 天文公式（NOAA/SunCalc）計日出日落，零 API、任何年份、`file://` 都用得；已用 HKO 官方 SRS 2026 五個錨點驗證，最大誤差 3 分鐘 |
 | `tools-sync-ocf.mjs` | **v1.3.0 新增**：每日抓天文台「自動分區天氣預報」(OCF) 12 個站嘅未來 9–10 日預報（`maps.weather.gov.hk/ocf/dat/<code>.xml`，檔名 .xml 但內容係 JSON）→ `data/auto/ocf-forecast.json`。多模型共識 + 本地觀測校正，每日更新兩次；**電腦自動生成、未經人手修訂**，UI 已標明 |
 | `scripts/transit-poc.mjs` + `scripts/transit-poc-core.mjs` + `scripts/publish-transit.mjs` + `.github/workflows/transit-poc.yml` | 每週抓運輸署巴士／GMB route-stop GeoJSON，對 108 個營地計最近站與直線距離；`lib/transit-snapshot.mjs` 驗證官方來源、完整營地覆蓋、座標／資料大小後，自動更新 `data/auto/transit.json`、重建 `transit.js` 並 commit/push。原始 feed／JSON／Markdown 診斷只作 30 日 artifact；缺檔、來源錯誤或資料不完整即 fail-closed，不需人工覆核 |
-| `app.js` + `index.html` + `styles.css` 交通 UI | 卡片原生展開／收合最近巴士／小巴站、路線、地圖及資料時間；每站最多列 12 條官方路線，超出會提示。比較表增加附近站點，支援按站名／路線搜尋及最近站排序。手機固定快速列提供頁頂／篩選／排序／頁底；距離與 ETA 限制在 UI 明示 |
+| `app.js` + `index.html` + `styles.css` 交通 UI | 卡片原生展開／收合最近巴士／小巴站、路線、地圖及資料時間；每種交通最多顯示最近 2 個站、每站最多列 5 條官方路線，超出路線數會提示。比較表增加附近站點，支援按站名／路線搜尋及最近站排序。手機固定快速列提供頁頂／篩選／排序／頁底；距離與 ETA 限制在 UI 明示 |
 | `app.js` `renderWeekendRank()` | **v1.4.0 新增**：用同一個 OCF 快照計本週末（六／日）各分區站最高降雨概率，排「週末唔落雨排行」；地圖 pin 嘅降雨圓點亦改用所屬分區站，唔再全港一個數 |
 | `app.js` 我的足跡 | **v1.4.0 新增**：`localStorage` `hkcamp_footprints`（`{id:{first,last}}`），卡片一撳標記／取消，側欄可篩選／清除；無帳號、無上傳 |
 | `app.js` `initVisitCounter()` ＋ Vercel Analytics | **v1.4.0 新增**：全站人次由 Vercel Web Analytics（無 cookie、無 secret）統計；頁尾顯示本機累計「你第 N 次到訪」。**唔用** CountAPI／hits.sh 等第三方計數器（可停、可被牆、會交 IP 去第三方） |

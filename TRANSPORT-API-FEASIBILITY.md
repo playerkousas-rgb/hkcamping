@@ -2,7 +2,7 @@
 
 **測試日期：2026-10-31（香港時間）**
 
-**狀態：官方來源/API 測試及 v1.14.0 網站交通整合已完成：卡片展開／收合站點與路線、比較表、路線搜尋、最近站直線距離排序及手機快速導覽均已接入。每週 GitHub Actions 會抓取官方 feed、fail-closed 驗證 108 個營地，並自動提交精簡 `data/auto/transit.json`／`transit.js`；完整診斷仍只保留 30 日 artifact。首個整合版 Actions run 另行驗收。**
+**狀態：官方來源/API 測試及 v1.14.0 網站交通整合已完成：卡片展開／收合站點與路線、比較表、路線搜尋、最近站直線距離排序及手機快速導覽均已接入。每週 GitHub Actions 會抓取官方 feed、fail-closed 驗證 108 個營地，並自動提交精簡 `data/auto/transit.json`／`transit.js`；完整診斷仍只保留 30 日 artifact。首個整合版 Actions run `41160349725` 已成功並自動提交網站快照；現再把輸出收斂至每種交通最近 2 個站、每站最多 5 條路線及緊湊 JSON，確保部署體積預算，這個最新縮小版待下一次 Actions 驗證。**
 
 ## 結論
 
@@ -47,7 +47,7 @@ POC 程式及排程 workflow 已加入 repo：
 | 巴士 | 56,103 | 8,216 | 32/108 | 44/108 | 53/108 | 66/108 | 88/108 |
 | 專線小巴 | 13,165 | 4,779 | 17/108 | 26/108 | 33/108 | 48/108 | 64/108 |
 
-座標衝突 0、營地與站名完全相同 11 個。覆蓋是**最近官方站點的直線距離**；不能解讀為步行距離、步道入口可達性、班次充足度或實際交通服務覆蓋。巴士與小巴覆蓋會重疊，以上不相加。Agent sandbox 因外部 artifact blob host 限制，未能自行下載 artifact；GitHub 已確認 artifact 上傳成功（127,115 bytes），workflow 的 parser / 108 筆全處理驗證與 summary 均通過。靜態官方站點／路線整合已按使用者批准實作於 v1.14.0；首個整合版 workflow live run 尚待驗收。即時 ETA 不在批准範圍內。
+座標衝突 0、營地與站名完全相同 11 個。覆蓋是**最近官方站點的直線距離**；不能解讀為步行距離、步道入口可達性、班次充足度或實際交通服務覆蓋。巴士與小巴覆蓋會重疊，以上不相加。Agent sandbox 因外部 artifact blob host 限制，未能自行下載 artifact；GitHub 已確認 artifact 上傳成功（127,115 bytes），workflow 的 parser / 108 筆全處理驗證與 summary 均通過。靜態官方站點／路線整合已按使用者批准實作於 v1.14.0；首個整合版 workflow [run `41160349725`](https://github.com/playerkousas-rgb/hkcamping/actions/runs/41160349725) 已成功並自動提交網站快照，最新縮小版仍待下一次 Actions 驗證。即時 ETA 不在批准範圍內。
 
 ### 實時 ETA：不適合由 GitHub Actions 供應
 

@@ -37,7 +37,7 @@ function writeJsonAtomically(outputPath, value) {
   mkdirSync(dirname(outputPath), { recursive: true });
   const temporaryPath = `${outputPath}.tmp-${process.pid}`;
   try {
-    writeFileSync(temporaryPath, `${JSON.stringify(value, null, 2)}\n`, 'utf8');
+    writeFileSync(temporaryPath, `${JSON.stringify(value)}\n`, 'utf8');
     renameSync(temporaryPath, outputPath);
   } catch (error) {
     rmSync(temporaryPath, { force: true });

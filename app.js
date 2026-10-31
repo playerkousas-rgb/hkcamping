@@ -646,7 +646,7 @@
         </div>
         ${routeItems ? `<ul class="transit-routes" aria-label="${escapeHtml(name)}的路線">${routeItems}</ul>`
           : '<p class="transit-empty">官方快照未提供路線名稱。</p>'}
-        ${stop.routesTruncated ? '<p class="transit-route-note">官方路線較多；本頁最多顯示 12 條。</p>' : ''}
+        ${stop.routesTruncated ? '<p class="transit-route-note">官方路線較多；本頁最多顯示 5 條。</p>' : ''}
       </li>`;
     }).join('');
     return `<section class="transit-mode"><h4>${label}（顯示最近 ${visible.length} 個站點）</h4>

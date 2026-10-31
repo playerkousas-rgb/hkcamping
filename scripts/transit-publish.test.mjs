@@ -1,5 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import os from 'node:os';
+import { join } from 'node:path';
+import vm from 'node:vm';
+import { publishTransitSnapshot } from './publish-transit.mjs';
 import {
   createWebsiteTransitSnapshot,
   validateWebsiteTransitSnapshot,
@@ -105,9 +110,42 @@ test('POC → website snapshot: 108/108 coverage and only compact bus/GMB stop d
   manyRoutes.campsites[0].nearest.bus[0].routes = Array.from({ length: 14 }, (_, index) =>
     route({ routeId: `R${index + 1}`, routeNameC: `路線 ${index + 1}` }));
   const capped = createWebsiteTransitSnapshot(manyRoutes, expectedSites);
-  assert.equal(capped.campsites[0].bus[0].routes.length, 12);
+  assert.equal(capped.campsites[0].bus[0].routes.length, 5);
   assert.equal(capped.campsites[0].bus[0].routesTruncated, true);
   assert.equal(validateWebsiteTransitSnapshot(capped, expectedSites).campsites[0].bus[0].routesTruncated, true);
+
+  const fiveStops = makePoc();
+  fiveStops.campsites[0].nearest.bus = Array.from({ length: 5 }, (_, index) =>
+    stop({ stopId: `BUS-${index + 1}`, distanceM: 100 + index * 100 }));
+  assert.equal(createWebsiteTransitSnapshot(fiveStops, expectedSites).campsites[0].bus.length, 2);
+});
+
+test('publisher writes the website snapshot as compact JSON below the file-size budget', () => {
+  const sandbox = { window: {} };
+  vm.runInNewContext(readFileSync(new URL('../data.js', import.meta.url), 'utf8'), sandbox);
+  const actualSites = sandbox.window.CAMPSITES;
+  const poc = makePoc({
+    campsites: actualSites.map((site, index) => ({
+      id: site.id,
+      name: site.name,
+      nearest: index === 0 ? { bus: [stop()], gmb: [stop({
+        companyCode: 'GMB-TEST', stopId: 'GMB-STOP-1', nameC: '海下', nameE: 'Hoi Ha',
+      })] } : { bus: [], gmb: [] },
+    })),
+  });
+  const directory = mkdtempSync(join(os.tmpdir(), 'hkcamping-transit-'));
+  const input = join(directory, 'poc.json');
+  const output = join(directory, 'published.json');
+  try {
+    writeFileSync(input, JSON.stringify(poc));
+    const snapshot = publishTransitSnapshot({ input, output });
+    const serialized = readFileSync(output, 'utf8');
+    assert.deepEqual(JSON.parse(serialized), snapshot);
+    assert.equal(serialized, `${JSON.stringify(snapshot)}\n`);
+    assert.ok(Buffer.byteLength(serialized) < 1024 * 1024);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });
 
 test('publisher fails closed for incomplete POC coverage, wrong feed, or invalid coordinates', () => {
