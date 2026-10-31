@@ -37,7 +37,7 @@ data.csv                  ← 現有靜態基礎資料（歷史上有人工策�
 | 漁護署 41 營地名稱/座標/郊野公園 | ✅ 全自動 | CSDI GeoJSON `afcd_rcd_1635133060194_82554` | 每日 |
 | 營地水源類型、營位規模（少於20/20-50/多於50） | ✅ 全自動 | 同上，`SOURCE_OF_WATER` / `TENT_SPACE` 欄位；營位級別須標明為官方估算 | 每日 |
 | AFCD 個別營地路線／設施／適合對象／地圖 | 🟡 待證明可穩定自動解析 | 漁護署 41 個官方營地詳情頁及其官方地圖 | 只有在 Actions 可驗證 41/41 完整解析、自動更新及 fail-closed 後才加入；不可人工逐頁維護 |
-| 營地附近官方巴士／小巴站與路線 | 🟡 全自動 POC 已建置；待 Actions live run | 運輸署雙週 `JSON_BUS.json` + `JSON_GMB.json` route-stop GeoJSON；[測試報告](TRANSPORT-API-FEASIBILITY.md) | 每週自動測試；配對結果只作 artifact，不入網站／`data.js` |
+| 營地附近官方巴士／小巴站與路線 | ✅ 全自動 POC 已完成官方 feed live run | 運輸署雙週 `JSON_BUS.json` + `JSON_GMB.json` route-stop GeoJSON；[測試報告](TRANSPORT-API-FEASIBILITY.md) | 每週自動測試；JSON／Markdown 只作 30 日 artifact，不入網站／`data.js` |
 | 巴士／小巴即時 ETA | 🟡 API smoke test 成功；瀏覽器接入未驗 | 運輸署 GMB、KMB/LWB；城巴及 NLB 官方 API | GMB/KMB/城巴 ETA 約每分鐘；CORS、條款及數值化限流未確認；GHA 不可保證即時 |
 | 港鐵即時 ETA／站點配對 | 🟡 ETA API smoke test 成功；未具備營地配對資料 | MTR Next Train API；MTR 車站 CSV 與 LandsD 地理資料另待驗 | 列車 ETA 每 10 秒；CSV 本輪 HTTP 500，車站座標、CORS 與條款未驗 |
 | 郊野設施/山徑臨時關閉 | ✅ 全自動 | CSDI「Closed Facilities」圖層（舊 dataset ID 已 404，需在 CSDI portal 重新搜尋新 ID） | 每日 |
@@ -54,6 +54,8 @@ data.csv                  ← 現有靜態基礎資料（歷史上有人工策�
 | 無牌平台房源（Airbnb 等） | ❌ 不收錄 | 第349章無牌經營風險；資料庫民宿分類只收持牌處所 | — |
 | 私人 Glamping 主觀評分／氣氛 | ❌ 不加入 | 無可自動驗證的官方客觀來源 | 不使用人工整理或眾包補位 |
 | 手機訊號覆蓋 | ❌ 不複製覆蓋資料 | 通訊辦靜態地圖及地理資訊地圖 `__OFCA_MOBILE` 圖層；依版權條款只連官方地圖 | 深鏈連出；不做眾包訊號評分 |
+
+> **官方交通 feed 首次 live run（2026-10-31）**：[GitHub Actions run #4](https://github.com/playerkousas-rgb/hkcamping/actions/runs/41156262810) 成功處理 108/108 個營地。巴士 feed 56,103 筆 features、8,216 個唯一站點；GMB feed 13,165 筆 features、4,779 個唯一站點。以直線距離計，500 米內分別有巴士站 44/108、小巴站 26/108；1 公里內 53/108、33/108。座標衝突 0，完全同名站點配對 11。完整 JSON／Markdown artifact 名為 `transit-poc-4`，保留 30 日；此 POC 不等同步行可達率、ETA 或網站整合。
 
 ### 訊號覆蓋嘅實際接法（已實裝）
 
