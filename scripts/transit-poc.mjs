@@ -87,6 +87,15 @@ async function readResponseLimited(response, maxBytes) {
   return Buffer.concat(chunks, byteCount).toString('utf8');
 }
 
+export function parseGeoJsonText(text, source) {
+  const normalizedText = text.charCodeAt(0) === 0xFEFF ? text.slice(1) : text;
+  try {
+    return JSON.parse(normalizedText);
+  } catch (error) {
+    throw new Error(`Invalid JSON from ${source}: ${error.message}`);
+  }
+}
+
 async function fetchGeoJson(url) {
   let lastError;
   for (let attempt = 0; attempt <= RETRY_DELAYS_MS.length; attempt += 1) {
@@ -109,11 +118,7 @@ async function fetchGeoJson(url) {
         lastError = error;
       } else {
         const body = await readResponseLimited(response, MAX_DOWNLOAD_BYTES);
-        try {
-          return JSON.parse(body);
-        } catch (error) {
-          throw new Error(`Invalid JSON from ${url}: ${error.message}`);
-        }
+        return parseGeoJsonText(body, url);
       }
     } catch (error) {
       lastError = error;
@@ -135,7 +140,7 @@ function readFixture(directory, baseName) {
     try { readFileSync(candidate); return true; } catch { return false; }
   });
   if (!path) throw new Error(`Missing fixture: expected ${candidates.join(' or ')}`);
-  return JSON.parse(readFileSync(path, 'utf8'));
+  return parseGeoJsonText(readFileSync(path, 'utf8'), path);
 }
 
 function loadCampsitesFromDataJs() {

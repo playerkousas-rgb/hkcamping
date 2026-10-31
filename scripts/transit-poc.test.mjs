@@ -11,6 +11,7 @@ import {
   renderTransitPocMarkdown,
   validateCampsites,
 } from './transit-poc-core.mjs';
+import { parseGeoJsonText } from './transit-poc.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -42,6 +43,12 @@ function point({
 }
 
 const feed = (features) => ({ type: 'FeatureCollection', features });
+
+test('parses official JSON feeds that begin with a UTF-8 BOM', () => {
+  const parsed = parseGeoJsonText('\uFEFF{"type":"FeatureCollection","features":[]}', 'fixture');
+  assert.deepEqual(parsed, { type: 'FeatureCollection', features: [] });
+  assert.throws(() => parseGeoJsonText('\uFEFF{broken', 'fixture'), /Invalid JSON from fixture/);
+});
 
 function parseFixture(features, mode) {
   return parseRouteGeoJson(feed(features), { mode, sourceUrl: `fixture:${mode}`, minFeatures: 1 });
