@@ -40,6 +40,7 @@ class FakeEl {
   replaceChildren(...nodes) { this.children = nodes; }
   setAttribute(k, v) { this.attrs[k] = String(v); }
   getAttribute(k) { return this.attrs[k]; }
+  removeAttribute(k) { delete this.attrs[k]; }
   addEventListener(type, callback) {
     if (!this.listeners[type]) this.listeners[type] = [];
     this.listeners[type].push(callback);

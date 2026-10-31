@@ -6,7 +6,7 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.14.0';
+  const APP_VERSION = '1.14.1';
 
   // 每週由運輸署官方 route-stop GeoJSON 自動更新；本地快照不可當作即時 ETA。
   const TRANSIT = (window.CAMP_TRANSIT && typeof window.CAMP_TRANSIT === 'object')
@@ -856,12 +856,14 @@
           <span class="card-tools">
             <button class="foot-btn ${visit ? 'on' : ''}" type="button" aria-pressed="${visit ? 'true' : 'false'}"
               title="${visit ? `已標記去過 ${visit.last}（再撳取消）` : '標記去過（只存喺呢個瀏覽器）'}"
-              aria-label="標記去過 ${s.name}">👣</button>
+              aria-label="${visit ? '取消去過標記' : '標記去過'}：${escapeHtml(s.name)}">👣</button>
             <button class="compare-toggle" type="button" data-compare-id="${escapeHtml(s.id)}"
               aria-pressed="${inCompare ? 'true' : 'false'}" aria-label="${inCompare ? '從比較清單移除' : '加入比較'}：${escapeHtml(s.name)}"
               title="${inCompare ? `從比較清單移除：${escapeHtml(s.name)}` : `加入比較：${escapeHtml(s.name)}`}"
               ${compareDisabled ? 'disabled' : ''}>${inCompare ? '✓ 已加入' : '⚖ 比較'}</button>
-            <button class="fav-btn" title="加入我的最愛" aria-label="收藏 ${s.name}">${isFav ? '⭐' : '☆'}</button>
+            <button class="fav-btn" type="button" aria-pressed="${isFav ? 'true' : 'false'}"
+              title="${isFav ? '移除我的最愛' : '加入我的最愛'}"
+              aria-label="${isFav ? '從我的最愛移除' : '加入我的最愛'}：${escapeHtml(s.name)}">${isFav ? '⭐' : '☆'}</button>
           </span>
         </div>
         <h3>${s.name}</h3>
@@ -901,7 +903,11 @@
       card.querySelector('.fav-btn').addEventListener('click', (e) => {
         favs.has(s.id) ? favs.delete(s.id) : favs.add(s.id);
         saveFavs();
-        e.currentTarget.textContent = favs.has(s.id) ? '⭐' : '☆';
+        const selected = favs.has(s.id);
+        e.currentTarget.textContent = selected ? '⭐' : '☆';
+        e.currentTarget.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        e.currentTarget.title = selected ? '移除我的最愛' : '加入我的最愛';
+        e.currentTarget.setAttribute('aria-label', `${selected ? '從我的最愛移除' : '加入我的最愛'}：${s.name}`);
         renderFilters();
       });
       card.querySelector('.compare-toggle').addEventListener('click', (e) => toggleCompare(s, e.currentTarget));
@@ -919,6 +925,7 @@
         e.currentTarget.classList.toggle('on', !!now);
         e.currentTarget.setAttribute('aria-pressed', now ? 'true' : 'false');
         e.currentTarget.title = now ? `已標記去過 ${now.last}（再撳取消）` : '標記去過（只存喺呢個瀏覽器）';
+        e.currentTarget.setAttribute('aria-label', `${now ? '取消去過標記' : '標記去過'}：${s.name}`);
         const line = card.querySelector('.foot-line');
         const last = card.querySelector('.foot-last');
         if (line) line.hidden = !now;
@@ -976,13 +983,38 @@
   function syncSortControls() {
     const transitAvailable = TRANSIT_BY_ID.size > 0;
     if (typeof document.querySelectorAll === 'function') {
-      document.querySelectorAll('option[data-requires-transit]').forEach((option) => {
+      document.querySelectorAll('[data-requires-transit]').forEach((option) => {
         option.disabled = !transitAvailable;
       });
     }
-    for (const id of ['sortSelect', 'quickSortSelect']) {
-      const select = document.getElementById(id);
-      if (select) select.value = state.sort;
+    const desktopSort = document.getElementById('sortSelect');
+    if (desktopSort) desktopSort.value = state.sort;
+
+    const labels = {
+      default: '排序',
+      'price-asc': '價格',
+      name: '名稱',
+      'bus-distance': '最近巴士',
+      'gmb-distance': '最近小巴',
+    };
+    const accessibleLabels = {
+      default: '預設順序',
+      'price-asc': '價格由低至高',
+      name: '營地名稱',
+      'bus-distance': '最近巴士站（直線距離）',
+      'gmb-distance': '最近專線小巴站（直線距離）',
+    };
+    const quickSort = document.getElementById('quickSortToggle');
+    const quickSortLabel = document.getElementById('quickSortLabel');
+    if (quickSort) {
+      quickSort.setAttribute('aria-label', `排序方式：${accessibleLabels[state.sort] || accessibleLabels.default}`);
+      quickSort.classList.toggle('is-active', state.sort !== 'default');
+    }
+    if (quickSortLabel) quickSortLabel.textContent = labels[state.sort] || labels.default;
+    if (typeof document.querySelectorAll === 'function') {
+      document.querySelectorAll('.sort-option[data-sort-value]').forEach((option) => {
+        option.setAttribute('aria-pressed', option.dataset.sortValue === state.sort ? 'true' : 'false');
+      });
     }
   }
 
@@ -1020,7 +1052,36 @@
       render();
     };
     document.getElementById('sortSelect').addEventListener('change', sortChanged);
-    document.getElementById('quickSortSelect').addEventListener('change', sortChanged);
+
+    // 手機排序採用原生 app 常見的底部選項面板：大觸控列、即時選中、關閉後焦點回到入口。
+    const sortBackdrop = document.getElementById('sortSheetBackdrop');
+    const sortSheet = document.getElementById('sortSheet');
+    const sortToggle = document.getElementById('quickSortToggle');
+    const sortClose = document.getElementById('sortSheetClose');
+    const sortOptions = typeof document.querySelectorAll === 'function'
+      ? [...document.querySelectorAll('.sort-option[data-sort-value]')] : [];
+    const setSortSheetOpen = (open, restoreFocus = true) => {
+      sortBackdrop.hidden = !open;
+      sortToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      document.body.classList.toggle('sort-sheet-open', open);
+      if (open) {
+        const selected = sortOptions.find((option) => option.getAttribute('aria-pressed') === 'true' && !option.disabled);
+        (selected || sortOptions.find((option) => !option.disabled) || sortClose).focus();
+      } else if (restoreFocus) {
+        sortToggle.focus();
+      }
+    };
+    sortToggle.addEventListener('click', () => setSortSheetOpen(true));
+    sortClose.addEventListener('click', () => setSortSheetOpen(false));
+    sortBackdrop.addEventListener('click', (event) => {
+      if (event.target === sortBackdrop) setSortSheetOpen(false);
+    });
+    sortOptions.forEach((option) => option.addEventListener('click', () => {
+      if (option.disabled) return;
+      state.sort = option.dataset.sortValue;
+      render();
+      setSortSheetOpen(false);
+    }));
     document.getElementById('freeOnly').addEventListener('change', (e) => {
       state.freeOnly = e.target.checked;
       render();
@@ -1109,6 +1170,7 @@
     const toggle = document.getElementById('filterToggle');
     const quickFilter = document.getElementById('quickFilterToggle');
     const sidebarClose = document.getElementById('sidebarClose');
+    const sidebarScrim = document.getElementById('sidebarScrim');
     let sidebarTrigger = toggle;
     const setSidebarOpen = (open, trigger = toggle) => {
       if (open) {
@@ -1117,6 +1179,11 @@
       } else {
         sidebar.classList.remove('open');
       }
+      sidebar.setAttribute('role', open ? 'dialog' : 'complementary');
+      if (open) sidebar.setAttribute('aria-modal', 'true');
+      else if (typeof sidebar.removeAttribute === 'function') sidebar.removeAttribute('aria-modal');
+      sidebarScrim.hidden = !open;
+      document.body.classList.toggle('filter-sheet-open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
       quickFilter.setAttribute('aria-expanded', open ? 'true' : 'false');
       quickFilter.setAttribute('aria-label', open ? '關閉篩選條件' : '開啟篩選條件');
@@ -1126,6 +1193,40 @@
     toggle.addEventListener('click', () => setSidebarOpen(!sidebar.classList.contains('open'), toggle));
     quickFilter.addEventListener('click', () => setSidebarOpen(!sidebar.classList.contains('open'), quickFilter));
     sidebarClose.addEventListener('click', () => setSidebarOpen(false));
+    sidebarScrim.addEventListener('click', () => setSidebarOpen(false));
+
+    const focusableWithin = (container) => [...container.querySelectorAll(
+      'button:not(:disabled), a[href], input:not(:disabled), select:not(:disabled), [tabindex]:not([tabindex="-1"])',
+    )].filter((element) => !element.hidden && element.getAttribute('aria-hidden') !== 'true');
+    if (typeof document.addEventListener === 'function') {
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          if (!sortBackdrop.hidden) {
+            event.preventDefault();
+            setSortSheetOpen(false);
+          } else if (sidebar.classList.contains('open')) {
+            event.preventDefault();
+            setSidebarOpen(false);
+          }
+          return;
+        }
+        if (event.key !== 'Tab') return;
+        const activeOverlay = !sortBackdrop.hidden ? sortSheet
+          : sidebar.classList.contains('open') ? sidebar : null;
+        if (!activeOverlay) return;
+        const focusable = focusableWithin(activeOverlay);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+    }
 
     // 地圖顯示切換
     document.getElementById('toggleMapText').addEventListener('click', (e) => {
