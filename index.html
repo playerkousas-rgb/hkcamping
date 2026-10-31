@@ -7,7 +7,7 @@
   <meta name="description" content="香港營地、宿營營舍、Glamping 與民宿資料庫，按分區、費用、營運機構、交通、設施比較；配合天氣及準備資訊，支援童軍活動規劃。" />
   <meta name="author" content="SCOUT SYSTEM" />
   <meta name="copyright" content="© SCOUT SYSTEM" />
-  <meta name="version" content="1.14.0" />
+  <meta name="version" content="1.14.1" />
 
   <!-- v1.11.0：App Icon／favicon（iOS 加入主畫面、Android 安裝、瀏覽器分頁、分享預覽都要有圖） -->
   <link rel="icon" href="/icons/favicon.ico" sizes="any" />
@@ -48,7 +48,7 @@
       <img class="brand-logo" src="/icons/icon-192.png" width="56" height="56"
            alt="" aria-hidden="true" decoding="async" />
       <div>
-        <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.14.0</span></h1>
+        <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.14.1</span></h1>
         <p class="tagline">漁護署營地 ・ Glamping ・ 宿營營舍 ・ 離島渡假屋 — 搵營地、plan 活動一站看清</p>
         <p class="tagline-en" lang="en">Hong Kong campsite database for Scouts — compare 108 sites and plan activities with location, fees, access and facilities.</p>
       </div>
@@ -170,13 +170,16 @@
     ⚙ 篩選條件 <span class="filter-active-count" id="filterActiveCount"></span>
   </button>
 
+  <!-- 手機篩選面板背景遮罩：點背景可關閉 -->
+  <button class="sidebar-scrim" id="sidebarScrim" type="button" aria-label="關閉篩選條件" hidden></button>
+
   <!-- 篩選側欄 -->
-  <aside class="sidebar" id="sidebar">
+  <aside class="sidebar" id="sidebar" role="complementary" aria-labelledby="filterHeading">
     <div class="sidebar-head">
-      <strong>篩選條件</strong>
-      <div>
-        <button class="btn-text" id="clearAll">清除全部</button>
-        <button class="btn-text sidebar-close" id="sidebarClose" aria-label="關閉篩選">✕</button>
+      <strong id="filterHeading">篩選條件</strong>
+      <div class="sidebar-head-actions">
+        <button class="btn-text" id="clearAll" type="button">重設</button>
+        <button class="sidebar-done" id="sidebarClose" type="button" aria-label="完成篩選">完成</button>
       </div>
     </div>
 
@@ -310,7 +313,7 @@
 
 <footer class="site-footer" id="pageBottom" tabindex="-1">
   <div class="container">
-    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.14.0</span></p>
+    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.14.1</span></p>
     <p>地圖由 Leaflet + OpenStreetMap 提供 · 天氣數據由香港天文台提供</p>
     <p class="visit-line"><span id="visitCount">👣 入站人次統計中…</span></p>
   </div>
@@ -325,20 +328,45 @@
     <span aria-hidden="true">⚙</span><span>篩選</span>
     <span class="filter-active-count" id="quickFilterActiveCount"></span>
   </button>
-  <label class="quick-nav-sort">
-    <span aria-hidden="true">⇅</span>
-    <select id="quickSortSelect" aria-label="快速排序">
-      <option value="default">排序</option>
-      <option value="price-asc">價格低至高</option>
-      <option value="name">名稱</option>
-      <option value="bus-distance" data-requires-transit>巴士站直線最近</option>
-      <option value="gmb-distance" data-requires-transit>小巴站直線最近</option>
-    </select>
-  </label>
+  <button class="quick-nav-item quick-nav-sort" id="quickSortToggle" type="button"
+    aria-haspopup="dialog" aria-expanded="false" aria-controls="sortSheet" aria-label="排序方式：預設">
+    <span aria-hidden="true">↕</span><span id="quickSortLabel">排序</span>
+  </button>
   <a class="quick-nav-item" href="#pageBottom" aria-label="前往頁底">
     <span aria-hidden="true">↓</span><span>頁底</span>
   </a>
 </nav>
+
+<div class="sort-sheet-backdrop" id="sortSheetBackdrop" hidden>
+  <section class="sort-sheet" id="sortSheet" role="dialog" aria-modal="true"
+    aria-labelledby="sortSheetHeading" tabindex="-1">
+    <div class="sort-sheet-handle" aria-hidden="true"></div>
+    <header class="sort-sheet-head">
+      <div>
+        <h2 id="sortSheetHeading">排序營地</h2>
+        <p>選一個排序方式，結果會即時更新</p>
+      </div>
+      <button class="sort-sheet-close" id="sortSheetClose" type="button" aria-label="關閉排序選單">✕</button>
+    </header>
+    <div class="sort-option-list" role="group" aria-label="排序方式">
+      <button class="sort-option" type="button" data-sort-value="default" aria-pressed="true">
+        <span class="sort-option-copy"><strong>預設順序</strong><small>按資料庫原有次序</small></span><span class="sort-option-check" aria-hidden="true">✓</span>
+      </button>
+      <button class="sort-option" type="button" data-sort-value="price-asc" aria-pressed="false">
+        <span class="sort-option-copy"><strong>價格由低至高</strong><small>不同場地收費單位可能不同</small></span><span class="sort-option-check" aria-hidden="true">✓</span>
+      </button>
+      <button class="sort-option" type="button" data-sort-value="name" aria-pressed="false">
+        <span class="sort-option-copy"><strong>營地名稱</strong><small>按名稱排列</small></span><span class="sort-option-check" aria-hidden="true">✓</span>
+      </button>
+      <button class="sort-option" type="button" data-sort-value="bus-distance" data-requires-transit aria-pressed="false">
+        <span class="sort-option-copy"><strong>最近巴士站</strong><small>按直線距離排序，不代表步行可達</small></span><span class="sort-option-check" aria-hidden="true">✓</span>
+      </button>
+      <button class="sort-option" type="button" data-sort-value="gmb-distance" data-requires-transit aria-pressed="false">
+        <span class="sort-option-copy"><strong>最近專線小巴站</strong><small>按直線距離排序，不代表步行可達</small></span><span class="sort-option-check" aria-hidden="true">✓</span>
+      </button>
+    </div>
+  </section>
+</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <!-- 全站入站人次：Vercel Web Analytics，喺 Vercel Dashboard → Analytics 撳 Enable 後生效。

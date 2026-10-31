@@ -329,8 +329,10 @@ console.log('\n【H】老花／大字／對比度');
   console.log('\n【L】小孩');
   {
     const css = readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
-    /@media[^{]*max-width[^{]*\{[^}]*min-height:\s*40px/s.test(css)
-      ? ok('手機上可撳元素 ≥40px（手指細／手震都撳得中）') : bad('手機撳鈕太細');
+    /@media \(max-width: 760px\)[\s\S]*?\.chip \{ min-height: 48px/.test(css)
+      ? ok('手機篩選按鈕觸控高度 ≥48px') : bad('手機篩選按鈕太細');
+    /\.card-actions a, \.card-actions button \{[\s\S]*?min-height: 48px/.test(css)
+      ? ok('卡片操作按鈕觸控高度 ≥48px') : bad('卡片操作按鈕太細');
     const emoji = (allHtml.match(/[\u{1F300}-\u{1FAFF}]/gu) || []).length;
     emoji > 100 ? ok(`卡片有 ${emoji} 個圖示（唔識字都睇得明一部分）`) : bad('太少圖示');
     eq(d.querySelectorAll('dialog[open]').length, 0, '一開頁冇彈窗跳出嚟嚇親人');
@@ -525,6 +527,17 @@ console.log('\n【T】搜尋同比較 — 營運機構篩選／最多 3 個營�
 
   const buttons = [...d.querySelectorAll('#cardGrid .compare-toggle')];
   eq(buttons.length, 108, '108 張卡都有比較掣');
+  const firstCard = d.querySelector('#cardGrid .card');
+  const favorite = firstCard?.querySelector('.fav-btn');
+  favorite?.click();
+  eq(favorite?.getAttribute('aria-pressed'), 'true', '收藏掣有清楚的選中狀態');
+  /從我的最愛移除/.test(favorite?.getAttribute('aria-label') || '')
+    ? ok('收藏 icon 狀態改變時同步更新無障礙名稱') : bad('收藏掣狀態／報讀名稱不同步');
+  const footprint = firstCard?.querySelector('.foot-btn');
+  footprint?.click();
+  eq(footprint?.getAttribute('aria-pressed'), 'true', '足跡掣有清楚的選中狀態');
+  /取消去過標記/.test(footprint?.getAttribute('aria-label') || '')
+    ? ok('足跡 icon 狀態改變時同步更新無障礙名稱') : bad('足跡掣狀態／報讀名稱不同步');
   if (buttons.length >= 4) {
     buttons[0].click();
     eq(d.getElementById('compareStart').disabled, true, '只選一個時不能開始比較');
@@ -596,23 +609,50 @@ console.log('\n【V】手機單手用戶 — 回頁頂／頁底、開篩選、�
     ? ok('手機快速操作目標至少 48px 高') : bad('快速操作目標過細');
   const quickFilter = d.getElementById('quickFilterToggle');
   quickFilter.click();
-  eq(d.getElementById('sidebar').classList.contains('open'), true, '快速篩選掣可以打開側欄');
+  eq(d.getElementById('sidebar').classList.contains('open'), true, '快速篩選掣可以打開全屏面板');
+  eq(d.getElementById('sidebarScrim').hidden, false, '篩選面板有暗色背景遮罩');
+  eq(d.getElementById('sidebar').getAttribute('role'), 'dialog', '篩選面板有 dialog 語意');
+  eq(d.getElementById('sidebar').getAttribute('aria-modal'), 'true', '篩選面板宣告為 modal');
   eq(d.getElementById('filterToggle').getAttribute('aria-expanded'), 'true', '頂部／快速篩選 aria-expanded 同步');
-  d.getElementById('sidebarClose').click();
-  eq(d.getElementById('sidebar').classList.contains('open'), false, '側欄可關閉');
-  eq(d.activeElement, quickFilter, '關閉後焦點回到啟動側欄的快速掣');
+  eq(d.activeElement, d.getElementById('sidebarClose'), '開啟篩選後焦點落在「完成」');
+  d.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  eq(d.getElementById('sidebar').classList.contains('open'), false, 'Escape 可以關閉篩選面板');
+  eq(d.getElementById('sidebar').getAttribute('role'), 'complementary', '關閉後還原篩選側欄語意');
+  eq(d.getElementById('sidebar').getAttribute('aria-modal'), null, '關閉後移除 modal 狀態');
+  eq(d.activeElement, quickFilter, '關閉後焦點回到啟動篩選掣');
+  d.getElementById('filterToggle').click();
+  d.getElementById('sidebarScrim').click();
+  eq(d.getElementById('sidebarScrim').hidden, true, '點擊遮罩可以關閉篩選');
+  eq(d.activeElement, d.getElementById('filterToggle'), '頂部篩選關閉後焦點回到頂部掣');
 
-  const quickSort = d.getElementById('quickSortSelect');
-  quickSort.value = 'bus-distance';
-  quickSort.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
-  eq(d.getElementById('sortSelect').value, 'bus-distance', '快速排序同桌面排序同步');
+  const quickSort = d.getElementById('quickSortToggle');
+  quickSort.click();
+  const sortBackdrop = d.getElementById('sortSheetBackdrop');
+  eq(quickSort.getAttribute('aria-expanded'), 'true', '排序按鈕會報讀面板已開啟');
+  eq(sortBackdrop.hidden, false, '排序按鈕開啟大觸控選項面板');
+  eq(d.getElementById('sortSheet').getAttribute('aria-modal'), 'true', '排序面板有 modal dialog 語意');
+  const lastSortOption = d.querySelector('.sort-option[data-sort-value="gmb-distance"]');
+  d.getElementById('sortSheetClose').focus();
+  d.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Tab', shiftKey: true, bubbles: true, cancelable: true }));
+  eq(d.activeElement, lastSortOption, '排序面板鍵盤焦點會留在面板內');
+  d.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+  eq(sortBackdrop.hidden, true, 'Escape 可以關閉排序面板');
+  eq(d.activeElement, quickSort, '排序面板關閉後焦點回到排序掣');
+
+  quickSort.click();
+  d.querySelector('.sort-option[data-sort-value="bus-distance"]').click();
+  eq(d.getElementById('sortSelect').value, 'bus-distance', '手機排序同桌面排序同步');
+  eq(d.getElementById('quickSortLabel').textContent, '最近巴士', '手機掣顯示目前排序狀態');
   eq(d.querySelector('#cardGrid .card h3')?.textContent, '鶴藪營地', '按巴士站直線距離排序，最近站營地排前');
-  quickSort.value = 'gmb-distance';
-  quickSort.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+  eq(sortBackdrop.hidden, true, '揀好排序後面板自動收起');
+  eq(d.activeElement, quickSort, '選擇排序後鍵盤焦點留在排序入口');
+
+  quickSort.click();
+  d.querySelector('.sort-option[data-sort-value="gmb-distance"]').click();
   eq(d.querySelector('#cardGrid .card h3')?.textContent, '流水響營地', '按專線小巴直線距離排序，無站配對者排後');
   d.getElementById('sortSelect').value = 'name';
   d.getElementById('sortSelect').dispatchEvent(new dom.window.Event('change', { bubbles: true }));
-  eq(quickSort.value, 'name', '桌面排序更改會同步返手機快捷列');
+  eq(d.getElementById('quickSortLabel').textContent, '名稱', '桌面排序更改會同步返手機快捷列');
 
   const search = d.getElementById('searchInput');
   search.value = '52B';
