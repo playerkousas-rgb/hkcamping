@@ -1,4 +1,4 @@
-# 項目進度總覽（2026-10-27）
+# 項目進度總覽（2026-10-31 更新）
 
 > 本檔係**進度單一真相來源**。技術交接細節見 [GITHUB-SETUP.md](GITHUB-SETUP.md)、
 > 體檢對照見 [HANDOVER-STATUS.md](HANDOVER-STATUS.md)、自動化策略見 [AUTOMATION.md](AUTOMATION.md)、
@@ -12,10 +12,25 @@
 | 網站 | 香港露營・宿營・民宿資料庫（純靜態，零 runtime dependencies） |
 | 資料量 | **108 筆**（漁護署 41 ＋ 康文署 6 ＋ NGO 30 ＋ Glamping 4 ＋ 民宿 27） |
 | 資料合約 | `data.csv` → `node build-data.mjs` → `data.js` → `window.CAMPSITES` |
-| 現行版本 | **v1.11.0**（PR #13，待合併） |
-| 工作分支 | `arena/cb9d5b29-hkcamping`（今次，PR #13） |
-| 基準 main | `786d75f`（PR #12 合併點 = v1.10.0） |
-| 當前 PR | [#13](https://github.com/playerkousas-rgb/hkcamping/pull/13)（v1.11.0 App Icon／favicon）**待合併** |
+| 現行版本 | **v1.14.0**（官方巴士／專線小巴交通快照整合） |
+| 工作分支 | `arena/f39235ce-hkcamping`（官方交通整合與 A–W 驗收） |
+| 基準 main | `7396706`（2026-10-31 起始點） |
+| 當前 PR | 尚未建立；本分支含交通網站整合、手機快速導覽及文件更新 |
+
+---
+
+## 最新工作：v1.14.0 官方交通整合（2026-10-31）
+
+使用者已批准把官方靜態交通站點／路線接入網站（不包括即時 ETA）。本輪已完成：
+
+- 每週 Actions 抓取運輸署 `JSON_BUS.json`／`JSON_GMB.json`；檢查官方 feed、108/108 營地、座標與快照大小後，自動更新 `data/auto/transit.json`、重建 `transit.js` 並 commit/push；失敗時保留最後成功快照，PR 只驗證不寫入。
+- 卡片可展開／收合附近站點、路線、地圖、來源與更新欄位；搜尋支援站名／路線；比較表新增最近巴士／小巴站；可按站點直線距離排序。
+- 手機固定快速列提供頁頂、篩選、巴士／小巴快速排序、頁底；過期快照顯示警告。清楚註明直線距離不是步行可達性，沒有即時 ETA。
+- 已把交通 workflow 加入 build/publisher 測試、A–W jsdom UI 驗收、Vercel `transit.js` revalidate 標頭及 README／自動化文件。
+
+**端到端發布已驗收**：[首次整合 Actions run `41160349725`](https://github.com/playerkousas-rgb/hkcamping/actions/runs/41160349725) 成功下載兩份官方 feed、配對 108/108 營地、驗證快照並重建部署輸出，自動提交 `8c06166`。原始資料有超長可選英文目的地標籤，已改為只略去該欄、不阻塞快照。其後為符合網站 S7 <1MB 預算，收斂至每種交通最近 2 個站、每站最多 5 條路線，並改用緊湊 JSON；[最終縮小版 run `41160879442`](https://github.com/playerkousas-rgb/hkcamping/actions/runs/41160879442) 全步驟成功，自動提交 `b4d5c32`。目前 `data/auto/transit.json` 451,223 bytes、`transit.js` 451,467 bytes；108/108 營地、BUS 8,216 站／56,103 features、GMB 4,779 站／13,165 features、座標衝突 0。
+
+**本機驗收**：`npm test` 32/32、`npm run ui` 158/158、`npm run guard` 18/18、`git diff --check` 通過。
 
 ---
 

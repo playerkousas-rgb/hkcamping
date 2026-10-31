@@ -12,10 +12,13 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { HKO_STATION_COORDS, OCF_STATION_COORDS, nearestStation, round1 } from './lib/stations.mjs';
+import { validateWebsiteTransitSnapshot } from './lib/transit-snapshot.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const CSV_PATH = join(__dirname, 'data.csv');
 const OUT_PATH = join(__dirname, 'data.js');
+const TRANSIT_SNAPSHOT_PATH = join(__dirname, 'data', 'auto', 'transit.json');
+const TRANSIT_OUT_PATH = join(__dirname, 'transit.js');
 
 /** 簡易但正確的 CSV parser（支援引號包覆與逗號、雙引號跳脫） */
 function parseCSV(text) {
@@ -239,6 +242,20 @@ const records = dataRows.map((cols) => {
   };
 });
 
+// 運輸署官方巴士／專線小巴站點快照（每週 Actions 抓取後發布）。
+// 缺快照時前端顯示「待同步」；若檔案存在但無效，則停止 build 並保留最後有效產物。
+let transit = null;
+if (existsSync(TRANSIT_SNAPSHOT_PATH)) {
+  try {
+    transit = validateWebsiteTransitSnapshot(
+      JSON.parse(readFileSync(TRANSIT_SNAPSHOT_PATH, 'utf8')),
+      records,
+    );
+  } catch (error) {
+    throw new Error(`transit.json 無法通過驗證，停止 build：${error.message}`);
+  }
+}
+
 const banner =
   '// 此檔案由 build-data.mjs 自動產生，請勿直接編輯。\n' +
   '// 要改資料請編輯 data.csv，然後執行：node build-data.mjs\n' +
@@ -335,21 +352,33 @@ const output =
   '// 天文台 OCF 自動分區九日預報（data/auto/ocf-forecast.json），每日 Actions 更新\n' +
   'window.CAMP_OCF = ' + compact(slimOcf(ocf)) + ';\n';
 
+const transitOutput =
+  '// 此檔案由 build-data.mjs 自動產生，請勿直接編輯。\n' +
+  `// 官方巴士／專線小巴站點資料：${transit?.campsites.length ?? 0} 個營地\n` +
+  '// 運輸署 route-stop GeoJSON；只表示直線距離，不含步行路線或即時 ETA。\n\n' +
+  'window.CAMP_TRANSIT = ' + compact(transit) + ';\n';
+
 // --check：只比較、唔寫檔，畀 guard / CI 用（F14 / S12）
 if (process.argv.includes('--check')) {
-  const current = existsSync(OUT_PATH) ? readFileSync(OUT_PATH, 'utf8') : '';
-  if (current === output) {
-    console.log(`✅ data.js 已同 data.csv 同步（${records.length} 筆）`);
+  const currentData = existsSync(OUT_PATH) ? readFileSync(OUT_PATH, 'utf8') : '';
+  const currentTransit = existsSync(TRANSIT_OUT_PATH) ? readFileSync(TRANSIT_OUT_PATH, 'utf8') : '';
+  const stale = [];
+  if (currentData !== output) stale.push('data.js');
+  if (currentTransit !== transitOutput) stale.push('transit.js');
+  if (!stale.length) {
+    console.log(`✅ data.js 同 transit.js 已與來源同步（${records.length} 個營地）`);
     process.exit(0);
   }
-  console.error('❌ data.js 過時或被人手改過，請執行 node build-data.mjs');
+  console.error(`❌ ${stale.join('、')} 過時或被人手改過，請執行 node build-data.mjs`);
   process.exit(1);
 }
 
 writeFileSync(OUT_PATH, output, 'utf8');
+writeFileSync(TRANSIT_OUT_PATH, transitOutput, 'utf8');
 
 const byType = records.reduce((acc, r) => {
   acc[r.type] = (acc[r.type] || 0) + 1;
   return acc;
 }, {});
 console.log(`✅ 成功產生 data.js：${records.length} 筆`, JSON.stringify(byType));
+console.log(`✅ 成功產生 transit.js：${transit?.campsites.length ?? 0} 個營地交通資料${transit ? '' : '（尚未發布快照）'}`);

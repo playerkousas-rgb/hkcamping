@@ -1,0 +1,112 @@
+name: Transit Snapshot
+
+# Weekly automatic publication of the latest validated Transport Department bus/GMB snapshot.
+# The public website only receives compact stop/route data; raw feeds remain short-lived artifacts.
+on:
+  schedule:
+    - cron: '17 18 * * 0' # Monday 02:17 HKT
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/transit-poc.yml'
+      - 'scripts/transit-poc*.mjs'
+      - 'scripts/publish-transit.mjs'
+      - 'scripts/transit-publish.test.mjs'
+      - 'lib/transit-snapshot.mjs'
+      - 'data.csv'
+      - 'build-data.mjs'
+      - 'build-site.mjs'
+      - 'app.js'
+      - 'index.html'
+      - 'styles.css'
+      - 'vercel.json'
+  pull_request:
+    paths:
+      - '.github/workflows/transit-poc.yml'
+      - 'scripts/transit-poc*.mjs'
+      - 'scripts/publish-transit.mjs'
+      - 'scripts/transit-publish.test.mjs'
+      - 'lib/transit-snapshot.mjs'
+      - 'data.csv'
+      - 'build-data.mjs'
+      - 'build-site.mjs'
+      - 'app.js'
+      - 'index.html'
+      - 'styles.css'
+      - 'vercel.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: transit-snapshot-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  transit-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install ephemeral browser simulator for A–W UI tests
+        run: npm install --no-save --no-package-lock jsdom@^26
+
+      - name: Run transit parser/publisher tests before network requests
+        run: node --test scripts/transit-poc.test.mjs scripts/transit-publish.test.mjs
+
+      - name: Download official route-stop GeoJSON and match every campsite
+        run: node scripts/transit-poc.mjs --out-dir .cache/transit-poc
+
+      - name: Validate and publish the compact website snapshot
+        run: |
+          set +e
+          node scripts/publish-transit.mjs 2>&1 | tee .cache/transit-publisher.log
+          result=${PIPESTATUS[0]}
+          set -e
+          if [ "$result" -ne 0 ]; then
+            message=$(tail -n 1 .cache/transit-publisher.log | tr '\n' ' ')
+            echo "::error title=Transit snapshot publisher failed::$message"
+            echo "## Transit snapshot publisher failure" >> "$GITHUB_STEP_SUMMARY"
+            echo "\`\`\`text" >> "$GITHUB_STEP_SUMMARY"
+            cat .cache/transit-publisher.log >> "$GITHUB_STEP_SUMMARY"
+            echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+            exit "$result"
+          fi
+
+      - name: Rebuild and validate deployment output
+        run: |
+          node build-data.mjs
+          npm test
+          npm run ui
+          node build-site.mjs
+
+      - name: Commit and push the website snapshot automatically
+        if: github.event_name != 'pull_request'
+        run: |
+          git add data/auto/transit.json transit.js
+          if git diff --cached --quiet; then
+            echo "✅ 官方交通快照沒有實質變更，跳過 commit"
+            exit 0
+          fi
+          git config user.name "hk-camp-bot"
+          git config user.email "hk-camp-bot@users.noreply.github.com"
+          git commit -m "chore(data): 每週官方交通快照同步"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Publish diagnostics and compact website snapshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transit-snapshot-${{ github.run_number }}
+          path: |
+            .cache/transit-poc/
+            data/auto/transit.json
+          if-no-files-found: warn
+          retention-days: 30

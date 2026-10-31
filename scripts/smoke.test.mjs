@@ -23,18 +23,37 @@ class FakeEl {
     this.style = {};
     this.attrs = {};
     this.value = '';
+    this.disabled = false;
+    this.title = '';
+    this.listeners = {};
+    this.queries = new Map();
     this.classList = {
       add() {}, remove() {}, contains() { return false; }, toggle() { return true; },
     };
   }
-  set innerHTML(v) { this._html = String(v); }
+  set innerHTML(v) {
+    this._html = String(v);
+    if (!this._html) { this.children = []; this.queries.clear(); }
+  }
   get innerHTML() { return this._html; }
   appendChild(c) { this.children.push(c); return c; }
   replaceChildren(...nodes) { this.children = nodes; }
   setAttribute(k, v) { this.attrs[k] = String(v); }
   getAttribute(k) { return this.attrs[k]; }
-  addEventListener() {}
-  querySelector() { return new FakeEl(); }
+  addEventListener(type, callback) {
+    if (!this.listeners[type]) this.listeners[type] = [];
+    this.listeners[type].push(callback);
+  }
+  click() {
+    if (this.disabled) return;
+    for (const callback of this.listeners.click || []) {
+      callback({ currentTarget: this, target: this, preventDefault() {} });
+    }
+  }
+  querySelector(selector) {
+    if (!this.queries.has(selector)) this.queries.set(selector, new FakeEl());
+    return this.queries.get(selector);
+  }
   querySelectorAll() { return []; }
   scrollIntoView() {}
   remove() {}
@@ -62,6 +81,8 @@ function boot(seed = {}, opts = {}) {
   vm.runInContext('var window = globalThis;', sandbox);
   // 刻意唔提供 window.L → 行地圖 fallback 分支
   vm.runInContext(readFileSync(join(ROOT, 'data.js'), 'utf8'), sandbox, { filename: 'data.js' });
+  vm.runInContext(readFileSync(join(ROOT, 'transit.js'), 'utf8'), sandbox, { filename: 'transit.js' });
+  if (Object.hasOwn(opts, 'transit')) sandbox.CAMP_TRANSIT = opts.transit;
   vm.runInContext(opts.appSrc || readFileSync(join(ROOT, 'app.js'), 'utf8'), sandbox, { filename: 'app.js' });
   return { sandbox, doc, store };
 }
@@ -71,6 +92,40 @@ test('data.js 載入 108 筆，前端啟動無例外', () => {
   assert.equal(sandbox.CAMPSITES.length, 108);
   assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>108<\/b> 個結果/);
   assert.equal(doc.getElementById('cardGrid').children.length, 108);
+});
+
+test('v1.14.0：官方巴士／小巴站點、路線、直線距離與來源說明', () => {
+  const today = new Date().toISOString().slice(0, 10);
+  const transit = {
+    generatedAt: new Date().toISOString(),
+    sources: {
+      bus: { latestSourceUpdate: today },
+      gmb: { latestSourceUpdate: today },
+    },
+    campsites: [{
+      id: 'a01',
+      bus: [{
+        companyCode: 'KMB', stopId: 'B001', nameC: '北潭涌', nameE: 'Pak Tam Chung',
+        lat: 22.3972, lng: 114.3193, distanceM: 420,
+        routes: [{ companyCode: 'KMB', routeId: '94', routeNameC: '94', originC: '黃石碼頭', destinationC: '西貢' }],
+      }],
+      gmb: [{
+        companyCode: 'GMB-TEST', stopId: 'G001', nameC: '海下', nameE: 'Hoi Ha',
+        lat: 22.434, lng: 114.337, distanceM: 780,
+        routes: [{ companyCode: 'GMB-TEST', routeId: '7', routeNameC: '7', originC: '西貢', destinationC: '海下' }],
+      }],
+    }],
+  };
+  const { doc } = boot({}, { transit });
+  const html = doc.getElementById('cardGrid').children[0].innerHTML;
+  assert.match(html, /巴士／專線小巴站點參考/);
+  assert.match(html, /北潭涌/);
+  assert.match(html, /海下/);
+  assert.match(html, /直線約 420 米/);
+  assert.match(html, /KMB · 94 · 黃石碼頭 → 西貢/);
+  assert.match(html, /不是步行路線或可達性評估/);
+  assert.match(html, /不是即時 ETA/);
+  assert.match(html, /運輸署官方資料集/);
 });
 
 test('雙版號同頁尾版權（V1 / W1）', () => {
@@ -452,4 +507,43 @@ test('v1.7.2：前端零 fetch／零 XHR（回報由 widget 自己送，本站�
   assert.equal((app.match(/\bfetch\s*\(/g) || []).length, 0);
   assert.ok(!/XMLHttpRequest/.test(app));
   assert.ok(!/REPORT_ENDPOINT/.test(app));
+});
+
+test('v1.13.0：營運機構篩選 + 最多 3 個營地比較', () => {
+  const { sandbox, doc } = boot();
+  const operators = doc.getElementById('operatorChips').children;
+  const afcd = operators.find((chip) => chip.innerHTML.startsWith('漁農自然護理署 '));
+  assert.ok(afcd, '營運機構選項存在');
+  assert.match(afcd.innerHTML, /chip-count">41/);
+  afcd.click();
+  assert.equal(doc.getElementById('cardGrid').children.length, 41, '篩選漁護署後剩 41 個場地');
+  assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>41<\/b>/);
+  assert.equal(sandbox.CAMPSITES.filter((s) => s.operator === '漁農自然護理署').length, 41);
+
+  doc.getElementById('clearAll').click();
+  const cards = doc.getElementById('cardGrid').children;
+  assert.equal(cards.length, 108);
+  const compareButtons = cards.slice(0, 4).map((card) => card.querySelector('.compare-toggle'));
+  compareButtons[0].click();
+  assert.equal(doc.getElementById('compareBar').hidden, false);
+  assert.match(doc.getElementById('compareCount').textContent, /1\/3/);
+  assert.equal(doc.getElementById('compareStart').disabled, true, '少於兩個不能開始比較');
+
+  compareButtons[1].click();
+  assert.equal(doc.getElementById('compareStart').disabled, false);
+  doc.getElementById('compareStart').click();
+  assert.equal(doc.getElementById('comparePanel').hidden, false);
+  assert.match(doc.getElementById('compareContents').innerHTML, /已選營地比較/);
+  assert.match(doc.getElementById('compareContents').innerHTML, /官方營位規模/);
+  assert.match(doc.getElementById('compareContents').innerHTML, /水源/);
+
+  compareButtons[2].click();
+  assert.match(doc.getElementById('compareCount').textContent, /3\/3/);
+  compareButtons[3].click();
+  assert.match(doc.getElementById('compareCount').textContent, /3\/3/, '第 4 個不應加入清單');
+  assert.match(doc.getElementById('compareMessage').textContent, /最多比較 3 個營地/);
+
+  doc.getElementById('compareClear').click();
+  assert.equal(doc.getElementById('compareBar').hidden, true);
+  assert.equal(doc.getElementById('comparePanel').hidden, true);
 });

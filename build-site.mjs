@@ -1,8 +1,8 @@
 /**
  * build-site.mjs — Vercel / 正式部署用嘅零依賴 build（S4：只部署最終產物）
  *
- * 1. 先執行 build-data.mjs，確保 data.js 同 data.csv（＋天氣快照）同步
- * 2. 將前端真正需要嘅檔抄入 dist/（4 個頁面檔 ＋ icons/ ＋ manifest ＋ robots），
+ * 1. 先執行 build-data.mjs，確保 data.js／transit.js 同 data.csv／官方快照同步
+ * 2. 將前端真正需要嘅檔抄入 dist/（頁面、兩個資料檔、icons/、manifest 同 robots），
  *    其餘工具／快照／文件一律唔部署（S10 瘦身）
  *
  * 本機預覽唔使跑呢支（根目錄直接開 index.html 或 npm run dev 就得）。
@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, 'dist');
-const FILES = ['index.html', 'styles.css', 'app.js', 'data.js', 'manifest.webmanifest', 'robots.txt'];
+const FILES = ['index.html', 'styles.css', 'app.js', 'data.js', 'transit.js', 'manifest.webmanifest', 'robots.txt'];
 // v1.11.0：App Icon／favicon 全套（iOS 主畫面、Android 安裝、瀏覽器分頁、分享預覽）
 const ICON_DIR = 'icons';
 const ICON_FILES = readdirSync(join(ROOT, ICON_DIR)).filter((f) => /\.(png|ico|svg)$/i.test(f));
