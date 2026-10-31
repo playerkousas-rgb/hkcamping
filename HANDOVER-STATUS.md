@@ -12,7 +12,7 @@
 | P1 | `vercel.json`／`.vercelignore`／`build-site.mjs`（dist 五個核心檔）／部署文件 | ✅ 設定完成；⚠️ 實際 deployment 被 Vercel token 權限擋住 | `1e11acd` |
 | P2 | `scripts/guard.mjs` + `guard.yml` + PR template + dependabot + `© SCOUT SYSTEM` + 雙版號 + smoke test | ✅ | `0fe6154` |
 | P3 | 前端食 `data/auto/weather.json`：build 嵌入 `data.js`、天氣列、地圖 pin／popup 週末 PSR 標記、過期提示 | ✅ | 本批 |
-| P4 | v1.14.0 官方巴士／專線小巴快照自動發布、卡片展開、比較／搜尋／距離排序、手機快速導覽與過期提示 | ✅ 158 項 A–W UI 驗收；首次發布 run `41160349725` 成功並自動提交快照；最新 2 站／每站 5 路線與緊湊 JSON 瘦身待下一次 Actions 驗證 | 本批 |
+| P4 | v1.14.0 官方巴士／專線小巴快照自動發布、卡片展開、比較／搜尋／距離排序、手機快速導覽與過期提示 | ✅ 158 項 A–W UI 驗收；最終 2 站／每站 5 路線與緊湊 JSON 已由 run `41160879442` 成功端到端發布，自動提交 `b4d5c32` | 本批 |
 
 **合併狀態**：PR [#1](https://github.com/playerkousas-rgb/hkcamping/pull/1) 已於 2026-10-27 合併入 `main`
 （merge commit `1727ba1`），PR #4（文件更新）亦已合併。`gh workflow list` 確認三條 workflow 全部 `active`；
