@@ -108,7 +108,7 @@ function makeTransitFixture({ generatedAt = new Date().toISOString(), sourceDate
       gmb: { sourceUrl: 'https://static.data.gov.hk/td/routes-fares-geojson/JSON_GMB.json', latestSourceUpdate: sourceDate },
     },
     campsites: [
-      { id: 'a01', bus: [makeStop('KMB', 'B001', '北潭涌', 420, '94', '94', '<img src=x onerror=1>', '西貢')],
+      { id: 'a01', bus: [{ ...makeStop('KMB', 'B001', '北潭涌', 420, '94', '94', '<img src=x onerror=1>', '西貢'), routesTruncated: true }],
         gmb: [makeStop('GMB-TEST', 'G001', '海下', 780, '7', '7', '西貢', '海下')] },
       { id: 'a02', bus: [makeStop('KMB', 'B002', '鶴藪口', 140, '52B', '52B', '粉嶺', '鶴藪')], gmb: [] },
       { id: 'a03', bus: [makeStop('CTB', 'B003', '大埔墟', 700, '20C', '20C', '大埔', '大埔墟')], gmb: [] },
@@ -559,6 +559,7 @@ console.log('\n【U】童軍策劃者 — 展開巴士／小巴路線、看清�
     /北潭涌/.test(text) && /海下/.test(text) ? ok('列出站名') : bad('缺少站名');
     /直線約 420 米/.test(text) ? ok('距離明確標示「直線」') : bad('缺少直線距離標示');
     /路線/.test(text) && /KMB/.test(text) ? ok('列出路線與營辦商代碼') : bad('缺少路線資料');
+    /最多顯示 12 條/.test(text) ? ok('路線數較多時明示只顯示 12 條') : bad('路線截斷未提示用戶');
     /不是步行路線或可達性評估/.test(text) ? ok('明確說明直線距離不代表步行可達') : bad('交通距離免責不足');
     /不是即時 ETA/.test(text) ? ok('明確說明不提供即時 ETA') : bad('未說明沒有即時 ETA');
     details.querySelectorAll('.transit-sources a').length >= 3 ? ok('有運輸署資料集及兩份官方原始 feed 連結') : bad('官方來源連結不足');

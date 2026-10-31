@@ -572,7 +572,7 @@ python3 -m http.server 8000 --bind 0.0.0.0
 npm run guard       # guard 靜態守護（含交通快照自動發布、fail-closed 建置與快取標頭）
 npm test            # 31 個 smoke／POC／快照測試，含 108 個營地發布驗證及 16 項比較欄位
 npm run build:site  # 產生 dist/（5 個核心檔 + icons，體積由 guard 驗收）
-npm run ui          # 157 項 A–W 情境實測（先 npm i -D jsdom@^26）；CI 使用暫時安裝，不加入網站依賴
+npm run ui          # 158 項 A–W 情境實測（先 npm i -D jsdom@^26）；CI 使用暫時安裝，不加入網站依賴
 ```
 
 ### 「程序員」同「一般用戶」兩種檢測（v1.6.2）
@@ -584,7 +584,7 @@ npm run ui          # 157 項 A–W 情境實測（先 npm i -D jsdom@^26）；C
 | 角度 | 邊個做 | 點跑 | 守乜 |
 |---|---|---|---|
 | **程序員** | 自動、CI 必跑 | `npm run guard`（18 項）、`npm test`（31 項） | 資料本身有冇矛盾、版號四處有冇同步、交通來源／快照／部署合約 |
-| **一般用戶** | 本機可手動；CI 自動跑 | `npm i -D jsdom@^26 && npm run ui`（157 項，A–W 23 段；交通 workflow 暫時安裝 jsdom） | 見下面「用邊啲身份測」 |
+| **一般用戶** | 本機可手動；CI 自動跑 | `npm i -D jsdom@^26 && npm run ui`（158 項，A–W 23 段；交通 workflow 暫時安裝 jsdom） | 見下面「用邊啲身份測」 |
 
 **兩個都係 build／測試期先跑，網站本身仍然係零 runtime dependency，`dist/` 一個 byte 都冇多。**
 

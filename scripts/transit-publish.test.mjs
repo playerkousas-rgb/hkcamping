@@ -94,6 +94,20 @@ test('POC → website snapshot: 108/108 coverage and only compact bus/GMB stop d
   assert.equal(snapshot.sources.bus.sourceUrl, TRANSIT_FEED_URLS.bus);
   assert.match(snapshot.scope, /straight-line proximity only/i);
   assert.doesNotMatch(JSON.stringify(snapshot), /coordinateConflicts|exactNameMatches|operatorStopCounts/);
+
+  const longOptionalLabel = makePoc();
+  longOptionalLabel.campsites[0].nearest.bus[0].routes[0].destinationE = 'x'.repeat(161);
+  const compact = createWebsiteTransitSnapshot(longOptionalLabel, expectedSites);
+  assert.equal(compact.campsites[0].bus[0].routes[0].destinationE, null);
+  assert.equal(compact.campsites[0].bus[0].routes[0].routeNameC, '94');
+
+  const manyRoutes = makePoc();
+  manyRoutes.campsites[0].nearest.bus[0].routes = Array.from({ length: 14 }, (_, index) =>
+    route({ routeId: `R${index + 1}`, routeNameC: `路線 ${index + 1}` }));
+  const capped = createWebsiteTransitSnapshot(manyRoutes, expectedSites);
+  assert.equal(capped.campsites[0].bus[0].routes.length, 12);
+  assert.equal(capped.campsites[0].bus[0].routesTruncated, true);
+  assert.equal(validateWebsiteTransitSnapshot(capped, expectedSites).campsites[0].bus[0].routesTruncated, true);
 });
 
 test('publisher fails closed for incomplete POC coverage, wrong feed, or invalid coordinates', () => {

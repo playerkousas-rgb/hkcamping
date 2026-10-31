@@ -28,7 +28,7 @@
 - 手機固定快速列提供頁頂、篩選、巴士／小巴快速排序、頁底；過期快照顯示警告。清楚註明直線距離不是步行可達性，沒有即時 ETA。
 - 已把交通 workflow 加入 build/publisher 測試、A–W jsdom UI 驗收、Vercel `transit.js` revalidate 標頭及 README／自動化文件。
 
-**本機驗收**：`npm test` 31/31、`npm run ui` 157/157、`npm run guard` 18/18、`git diff --check` 預計提交前再跑。由於尚未在此記錄本分支的整合版 live Actions 執行，首個 workflow 發布結果仍待 GitHub 驗收；官方 feed 的先前 POC 已於 [run #4](https://github.com/playerkousas-rgb/hkcamping/actions/runs/41156262810) 成功處理 108/108 營地。
+**本機驗收**：`npm test` 31/31、`npm run ui` 158/158、`npm run guard` 18/18、`git diff --check` 通過。由於尚未在此記錄本分支的整合版 live Actions 執行，首個 workflow 發布結果仍待 GitHub 驗收；官方 feed 的先前 POC 已於 [run #4](https://github.com/playerkousas-rgb/hkcamping/actions/runs/41156262810) 成功處理 108/108 營地。
 
 ---
 

@@ -678,7 +678,7 @@ code {
 .transit-stop-map { color: var(--blue-700); font-size: 0.75rem; text-decoration: none; }
 .transit-routes { display: flex; flex-wrap: wrap; gap: 4px 8px; margin: 4px 0 0; padding: 0; list-style: none; }
 .transit-routes li { padding: 2px 7px; border-radius: 6px; background: #edf5eb; color: #364533; font-size: 0.75rem; }
-.transit-empty, .transit-meta, .transit-disclaimer { margin: 3px 0 0; color: var(--muted); font-size: 0.75rem; line-height: 1.55; }
+.transit-route-note, .transit-empty, .transit-meta, .transit-disclaimer { margin: 3px 0 0; color: var(--muted); font-size: 0.75rem; line-height: 1.55; }
 .transit-stale { margin: 0; padding: 7px 9px; border-left: 3px solid #bf5b00; border-radius: 5px; background: #fff3e0; color: #783900; font-size: 0.75rem; line-height: 1.55; }
 .transit-sources { display: flex; flex-wrap: wrap; gap: 5px 12px; font-size: 0.75rem; }
 .transit-sources a { color: var(--blue-700); }
