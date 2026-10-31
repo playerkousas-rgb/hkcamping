@@ -252,6 +252,7 @@ test('v1.3.0：官方 OCF 分區預報（對每日同步穩健，唔鎖死某一
   const top = Object.keys(used).sort((a, b) => used[b] - used[a])[0];
   const scroll = doc.getElementById('forecastScroll');
   assert.equal(scroll.children.length, O.stations[top].daily.length);
+  assert.match(doc.getElementById('forecastSummaryMeta').textContent, /\d+日預報/);
   const first = scroll.children[0].children.map((c) => c.textContent).join('|');
   assert.match(first, /今日/);
   assert.match(first, /🌧/);
@@ -331,6 +332,11 @@ test('天氣列：嵌入嘅天文台快照會渲染週末 PSR', () => {
   assert.match(texts, /降雨概率/);
   assert.match(texts, /天文台更新/);
   assert.ok(bar.children.length >= 5);
+  assert.equal(doc.getElementById('weekendWeatherPanel').hidden, false);
+  assert.match(
+    doc.getElementById('weekendWeatherSummaryStatus').children.map((c) => c.textContent).join(' '),
+    /降雨概率/,
+  );
 });
 
 test('無天氣快照時天氣列自動隱藏（fail-closed）', () => {
@@ -347,6 +353,7 @@ test('無天氣快照時天氣列自動隱藏（fail-closed）', () => {
   vm.runInContext('window.CAMP_WEATHER = null;', sandbox);
   vm.runInContext(readFileSync(join(ROOT, 'app.js'), 'utf8'), sandbox, { filename: 'app.js' });
   assert.equal(doc.getElementById('weatherBar').hidden, true);
+  assert.equal(doc.getElementById('weekendWeatherPanel').hidden, true);
   assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>108<\/b> 個結果/);
 });
 
@@ -362,6 +369,9 @@ test('v1.4.0：週末唔落雨排行用 OCF 官方站，按降雨概率升序', 
   assert.deepEqual(pcts, [...pcts].sort((a, b) => a - b), '要由低至高排');
   assert.match(rows[0].children[4].textContent, /\d+ 個營地/);
   assert.match(doc.getElementById('weekendRankDates').textContent, /本週末 \d{2}\/\d{2}/);
+  rows[0].click();
+  assert.equal(doc.getElementById('forecastPanel').open, true,
+    '撳排行站點應自動展開上方九日預報');
 });
 
 test('v1.4.0：我的足跡由 localStorage 讀取，卡片有「去過」徽章', () => {

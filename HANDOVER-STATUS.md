@@ -13,7 +13,8 @@
 | P2 | `scripts/guard.mjs` + `guard.yml` + PR template + dependabot + `© SCOUT SYSTEM` + 雙版號 + smoke test | ✅ | `0fe6154` |
 | P3 | 前端食 `data/auto/weather.json`：build 嵌入 `data.js`、天氣列、地圖 pin／popup 週末 PSR 標記、過期提示 | ✅ | 本批 |
 | P4 | v1.14.0 官方巴士／專線小巴快照自動發布、卡片展開、比較／搜尋／距離排序、手機快速導覽與過期提示 | ✅ 108/108 營地端到端自動發布，run `41160879442` 成功 | 本批 |
-| P5 | v1.14.1 手機按鈕與篩選／排序操作易用性改善 | ✅ 180 項 A–W UI 驗收；主要觸控目標至少 48px | 本批 |
+| P5 | v1.14.1 手機按鈕與篩選／排序操作易用性改善 | ✅ 180 項 A–W UI 驗收；主要觸控目標至少 48px | 已完成 |
+| P6 | v1.14.2 天氣面板可收合、四掣貼底並避讓回報 | ✅ 207 項 A–X UI 驗收；三個天氣區塊原生收合，回報 widget 與快速列並排不遮擋 | 本批 |
 
 **合併狀態**：PR [#1](https://github.com/playerkousas-rgb/hkcamping/pull/1) 已於 2026-10-27 合併入 `main`
 （merge commit `1727ba1`），PR #4（文件更新）亦已合併。`gh workflow list` 確認三條 workflow 全部 `active`；
@@ -84,7 +85,7 @@
 ```bash
 npm run guard     # 18/18 全綠；workflow 合約 13 項，含 transit 自動發布及快取守護
 npm test          # 32/32 通過：smoke、交通 parser／publisher、108 個營地 coverage／快照驗證
-npm run ui        # 180/180 通過：A–W 23 個情境，含交通展開／比較／手機快速列／過期警告
+npm run ui        # 207/207 通過：A–X 24 個情境，含天氣區塊收合及回報／頁底快捷列避讓
 npm run build:site  # dist/ 5 個核心檔 + icons，guard 驗收總體積
 npm run dev       # http://localhost:8000 本機預覽（已 bind 0.0.0.0，Arena live preview 用得到）
 # 實測 HTTP：/ /index.html /styles.css /app.js /data.js 全部 200；交通由 transit.js 嵌入，瀏覽器無需 fetch
@@ -123,7 +124,7 @@ npm run dev       # http://localhost:8000 本機預覽（已 bind 0.0.0.0，Aren
 | ③ 程序員 | `npm run guard` + `npm test`（32） | 每次改動、CI 必跑；交通快照 fail-closed 驗證及自動發布合約 | ✅ |
 | ④ 系統架構師 | guard 第 2 項「雙版號一致」 | 每次改動 | ✅ |
 | ⑤ AI Agent | README／PROGRESS／VERSIONS／本檔 | 每版更新 | ✅ |
-| ⑥ 一般用戶 | `npm run ui`（180 項，A–W 23 段） | CI 自動安裝 jsdom 並於交通 workflow 跑；本機可 `npm i -D jsdom@^26` | ✅ |
+| ⑥ 一般用戶 | `npm run ui`（207 項，A–X 24 段） | CI 自動安裝 jsdom 並於交通 workflow 跑；本機可 `npm i -D jsdom@^26` | ✅ |
 
 **③ 要證明捉得到**：變異測試（故意整壞 → 應該 FAIL → 還原）。現時三個基準變異：
 旱廁併入廁所、版號唔同步、刪 `© SCOUT SYSTEM`。
