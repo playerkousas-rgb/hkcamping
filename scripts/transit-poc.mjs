@@ -4,7 +4,7 @@
  * Downloads the official TD route-stop GeoJSON feeds, matches every campsite in
  * data.js to nearby bus/GMB stops, and writes diagnostics only (no app integration).
  */
-import { mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
@@ -168,6 +168,41 @@ function writeOutputsAtomically(outDir, poc) {
   }
 }
 
+function writeFailureDiagnostic(outDir, error) {
+  const message = String(error?.stack || error?.message || error).replace(/[\r\n]+/g, ' | ');
+  try {
+    mkdirSync(outDir, { recursive: true });
+    const diagnostic = [
+      '# Transit POC failed closed',
+      '',
+      `- Time: ${new Date().toISOString()}`,
+      `- Error: ${message}`,
+      '- No transit result was written or integrated into the website.',
+      '',
+    ].join('\n');
+    writeFileSync(join(outDir, 'transit-poc-error.md'), diagnostic);
+  } catch (writeError) {
+    console.error(`Unable to save failure diagnostic: ${writeError.message}`);
+  }
+
+  const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+  if (summaryPath) {
+    const summary = [
+      '## Transit POC failed closed',
+      '',
+      `Error: ${message}`,
+      '',
+      'No transit result was written or integrated into the website.',
+      '',
+    ].join('\n');
+    try { appendFileSync(summaryPath, summary); } catch (writeError) {
+      console.error(`Unable to append GitHub summary: ${writeError.message}`);
+    }
+  }
+  const annotation = String(error?.message || error).replace(/[\r\n]+/g, ' ').slice(0, 500);
+  console.error(`::error title=Transit POC failed::${annotation}`);
+}
+
 export async function runTransitPoc({ fixtureDir = null, outDir = DEFAULT_OUT_DIR } = {}) {
   const campsites = loadCampsitesFromDataJs();
   console.log(`📍 已載入 ${campsites.length} 個營地座標`);
@@ -197,12 +232,14 @@ export async function runTransitPoc({ fixtureDir = null, outDir = DEFAULT_OUT_DI
 }
 
 if (process.argv[1] && isAbsolute(process.argv[1]) && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  let args = { outDir: DEFAULT_OUT_DIR };
   try {
-    const args = parseArgs(process.argv.slice(2));
+    args = parseArgs(process.argv.slice(2));
     if (args.help) printHelp();
     else await runTransitPoc(args);
   } catch (error) {
     console.error(`❌ Transit POC failed closed: ${error.stack || error.message}`);
+    writeFailureDiagnostic(args.outDir || DEFAULT_OUT_DIR, error);
     process.exitCode = 1;
   }
 }
