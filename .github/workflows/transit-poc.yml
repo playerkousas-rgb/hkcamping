@@ -65,7 +65,20 @@ jobs:
         run: node scripts/transit-poc.mjs --out-dir .cache/transit-poc
 
       - name: Validate and publish the compact website snapshot
-        run: node scripts/publish-transit.mjs
+        run: |
+          set +e
+          node scripts/publish-transit.mjs 2>&1 | tee .cache/transit-publisher.log
+          result=${PIPESTATUS[0]}
+          set -e
+          if [ "$result" -ne 0 ]; then
+            message=$(tail -n 1 .cache/transit-publisher.log | tr '\n' ' ')
+            echo "::error title=Transit snapshot publisher failed::$message"
+            echo "## Transit snapshot publisher failure" >> "$GITHUB_STEP_SUMMARY"
+            echo "\`\`\`text" >> "$GITHUB_STEP_SUMMARY"
+            cat .cache/transit-publisher.log >> "$GITHUB_STEP_SUMMARY"
+            echo "\`\`\`" >> "$GITHUB_STEP_SUMMARY"
+            exit "$result"
+          fi
 
       - name: Rebuild and validate deployment output
         run: |
