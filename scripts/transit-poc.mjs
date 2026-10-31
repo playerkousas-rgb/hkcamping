@@ -153,6 +153,29 @@ function loadCampsitesFromDataJs() {
   return validateCampsites(sandbox.window.CAMPSITES);
 }
 
+function publishSuccessSummary(poc) {
+  const coverage = (mode) => [250, 500, 1000, 2000, 5000]
+    .map((distance) => poc.summary.coverageWithinMeters[mode][String(distance)])
+    .join('/');
+  const message = [
+    `camps ${poc.quality.processedCampsites}/${poc.quality.expectedCampsites}`,
+    `bus ${poc.summary.uniqueBusStopCount} stops/${poc.sources.bus.featureCount} features, coverage 250/500/1000/2000/5000m ${coverage('bus')}`,
+    `GMB ${poc.summary.uniqueGmbStopCount} stops/${poc.sources.gmb.featureCount} features, coverage 250/500/1000/2000/5000m ${coverage('gmb')}`,
+    `coordinate conflicts ${poc.quality.coordinateConflictCount}`,
+    `exact-name matches ${poc.quality.exactNameMatchCount}`,
+  ].join('; ');
+  console.log(`::notice title=Transit%20POC%20live%20summary::${message}`);
+
+  const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+  if (summaryPath) {
+    try {
+      appendFileSync(summaryPath, `${renderTransitPocMarkdown(poc)}\n`);
+    } catch (error) {
+      console.error(`Unable to append GitHub summary: ${error.message}`);
+    }
+  }
+}
+
 function writeOutputsAtomically(outDir, poc) {
   mkdirSync(outDir, { recursive: true });
   const outputs = [
@@ -228,6 +251,7 @@ export async function runTransitPoc({ fixtureDir = null, outDir = DEFAULT_OUT_DI
   });
   const poc = buildTransitPoc({ busFeed, gmbFeed, campsites });
   writeOutputsAtomically(outDir, poc);
+  publishSuccessSummary(poc);
 
   console.log(`✅ 已完成 ${poc.quality.processedCampsites}/${poc.quality.expectedCampsites} 個場地的配對`);
   console.log(`   巴士站 ${poc.summary.uniqueBusStopCount}；專線小巴站 ${poc.summary.uniqueGmbStopCount}`);
