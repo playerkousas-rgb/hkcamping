@@ -1,0 +1,55 @@
+name: Transit Proximity POC
+
+# GMB / franchised-bus route-stop files are static and published biweekly.
+# Weekly sampling validates that the unattended fetch/parse/match pipeline stays healthy.
+on:
+  schedule:
+    - cron: '17 18 * * 0' # Monday 02:17 HKT
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/transit-poc.yml'
+      - 'scripts/transit-poc*.mjs'
+      - 'scripts/transit-poc.test.mjs'
+      - 'data.csv'
+  pull_request:
+    paths:
+      - '.github/workflows/transit-poc.yml'
+      - 'scripts/transit-poc*.mjs'
+      - 'scripts/transit-poc.test.mjs'
+      - 'data.csv'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: transit-proximity-poc-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  transit-poc:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: POC parser and distance tests
+        run: node --test scripts/transit-poc.test.mjs
+
+      - name: Download official route-stop GeoJSON and match every campsite
+        run: node scripts/transit-poc.mjs --out-dir .cache/transit-poc
+
+      - name: Publish POC diagnostics (no app data is changed)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: transit-poc-${{ github.run_number }}
+          path: .cache/transit-poc/
+          if-no-files-found: warn
+          retention-days: 30

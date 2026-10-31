@@ -1,50 +1,59 @@
-# 恆常化自動更新策略
+# 自動化優先：資料同步與更新策略
 
-> 目標：人手只維護「機器做唔到」嘅資料，其餘全部由 GitHub Actions 定時同步。
-> 數據源全部來自 `playerkousas-rgb/api`（香港免費 API 天書，2026-09-29 實測）並已再次實測。
+> **硬性原則（2026-10-31）**：本項目沒有專人定期核查或更新資料。所有新增或需持續更新的資料，必須由官方 API／開放數據，或可由 GitHub Actions 定期穩定抓取的官方頁面，自動完成抓取、驗證、更新及建置；不能端到端自動維持的資料／功能就不加入。
+> 不以人工覆核、通知人手改資料、手動提升候選或眾包回報作為更新流程。GoCampingHK 的主觀難度標籤、營友經驗、人氣及評分明確不加入。
+> 官方來源仍是唯一事實依據；`playerkousas-rgb/api` 只供尋找 API 線索，不取代原始發布機構。
 
-## 一、核心原則：來源隔離（沿用 scout-circulars 模式）
+## 一、核心原則：來源隔離與 fail-closed
 
 ```
-data/auto/                ← 機器專用，Actions 定時覆寫，人手唔好改
+data/auto/                ← 機器專用，Actions 定時更新；禁止手動編輯
   ├─ afcd-campsites.json    漁護署 41 營地官方快照（CSDI）
-  ├─ afcd-diff-report.md    同 data.csv 嘅差異報告
+  ├─ afcd-diff-report.md    同既有資料的自動差異報告
   ├─ weather.json           天文台警告 + 九天預報（含週末降雨概率）
-  ├─ had-guesthouses.json   牌照處全港 1,807 間持牌酒店賓館快照（CSDI LLHG 圖層，含座標）
-  ├─ had-candidates.json    鄉郊渡假類候選（27 經營者／50 處所，已剔除大型酒店）
-  ├─ had-diff-report.md     分區統計＋民宿合規覆核＋營舍持牌名單＋候選明細
-  ├─ conditions.json        該區實況（18 區雨量＋27 站氣溫）＋8 潮汐站高低潮（每日）
-  └─ ocf-forecast.json      天文台 OCF 分區九日預報（12 站 × 10 日，每日）
+  ├─ had-guesthouses.json   牌照處持牌酒店賓館快照（CSDI LLHG 圖層，含座標）
+  ├─ had-candidates.json    由官方持牌資料機器篩出的候選（不經人工提升入庫）
+  ├─ had-diff-report.md     自動差異／資料完整性報告
+  ├─ conditions.json        該區實況＋潮汐站高低潮（每日）
+  └─ ocf-forecast.json      天文台 OCF 分區九日預報（每日）
 
-data.csv                  ← 人工策展層：摘要、標籤、收費、訊號、NGO/民宿資料
+data.csv                  ← 現有靜態基礎資料（歷史上有人工策展；不作新增資料的維護模式）
         ↓ build-data.mjs
-data.js                   ← 網站唯一讀取嘅合併成品
+ data.js                  ← 網站唯一讀取的合併成品
 ```
 
-- 官方欄位（座標、水源、營位規模、郊野公園、天氣）→ 機器負責
-- 判斷性欄位（營地感受、特色標籤、價格、訊號）→ 人負責
-- 同步腳本**只出報告，唔直接改 data.csv**，避免靜悄悄覆蓋人工資料
+- 新增客觀欄位只接受可追溯至官方原始來源、並可自動同步的資料。
+- 優先使用官方 API／開放數據；若只有官方 HTML／檔案，GitHub Actions 必須能穩定解析完整資料集並自動驗證。未驗證的抓取結果不得覆蓋最後一份有效快照。
+- 同步及建置全部由 Actions 自動完成；成功且通過驗證後自動更新輸出，不要求人手審批或逐筆覆核。
+- 上游停機、格式改變或資料不完整時要 fail-closed、保留最後有效資料並顯示資料過期狀態；不能把舊快照偽裝成最新資料。
+- 不新增主觀／用戶生成資料（營地難度評級、營友經驗、人氣、評分、眾包回報），亦不建立依賴人工更新的欄位。
+- `data.csv` 目前仍含歷史人工整理的基礎資料；這是既有技術債，不代表新功能可沿用手動維護。新增的自動更新欄位應進入 `data/auto/`，再由 `build-data.mjs` 合併。
+- 只產生差異報告或提醒人手更新，**不算完成自動化**；新資料流程必須能自動把已驗證資料送入網站成品。
 
 ## 二、各資料源可行性矩陣
 
 | 資料 | 自動化 | 來源（已實測） | 更新頻率 |
 |---|:---:|---|---|
 | 漁護署 41 營地名稱/座標/郊野公園 | ✅ 全自動 | CSDI GeoJSON `afcd_rcd_1635133060194_82554` | 每日 |
-| 營地水源類型、營位規模（少於20/20-50/多於50） | ✅ 全自動 | 同上，`SOURCE_OF_WATER` / `TENT_SPACE` 欄位 | 每日 |
+| 營地水源類型、營位規模（少於20/20-50/多於50） | ✅ 全自動 | 同上，`SOURCE_OF_WATER` / `TENT_SPACE` 欄位；營位級別須標明為官方估算 | 每日 |
+| AFCD 個別營地路線／設施／適合對象／地圖 | 🟡 待證明可穩定自動解析 | 漁護署 41 個官方營地詳情頁及其官方地圖 | 只有在 Actions 可驗證 41/41 完整解析、自動更新及 fail-closed 後才加入；不可人工逐頁維護 |
+| 營地附近官方巴士／小巴站與路線 | 🟡 全自動 POC 已建置；待 Actions live run | 運輸署雙週 `JSON_BUS.json` + `JSON_GMB.json` route-stop GeoJSON；[測試報告](TRANSPORT-API-FEASIBILITY.md) | 每週自動測試；配對結果只作 artifact，不入網站／`data.js` |
+| 巴士／小巴即時 ETA | 🟡 API smoke test 成功；瀏覽器接入未驗 | 運輸署 GMB、KMB/LWB；城巴及 NLB 官方 API | GMB/KMB/城巴 ETA 約每分鐘；CORS、條款及數值化限流未確認；GHA 不可保證即時 |
+| 港鐵即時 ETA／站點配對 | 🟡 ETA API smoke test 成功；未具備營地配對資料 | MTR Next Train API；MTR 車站 CSV 與 LandsD 地理資料另待驗 | 列車 ETA 每 10 秒；CSV 本輪 HTTP 500，車站座標、CORS 與條款未驗 |
 | 郊野設施/山徑臨時關閉 | ✅ 全自動 | CSDI「Closed Facilities」圖層（舊 dataset ID 已 404，需在 CSDI portal 重新搜尋新 ID） | 每日 |
 | 天氣警告、九天預報、週末降雨概率 | ✅ 全自動 | 天文台 `weather.php`（keyless），PSR 欄位 = 低/中/高 | 每日 |
 | 分區實時氣溫/濕度、實況天氣照片 | ✅ 全自動 | 天文台 1分鐘 CSV、`hko_mica` webcam | 每日 |
 | 蚊患指數（選營地參考） | ✅ 全自動 | 食環署誘蚊器指數 data.gov.hk CSV | 每月 |
-| 康文署場地地址/電話/開放時間 | 🟡 半自動 | `lcsd.gov.hk/datagovhk/venue/venue.json` | 每週 |
-| 康文署度假營收費表 | 🟡 改動偵測 | `lcsd.gov.hk/tc/camp/booking_guide/camp_charges.html`（結構穩定，極少變） | 每週抓取 hash，變咗先通知 |
-| SmartPLAY 度假營空位/預訂 | ❌ 無官方 API | 爬內部 endpoint 有 anti-bot 風險；規則：每月 **20 號 08:30** 放剩餘營位 | 日曆提醒人手睇 |
-| NGO 27 間營舍收費/設施 | ❌ 無 API | 機構官網各異 | 改動偵測 + Telegram/ntfy 通知（見第四節） |
+| 康文署場地地址/電話/開放時間 | 🟡 待確認端到端自動化 | `lcsd.gov.hk/datagovhk/venue/venue.json` | 只有在 Actions 可自動抓取、驗證、更新後才可新增／擴充欄位 |
+| 康文署度假營收費表 | 🟡 待確認端到端自動化 | `lcsd.gov.hk/tc/camp/booking_guide/camp_charges.html`（官方頁面） | 不採用「抓到變更後通知人手改資料」；解析及驗證可自動化才納入更新 |
+| SmartPLAY 度假營空位/預訂 | ❌ 無可用官方即時 API | 只連官方預訂頁，不抓內部 endpoint、不顯示即時空位、不設人手日曆提醒 | 不提供未能自動維護的空位資料 |
+| NGO 營舍收費/設施 | 🟡 個別官網待自動化驗證 | 各機構官方網站 | 只在 Actions 能可靠解析並自動更新時納入；否則只連官方頁，不新增需人工核查的欄位 |
 | 持牌賓館／渡假屋（合規民宿庫） | ✅ 全自動 | CSDI `had_rcd_1639475170528_37262` 圖層 **LLHG**（含座標）＋ HAD CSV 補牌照號，月更 | 每月 |
 | **入站人次**（本站統計） | ✅ 全自動 | Vercel Web Analytics（`/_vercel/insights/script.js`，無 cookie）；頁尾本機累計用 `localStorage` | 即時（Dashboard） |
-| 民宿候選提升入 data.csv | 🟡 人工把關 | `had-candidates.json` 已備座標/電話/牌照，人睇完先入庫 | 跟月更報告 |
-| 無牌平台房源（Airbnb 等） | ❌ 唔收錄 | 第349章無牌經營風險；資料庫民宿分類只收持牌處所 | — |
-| 私人 Glamping 評分/氣氛 | ❌ 無 API | 平台與獨立網站 | 全人工，建議 crowdsource 回報 |
-| 手機訊號覆蓋 | ❌ 無 API | 通訊辦 171 幅靜態地圖 + 地理資訊地圖 `__OFCA_MOBILE` 圖層；**版權限制：僅免費個人查閱，轉售/商業轉發須政府批准**，故只能連出不能複製 | 深鏈連出 + 用戶眾包 |
+| 民宿候選加入前端 | 🟡 尚未完成自動納入 | `had-candidates.json` 由官方牌照資料生成 | 不經人工挑選；只有可由明確規則自動驗證的記錄才可自動納入，否則不展示 |
+| 無牌平台房源（Airbnb 等） | ❌ 不收錄 | 第349章無牌經營風險；資料庫民宿分類只收持牌處所 | — |
+| 私人 Glamping 主觀評分／氣氛 | ❌ 不加入 | 無可自動驗證的官方客觀來源 | 不使用人工整理或眾包補位 |
+| 手機訊號覆蓋 | ❌ 不複製覆蓋資料 | 通訊辦靜態地圖及地理資訊地圖 `__OFCA_MOBILE` 圖層；依版權條款只連官方地圖 | 深鏈連出；不做眾包訊號評分 |
 
 ### 訊號覆蓋嘅實際接法（已實裝）
 
@@ -54,7 +63,7 @@ data.js                   ← 網站唯一讀取嘅合併成品
 - 每張營地卡片已加「📶 覆蓋查詢」「🏛 官方地圖」兩粒連結，header 加 112 緊急提示橫額
 - 通訊辦另公開 33 個郊野公園基站名單（浪茄、荃錦坳、南山、東龍洲等），屬事實資料；
   將來可一次性地理編碼後做「最近基站距離」參考指標，但覆蓋面圖層不可自行轉載
-- 長遠 live 數據仍靠 Supabase 眾包回報（見路線圖第 5 步）
+- 不收集眾包訊號回報；只提供官方覆蓋地圖連結。若官方日後提供可自動使用的資料服務，再按自動化門檻評估。
 
 ## 三、已交付嘅自動化組件
 
@@ -70,6 +79,7 @@ data.js                   ← 網站唯一讀取嘅合併成品
 | `tools-sync-conditions.mjs` | **v1.2.0 新增**：每日抓 `rhrread`（18 區雨量 + 27 站氣溫）＋ `HLT`（8 站當月＋下月高低潮）→ `data/auto/conditions.json`。`build-data.mjs` 按 `district`/`area` 配對就近氣象站同潮汐站落每筆營地 |
 | `app.js` `sunTimesHKT()` | **v1.2.0 新增**：純 JS 天文公式（NOAA/SunCalc）計日出日落，零 API、任何年份、`file://` 都用得；已用 HKO 官方 SRS 2026 五個錨點驗證，最大誤差 3 分鐘 |
 | `tools-sync-ocf.mjs` | **v1.3.0 新增**：每日抓天文台「自動分區天氣預報」(OCF) 12 個站嘅未來 9–10 日預報（`maps.weather.gov.hk/ocf/dat/<code>.xml`，檔名 .xml 但內容係 JSON）→ `data/auto/ocf-forecast.json`。多模型共識 + 本地觀測校正，每日更新兩次；**電腦自動生成、未經人手修訂**，UI 已標明 |
+| `scripts/transit-poc.mjs` + `scripts/transit-poc-core.mjs` + `.github/workflows/transit-poc.yml` | 每週自動抓運輸署巴士／GMB route-stop GeoJSON，對 `data.js` 全部場地計附近站點與直線距離；產生 JSON＋Markdown 診斷 artifact，30 日後自動清除；**不改 `data.csv`／`data.js`、不接前端、不需人工覆核**。源檔缺失／格式異常即 fail-closed |
 | `app.js` `renderWeekendRank()` | **v1.4.0 新增**：用同一個 OCF 快照計本週末（六／日）各分區站最高降雨概率，排「週末唔落雨排行」；地圖 pin 嘅降雨圓點亦改用所屬分區站，唔再全港一個數 |
 | `app.js` 我的足跡 | **v1.4.0 新增**：`localStorage` `hkcamp_footprints`（`{id:{first,last}}`），卡片一撳標記／取消，側欄可篩選／清除；無帳號、無上傳 |
 | `app.js` `initVisitCounter()` ＋ Vercel Analytics | **v1.4.0 新增**：全站人次由 Vercel Web Analytics（無 cookie、無 secret）統計；頁尾顯示本機累計「你第 N 次到訪」。**唔用** CountAPI／hits.sh 等第三方計數器（可停、可被牆、會交 IP 去第三方） |
@@ -108,25 +118,26 @@ GitHub Actions cron 用 UTC：`30 16 * * *`＝00:30 HKT、`15 17 1 * *`＝每月
 - 重疊機構（大棠、北潭涌、梁紹榮）唔重複建列；樟木頭老人度假中心唔對外公開故不收錄
 - 原有 b01–b04/b06 屬早期分區導覽種子列，同真實持牌經營者並存，下次整理可考慮合併
 
-## 四、NGO 營地：「改動偵測」代替全日人手巡查
+## 四、沒有人工覆核的資料來源處理
 
-27 間 NGO 營舍無 API，但可以用你 `glue.md` 記錄嘅免費膠水做到半自動：
+NGO 場地等來源格式各異時，單純計 hash、發 Telegram／ntfy 通知並要求人手核查，**不符合本項目的自動化要求**。採用前必須先驗證 Actions 能在無人介入下：
 
-1. GitHub Actions 每週 fetch 各機構官網頁面，計 hash 存入 cache
-2. hash 變咗 → 經 **ntfy.sh / Telegram Bot** 推一則「梁紹榮度假村網頁有更新，請核查」
-3. 你每週只需看通知決定改唔改 data.csv，唔使逐間網站巡
+1. 定時抓取官方來源並解析全部目標記錄；
+2. 驗證欄位、筆數、日期及允許值，資料異常時 fail-closed；
+3. 自動更新快照並重建 `data.js`；
+4. 在資料超過有效期限時顯示過期提示，而不是沿用舊值冒充最新。
 
-呢個正正係 `scout-circulars` 49 個來源嘅同款做法（`sources.json` + 來源隔離 + 快取）。
+若來源無 API，只有在以上流程穩定可跑時才可用官方 HTML／檔案抓取；否則不新增該資料，最多提供官方來源連結。不得把人工覆核、手動改 `data.csv` 或眾包當作備援流程。
 
 ## 五、建議路線圖
 
-1. **即時**：推送現有專案上 GitHub，開啟 Actions —— 41 個官方營地 + 天氣 + 持牌賓館即刻進入自動更新（兩條 workflow 已補回，見第三節）
-2. **每月**：睇 `had-diff-report.md`，把合適嘅 `had-candidates.json` 候選提升入 data.csv（座標電話牌號都齊），並處理坪洲條目改寫
+1. **即時**：推送現有專案上 GitHub，開啟 Actions —— 41 個官方營地 + 天氣 + 持牌賓館由既有 workflows 定期更新（兩條 workflow 已補回，見第三節）
+2. **候選場地**：不得人手把 `had-candidates.json` 提升入 `data.csv`；只有明確、可機器驗證的規則及自動合併流程才可納入，否則不展示新候選。
 3. **✅ 第 2 步（2026-10-27 完成）**：前端食 `weather.json` — `build-data.mjs` 把快照嵌入 `data.js`
    成為 `window.CAMP_WEATHER`（唔使 fetch，`file://` 都用得）；`app.js` 渲染天氣列（週末 PSR、
    溫度、生效警告、過期提示）同地圖 pin／popup 嘅降雨圓點；`sync-data.yml` 每日 rebuild 後自動更新。
    PSR 係**全港預測**，唔係逐營地實測，UI 已寫明避免誤導。
-4. **第 3 步**：寫 NGO 改動偵測 workflow + Telegram/ntfy 通知
+4. **下一項資料候選**：評估漁護署 41 個個別營地頁的官方路線、設施、適合對象及地圖是否可由 GitHub Actions 穩定解析、驗證及更新；未達 41/41 自動化驗收前，不加入新欄位。
 5. **第 4 步**：CSDI 關閉設施新 dataset ID 補回後，營地卡片加「臨時關閉」徽章；持牌營舍卡片加旅館牌號徽章
 6. **✅ 第 5 步（v1.2.0 完成）**：分區實況 + 潮汐 + 日光 — `rhrread` 18 區雨量／27 站氣溫配對落每張卡片，
    HLT 8 站官方高低潮，純 JS 天文公式計日出日落。**注意「就近站」限制**：山區氣溫同無潮汐站嘅外島
@@ -142,7 +153,7 @@ GitHub Actions cron 用 UTC：`30 16 * * *`＝00:30 HKT、`15 17 1 * *`＝每月
 9. **第 8 步**：寵物規矩 — ⚠️ 法例層面清晰（郊野公園可帶狗但要妥善管束，20kg+ 大型狗有效管制下可豁免牽繩），
    但個別場地（NGO／康文署／Glamping）各有自己規矩，**冇任何 API**，要逐間問。
    用戶已決定**唔做**，只保留通用法例提示喺「出發前準備」清單。
-10. **第 9 步**：若將來資料量再膨脹或要多人編修，先將 data.csv 搬上 Supabase（你已連接）或 Google Sheets，前端合約 `window.CAMPSITES` 唔變
+10. **資料儲存**：不以 Supabase／Google Sheets 或多人手動編修取代自動化；若日後需要升級，仍須維持「官方來源 → 自動抓取與驗證 → 自動建置」流程及 `window.CAMPSITES` 前端合約。
 
 ## 六、成本
 
