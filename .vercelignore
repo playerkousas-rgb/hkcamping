@@ -26,7 +26,7 @@ temp/
 *.psd
 *.mp4
 
-# 同步工具、地理編碼快取、大快照唔部署（build 只需要 data/auto/weather.json）
+# build-site.mjs 會讀取網站需要的官方快照（weather／conditions／OCF／transit），只輸出 compact 的 dist；以下內部詳情檔不部署
 tools-*.mjs
 geocache.json
 data/auto/had-guesthouses.json

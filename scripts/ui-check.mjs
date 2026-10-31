@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 /**
- * ui-check.mjs — 「一般用戶」角度實測（對照真理倉 docs/17 §1 角度⑥ ＋ STEP 8 人手實測）
+ * ui-check.mjs — README A–W 使用者／維護情境實測（對照真理倉 docs/17 §1 角度⑥ ＋ STEP 8）
  *
  * 檢查項目：
  *   A. 斷網都開到（CDN 攞唔到 Leaflet 都唔可以死）／108 張卡／頁尾 © SCOUT SYSTEM + 版號
  *   B. 私隱模式（localStorage 一掂就 throw）／撳收藏、撳足跡都唔可以死
  *   C. 篩選真係撳得（廁所 32 ／ 旱廁 16 分開、旱廁卡有警示）
  *   D. 手機：viewport／斷點／chip 識換行
+ *   T. 營運機構篩選、比較 2–3 個場地、移除／清空同最多 3 個限制
+ *   U–W. 童軍交通規劃、手機快速導覽、舊快照提示及自動發布合約
  *
  * 用法：
- *   npm i -D jsdom      # 只係測試用，唔會入 dist、唔影響網站
+ *   npm i -D jsdom@^26  # 只係測試用，唔會入 dist、唔影響網站
  *   npm run ui
  *
  * 點解唔放入 npm test：jsdom 係 ~5MB devDependency。網站本身零 runtime deps（S1），
@@ -17,9 +19,9 @@
  * 退出碼：0 = 全綠；1 = 有 FAIL；2 = 未裝 jsdom。
  */
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -27,16 +29,25 @@ let jsdom;
 try {
   jsdom = (await import('jsdom')).default;
 } catch {
-  console.error('✗ 未裝 jsdom。先跑：npm i -D jsdom  再跑：npm run ui');
+  console.error('✗ 未裝 jsdom。先跑：npm i -D jsdom@^26  再跑：npm run ui');
   process.exit(2);
 }
-const { JSDOM, VirtualConsole, requestInterceptor } = jsdom;
+const { JSDOM, VirtualConsole, ResourceLoader } = jsdom;
 
-/** 所有 http(s) 一律斷開 → 模擬斷網；file:// 照讀 */
-const offline = requestInterceptor(async (request) =>
-  /^https?:/i.test(request.url) ? new Response('', { status: 503 }) : undefined);
+/** 所有 http(s) 一律斷開 → 模擬斷網；本機 file:// 腳本照常載入 */
+class OfflineResourceLoader extends ResourceLoader {
+  fetch(url, options) {
+    if (/^https?:/i.test(url)) return null;
+    if (/^file:/i.test(url)) {
+      try { if (!existsSync(new URL(url))) return null; }
+      catch { return null; }
+    }
+    return super.fetch(url, options);
+  }
+}
+const offline = new OfflineResourceLoader();
 
-async function boot({ privateMode = false, onFetch = null } = {}) {
+async function boot({ privateMode = false, onFetch = null, transitFixture = null } = {}) {
   const caught = [];
   const vc = new VirtualConsole();
   // 只捉「程式真係拋錯」，唔捉資源載入失敗（斷網本來就載唔到 CDN）
@@ -45,11 +56,19 @@ async function boot({ privateMode = false, onFetch = null } = {}) {
     if (!/Could not load/.test(m)) caught.push(m);
   });
   vc.on('error', (...a) => caught.push(a.join(' ')));
-  vc.forwardTo(console, { jsdomErrors: 'none' });
+  if (typeof vc.forwardTo === 'function') vc.forwardTo(console, { jsdomErrors: 'none' });
+  else if (typeof vc.sendTo === 'function') vc.sendTo(console, { omitJSDOMErrors: true });
 
-  const dom = await JSDOM.fromFile(path.join(ROOT, 'index.html'), {
+  const indexPath = path.join(ROOT, 'index.html');
+  let html = readFileSync(indexPath, 'utf8');
+  if (transitFixture) {
+    html = html.replace('<script src="transit.js"></script>',
+      `<script>window.CAMP_TRANSIT = ${JSON.stringify(transitFixture)};</script>`);
+  }
+  const dom = new JSDOM(html, {
+    url: pathToFileURL(indexPath).href,
     runScripts: 'dangerously',
-    resources: { interceptors: [offline] },
+    resources: offline,
     pretendToBeVisual: true,
     virtualConsole: vc,
     beforeParse(win) {
@@ -73,6 +92,29 @@ const bad = (m) => { fail++; console.log(`  ❌ ${m}`); };
 const eq = (got, want, msg) => (got === want ? ok(msg) : bad(`${msg}（實際 ${got}）`));
 
 const VER = (readFileSync(path.join(ROOT, 'package.json'), 'utf8').match(/"version":\s*"([^"]+)"/) || [])[1];
+
+function makeTransitFixture({ generatedAt = new Date().toISOString(), sourceDate = new Date().toISOString().slice(0, 10) } = {}) {
+  const makeStop = (companyCode, stopId, nameC, distanceM, routeId, routeNameC, originC, destinationC) => ({
+    companyCode, stopId, nameC, nameE: null, lat: 22.3972, lng: 114.3193, distanceM,
+    lastUpdateDate: sourceDate,
+    routes: [{ companyCode, routeId, routeNameC, routeNameE: null, routeSeq: 1,
+      originC, originE: null, destinationC, destinationE: null }],
+  });
+  return {
+    schemaVersion: 1,
+    generatedAt,
+    sources: {
+      bus: { sourceUrl: 'https://static.data.gov.hk/td/routes-fares-geojson/JSON_BUS.json', latestSourceUpdate: sourceDate },
+      gmb: { sourceUrl: 'https://static.data.gov.hk/td/routes-fares-geojson/JSON_GMB.json', latestSourceUpdate: sourceDate },
+    },
+    campsites: [
+      { id: 'a01', bus: [makeStop('KMB', 'B001', '北潭涌', 420, '94', '94', '<img src=x onerror=1>', '西貢')],
+        gmb: [makeStop('GMB-TEST', 'G001', '海下', 780, '7', '7', '西貢', '海下')] },
+      { id: 'a02', bus: [makeStop('KMB', 'B002', '鶴藪口', 140, '52B', '52B', '粉嶺', '鶴藪')], gmb: [] },
+      { id: 'a03', bus: [makeStop('CTB', 'B003', '大埔墟', 700, '20C', '20C', '大埔', '大埔墟')], gmb: [] },
+    ],
+  };
+}
 
 console.log('\n【A】一般用戶 — 斷網都開到、睇到資料、頁尾版權版號');
 {
@@ -184,7 +226,6 @@ console.log('\n【F】冇開 JavaScript 嘅用戶');
   // 真係唔跑 JS 載入一次：唔應該爆炸，而且 noscript 內容要喺 DOM
   const dom = await JSDOM.fromFile(path.join(ROOT, 'index.html'), {
     runScripts: 'outside-only',
-    resources: { interceptors: [offline] },
     pretendToBeVisual: true,
   });
   const d = dom.window.document;
@@ -469,5 +510,136 @@ console.log('\n【S】加落手機主畫面／分享連結 — 有冇圖？');
   dom.window.close();
 }
 
-console.log(`\n=== 身份實測 A–S：${pass} pass / ${fail} fail ===`);
+console.log('\n【T】搜尋同比較 — 營運機構篩選／最多 3 個營地比較');
+{
+  const { dom, caught } = await boot();
+  const d = dom.window.document;
+  const afcd = [...d.querySelectorAll('#operatorChips .chip')]
+    .find((chip) => chip.textContent.trim().startsWith('漁農自然護理署'));
+  afcd ? ok('營運機構篩選有「漁農自然護理署」') : bad('缺少漁護署篩選');
+  if (afcd) {
+    afcd.click();
+    eq(d.querySelectorAll('#cardGrid .card').length, 41, '選漁護署後顯示 41 個營地');
+    d.getElementById('clearAll').click();
+  }
+
+  const buttons = [...d.querySelectorAll('#cardGrid .compare-toggle')];
+  eq(buttons.length, 108, '108 張卡都有比較掣');
+  if (buttons.length >= 4) {
+    buttons[0].click();
+    eq(d.getElementById('compareStart').disabled, true, '只選一個時不能開始比較');
+    buttons[1].click();
+    eq(d.getElementById('compareStart').disabled, false, '選兩個後可以比較');
+    d.getElementById('compareStart').click();
+    eq(d.querySelectorAll('#compareContents .compare-table tbody tr').length, 16, '比較表列出 16 個香港實用欄位（含巴士／小巴站）');
+    buttons[2].click();
+    eq(d.querySelectorAll('#compareSelected .compare-chip').length, 3, '最多可選 3 個營地');
+    eq(buttons[3].disabled, true, '已選滿時其他加入掣會停用');
+    d.querySelector('#compareSelected .compare-remove')?.click();
+    eq(d.querySelectorAll('#compareSelected .compare-chip').length, 2, '可從比較清單移除場地');
+    d.getElementById('compareClear').click();
+    eq(d.getElementById('comparePanel').hidden, true, '清除後比較表收起');
+  }
+  caught.length === 0 ? ok('新功能 Console 零 error') : bad(`新功能 ${caught.length} 個 error：${caught.slice(0, 3).join(' | ')}`);
+  dom.window.close();
+}
+
+console.log('\n【U】童軍策劃者 — 展開巴士／小巴路線、看清直線距離及來源限制');
+{
+  const { dom, caught } = await boot({ transitFixture: makeTransitFixture() });
+  const d = dom.window.document;
+  const details = d.querySelector('#cardGrid .transit-details');
+  details ? ok('每張卡有原生 details 展開／收合交通站點資料') : bad('缺少交通 details');
+  if (details) {
+    eq(details.open, false, '交通明細預設收合，不拉長所有卡片');
+    details.querySelector('summary').click();
+    eq(details.open, true, '撳標題後展開交通明細');
+    const text = details.textContent;
+    /巴士站/.test(text) && /專線小巴站/.test(text) ? ok('巴士與專線小巴分開顯示') : bad('兩種交通模式未分開');
+    /北潭涌/.test(text) && /海下/.test(text) ? ok('列出站名') : bad('缺少站名');
+    /直線約 420 米/.test(text) ? ok('距離明確標示「直線」') : bad('缺少直線距離標示');
+    /路線/.test(text) && /KMB/.test(text) ? ok('列出路線與營辦商代碼') : bad('缺少路線資料');
+    /不是步行路線或可達性評估/.test(text) ? ok('明確說明直線距離不代表步行可達') : bad('交通距離免責不足');
+    /不是即時 ETA/.test(text) ? ok('明確說明不提供即時 ETA') : bad('未說明沒有即時 ETA');
+    details.querySelectorAll('.transit-sources a').length >= 3 ? ok('有運輸署資料集及兩份官方原始 feed 連結') : bad('官方來源連結不足');
+    details.querySelector('img') === null ? ok('外部路線字串已 escape，唔會變成 HTML 元素') : bad('外部 feed 文字可能注入 HTML');
+    details.querySelector('summary').click();
+    eq(details.open, false, '再撳標題可收合');
+  }
+  const buttons = [...d.querySelectorAll('#cardGrid .compare-toggle')];
+  buttons[0]?.click(); buttons[1]?.click();
+  d.getElementById('compareStart').click();
+  const transitRow = [...d.querySelectorAll('#compareContents tbody tr')]
+    .find((row) => row.querySelector('th')?.textContent.includes('最近官方巴士'));
+  transitRow && /北潭涌/.test(transitRow.textContent)
+    ? ok('比較表同步顯示最近巴士／小巴站及直線距離') : bad('比較表缺交通站點行');
+  caught.length === 0 ? ok('童軍規劃流程 Console 零 error') : bad(`交通流程 ${caught.length} 個 error：${caught.slice(0, 3).join(' | ')}`);
+  dom.window.close();
+}
+
+console.log('\n【V】手機單手用戶 — 回頁頂／頁底、開篩選、快速排序');
+{
+  const { dom, caught } = await boot({ transitFixture: makeTransitFixture() });
+  const d = dom.window.document;
+  const quick = d.getElementById('mobileQuickNav');
+  const top = quick?.querySelector('a[href="#pageTop"]');
+  const bottom = quick?.querySelector('a[href="#pageBottom"]');
+  top && d.getElementById('pageTop') ? ok('快速列一撳回到頁頂') : bad('頁頂快速入口失效');
+  bottom && d.getElementById('pageBottom') ? ok('快速列一撳跳到頁底') : bad('頁底快速入口失效');
+  const css = readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  /safe-area-inset-bottom/.test(css)
+    ? ok('固定快速列預留手機 safe area') : bad('快速列未顧及瀏海／手勢區');
+  /@media \(max-width: 760px\)[\s\S]*?\.mobile-quick-nav/.test(css)
+    ? ok('快速列只在手機斷點顯示') : bad('快速列手機斷點設定缺失');
+  /\.quick-nav-item[\s\S]*?min-height: 48px/.test(css)
+    ? ok('手機快速操作目標至少 48px 高') : bad('快速操作目標過細');
+  const quickFilter = d.getElementById('quickFilterToggle');
+  quickFilter.click();
+  eq(d.getElementById('sidebar').classList.contains('open'), true, '快速篩選掣可以打開側欄');
+  eq(d.getElementById('filterToggle').getAttribute('aria-expanded'), 'true', '頂部／快速篩選 aria-expanded 同步');
+  d.getElementById('sidebarClose').click();
+  eq(d.getElementById('sidebar').classList.contains('open'), false, '側欄可關閉');
+  eq(d.activeElement, quickFilter, '關閉後焦點回到啟動側欄的快速掣');
+
+  const quickSort = d.getElementById('quickSortSelect');
+  quickSort.value = 'bus-distance';
+  quickSort.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+  eq(d.getElementById('sortSelect').value, 'bus-distance', '快速排序同桌面排序同步');
+  eq(d.querySelector('#cardGrid .card h3')?.textContent, '鶴藪營地', '按巴士站直線距離排序，最近站營地排前');
+  quickSort.value = 'gmb-distance';
+  quickSort.dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+  eq(d.querySelector('#cardGrid .card h3')?.textContent, '流水響營地', '按專線小巴直線距離排序，無站配對者排後');
+  d.getElementById('sortSelect').value = 'name';
+  d.getElementById('sortSelect').dispatchEvent(new dom.window.Event('change', { bubbles: true }));
+  eq(quickSort.value, 'name', '桌面排序更改會同步返手機快捷列');
+
+  const search = d.getElementById('searchInput');
+  search.value = '52B';
+  search.dispatchEvent(new dom.window.Event('input', { bubbles: true }));
+  eq(d.querySelectorAll('#cardGrid .card').length, 1, '搜尋框可以搵到官方路線編號');
+  caught.length === 0 ? ok('手機導覽流程 Console 零 error') : bad(`手機流程 ${caught.length} 個 error：${caught.slice(0, 3).join(' | ')}`);
+  dom.window.close();
+}
+
+console.log('\n【W】程序員／網站維護者 — 舊快照標示過期而不冒充最新');
+{
+  const oldAt = new Date(Date.now() - 12 * 86400000).toISOString();
+  const { dom, caught } = await boot({ transitFixture: makeTransitFixture({ generatedAt: oldAt }) });
+  const d = dom.window.document;
+  const warning = d.getElementById('transitFreshnessAlert');
+  warning && !warning.hidden && /超過 10 日/.test(warning.textContent)
+    ? ok('快照超過 10 日時，頁面頂部即顯示過期警告') : bad('舊快照未顯示可見過期狀態');
+  warning?.getAttribute('role') === 'status' && /最後一次成功取得/.test(warning.textContent)
+    ? ok('可報讀警告說明仍在顯示最後成功快照') : bad('舊資料狀態說明／報讀不足');
+  const publisher = readFileSync(path.join(ROOT, 'lib/transit-snapshot.mjs'), 'utf8');
+  /all \$\{expectedById\.size\} campsites/.test(publisher) && /not the official feed/.test(publisher)
+    ? ok('發布程式驗證完整營地清單及官方 feed，異常 fail-closed') : bad('交通資料發布缺少完整性／來源守護');
+  const workflow = readFileSync(path.join(ROOT, '.github/workflows/transit-poc.yml'), 'utf8');
+  workflow.includes('data/auto/transit.json') && workflow.includes('git push')
+    ? ok('GitHub Actions 自動提交網站快照，不要求人工更新') : bad('交通資料 workflow 未自動發布');
+  caught.length === 0 ? ok('過期快照情境 Console 零 error') : bad(`過期流程 ${caught.length} 個 error：${caught.slice(0, 3).join(' | ')}`);
+  dom.window.close();
+}
+
+console.log(`\n=== 身份實測 A–W：${pass} pass / ${fail} fail ===`);
 process.exit(fail ? 1 : 0);

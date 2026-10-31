@@ -45,6 +45,7 @@ const REQUIRED = [
   '.github/workflows/guard.yml', '.github/workflows/transit-poc.yml', '.github/PULL_REQUEST_TEMPLATE.md',
   'scripts/guard.mjs', 'scripts/smoke.test.mjs',
   'scripts/transit-poc.mjs', 'scripts/transit-poc-core.mjs', 'scripts/transit-poc.test.mjs',
+  'scripts/publish-transit.mjs', 'scripts/transit-publish.test.mjs', 'lib/transit-snapshot.mjs', 'transit.js',
   'tools-sync-conditions.mjs', 'tools-sync-ocf.mjs',
   'data/auto/weather.json', 'data/auto/conditions.json', 'data/auto/ocf-forecast.json',
 ];
@@ -96,7 +97,7 @@ try {
 try {
   const out = execFileSync(process.execPath, ['build-site.mjs'],
     { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
-  const expected = ['index.html', 'styles.css', 'app.js', 'data.js'];
+  const expected = ['index.html', 'styles.css', 'app.js', 'data.js', 'transit.js'];
   const lack = expected.filter((f) => !exists(join('dist', f)));
   const bytes = expected.reduce((n, f) => n + statSync(join(ROOT, 'dist', f)).size, 0);
   if (lack.length) bad('dist 產物', `缺：${lack.join(', ')}`);
@@ -143,7 +144,7 @@ try {
   const daily = read('.github/workflows/sync-data.yml');
   const monthly = read('.github/workflows/sync-had.yml');
   const guardYml = read('.github/workflows/guard.yml');
-  const transitPoc = read('.github/workflows/transit-poc.yml');
+  const transitWorkflow = read('.github/workflows/transit-poc.yml');
   const checks = [
     [daily.includes("cron: '30 16 * * *'"), '每日 cron = 00:30 HKT'],
     [monthly.includes("cron: '15 17 1 * *'"), '每月 cron = 2 號 01:15 HKT'],
@@ -155,12 +156,20 @@ try {
       '每日 sync 有該區天氣／潮汐'],
     [daily.includes('tools-sync-ocf.mjs') && daily.includes('ocf-forecast.json'),
       '每日 sync 有 OCF 九日預報'],
-    [transitPoc.includes('schedule:') && transitPoc.includes('actions/upload-artifact@v4'),
-      '交通 POC 定期執行並上傳診斷報告'],
-    [transitPoc.includes('node scripts/transit-poc.mjs') && transitPoc.includes('contents: read'),
-      '交通 POC 只讀取資料、不寫入網站快照'],
-    [transitPoc.includes('node --test scripts/transit-poc.test.mjs'),
-      '交通 POC 先跑本地解析／距離測試'],
+    [transitWorkflow.includes('schedule:') && transitWorkflow.includes('actions/upload-artifact@v4'),
+      '交通快照定期執行並保留診斷 artifact'],
+    [transitWorkflow.includes('node scripts/publish-transit.mjs')
+      && transitWorkflow.includes('git push origin "HEAD:${GITHUB_REF_NAME}"'),
+      '交通快照驗證後自動 commit／push 入網站來源'],
+    [transitWorkflow.includes('node --test scripts/transit-poc.test.mjs scripts/transit-publish.test.mjs'),
+      '交通 feed 抓取前先跑 parser／publisher 測試'],
+    [read('build-data.mjs').includes('validateWebsiteTransitSnapshot')
+      && read('build-site.mjs').includes("'transit.js'")
+      && read('vercel.json').includes('"source": "/transit.js"'),
+      '官方交通快照 fail-closed 建置、部署及 revalidate 快取'],
+    [read('scripts/smoke.test.mjs').includes('transit.js')
+      && read('scripts/transit-publish.test.mjs').includes('108/108 coverage'),
+      '交通前端 smoke／108 個營地發布測試存在'],
   ];
   const failed = checks.filter(([pass]) => !pass).map(([, name]) => name);
   failed.length ? bad('workflow 合約', failed.join('; ')) : ok('workflow 合約', `${checks.length} 項全過`);
@@ -288,7 +297,7 @@ try {
   const distLine = out.split('\n').find((l) => l.includes('dist 合計'));
   const dataJs = statSync(join(ROOT, 'data.js')).size;
   let dist = 0;
-  for (const f of ['index.html', 'styles.css', 'app.js', 'data.js']) {
+  for (const f of ['index.html', 'styles.css', 'app.js', 'data.js', 'transit.js']) {
     dist += statSync(join(ROOT, 'dist', f)).size;
   }
   const js = read('data.js');

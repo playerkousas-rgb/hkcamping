@@ -1,4 +1,4 @@
-# 交接體檢對照（2026-10-27）
+# 交接體檢對照（2026-10-31 更新）
 
 > 對照 `playerkousas-rgb/readme` 真理倉（README／AGENTS／PLAYBOOK／docs 00、05、06、10）
 > 同本 repo 嘅 `GITHUB-SETUP.md`（舊交接）。本檔係**規則／風險對照**；
@@ -9,9 +9,10 @@
 | 階段 | 內容 | 狀態 | Commit |
 |---|---|---|---|
 | P0 | 補回 `.github/workflows/sync-data.yml`／`sync-had.yml`；`build-data.mjs` 去時間戳 + `--check`；文件更正 | ✅ | `2869237` |
-| P1 | `vercel.json`／`.vercelignore`／`build-site.mjs`（dist 四檔）／部署文件 | ✅ 設定完成；⚠️ 實際 deployment 被 Vercel token 權限擋住 | `1e11acd` |
+| P1 | `vercel.json`／`.vercelignore`／`build-site.mjs`（dist 五個核心檔）／部署文件 | ✅ 設定完成；⚠️ 實際 deployment 被 Vercel token 權限擋住 | `1e11acd` |
 | P2 | `scripts/guard.mjs` + `guard.yml` + PR template + dependabot + `© SCOUT SYSTEM` + 雙版號 + smoke test | ✅ | `0fe6154` |
 | P3 | 前端食 `data/auto/weather.json`：build 嵌入 `data.js`、天氣列、地圖 pin／popup 週末 PSR 標記、過期提示 | ✅ | 本批 |
+| P4 | v1.14.0 官方巴士／專線小巴快照自動發布、卡片展開、比較／搜尋／距離排序、手機快速導覽與過期提示 | ✅ 程式／157 項 A–W UI 驗收；等待本分支 GitHub Actions 首次發布快照 | 本批 |
 
 **合併狀態**：PR [#1](https://github.com/playerkousas-rgb/hkcamping/pull/1) 已於 2026-10-27 合併入 `main`
 （merge commit `1727ba1`），PR #4（文件更新）亦已合併。`gh workflow list` 確認三條 workflow 全部 `active`；
@@ -68,8 +69,8 @@
 
 | 鐵律 | 本專案點做 | 狀態 |
 |---|---|---|
-| **S 瘦身** | 零 runtime dependencies；`dist/` 只 4 檔 **≈212KB**（v1.5.0：embed compact、OCF 去 hourly、潮汐只留當日±視窗）；`npm run slim` 報告＋guard 第 13 項硬攔（data.js<250KB、dist<1MB）；`.vercelignore` 擋大快照／工具／文件；`regions: ["hkg1"]`；單檔全數 <1MB（最大 784KB） | ✅ |
-| **F 防呆** | `build-data.mjs` 查 id 重複／經緯度；`--check` 可執行驗收；同步腳本 fail-closed 保留舊快照；workflow 有變更先 commit；`guard.mjs` 14 項本機＋CI 同一條；smoke test 18 個；`npm run audit` 掃資料矛盾 | ✅ |
+| **S 瘦身** | 零 runtime dependencies；`dist/` 5 個核心檔（含 transit.js）+ icons；實際體積由 guard 驗收（v1.5.0：embed compact、OCF 去 hourly、潮汐只留當日±視窗）；`npm run slim` 報告＋guard 第 13 項硬攔（data.js<250KB、dist<1MB）；`.vercelignore` 擋大快照／工具／文件；`regions: ["hkg1"]`；單檔全數 <1MB（最大 784KB） | ✅ |
+| **F 防呆** | `build-data.mjs` 查 id 重複／經緯度；`--check` 可執行驗收；同步腳本 fail-closed 保留舊快照；workflow 有變更先 commit；`guard.mjs` 18 項本機＋CI 同一條；`npm test` 31 項（含交通快照發布驗證）；`npm run audit` 掃資料矛盾 | ✅ |
 | **A 安全** | 純靜態、無登入、無寫入面、無 server、零 secret；入站人次用 Vercel Web Analytics（無 cookie／無第三方 tracker），頁面顯示嘅本機次數唔上傳；`vercel.json` 加 nosniff／frame／referrer／permissions headers。**例外**：A3–A10（session／RLS／超管／限流）唔適用，因為冇身份同可寫 API；已喺本檔寫明 | ✅（例外已申報） |
 | **W 版權** | `index.html` meta `copyright` ＋頁尾 `© SCOUT SYSTEM`。**例外**：本專案無 AI 生成圖，W2/W3 隱形水印唔適用；OSM／天文台／通訊辦數據只做連結同署名，不轉載版權圖層 | ✅（例外已申報） |
 | **V 雙版號** | 多檔站無單一 `app_vX.Y.html`，改用 `package.json`／meta／`APP_VERSION`／`VERSIONS.md` 四處對照，guard 自動驗 | ✅ |
@@ -80,11 +81,12 @@
 ## 四、驗收結果（本機）
 
 ```bash
-npm run guard     # 14 項全綠（必要檔／版號／版權／data.js／dist／單檔／secret／workflow／約數／該區天氣／OCF／入站人次+排行+足跡／瘦身預算／資料一致性）
-npm test          # 18 個 smoke test 全綠：模擬 DOM 載入 data.js + app.js，108 筆渲染、雙版號、price null、天氣列、OCF、週末排行、我的足跡、入站人次
-npm run build:site  # dist/ 4 檔 ≈211.9KB
+npm run guard     # 18/18 全綠；workflow 合約 13 項，含 transit 自動發布及快取守護
+npm test          # 31/31 通過：smoke、交通 parser／publisher、108 個營地 coverage／快照驗證
+npm run ui        # 157/157 通過：A–W 23 個情境，含交通展開／比較／手機快速列／過期警告
+npm run build:site  # dist/ 5 個核心檔 + icons，guard 驗收總體積
 npm run dev       # http://localhost:8000 本機預覽（已 bind 0.0.0.0，Arena live preview 用得到）
-# 實測 HTTP：/ /index.html /styles.css /app.js /data.js 全部 200，data.js 含 CAMP_WEATHER／CAMP_CONDITIONS／CAMP_OCF
+# 實測 HTTP：/ /index.html /styles.css /app.js /data.js 全部 200；交通由 transit.js 嵌入，瀏覽器無需 fetch
 ```
 
 > **網絡限制**：Arena sandbox 只可以連 github／npm／pypi，`tools-sync-*.mjs` 喺本機實測係
@@ -117,10 +119,10 @@ npm run dev       # http://localhost:8000 本機預覽（已 bind 0.0.0.0，Aren
 |---|---|---|---|
 | ① Vercel | `vercel.json` + GitHub check | 每次 PR | ✅ |
 | ② Git | `.github/workflows/guard.yml` | push／PR／每週一 | ✅ |
-| ③ 程序員 | `npm run guard`（14）＋ `npm test`（18） | 每次改動、CI 必跑 | ✅ |
+| ③ 程序員 | `npm run guard` + `npm test`（31） | 每次改動、CI 必跑；交通快照 fail-closed 驗證及自動發布合約 | ✅ |
 | ④ 系統架構師 | guard 第 2 項「雙版號一致」 | 每次改動 | ✅ |
 | ⑤ AI Agent | README／PROGRESS／VERSIONS／本檔 | 每版更新 | ✅ |
-| ⑥ 一般用戶 | `npm run ui`（44 項，A–H 八種身份，要 `npm i -D jsdom`） | 人手，出版前 | ✅ |
+| ⑥ 一般用戶 | `npm run ui`（157 項，A–W 23 段） | CI 自動安裝 jsdom 並於交通 workflow 跑；本機可 `npm i -D jsdom@^26` | ✅ |
 
 **③ 要證明捉得到**：變異測試（故意整壞 → 應該 FAIL → 還原）。現時三個基準變異：
 旱廁併入廁所、版號唔同步、刪 `© SCOUT SYSTEM`。

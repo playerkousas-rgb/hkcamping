@@ -1,7 +1,7 @@
-name: Transit Proximity POC
+name: Transit Snapshot
 
-# GMB / franchised-bus route-stop files are static and published biweekly.
-# Weekly sampling validates that the unattended fetch/parse/match pipeline stays healthy.
+# Weekly automatic publication of the latest validated Transport Department bus/GMB snapshot.
+# The public website only receives compact stop/route data; raw feeds remain short-lived artifacts.
 on:
   schedule:
     - cron: '17 18 * * 0' # Monday 02:17 HKT
@@ -10,24 +10,40 @@ on:
     paths:
       - '.github/workflows/transit-poc.yml'
       - 'scripts/transit-poc*.mjs'
-      - 'scripts/transit-poc.test.mjs'
+      - 'scripts/publish-transit.mjs'
+      - 'scripts/transit-publish.test.mjs'
+      - 'lib/transit-snapshot.mjs'
       - 'data.csv'
+      - 'build-data.mjs'
+      - 'build-site.mjs'
+      - 'app.js'
+      - 'index.html'
+      - 'styles.css'
+      - 'vercel.json'
   pull_request:
     paths:
       - '.github/workflows/transit-poc.yml'
       - 'scripts/transit-poc*.mjs'
-      - 'scripts/transit-poc.test.mjs'
+      - 'scripts/publish-transit.mjs'
+      - 'scripts/transit-publish.test.mjs'
+      - 'lib/transit-snapshot.mjs'
       - 'data.csv'
+      - 'build-data.mjs'
+      - 'build-site.mjs'
+      - 'app.js'
+      - 'index.html'
+      - 'styles.css'
+      - 'vercel.json'
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
-  group: transit-proximity-poc-${{ github.ref }}
+  group: transit-snapshot-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
-  transit-poc:
+  transit-snapshot:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
@@ -39,17 +55,45 @@ jobs:
         with:
           node-version: '20'
 
-      - name: POC parser and distance tests
-        run: node --test scripts/transit-poc.test.mjs
+      - name: Install ephemeral browser simulator for A–W UI tests
+        run: npm install --no-save --no-package-lock jsdom@^26
+
+      - name: Run transit parser/publisher tests before network requests
+        run: node --test scripts/transit-poc.test.mjs scripts/transit-publish.test.mjs
 
       - name: Download official route-stop GeoJSON and match every campsite
         run: node scripts/transit-poc.mjs --out-dir .cache/transit-poc
 
-      - name: Publish POC diagnostics (no app data is changed)
+      - name: Validate and publish the compact website snapshot
+        run: node scripts/publish-transit.mjs
+
+      - name: Rebuild and validate deployment output
+        run: |
+          node build-data.mjs
+          npm test
+          npm run ui
+          node build-site.mjs
+
+      - name: Commit and push the website snapshot automatically
+        if: github.event_name != 'pull_request'
+        run: |
+          git add data/auto/transit.json transit.js
+          if git diff --cached --quiet; then
+            echo "✅ 官方交通快照沒有實質變更，跳過 commit"
+            exit 0
+          fi
+          git config user.name "hk-camp-bot"
+          git config user.email "hk-camp-bot@users.noreply.github.com"
+          git commit -m "chore(data): 每週官方交通快照同步"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
+
+      - name: Publish diagnostics and compact website snapshot
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: transit-poc-${{ github.run_number }}
-          path: .cache/transit-poc/
+          name: transit-snapshot-${{ github.run_number }}
+          path: |
+            .cache/transit-poc/
+            data/auto/transit.json
           if-no-files-found: warn
           retention-days: 30

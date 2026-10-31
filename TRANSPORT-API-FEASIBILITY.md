@@ -2,13 +2,13 @@
 
 **測試日期：2026-10-31（香港時間）**
 
-**狀態：官方來源/API 測試完成；全自動 bus/GMB POC 已於 2026-10-31 由 GitHub Actions 成功抓取完整官方 feed，處理 108/108 個營地並上傳 JSON／Markdown artifact。POC 不改網站功能、營地欄位或 `data.js`。**
+**狀態：官方來源/API 測試及 v1.14.0 網站交通整合已完成：卡片展開／收合站點與路線、比較表、路線搜尋、最近站直線距離排序及手機快速導覽均已接入。每週 GitHub Actions 會抓取官方 feed、fail-closed 驗證 108 個營地，並自動提交精簡 `data/auto/transit.json`／`transit.js`；完整診斷仍只保留 30 日 artifact。首個整合版 Actions run 另行驗收。**
 
 ## 結論
 
-- **靜態站點／路線資訊：全自動 POC 已完成官方 feed live run。** GitHub Actions run #4 成功讀取運輸署 `JSON_BUS.json` + `JSON_GMB.json`，處理 `data.js` 全部 108 個營地：巴士 56,103 筆 features／8,216 個唯一站點，小巴 13,165 筆 features／4,779 個唯一站點。直線 500 米內分別覆蓋 44/108、26/108；1 公里內 53/108、33/108。座標衝突 0，同名完全匹配 11。完整 JSON／Markdown 在 30 日 artifact；這些數字只表示直線距離，不等於步行可達性或整體交通服務品質。NLB API 的既有測試另找到「南山營地 / Nam Shan Camp Site」同名站點，直線距離約 247 米。
+- **靜態站點／路線資訊：全自動網站發布流程已實作，官方 feed 有 live 驗證。** GitHub Actions run #4 成功讀取運輸署 `JSON_BUS.json` + `JSON_GMB.json`，處理 `data.js` 全部 108 個營地：巴士 56,103 筆 features／8,216 個唯一站點，小巴 13,165 筆 features／4,779 個唯一站點。直線 500 米內分別覆蓋 44/108、26/108；1 公里內 53/108、33/108。座標衝突 0，同名完全匹配 11。v1.14.0 workflow 會把經驗證的最近站／路線精簡資料自動發布至網站；完整 JSON／Markdown 診斷仍只保留 30 日 artifact。距離只是直線距離，不等於步行可達性或整體交通服務品質。NLB API 的既有測試另找到「南山營地 / Nam Shan Camp Site」同名站點，直線距離約 247 米。
 - **實時到站：端點可以回傳資料，但暫不建議接入網站。** GMB、KMB/LWB、城巴和港鐵均有成功的 GET smoke test；惟網站瀏覽器 CORS、各營運者完整使用條款及數值化流量上限尚未驗證。GitHub Actions 的排程不能提供分鐘級或十秒級 ETA 新鮮度。
-- **不加新欄位、不改 UI。** POC 僅輸出每場地最近巴士／小巴站、營運者／路線、距離與品質統計；需先完成 live run 並確認結果可靠，才再決定是否提案正式整合。
+- **已整合靜態站點／路線，不接即時 ETA。** 網站只使用運輸署官方快照；每週自動建置，卡片交通明細可展開／收合，比較列出附近站點，搜尋可找站名／路線，排序只按直線距離。資料缺失時不假裝附近沒有交通，舊快照會明示過期。
 
 ## 1. 實測來源與結果
 
@@ -37,7 +37,7 @@ POC 程式及排程 workflow 已加入 repo：
 1. `scripts/transit-poc.mjs` 每次執行會下載官方雙週 `JSON_BUS.json` 和 `JSON_GMB.json`；有網路錯誤、HTTP 429/5xx 會有限次重試，自動處理 BOM，仍失敗或 JSON／schema 不合即 fail-closed。首次官方 live run 已證實兩份完整 feed 可在 Actions runner 下載和解析。
 2. `scripts/transit-poc-core.mjs` 依官方 route-stop features 合併同營運者／站點 ID 的路線，載入 `data.js` 全部場地座標，計算每個場地最近 5 個巴士站及 5 個 GMB 站；距離為直線米數，另統計 250m、500m、1km、2km、5km 覆蓋。
 3. 以站點名稱、路線、營運者、更新欄位及重複座標衝突輸出品質診斷；不把最近站稱作可步行或直達，也不請人手選取／覆核配對。
-4. `.github/workflows/transit-poc.yml` 每週自動執行，並在來源檔或 POC 程式改動時觸發；輸出 JSON 與完整 Markdown 報告作 30 日 artifact。權限只有 `contents: read`，不 commit、不改 `data.csv`／`data.js`、不接網站 UI。
+4. `.github/workflows/transit-poc.yml` 每週自動執行，亦在來源 parser／前端整合改動時觸發；抓取與配對通過後，由 `scripts/publish-transit.mjs` 產生精簡 `data/auto/transit.json`，`build-data.mjs` 驗證並輸出 `transit.js`，測試與部署建置全通過後，自動 commit/push 快照到觸發分支。pull request 只驗證、不寫入。原始 feed 和完整診斷仍上傳 30 日 artifact；workflow 有 `contents: write`，但不改 `data.csv`。
 5. `node --test scripts/transit-poc.test.mjs` 覆蓋 BOM、官方格式樣本、路線合併、108 個營地全處理、距離、欄位異常與 fail-closed；本機亦以合成 fixture 驗證完整輸出和 GitHub 摘要流程。
 
 **首次 live run 結果**：[GitHub Actions run #4](https://github.com/playerkousas-rgb/hkcamping/actions/runs/41156262810) 已成功完成（commit `a4657fd`）；摘要及 [30 日 artifact `transit-poc-4`](https://github.com/playerkousas-rgb/hkcamping/actions/runs/41156262810) 均已發布。完整 feed 覆蓋數據：
@@ -47,7 +47,7 @@ POC 程式及排程 workflow 已加入 repo：
 | 巴士 | 56,103 | 8,216 | 32/108 | 44/108 | 53/108 | 66/108 | 88/108 |
 | 專線小巴 | 13,165 | 4,779 | 17/108 | 26/108 | 33/108 | 48/108 | 64/108 |
 
-座標衝突 0、營地與站名完全相同 11 個。覆蓋是**最近官方站點的直線距離**；不能解讀為步行距離、步道入口可達性、班次充足度或實際交通服務覆蓋。巴士與小巴覆蓋會重疊，以上不相加。Agent sandbox 因外部 artifact blob host 限制，未能自行下載 artifact；GitHub 已確認 artifact 上傳成功（127,115 bytes），workflow 的 parser / 108 筆全處理驗證與 summary 均通過。正式網站整合仍未批准／未實作。
+座標衝突 0、營地與站名完全相同 11 個。覆蓋是**最近官方站點的直線距離**；不能解讀為步行距離、步道入口可達性、班次充足度或實際交通服務覆蓋。巴士與小巴覆蓋會重疊，以上不相加。Agent sandbox 因外部 artifact blob host 限制，未能自行下載 artifact；GitHub 已確認 artifact 上傳成功（127,115 bytes），workflow 的 parser / 108 筆全處理驗證與 summary 均通過。靜態官方站點／路線整合已按使用者批准實作於 v1.14.0；首個整合版 workflow live run 尚待驗收。即時 ETA 不在批准範圍內。
 
 ### 實時 ETA：不適合由 GitHub Actions 供應
 
@@ -55,7 +55,7 @@ ETA 更新頻率約 10 秒至 1 分鐘，而 GitHub Actions 排程不能保證�
 
 ## 4. 建議決定
 
-**官方 feed POC 已完成驗證；不因此自動新增交通欄位或 UI。** Live run 已成功產生 108 場地配對、coverage 數據及報告；目前最近站點以直線距離計，不能當作步行可達性。此批准只涵蓋自動抓取／全量配對／驗證／報告，網站整合仍須另行決定；即時 ETA 另行評估，且要先驗證 CORS、條款與限流。
+**靜態交通資訊已批准並接入網站，不只存為 Actions artifact。** Live run 已成功產生 108 個營地配對；v1.14.0 會以每週 schedule 自動抓取、全量配對、fail-closed 驗證、更新快照並推送網站來源。最近站點以直線距離計，不能當作步行可達性；資料新鮮度會提示，沒有快照時 UI 會說待同步。即時 ETA 未整合；若日後考慮，須另行驗證 CORS、條款與限流。
 
 不新增 GoCampingHK 的主觀難度、營友經驗、人氣或評分，也不接受依賴人工覆核、手動更新或眾包的流程。
 

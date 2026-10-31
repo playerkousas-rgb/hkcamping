@@ -15,7 +15,8 @@ data/auto/                ← 機器專用，Actions 定時更新；禁止手動
   ├─ had-candidates.json    由官方持牌資料機器篩出的候選（不經人工提升入庫）
   ├─ had-diff-report.md     自動差異／資料完整性報告
   ├─ conditions.json        該區實況＋潮汐站高低潮（每日）
-  └─ ocf-forecast.json      天文台 OCF 分區九日預報（每日）
+  ├─ ocf-forecast.json      天文台 OCF 分區九日預報（每日）
+  └─ transit.json           運輸署巴士／專線小巴站點快照（每週；通過 108/108 驗證後自動發布）
 
 data.csv                  ← 現有靜態基礎資料（歷史上有人工策展；不作新增資料的維護模式）
         ↓ build-data.mjs
@@ -37,7 +38,7 @@ data.csv                  ← 現有靜態基礎資料（歷史上有人工策�
 | 漁護署 41 營地名稱/座標/郊野公園 | ✅ 全自動 | CSDI GeoJSON `afcd_rcd_1635133060194_82554` | 每日 |
 | 營地水源類型、營位規模（少於20/20-50/多於50） | ✅ 全自動 | 同上，`SOURCE_OF_WATER` / `TENT_SPACE` 欄位；營位級別須標明為官方估算 | 每日 |
 | AFCD 個別營地路線／設施／適合對象／地圖 | 🟡 待證明可穩定自動解析 | 漁護署 41 個官方營地詳情頁及其官方地圖 | 只有在 Actions 可驗證 41/41 完整解析、自動更新及 fail-closed 後才加入；不可人工逐頁維護 |
-| 營地附近官方巴士／小巴站與路線 | ✅ 全自動 POC 已完成官方 feed live run | 運輸署雙週 `JSON_BUS.json` + `JSON_GMB.json` route-stop GeoJSON；[測試報告](TRANSPORT-API-FEASIBILITY.md) | 每週自動測試；JSON／Markdown 只作 30 日 artifact，不入網站／`data.js` |
+| 營地附近官方巴士／小巴站與路線 | ✅ 全自動端到端發布（v1.14.0） | 運輸署雙週 `JSON_BUS.json` + `JSON_GMB.json` route-stop GeoJSON；[測試與限制](TRANSPORT-API-FEASIBILITY.md) | 每週抓取、驗證 108 個營地、自動更新 `data/auto/transit.json`／`transit.js` 並提交網站來源；診斷 artifact 保留 30 日 |
 | 巴士／小巴即時 ETA | 🟡 API smoke test 成功；瀏覽器接入未驗 | 運輸署 GMB、KMB/LWB；城巴及 NLB 官方 API | GMB/KMB/城巴 ETA 約每分鐘；CORS、條款及數值化限流未確認；GHA 不可保證即時 |
 | 港鐵即時 ETA／站點配對 | 🟡 ETA API smoke test 成功；未具備營地配對資料 | MTR Next Train API；MTR 車站 CSV 與 LandsD 地理資料另待驗 | 列車 ETA 每 10 秒；CSV 本輪 HTTP 500，車站座標、CORS 與條款未驗 |
 | 郊野設施/山徑臨時關閉 | ✅ 全自動 | CSDI「Closed Facilities」圖層（舊 dataset ID 已 404，需在 CSDI portal 重新搜尋新 ID） | 每日 |
@@ -55,7 +56,7 @@ data.csv                  ← 現有靜態基礎資料（歷史上有人工策�
 | 私人 Glamping 主觀評分／氣氛 | ❌ 不加入 | 無可自動驗證的官方客觀來源 | 不使用人工整理或眾包補位 |
 | 手機訊號覆蓋 | ❌ 不複製覆蓋資料 | 通訊辦靜態地圖及地理資訊地圖 `__OFCA_MOBILE` 圖層；依版權條款只連官方地圖 | 深鏈連出；不做眾包訊號評分 |
 
-> **官方交通 feed 首次 live run（2026-10-31）**：[GitHub Actions run #4](https://github.com/playerkousas-rgb/hkcamping/actions/runs/41156262810) 成功處理 108/108 個營地。巴士 feed 56,103 筆 features、8,216 個唯一站點；GMB feed 13,165 筆 features、4,779 個唯一站點。以直線距離計，500 米內分別有巴士站 44/108、小巴站 26/108；1 公里內 53/108、33/108。座標衝突 0，完全同名站點配對 11。完整 JSON／Markdown artifact 名為 `transit-poc-4`，保留 30 日；此 POC 不等同步行可達率、ETA 或網站整合。
+> **官方交通 feed 首次 live run（2026-10-31）**：[GitHub Actions run #4](https://github.com/playerkousas-rgb/hkcamping/actions/runs/41156262810) 成功處理 108/108 個營地。巴士 feed 56,103 筆 features、8,216 個唯一站點；GMB feed 13,165 筆 features、4,779 個唯一站點。以直線距離計，500 米內分別有巴士站 44/108、小巴站 26/108；1 公里內 53/108、33/108。座標衝突 0，完全同名站點配對 11。完整 JSON／Markdown 診斷 artifact `transit-poc-4` 保留 30 日；v1.14.0 起每週 workflow 會把成功驗證的精簡快照自動發布至網站來源，直線距離不等同步行可達性或 ETA。
 
 ### 訊號覆蓋嘅實際接法（已實裝）
 
@@ -81,7 +82,8 @@ data.csv                  ← 現有靜態基礎資料（歷史上有人工策�
 | `tools-sync-conditions.mjs` | **v1.2.0 新增**：每日抓 `rhrread`（18 區雨量 + 27 站氣溫）＋ `HLT`（8 站當月＋下月高低潮）→ `data/auto/conditions.json`。`build-data.mjs` 按 `district`/`area` 配對就近氣象站同潮汐站落每筆營地 |
 | `app.js` `sunTimesHKT()` | **v1.2.0 新增**：純 JS 天文公式（NOAA/SunCalc）計日出日落，零 API、任何年份、`file://` 都用得；已用 HKO 官方 SRS 2026 五個錨點驗證，最大誤差 3 分鐘 |
 | `tools-sync-ocf.mjs` | **v1.3.0 新增**：每日抓天文台「自動分區天氣預報」(OCF) 12 個站嘅未來 9–10 日預報（`maps.weather.gov.hk/ocf/dat/<code>.xml`，檔名 .xml 但內容係 JSON）→ `data/auto/ocf-forecast.json`。多模型共識 + 本地觀測校正，每日更新兩次；**電腦自動生成、未經人手修訂**，UI 已標明 |
-| `scripts/transit-poc.mjs` + `scripts/transit-poc-core.mjs` + `.github/workflows/transit-poc.yml` | 每週自動抓運輸署巴士／GMB route-stop GeoJSON，對 `data.js` 全部場地計附近站點與直線距離；產生 JSON＋Markdown 診斷 artifact，30 日後自動清除；**不改 `data.csv`／`data.js`、不接前端、不需人工覆核**。源檔缺失／格式異常即 fail-closed |
+| `scripts/transit-poc.mjs` + `scripts/transit-poc-core.mjs` + `scripts/publish-transit.mjs` + `.github/workflows/transit-poc.yml` | 每週抓運輸署巴士／GMB route-stop GeoJSON，對 108 個營地計最近站與直線距離；`lib/transit-snapshot.mjs` 驗證官方來源、完整營地覆蓋、座標／資料大小後，自動更新 `data/auto/transit.json`、重建 `transit.js` 並 commit/push。原始 feed／JSON／Markdown 診斷只作 30 日 artifact；缺檔、來源錯誤或資料不完整即 fail-closed，不需人工覆核 |
+| `app.js` + `index.html` + `styles.css` 交通 UI | 卡片原生展開／收合最近巴士／小巴站、路線、地圖及資料時間；比較表增加附近站點，支援按站名／路線搜尋及最近站排序。手機固定快速列提供頁頂／篩選／排序／頁底；距離與 ETA 限制在 UI 明示 |
 | `app.js` `renderWeekendRank()` | **v1.4.0 新增**：用同一個 OCF 快照計本週末（六／日）各分區站最高降雨概率，排「週末唔落雨排行」；地圖 pin 嘅降雨圓點亦改用所屬分區站，唔再全港一個數 |
 | `app.js` 我的足跡 | **v1.4.0 新增**：`localStorage` `hkcamp_footprints`（`{id:{first,last}}`），卡片一撳標記／取消，側欄可篩選／清除；無帳號、無上傳 |
 | `app.js` `initVisitCounter()` ＋ Vercel Analytics | **v1.4.0 新增**：全站人次由 Vercel Web Analytics（無 cookie、無 secret）統計；頁尾顯示本機累計「你第 N 次到訪」。**唔用** CountAPI／hits.sh 等第三方計數器（可停、可被牆、會交 IP 去第三方） |

@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>香港露營・宿營・民宿資料庫｜營地地圖與篩選</title>
-  <meta name="description" content="香港營地、宿營營舍、Glamping 與民宿渡假屋資料庫，按分區、費用、設施、交通篩選，附地圖分布。" />
+  <title>香港露營・宿營・民宿資料庫｜童軍營地比較與活動規劃</title>
+  <meta name="description" content="香港營地、宿營營舍、Glamping 與民宿資料庫，按分區、費用、營運機構、交通、設施比較；配合天氣及準備資訊，支援童軍活動規劃。" />
   <meta name="author" content="SCOUT SYSTEM" />
   <meta name="copyright" content="© SCOUT SYSTEM" />
-  <meta name="version" content="1.12.1" />
+  <meta name="version" content="1.14.0" />
 
   <!-- v1.11.0：App Icon／favicon（iOS 加入主畫面、Android 安裝、瀏覽器分頁、分享預覽都要有圖） -->
   <link rel="icon" href="/icons/favicon.ico" sizes="any" />
@@ -26,8 +26,8 @@
   <!-- 分享預覽（WhatsApp／Signal／Facebook 貼連結時出圖，唔會得白板）-->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="香港露營・宿營・民宿資料庫" />
-  <meta property="og:title" content="香港露營・宿營・民宿資料庫｜營地地圖與篩選" />
-  <meta property="og:description" content="108 個香港營地、宿營營舍、Glamping 與民宿，按分區、收費、設施、交通篩選，附地圖、天氣同潮汐。" />
+  <meta property="og:title" content="香港露營・宿營・民宿資料庫｜童軍營地比較與活動規劃" />
+  <meta property="og:description" content="比較 108 個香港營地、宿營營舍、Glamping 與民宿，支援童軍規劃活動；按分區、營運機構、收費、交通及設施篩選。" />
   <meta property="og:image" content="https://hkcamping.vercel.app/icons/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -42,15 +42,15 @@
 
 <a class="skip-link" href="#mainContent">跳去主要內容</a>
 
-<header class="site-header">
+<header class="site-header" id="pageTop" tabindex="-1">
   <div class="container header-inner">
     <div class="header-brand">
       <img class="brand-logo" src="/icons/icon-192.png" width="56" height="56"
            alt="" aria-hidden="true" decoding="async" />
       <div>
-        <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.12.1</span></h1>
+        <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.14.0</span></h1>
         <p class="tagline">漁護署營地 ・ Glamping ・ 宿營營舍 ・ 離島渡假屋 — 搵營地、plan 活動一站看清</p>
-        <p class="tagline-en" lang="en">Hong Kong campsite &amp; camp-house database — 108 sites with official data, fees, transport and facilities.</p>
+        <p class="tagline-en" lang="en">Hong Kong campsite database for Scouts — compare 108 sites and plan activities with location, fees, access and facilities.</p>
       </div>
     </div>
     <div class="header-stats" id="headerStats"></div>
@@ -166,7 +166,7 @@
 <div class="container layout">
 
   <!-- 手機版篩選開關 -->
-  <button class="filter-toggle" id="filterToggle" aria-expanded="false">
+  <button class="filter-toggle" id="filterToggle" type="button" aria-controls="sidebar" aria-expanded="false">
     ⚙ 篩選條件 <span class="filter-active-count" id="filterActiveCount"></span>
   </button>
 
@@ -188,6 +188,12 @@
     <section class="filter-group">
       <h2>分區</h2>
       <div class="chip-row" id="districtChips"></div>
+    </section>
+
+    <section class="filter-group">
+      <h2>營運機構／類別</h2>
+      <div class="chip-row chip-scroll" id="operatorChips"></div>
+      <p class="filter-note">可多選；「民間營運」只係分類標籤，唔代表單一經營者。</p>
     </section>
 
     <section class="filter-group">
@@ -252,6 +258,8 @@
         <option value="default">預設排序</option>
         <option value="price-asc">價格：低至高（單位各異，僅供參考）</option>
         <option value="name">名稱</option>
+        <option value="bus-distance" data-requires-transit>巴士站：直線最近優先</option>
+        <option value="gmb-distance" data-requires-transit>專線小巴站：直線最近優先</option>
       </select>
     </div>
 
@@ -259,6 +267,30 @@
       <span id="resultCount" role="status" aria-live="polite">載入中…</span>
       <button class="btn-text" id="toggleMapText">▣ 隱藏地圖</button>
     </div>
+    <p class="transit-stale transit-global-stale" id="transitFreshnessAlert" role="status" aria-live="polite" hidden></p>
+
+    <div class="compare-bar" id="compareBar" hidden>
+      <div class="compare-bar-copy">
+        <strong id="compareCount" aria-live="polite">比較清單（0/3）</strong>
+        <div class="compare-selected" id="compareSelected" aria-label="已選比較營地"></div>
+      </div>
+      <div class="compare-bar-actions">
+        <button class="btn-primary" id="compareStart" type="button" disabled>開始比較（至少選 2 個）</button>
+        <button class="btn-text" id="compareClear" type="button">清除比較</button>
+      </div>
+      <p class="compare-message" id="compareMessage" role="status" aria-live="polite"></p>
+    </div>
+
+    <section class="compare-panel" id="comparePanel" hidden aria-labelledby="compareHeading">
+      <div class="compare-head">
+        <div>
+          <h2 id="compareHeading">⚖️ 營地比較</h2>
+          <p class="compare-note">最多比較 3 個營地。各場收費單位可能不同（每人／每營位／每間等）；「未有資料」不代表場地沒有，請出發前向場地確認。</p>
+        </div>
+        <button class="btn-text" id="compareClose" type="button">收起比較</button>
+      </div>
+      <div id="compareContents"></div>
+    </section>
 
     <div class="map-wrap" id="mapWrap">
       <div id="map"></div>
@@ -276,13 +308,37 @@
   </main>
 </div>
 
-<footer class="site-footer">
+<footer class="site-footer" id="pageBottom" tabindex="-1">
   <div class="container">
-    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.12.1</span></p>
+    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.14.0</span></p>
     <p>地圖由 Leaflet + OpenStreetMap 提供 · 天氣數據由香港天文台提供</p>
     <p class="visit-line"><span id="visitCount">👣 入站人次統計中…</span></p>
   </div>
 </footer>
+
+<nav class="mobile-quick-nav" id="mobileQuickNav" aria-label="手機快速導覽">
+  <a class="quick-nav-item" href="#pageTop" aria-label="回到頁頂">
+    <span aria-hidden="true">↑</span><span>頁頂</span>
+  </a>
+  <button class="quick-nav-item" id="quickFilterToggle" type="button"
+    aria-controls="sidebar" aria-expanded="false" aria-label="開啟篩選條件">
+    <span aria-hidden="true">⚙</span><span>篩選</span>
+    <span class="filter-active-count" id="quickFilterActiveCount"></span>
+  </button>
+  <label class="quick-nav-sort">
+    <span aria-hidden="true">⇅</span>
+    <select id="quickSortSelect" aria-label="快速排序">
+      <option value="default">排序</option>
+      <option value="price-asc">價格低至高</option>
+      <option value="name">名稱</option>
+      <option value="bus-distance" data-requires-transit>巴士站直線最近</option>
+      <option value="gmb-distance" data-requires-transit>小巴站直線最近</option>
+    </select>
+  </label>
+  <a class="quick-nav-item" href="#pageBottom" aria-label="前往頁底">
+    <span aria-hidden="true">↓</span><span>頁底</span>
+  </a>
+</nav>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <!-- 全站入站人次：Vercel Web Analytics，喺 Vercel Dashboard → Analytics 撳 Enable 後生效。
@@ -296,6 +352,7 @@
   </div>
 </noscript>
 <script src="data.js"></script>
+<script src="transit.js"></script>
 <script src="app.js"></script>
 <!-- 回報：沿用 Scout Admin 嘅統一回報 widget（同圖書館／支部／專章系統同一支）。
      data-app 決定後台顯示嘅來源膠囊；widget 自己處理 UI、payload 同送出，

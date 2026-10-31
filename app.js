@@ -6,8 +6,40 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.12.1';
+  const APP_VERSION = '1.14.0';
 
+  // 每週由運輸署官方 route-stop GeoJSON 自動更新；本地快照不可當作即時 ETA。
+  const TRANSIT = (window.CAMP_TRANSIT && typeof window.CAMP_TRANSIT === 'object')
+    ? window.CAMP_TRANSIT : null;
+  const TRANSIT_BY_ID = new Map(
+    Array.isArray(TRANSIT?.campsites)
+      ? TRANSIT.campsites.filter((item) => item && typeof item.id === 'string').map((item) => [item.id, item])
+      : [],
+  );
+  const transitFor = (site) => TRANSIT_BY_ID.get(site?.id) || null;
+  const TRANSIT_DATASET_URL = 'https://data.gov.hk/en-data/dataset/hk-td-tis_23-routes-fares-geojson';
+  const TRANSIT_MAX_SNAPSHOT_AGE_MS = 10 * 86400000;
+  const TRANSIT_MAX_SOURCE_AGE_MS = 45 * 86400000;
+
+  function transitFreshness(snapshot) {
+    if (!snapshot) return { stale: false, messages: [] };
+    const now = Date.now();
+    const messages = [];
+    const generatedAt = Date.parse(snapshot.generatedAt || '');
+    if (!Number.isFinite(generatedAt)) messages.push('系統擷取時間無法辨識');
+    else if (generatedAt > now + 15 * 60000) messages.push('系統擷取時間異常');
+    else if (now - generatedAt > TRANSIT_MAX_SNAPSHOT_AGE_MS) messages.push('最後成功更新已超過 10 日');
+
+    for (const [mode, label] of [['bus', '巴士'], ['gmb', '專線小巴']]) {
+      const updatedAt = Date.parse(snapshot.sources?.[mode]?.latestSourceUpdate || '');
+      if (!Number.isFinite(updatedAt)) messages.push(`${label}官方資料未提供可辨識的更新日期`);
+      else if (updatedAt > now + 86400000) messages.push(`${label}官方資料日期異常`);
+      else if (now - updatedAt > TRANSIT_MAX_SOURCE_AGE_MS) messages.push(`${label}官方資料日期超過 45 日`);
+    }
+    return { stale: messages.length > 0, messages };
+  }
+
+  const TRANSIT_FRESHNESS = transitFreshness(TRANSIT);
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
@@ -250,6 +282,7 @@
   const state = {
     types: new Set(),
     districts: new Set(),
+    operators: new Set(),
     transports: new Set(),
     tags: new Set(),
     signals: new Set(),
@@ -262,7 +295,11 @@
     favOnly: false,
     footOnly: false,
     mapVisible: true,
+    compareIds: [],
+    compareVisible: false,
   };
+
+  const MAX_COMPARE = 3;
 
   const readJson = (key, fallback) => {
     try {
@@ -300,6 +337,11 @@
   /* ---------- 資料衍生選項 ---------- */
   const uniq = (arr) => [...new Set(arr)].filter(Boolean);
   const districts = uniq(SITES.map((s) => s.district));
+  // 常用營運機構排前面；「民間營運」係分類標籤，唔代表單一經營者。
+  const operators = uniq(SITES.map((s) => s.operator)).sort((a, b) => {
+    const byCount = SITES.filter((s) => s.operator === b).length - SITES.filter((s) => s.operator === a).length;
+    return byCount || a.localeCompare(b, 'zh-Hant');
+  });
   const transports = uniq(SITES.flatMap((s) => s.transport));
   // 篩選層用代表詞（燒烤爐／燒烤場 → 燒烤設施），排序後再顯示
   const allTags = uniq(SITES.flatMap((s) => [...s.facilities, ...s.tags]).map(canonTag));
@@ -314,6 +356,7 @@
   function matches(s, skipGroup) {
     if (skipGroup !== 'type' && state.types.size && !state.types.has(s.type)) return false;
     if (skipGroup !== 'district' && state.districts.size && !state.districts.has(s.district)) return false;
+    if (skipGroup !== 'operator' && state.operators.size && !state.operators.has(s.operator)) return false;
     if (skipGroup !== 'transport' && state.transports.size &&
         !s.transport.some((t) => state.transports.has(t))) return false;
     if (skipGroup !== 'tag' && state.tags.size &&
@@ -331,8 +374,16 @@
 
     if (state.query.trim()) {
       const q = state.query.trim().toLowerCase();
+      const transit = transitFor(s);
+      const transitTerms = ['bus', 'gmb'].flatMap((mode) => (transit?.[mode] || []).flatMap((stop) => [
+        stop.nameC, stop.nameE, stop.companyCode,
+        ...(stop.routes || []).flatMap((route) => [
+          route.routeId, route.routeNameC, route.routeNameE,
+          route.originC, route.originE, route.destinationC, route.destinationE,
+        ]),
+      ]));
       const hay = [s.name, s.district, s.area, s.summary, s.signal, s.operator,
-        ...s.facilities, ...s.tags, ...s.transport].join(' ').toLowerCase();
+        ...s.facilities, ...s.tags, ...s.transport, ...transitTerms].join(' ').toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
@@ -366,6 +417,7 @@
         const count = pool.filter((s) => {
           if (group === 'type') return s.type === v;
           if (group === 'district') return s.district === v;
+          if (group === 'operator') return s.operator === v;
           if (group === 'transport') return s.transport.includes(v);
           if (group === 'tag') return [...s.facilities, ...s.tags].map(canonTag).includes(v);
           if (group === 'signal') return s.signal === v;
@@ -381,6 +433,7 @@
 
     mount('typeChips', types, state.types, 'type');
     mount('districtChips', districts, state.districts, 'district');
+    mount('operatorChips', operators, state.operators, 'operator');
     mount('transportChips', transports, state.transports, 'transport');
     mount('tagChips', allTags, state.tags, 'tag');
     mount('signalChips', signals, state.signals, 'signal');
@@ -557,6 +610,231 @@
     return `<div class="prep-badges">${parts.join('')}</div>`;
   }
 
+  const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+  })[ch]);
+
+  function transitDistanceText(distanceM) {
+    if (!Number.isFinite(distanceM) || distanceM < 0) return '距離不詳';
+    if (distanceM < 1000) return `${Math.round(distanceM)} 米`;
+    return `${(distanceM / 1000).toFixed(distanceM >= 10000 ? 0 : 1)} 公里`;
+  }
+
+  function transitRouteText(route, stop) {
+    const company = route.companyCode || stop.companyCode || '';
+    const name = route.routeNameC || route.routeNameE || route.routeId || '路線資料未提供';
+    const direction = [route.originC, route.destinationC].filter(Boolean).join(' → ');
+    return [company, name, direction].filter(Boolean).join(' · ');
+  }
+
+  function transitModeHtml(mode, label, stops) {
+    const visible = Array.isArray(stops) ? stops.slice(0, 3) : [];
+    if (!visible.length) {
+      return `<section class="transit-mode"><h4>${label}</h4>
+        <p class="transit-empty">本次官方快照未配對到站點；不代表場地附近完全沒有此類交通。</p></section>`;
+    }
+    const items = visible.map((stop) => {
+      const name = stop.nameC || stop.nameE || `站點 ${stop.stopId || '名稱未提供'}`;
+      const routeItems = (stop.routes || []).map((route) =>
+        `<li>${escapeHtml(transitRouteText(route, stop))}</li>`).join('');
+      const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(stop.lat)},${encodeURIComponent(stop.lng)}`;
+      return `<li class="transit-stop">
+        <div class="transit-stop-head">
+          <strong>${escapeHtml(name)}</strong>
+          <span class="transit-distance">直線約 ${escapeHtml(transitDistanceText(stop.distanceM))}</span>
+          <a class="transit-stop-map" href="${mapUrl}" target="_blank" rel="noopener">站點地圖 ↗</a>
+        </div>
+        ${routeItems ? `<ul class="transit-routes" aria-label="${escapeHtml(name)}的路線">${routeItems}</ul>`
+          : '<p class="transit-empty">官方快照未提供路線名稱。</p>'}
+      </li>`;
+    }).join('');
+    return `<section class="transit-mode"><h4>${label}（顯示最近 ${visible.length} 個站點）</h4>
+      <ol class="transit-stop-list">${items}</ol></section>`;
+  }
+
+  function transitPreviewText(siteTransit) {
+    if (!siteTransit) return TRANSIT ? '暫未有此營地配對資料' : '官方站點快照待自動同步';
+    const nearest = (mode, label) => {
+      const stop = siteTransit[mode]?.[0];
+      if (!stop) return `${label}未配對`;
+      return `${label}：${stop.nameC || stop.nameE || '站名未提供'}（直線約 ${transitDistanceText(stop.distanceM)}）`;
+    };
+    return `${nearest('bus', '巴士')} · ${nearest('gmb', '小巴')}`;
+  }
+
+  function transitDetailsHtml(site) {
+    const siteTransit = transitFor(site);
+    const heading = TRANSIT ? '🚌 巴士／專線小巴站點參考' : '🚌 公共交通站點資料待同步';
+    let body = '';
+    if (!TRANSIT) {
+      body = '<p class="transit-empty">官方站點快照尚待自動同步；這不代表附近沒有公共交通。可先查看運輸署官方路線／站點資料。</p>';
+    } else if (!siteTransit) {
+      body = '<p class="transit-empty">目前沒有此營地的站點配對資料；不代表附近沒有公共交通。</p>';
+    } else {
+      body = transitModeHtml('bus', '巴士站', siteTransit.bus)
+        + transitModeHtml('gmb', '專線小巴站', siteTransit.gmb);
+    }
+
+    const stamp = TRANSIT
+      ? `系統擷取：${formatTransitTime(TRANSIT.generatedAt)}；官方資料更新欄位：巴士 ${TRANSIT.sources?.bus?.latestSourceUpdate || '未提供'}、專線小巴 ${TRANSIT.sources?.gmb?.latestSourceUpdate || '未提供'}。`
+      : '資料擷取時間：尚未有成功快照。';
+
+    return `<details class="transit-details" aria-label="${escapeHtml(site.name)}公共交通站點資料">
+      <summary><span>${heading}</span><span class="transit-preview">${escapeHtml(transitPreviewText(siteTransit))}</span></summary>
+      <div class="transit-content">
+        ${body}
+        <p class="transit-meta">${escapeHtml(stamp)}</p>
+        <p class="transit-disclaimer">距離由營地座標至站點座標計算，為直線距離；不是步行路線或可達性評估，也不代表班次充足。資料不是即時 ETA，出發前請查官方班次與公告。</p>
+        <div class="transit-sources">
+          <a href="${TRANSIT_DATASET_URL}" target="_blank" rel="noopener">運輸署官方資料集 ↗</a>
+          <a href="https://static.data.gov.hk/td/routes-fares-geojson/JSON_BUS.json" target="_blank" rel="noopener">巴士原始 feed ↗</a>
+          <a href="https://static.data.gov.hk/td/routes-fares-geojson/JSON_GMB.json" target="_blank" rel="noopener">專線小巴原始 feed ↗</a>
+        </div>
+      </div>
+    </details>`;
+  }
+
+  function formatTransitTime(value) {
+    const time = Date.parse(value || '');
+    if (!Number.isFinite(time)) return '時間不詳';
+    return `${new Date(time + 8 * 3600000).toISOString().slice(0, 16).replace('T', ' ')} HKT`;
+  }
+
+  function transitCompareText(site) {
+    const siteTransit = transitFor(site);
+    if (!siteTransit) return '暫未有站點配對資料';
+    const bits = [];
+    for (const [mode, label] of [['bus', '巴士'], ['gmb', '專線小巴']]) {
+      const stop = siteTransit[mode]?.[0];
+      if (stop) bits.push(`${label}：${stop.nameC || stop.nameE || '站名未提供'}（直線約 ${transitDistanceText(stop.distanceM)}）`);
+    }
+    return bits.length ? bits.join('；') : '未有配對站點（不代表附近沒有公共交通）';
+  }
+
+  function compareLinks(site) {
+    const links = [];
+    const add = (label, value) => {
+      try {
+        const url = new URL(String(value || ''));
+        if (url.protocol !== 'https:' && url.protocol !== 'http:') return;
+        links.push(`<a href="${escapeHtml(url.href)}" target="_blank" rel="noopener">${escapeHtml(label)} ↗</a>`);
+      } catch { /* 空白／無效網址唔顯示 */ }
+    };
+    if (site.bookingUrl) add('預訂', site.bookingUrl);
+    if (site.infoUrl && site.infoUrl !== site.bookingUrl) add('官方資料', site.infoUrl);
+    return links.length ? `<div class="compare-links">${links.join('')}</div>` : '未有資料';
+  }
+
+  function compareTableHtml(sites) {
+    const rows = [
+      ['營運機構／類別', (s) => s.operator || '未有資料'],
+      ['分區／位置', (s) => [s.district, s.area].filter(Boolean).join(' · ') || '未有資料'],
+      ['收費', (s) => `${priceText(s)}${s.priceSource === 'estimate' ? '（未逐筆核實）' : ''}`],
+      ['預訂方式', (s) => s.booking
+        ? (s.bookingUrl ? '需預訂' : '需預訂；請先查詢場地')
+        : (s.type === '民宿' ? '訂房請先電話查詢' : '免預訂／先到先得')],
+      ['官方營位規模', (s) => s.tentSpace || '未有資料'],
+      ['水源', (s) => s.waterSource || '未有資料'],
+      ['裝備', (s) => s.gear === '全自備' ? '全自備（帳篷、睡袋、煮食等）'
+        : s.gear === '場地提供' ? '場地提供房間／床位' : '未有資料'],
+      ['交通方式', (s) => s.transport?.length ? s.transport.join('、') : '未有資料'],
+      ['最近官方巴士／小巴站', transitCompareText],
+      ['設施／特色', (s) => uniq([...(s.facilities || []), ...(s.tags || [])]).join('、') || '未有資料'],
+      ['手機訊號', (s) => s.signal || '未有資料'],
+      ['附近補給', (s) => s.supply || '未核實'],
+      ['就近氣象站', (s) => s.weatherStation
+        ? `${s.weatherStation}${s.weatherKm != null ? `（直線約 ${s.weatherKm} 公里）` : ''}` : '未有資料'],
+      ['九日預報配對站', (s) => {
+        const station = OCF?.stations?.[s.ocfStation]?.name || s.ocfStation;
+        return station ? `${station}${s.ocfKm != null ? `（直線約 ${s.ocfKm} 公里）` : ''}` : '未有資料';
+      }],
+      ['潮汐站', (s) => s.tideStation ? (TIDE_STATION_NAMES[s.tideStation] || s.tideStation) : '未有資料'],
+      ['官方連結', compareLinks],
+    ];
+    const header = sites.map((s) => `<th scope="col"><div class="compare-site-head">
+      <span class="compare-site-type">${escapeHtml(s.type || '未分類')}</span>
+      <strong>${escapeHtml(s.name)}</strong>
+    </div></th>`).join('');
+    const body = rows.map(([label, value]) => {
+      const cells = sites.map((site) => `<td>${label === '官方連結'
+        ? value(site) : escapeHtml(value(site))}</td>`).join('');
+      return `<tr><th scope="row">${escapeHtml(label)}</th>${cells}</tr>`;
+    }).join('');
+    return `<div class="compare-table-wrap" role="region" aria-label="營地比較表，可左右捲動" tabindex="0">
+      <table class="compare-table" aria-label="已選營地比較">
+        <thead><tr><th scope="col">比較項目</th>${header}</tr></thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>`;
+  }
+
+  function updateCompareButton(button, site) {
+    if (!button || !site) return;
+    const selected = state.compareIds.includes(site.id);
+    const full = !selected && state.compareIds.length >= MAX_COMPARE;
+    button.innerHTML = selected ? '✓ 已加入' : '⚖ 比較';
+    button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    button.setAttribute('aria-label', selected ? `從比較清單移除：${site.name}`
+      : full ? `比較清單已滿，未加入：${site.name}` : `加入比較：${site.name}`);
+    button.title = selected ? `從比較清單移除：${site.name}`
+      : full ? `最多比較 ${MAX_COMPARE} 個營地；請先移除一個` : `加入比較：${site.name}`;
+    button.disabled = full;
+  }
+
+  function syncCompareButtons() {
+    const grid = document.getElementById('cardGrid');
+    if (!grid || typeof grid.querySelectorAll !== 'function') return;
+    grid.querySelectorAll('.compare-toggle').forEach((button) => {
+      const id = button.getAttribute('data-compare-id');
+      updateCompareButton(button, SITES.find((s) => s.id === id));
+    });
+  }
+
+  function renderCompareUI(message = '') {
+    const selected = state.compareIds.map((id) => SITES.find((s) => s.id === id)).filter(Boolean);
+    state.compareIds = selected.map((s) => s.id);
+    if (selected.length < 2) state.compareVisible = false;
+
+    const bar = document.getElementById('compareBar');
+    const count = document.getElementById('compareCount');
+    const selectedHost = document.getElementById('compareSelected');
+    const start = document.getElementById('compareStart');
+    const panel = document.getElementById('comparePanel');
+    const contents = document.getElementById('compareContents');
+    const notice = document.getElementById('compareMessage');
+
+    bar.hidden = selected.length === 0;
+    count.textContent = `比較清單（${selected.length}/${MAX_COMPARE}）`;
+    selectedHost.innerHTML = selected.map((s) => `<span class="compare-chip">
+      <span>${escapeHtml(s.name)}</span>
+      <button class="compare-remove" type="button" data-compare-remove="${escapeHtml(s.id)}"
+        aria-label="從比較清單移除：${escapeHtml(s.name)}" title="移除">×</button>
+    </span>`).join('');
+    start.disabled = selected.length < 2;
+    start.textContent = selected.length < 2 ? '開始比較（至少選 2 個）'
+      : state.compareVisible ? '收起比較' : `比較 ${selected.length} 個營地`;
+    start.setAttribute('aria-expanded', state.compareVisible ? 'true' : 'false');
+    panel.hidden = !state.compareVisible || selected.length < 2;
+    contents.innerHTML = panel.hidden ? '' : compareTableHtml(selected);
+    notice.textContent = message;
+    syncCompareButtons();
+  }
+
+  function toggleCompare(site, button) {
+    const index = state.compareIds.indexOf(site.id);
+    if (index >= 0) {
+      state.compareIds.splice(index, 1);
+    } else if (state.compareIds.length >= MAX_COMPARE) {
+      renderCompareUI(`最多比較 ${MAX_COMPARE} 個營地；請先移除一個再加入。`);
+      updateCompareButton(button, site);
+      return;
+    } else {
+      state.compareIds.push(site.id);
+    }
+    renderCompareUI();
+    updateCompareButton(button, site);
+  }
+
   function renderCards(sites) {
     const grid = document.getElementById('cardGrid');
     const empty = document.getElementById('emptyState');
@@ -569,6 +847,8 @@
       const tags = [...s.facilities, ...s.tags].slice(0, 5);
       const isFav = favs.has(s.id);
       const visit = footprints[s.id] || null;
+      const inCompare = state.compareIds.includes(s.id);
+      const compareDisabled = !inCompare && state.compareIds.length >= MAX_COMPARE;
       card.innerHTML = `
         <div class="card-top">
           <span class="type-badge type-${s.type}">${s.type}</span>
@@ -576,6 +856,10 @@
             <button class="foot-btn ${visit ? 'on' : ''}" type="button" aria-pressed="${visit ? 'true' : 'false'}"
               title="${visit ? `已標記去過 ${visit.last}（再撳取消）` : '標記去過（只存喺呢個瀏覽器）'}"
               aria-label="標記去過 ${s.name}">👣</button>
+            <button class="compare-toggle" type="button" data-compare-id="${escapeHtml(s.id)}"
+              aria-pressed="${inCompare ? 'true' : 'false'}" aria-label="${inCompare ? '從比較清單移除' : '加入比較'}：${escapeHtml(s.name)}"
+              title="${inCompare ? `從比較清單移除：${escapeHtml(s.name)}` : `加入比較：${escapeHtml(s.name)}`}"
+              ${compareDisabled ? 'disabled' : ''}>${inCompare ? '✓ 已加入' : '⚖ 比較'}</button>
             <button class="fav-btn" title="加入我的最愛" aria-label="收藏 ${s.name}">${isFav ? '⭐' : '☆'}</button>
           </span>
         </div>
@@ -584,6 +868,7 @@
         <div class="place signal-dot">📶 訊號：${s.signal || '不詳'}</div>
         ${s.transport && s.transport.length
           ? `<div class="place transport-line">🚌 ${s.transport.join('・')}</div>` : ''}
+        ${transitDetailsHtml(s)}
         <div class="price-line">
           <span class="price ${s.price === 0 ? 'free' : ''}">${priceText(s)}</span>
           ${s.booking ? '<span class="price-unit">· 需預訂</span>'
@@ -618,6 +903,7 @@
         e.currentTarget.textContent = favs.has(s.id) ? '⭐' : '☆';
         renderFilters();
       });
+      card.querySelector('.compare-toggle').addEventListener('click', (e) => toggleCompare(s, e.currentTarget));
 
       // 我的足跡：再撳一次取消；只寫 localStorage，冇帳號、冇上傳
       card.querySelector('.foot-btn').addEventListener('click', (e) => {
@@ -664,26 +950,62 @@
       );
     }
     if (state.sort === 'name') list.sort((a, b) => a.name.localeCompare(b.name, 'zh-Hant'));
+    if (state.sort === 'bus-distance' || state.sort === 'gmb-distance') {
+      const mode = state.sort === 'bus-distance' ? 'bus' : 'gmb';
+      list.sort((a, b) => {
+        const aDistance = transitFor(a)?.[mode]?.[0]?.distanceM;
+        const bDistance = transitFor(b)?.[mode]?.[0]?.distanceM;
+        if (!Number.isFinite(aDistance) && !Number.isFinite(bDistance)) return a.name.localeCompare(b.name, 'zh-Hant');
+        if (!Number.isFinite(aDistance)) return 1;
+        if (!Number.isFinite(bDistance)) return -1;
+        return aDistance - bDistance || a.name.localeCompare(b.name, 'zh-Hant');
+      });
+    }
     return list;
   }
 
   /* ---------- 主渲染 ---------- */
   function activeFilterCount() {
-    return state.types.size + state.districts.size + state.transports.size +
+    return state.types.size + state.districts.size + state.operators.size + state.transports.size +
       state.tags.size + state.signals.size + state.tents.size + state.gears.size +
       (state.freeOnly ? 1 : 0) + (state.favOnly ? 1 : 0) + (state.footOnly ? 1 : 0) +
       (state.maxPrice < 1500 ? 1 : 0) + (state.query.trim() ? 1 : 0);
   }
 
+  function syncSortControls() {
+    const transitAvailable = TRANSIT_BY_ID.size > 0;
+    if (typeof document.querySelectorAll === 'function') {
+      document.querySelectorAll('option[data-requires-transit]').forEach((option) => {
+        option.disabled = !transitAvailable;
+      });
+    }
+    for (const id of ['sortSelect', 'quickSortSelect']) {
+      const select = document.getElementById(id);
+      if (select) select.value = state.sort;
+    }
+  }
+
   function render() {
+    syncSortControls();
     renderFilters();
+    const transitAlert = document.getElementById('transitFreshnessAlert');
+    if (transitAlert) {
+      const stale = !!TRANSIT && TRANSIT_FRESHNESS.stale;
+      transitAlert.hidden = !stale;
+      transitAlert.textContent = stale
+        ? `⚠️ 交通資料可能過期：${TRANSIT_FRESHNESS.messages.join('；')}。以下仍是最後一次成功取得的快照，請核實官方來源。`
+        : '';
+    }
     const sites = sortSites(filtered());
     document.getElementById('resultCount').innerHTML =
       `共 <b>${sites.length}</b> 個結果（資料庫總數 ${SITES.length} 筆）`;
     renderMap(sites);
     renderCards(sites);
+    renderCompareUI();
     const n = activeFilterCount();
     document.getElementById('filterActiveCount').textContent = n > 0 ? n : '';
+    const quickCount = document.getElementById('quickFilterActiveCount');
+    if (quickCount) quickCount.textContent = n > 0 ? n : '';
   }
 
   /* ---------- 事件綁定 ---------- */
@@ -692,10 +1014,12 @@
       state.query = e.target.value;
       render();
     });
-    document.getElementById('sortSelect').addEventListener('change', (e) => {
+    const sortChanged = (e) => {
       state.sort = e.target.value;
       render();
-    });
+    };
+    document.getElementById('sortSelect').addEventListener('change', sortChanged);
+    document.getElementById('quickSortSelect').addEventListener('change', sortChanged);
     document.getElementById('freeOnly').addEventListener('change', (e) => {
       state.freeOnly = e.target.checked;
       render();
@@ -733,10 +1057,10 @@
     }
 
     const clearAll = () => {
-      state.types.clear(); state.districts.clear(); state.transports.clear();
+      state.types.clear(); state.districts.clear(); state.operators.clear(); state.transports.clear();
       state.tags.clear(); state.signals.clear(); state.tents.clear(); state.gears.clear();
       state.freeOnly = false; state.favOnly = false; state.footOnly = false;
-      state.maxPrice = 1500; state.query = '';
+      state.maxPrice = 1500; state.query = ''; state.sort = 'default';
       document.getElementById('freeOnly').checked = false;
       document.getElementById('maxPrice').value = 1500;
       document.getElementById('maxPriceLabel').textContent = '$1500 或以上';
@@ -746,22 +1070,61 @@
     document.getElementById('clearAll').addEventListener('click', clearAll);
     document.getElementById('emptyClear').addEventListener('click', clearAll);
 
+    // 比較清單：最多 3 個，只存喺目前頁面記憶體，重新載入即清空。
+    document.getElementById('compareSelected').addEventListener('click', (e) => {
+      const id = e.target && e.target.getAttribute && e.target.getAttribute('data-compare-remove');
+      if (!id) return;
+      state.compareIds = state.compareIds.filter((siteId) => siteId !== id);
+      renderCompareUI();
+    });
+    document.getElementById('compareClear').addEventListener('click', () => {
+      state.compareIds = [];
+      state.compareVisible = false;
+      renderCompareUI();
+    });
+    document.getElementById('compareStart').addEventListener('click', () => {
+      if (state.compareIds.length < 2) return;
+      state.compareVisible = !state.compareVisible;
+      renderCompareUI();
+      if (state.compareVisible) {
+        const panel = document.getElementById('comparePanel');
+        if (typeof panel.scrollIntoView === 'function') {
+          panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    });
+    document.getElementById('compareClose').addEventListener('click', () => {
+      state.compareVisible = false;
+      renderCompareUI();
+    });
+
     // 該區天氣面板收起
     document.getElementById('localClose').addEventListener('click', () => {
       document.getElementById('localPanel').hidden = true;
     });
 
-    // 手機版側欄
+    // 手機版側欄：頂部與固定快速導覽共用同一開關，並同步報讀狀態。
     const sidebar = document.getElementById('sidebar');
     const toggle = document.getElementById('filterToggle');
-    toggle.addEventListener('click', () => {
-      const open = sidebar.classList.toggle('open');
+    const quickFilter = document.getElementById('quickFilterToggle');
+    const sidebarClose = document.getElementById('sidebarClose');
+    let sidebarTrigger = toggle;
+    const setSidebarOpen = (open, trigger = toggle) => {
+      if (open) {
+        sidebarTrigger = trigger;
+        sidebar.classList.add('open');
+      } else {
+        sidebar.classList.remove('open');
+      }
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-    document.getElementById('sidebarClose').addEventListener('click', () => {
-      sidebar.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-    });
+      quickFilter.setAttribute('aria-expanded', open ? 'true' : 'false');
+      quickFilter.setAttribute('aria-label', open ? '關閉篩選條件' : '開啟篩選條件');
+      if (open && typeof sidebarClose.focus === 'function') sidebarClose.focus();
+      if (!open && typeof sidebarTrigger?.focus === 'function') sidebarTrigger.focus();
+    };
+    toggle.addEventListener('click', () => setSidebarOpen(!sidebar.classList.contains('open'), toggle));
+    quickFilter.addEventListener('click', () => setSidebarOpen(!sidebar.classList.contains('open'), quickFilter));
+    sidebarClose.addEventListener('click', () => setSidebarOpen(false));
 
     // 地圖顯示切換
     document.getElementById('toggleMapText').addEventListener('click', (e) => {
