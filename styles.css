@@ -64,13 +64,58 @@ code {
 .safety-banner a { color: var(--orange-600); font-weight: 600; text-decoration: none; }
 .safety-banner a:hover { text-decoration: underline; }
 
-/* ===== Weather bar（P3：天文台週末降雨概率） ===== */
+/* ===== 可收合天氣面板（週末、九日預報、降雨排行） ===== */
+.collapsible-panel[hidden] { display: none; }
+.collapsible-summary {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px;
+  min-height: 56px; padding: 10px 16px; list-style: none;
+  color: var(--green-900); cursor: pointer; touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.collapsible-summary::-webkit-details-marker { display: none; }
+.collapsible-summary::marker { content: ""; }
+.collapsible-summary:focus-visible {
+  outline: 3px solid var(--blue-700); outline-offset: -3px;
+}
+.collapsible-summary:hover { background: var(--green-100); }
+.collapsible-title { font-size: 1rem; font-weight: 700; }
+.collapsible-chevron {
+  display: inline-grid; place-items: center; flex: 0 0 32px;
+  width: 32px; height: 32px; margin-left: auto;
+  border: 1px solid var(--line); border-radius: 50%;
+  background: #fff; color: var(--green-900); font-size: 1.1rem; line-height: 1;
+  transition: transform 150ms ease;
+}
+.collapsible-panel[open] > .collapsible-summary .collapsible-chevron { transform: rotate(180deg); }
 .weather-container { padding-top: 16px; }
+.weather-panel, .forecast-panel, .rank-panel {
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+}
+.weather-panel[open] > .weather-summary,
+.forecast-panel[open] > .forecast-summary,
+.rank-panel[open] > .rank-summary { border-bottom: 1px solid var(--line); }
+.weather-summary { background: linear-gradient(90deg, var(--green-100), #fff); }
+.weather-summary-status {
+  display: flex; flex: 1 1 auto; align-items: center; flex-wrap: wrap;
+  gap: 5px 8px; min-width: 0; margin-left: auto;
+  color: var(--muted); font-size: 0.78rem;
+}
+.weather-summary-dates { white-space: nowrap; }
+.weather-summary-badge, .weather-summary-warning, .weather-summary-stale {
+  display: inline-flex; align-items: center; min-height: 26px;
+  border-radius: 999px; padding: 2px 9px; font-size: 0.75rem;
+  font-weight: 700; white-space: nowrap;
+}
+.weather-summary-badge { background: var(--green-700); color: #fff; }
+.weather-summary-badge.psr-mid { background: var(--orange-600); }
+.weather-summary-badge.psr-high { background: #c62828; }
+.weather-summary-warning { background: #fde8e6; color: #9f1d18; }
+.weather-summary-stale { background: var(--orange-100); color: #8a4200; }
 .weather-bar {
   display: flex; flex-wrap: wrap; align-items: center; gap: 9px;
-  background: var(--card); border: 1px solid var(--line);
-  border-left: 5px solid var(--green-700); border-radius: var(--radius);
-  padding: 10px 14px; font-size: 0.85rem; box-shadow: var(--shadow);
+  border: 0; border-left: 5px solid var(--green-700); border-radius: 0;
+  background: var(--card); padding: 10px 14px 14px; font-size: 0.85rem;
 }
 .weather-bar[hidden] { display: none; }
 .weather-bar.psr-mid { border-left-color: var(--orange-600); }
@@ -112,16 +157,17 @@ code {
 .weather-sun { color: var(--green-900); font-weight: 600; font-size: 0.8rem; }
 
 /* ===== 九日該區預報時間軸（v1.3.0 / HKO OCF） ===== */
-.forecast-panel {
-  margin-top: 14px; background: var(--card);
-  border: 1px solid var(--line); border-radius: var(--radius);
-  box-shadow: var(--shadow); padding: 14px 18px 16px;
+.forecast-panel { margin-top: 14px; }
+.forecast-summary { background: linear-gradient(90deg, var(--green-100), #fff); }
+.forecast-summary-meta {
+  max-width: 48%; margin-left: auto; overflow: hidden;
+  color: var(--muted); font-size: 0.78rem; text-overflow: ellipsis; white-space: nowrap;
 }
+.forecast-body { padding: 12px 18px 16px; }
 .forecast-head {
   display: flex; justify-content: space-between; align-items: center;
   gap: 12px; flex-wrap: wrap; margin-bottom: 12px;
 }
-.forecast-head h2 { margin: 0; font-size: 1rem; color: var(--green-900); }
 .forecast-controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 0.8rem; }
 .forecast-controls label { color: var(--muted); }
 #forecastRegion {
@@ -535,20 +581,13 @@ code {
 .visit-line { margin-top: 10px !important; color: rgba(255,255,255,0.9); }
 
 /* ===== 週末唔落雨排行（v1.4.0） ===== */
-.rank-panel {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 16px 18px 14px;
-  margin: 0 0 18px;
+.rank-panel { margin: 0 0 18px; }
+.rank-summary { background: linear-gradient(90deg, var(--green-100), #fff); }
+.rank-dates {
+  max-width: 48%; margin-left: auto; overflow: hidden;
+  color: var(--muted); font-size: 0.78rem; text-overflow: ellipsis; white-space: nowrap;
 }
-.rank-head {
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 12px; flex-wrap: wrap; margin-bottom: 10px;
-}
-.rank-head h2 { margin: 0; font-size: 1rem; color: var(--green-900); }
-.rank-dates { font-size: 0.8rem; color: var(--muted); }
+.rank-content { padding: 12px 18px 14px; }
 .rank-list { display: flex; flex-direction: column; gap: 6px; }
 .rank-row {
   display: grid;
@@ -713,16 +752,17 @@ code {
 
 /* ---------- v1.14.0：手機快速導覽（頁頂／篩選／排序／頁底） ---------- */
 html { scroll-behavior: smooth; scroll-padding-top: 12px; }
-#pageBottom { scroll-margin-bottom: calc(96px + env(safe-area-inset-bottom)); }
+#pageBottom { scroll-margin-bottom: calc(96px + env(safe-area-inset-bottom, 0px)); }
 .mobile-quick-nav { display: none; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 }
 @media (max-width: 760px) {
-  body { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  body { padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); }
   .mobile-quick-nav {
-    position: fixed; z-index: 40; left: 8px; right: 72px;
-    bottom: calc(8px + env(safe-area-inset-bottom));
+    position: fixed; z-index: 70; left: 8px; right: 64px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    pointer-events: auto;
     display: grid; grid-template-columns: minmax(44px, 0.75fr) minmax(52px, 0.9fr) minmax(96px, 1.6fr) minmax(44px, 0.75fr);
     gap: 4px; padding: 5px; border: 1px solid #cfd8cc; border-radius: 15px;
     background: rgba(255,255,255,0.97); box-shadow: 0 3px 16px rgba(23,42,22,0.2);
@@ -733,6 +773,7 @@ html { scroll-behavior: smooth; scroll-padding-top: 12px; }
     min-width: 0; min-height: 48px; padding: 4px 5px; border: 0; border-radius: 10px;
     background: transparent; color: var(--green-900); font: inherit; font-size: 0.75rem;
     text-decoration: none; white-space: nowrap; cursor: pointer;
+    touch-action: manipulation; -webkit-tap-highlight-color: transparent;
   }
   .quick-nav-item > span:not(.filter-active-count) { flex: 0 0 auto; }
   .quick-nav-item > span:first-child { font-size: 1.05rem; font-weight: 700; }
@@ -986,7 +1027,7 @@ body.filter-sheet-open, body.sort-sheet-open { overflow: hidden; }
 }
 
 @media (max-width: 760px) {
-  body { padding-bottom: calc(148px + env(safe-area-inset-bottom)); }
+  body { padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); }
   .filter-toggle {
     min-height: 52px;
     border-radius: 14px;
@@ -1025,8 +1066,9 @@ body.filter-sheet-open, body.sort-sheet-open { overflow: hidden; }
   .result-bar .btn-text { min-height: 48px; }
   .mobile-quick-nav {
     left: 8px;
-    right: 8px;
-    bottom: calc(72px + env(safe-area-inset-bottom));
+    right: 64px;
+    bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+    pointer-events: auto;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 4px;
     padding: 6px;
@@ -1057,6 +1099,37 @@ body.filter-sheet-open, body.sort-sheet-open { overflow: hidden; }
   .sort-sheet { padding: 10px 14px 14px; }
 }
 @media (max-width: 360px) {
-  .mobile-quick-nav { left: 6px; right: 6px; gap: 2px; }
+  .mobile-quick-nav { left: 6px; right: 64px; gap: 2px; }
   .quick-nav-item { font-size: 0.75rem; }
+}
+
+/* 手機：Scout Admin 回報浮掣與四掣快速列並排，唔遮住「排序／頁底」。
+   body + ID 嘅選擇器比 widget.js 自己嘅 #scoutw-fab 規則優先；原文字仍保留作讀屏名稱。 */
+@media (max-width: 760px) {
+  body #scoutw-fab {
+    right: 8px;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    display: grid;
+    place-items: center;
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
+    min-height: 48px;
+    padding: 0;
+    border-radius: 50%;
+    color: transparent;
+    font-size: 0;
+    letter-spacing: 0;
+  }
+  body #scoutw-fab::after {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    content: "🐛💬";
+    color: #fff;
+    font-size: 1.15rem;
+    line-height: 1;
+  }
+  body #scoutw-fab:focus-visible { outline: 3px solid var(--blue-700); outline-offset: 3px; }
 }

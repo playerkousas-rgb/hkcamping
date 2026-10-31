@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * ui-check.mjs — README A–W 使用者／維護情境實測（對照真理倉 docs/17 §1 角度⑥ ＋ STEP 8）
+ * ui-check.mjs — README A–X 使用者／維護情境實測（對照真理倉 docs/17 §1 角度⑥ ＋ STEP 8）
  *
  * 檢查項目：
  *   A. 斷網都開到（CDN 攞唔到 Leaflet 都唔可以死）／108 張卡／頁尾 © SCOUT SYSTEM + 版號
@@ -8,7 +8,7 @@
  *   C. 篩選真係撳得（廁所 32 ／ 旱廁 16 分開、旱廁卡有警示）
  *   D. 手機：viewport／斷點／chip 識換行
  *   T. 營運機構篩選、比較 2–3 個場地、移除／清空同最多 3 個限制
- *   U–W. 童軍交通規劃、手機快速導覽、舊快照提示及自動發布合約
+ *   U–X. 童軍交通規劃、手機快速導覽、舊快照提示、天氣面板收合及自動發布合約
  *
  * 用法：
  *   npm i -D jsdom@^26  # 只係測試用，唔會入 dist、唔影響網站
@@ -682,5 +682,70 @@ console.log('\n【W】程序員／網站維護者 — 舊快照標示過期而�
   dom.window.close();
 }
 
-console.log(`\n=== 身份實測 A–W：${pass} pass / ${fail} fail ===`);
+console.log('\n【X】天氣面板可收合、手機快速列貼底而且可點');
+{
+  const { dom, caught } = await boot({ transitFixture: makeTransitFixture() });
+  const d = dom.window.document;
+  const panels = [
+    ['週末天氣', d.getElementById('weekendWeatherPanel')],
+    ['未來九日天氣', d.getElementById('forecastPanel')],
+    ['週末落雨排行', d.getElementById('weekendRankPanel')],
+  ];
+  for (const [label, panel] of panels) {
+    eq(panel?.tagName, 'DETAILS', `${label} 用原生 details 語意，可收合`);
+    eq(panel?.open, false, `${label} 預設收合，縮短手機長頁`);
+    const summary = panel?.querySelector(':scope > summary') || panel?.querySelector('summary');
+    summary ? ok(`${label} 有清楚嘅可點標題`) : bad(`${label} 缺少可點收合標題`);
+    if (summary) {
+      summary.click();
+      eq(panel.open, true, `${label} 撳標題會展開`);
+      summary.click();
+      eq(panel.open, false, `${label} 再撳標題會收合`);
+    }
+  }
+
+  /本週末/.test(d.getElementById('weekendWeatherSummaryStatus')?.textContent || '') &&
+  /降雨概率/.test(d.getElementById('weekendWeatherSummaryStatus')?.textContent || '')
+    ? ok('週末天氣收合時仍顯示日期及降雨概率') : bad('週末天氣收合後摘要不足');
+  (d.getElementById('forecastSummaryMeta')?.textContent || '').trim()
+    ? ok('九日天氣收合時仍顯示目前分區') : bad('九日天氣收合後看不到目前分區');
+  /本週末/.test(d.getElementById('weekendRankDates')?.textContent || '')
+    ? ok('落雨排行收合時仍顯示適用週末日期') : bad('落雨排行收合後看不到週末日期');
+
+  const rank = d.getElementById('weekendRankPanel');
+  const firstRank = d.querySelector('#weekendRankList .rank-row');
+  if (rank && firstRank) {
+    rank.open = true;
+    firstRank.click();
+    eq(d.getElementById('forecastPanel').open, true, '撳排行分區會自動展開九日預報');
+  } else {
+    bad('週末排行無法完成「撳分區 → 展開九日預報」流程');
+  }
+
+  const quick = d.getElementById('mobileQuickNav');
+  const items = [...(quick?.querySelectorAll('.quick-nav-item') || [])];
+  eq(items.length, 4, '頁底固定快速列保留四個快捷掣');
+  eq(items.filter((item) => !item.disabled).length, 4, '四個快捷掣都無 disabled 狀態');
+  const css = readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  /\.mobile-quick-nav\s*\{[^}]*position:\s*fixed/.test(css)
+    ? ok('四掣快速列使用 fixed，捲動頁面時仍貼在畫面底部') : bad('四掣快速列未固定於畫面');
+  /\.mobile-quick-nav\s*\{[^}]*bottom:\s*calc\(8px \+ env\(safe-area-inset-bottom/.test(css)
+    ? ok('快速列貼近頁底並避開手機手勢安全區') : bad('快速列離頁底太遠或遮住手勢安全區');
+  /\.mobile-quick-nav\s*\{[^}]*z-index:\s*70/.test(css) &&
+  /\.mobile-quick-nav\s*\{[^}]*pointer-events:\s*auto/.test(css)
+    ? ok('快速列高於頁面內容且保持可點擊') : bad('快速列可能被頁面內容蓋住／無法點擊');
+  const mobileFabCss = (css.match(/body #scoutw-fab\s*\{([^}]*)\}/) || [])[1] || '';
+  /\.mobile-quick-nav\s*\{[^}]*right:\s*64px/.test(css) &&
+  /right:\s*8px/.test(mobileFabCss) && /width:\s*48px/.test(mobileFabCss) &&
+  /bottom:\s*calc\(20px \+ env\(safe-area-inset-bottom/.test(mobileFabCss)
+    ? ok('回報掣縮成 48px 並用快速列右側預留位，不再蓋住排序／頁底')
+    : bad('回報掣仍可能覆蓋排序／頁底快速按鈕');
+  /body\s*\{\s*padding-bottom:\s*calc\(88px \+ env\(safe-area-inset-bottom/.test(css)
+    ? ok('頁面底部預留空間，不會被固定快速列遮住') : bad('頁底內容未為固定快速列預留空間');
+  caught.length === 0 ? ok('天氣收合及頁底快速列 Console 零 error')
+    : bad(`天氣／快速列流程 ${caught.length} 個 error：${caught.slice(0, 3).join(' | ')}`);
+  dom.window.close();
+}
+
+console.log(`\n=== 身份實測 A–X：${pass} pass / ${fail} fail ===`);
 process.exit(fail ? 1 : 0);

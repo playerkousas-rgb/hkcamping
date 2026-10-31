@@ -6,7 +6,7 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.14.1';
+  const APP_VERSION = '1.14.2';
 
   // 每週由運輸署官方 route-stop GeoJSON 自動更新；本地快照不可當作即時 ETA。
   const TRANSIT = (window.CAMP_TRANSIT && typeof window.CAMP_TRANSIT === 'object')
@@ -1267,8 +1267,14 @@
 
   function renderWeather() {
     const bar = document.getElementById('weatherBar');
+    const panel = document.getElementById('weekendWeatherPanel');
+    const summaryStatus = document.getElementById('weekendWeatherSummaryStatus');
     if (!bar) return;
-    if (!WEATHER || !WEEKEND_DAYS.length) { bar.hidden = true; return; }
+    if (!WEATHER || !WEEKEND_DAYS.length) {
+      bar.hidden = true;
+      if (panel) panel.hidden = true;
+      return;
+    }
 
     const warnings = Array.isArray(WEATHER.activeWarnings) ? WEATHER.activeWarnings : [];
     const lows = WEEKEND_DAYS.map((d) => Number(d.minTemp)).filter(Number.isFinite);
@@ -1281,9 +1287,26 @@
       ? fmtDay(first.date) : `${fmtDay(first.date)}–${fmtDay(last.date)}`;
     const stale = isStale(WEATHER.fetchedAt, 36);
 
+    if (panel) panel.hidden = false;
     bar.hidden = false;
     bar.className = `weather-bar ${WEEKEND_PSR_CLASS}`;
     bar.replaceChildren();
+    if (summaryStatus) {
+      summaryStatus.replaceChildren();
+      const addSummary = (cls, text) => {
+        const el = document.createElement('span');
+        el.className = cls;
+        el.textContent = text;
+        summaryStatus.appendChild(el);
+      };
+      addSummary('weather-summary-dates', `本週末 ${range}`);
+      addSummary(
+        `weather-summary-badge${WEEKEND_PSR_CLASS ? ` ${WEEKEND_PSR_CLASS}` : ''}`,
+        `降雨概率 ${WEEKEND_PSR_TEXT}`,
+      );
+      if (warnings.length) addSummary('weather-summary-warning', '⚠ 有生效天氣警告');
+      if (stale) addSummary('weather-summary-stale', '⚠ 資料可能過期');
+    }
 
     // 全部用 textContent，唔用 innerHTML：天文台資料屬外部輸入（A11 輸入消毒）
     const add = (tag, cls, text) => {
@@ -1491,6 +1514,7 @@
   function renderForecast() {
     const host = document.getElementById('forecastScroll');
     const meta = document.getElementById('forecastSource');
+    const summaryMeta = document.getElementById('forecastSummaryMeta');
     if (!host) return;
     host.replaceChildren();
 
@@ -1499,6 +1523,7 @@
       p.className = 'forecast-empty';
       p.textContent = '暫無分區預報數據（GitHub Actions 每日更新）。';
       host.appendChild(p);
+      if (summaryMeta) summaryMeta.textContent = '暫無分區預報資料';
       return;
     }
     const st = OCF.stations[forecastCode];
@@ -1507,16 +1532,20 @@
       p.className = 'forecast-empty';
       p.textContent = '呢個站暫無預報數據。';
       host.appendChild(p);
+      if (summaryMeta) summaryMeta.textContent = '此區暫無預報';
       return;
     }
 
+    const stale = isStale(OCF.fetchedAt, 30);
+    if (summaryMeta) {
+      summaryMeta.textContent = `${st.name || forecastCode} · ${st.daily.length}日預報${stale ? ' · 快照可能過期' : ''}`;
+    }
     if (meta) {
       const t = String(st.modelTime || OCF.fetchedAt || '');
       meta.textContent = `站點：${st.name} · 模型 ${t.length === 10 ? `${t.slice(0, 4)}-${t.slice(4, 6)}-${t.slice(6, 8)} ${t.slice(8)}:00` : t}`;
     }
 
     const today = todayHK();
-    const stale = isStale(OCF.fetchedAt, 30);
 
     st.daily.forEach((d, i) => {
       const [emoji, label] = ocfWeather(d.weather);
@@ -1659,7 +1688,12 @@
         if (sel) sel.value = r.code;
         renderForecast();
         const fc = document.getElementById('forecastPanel');
-        if (fc) fc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (fc) {
+          fc.open = true;
+          if (typeof fc.scrollIntoView === 'function') {
+            fc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
       });
       host.appendChild(row);
     });
