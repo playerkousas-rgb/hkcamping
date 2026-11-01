@@ -1,7 +1,7 @@
 {
   "source": "https://portal.csdi.gov.hk/csdi-webpage/file-api?dataset_id=had_rcd_1639475170528_37262&format=geojson&layer_name=LLHG",
   "csvSource": "https://www.hadla.gov.hk/psi/licensed-hotels-and-guesthouses/licensed_hotels_and_guesthouses.csv",
-  "fetchedAt": "2026-10-27T04:58:27.497Z",
+  "fetchedAt": "2026-11-01T21:10:53.215Z",
   "count": 1807,
   "withLicenceNo": 1794,
   "premises": [
