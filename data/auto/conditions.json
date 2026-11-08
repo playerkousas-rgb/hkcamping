@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-11-07T20:22:33.121Z",
+  "fetchedAt": "2026-11-08T20:39:40.924Z",
   "districtWeather": {
     "source": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc",
-    "updateTime": "2026-11-08T04:02:00+08:00",
-    "recordTime": "2026-11-08T04:00:00+08:00",
+    "updateTime": "2026-11-09T04:02:00+08:00",
+    "recordTime": "2026-11-09T04:00:00+08:00",
     "rainfallPeriod": {
-      "start": "2026-11-08T02:45:00+08:00",
-      "end": "2026-11-08T03:45:00+08:00"
+      "start": "2026-11-09T02:45:00+08:00",
+      "end": "2026-11-09T03:45:00+08:00"
     },
     "rainfall": [
       {
@@ -23,7 +23,7 @@
       },
       {
         "district": "離島區",
-        "mm": 0
+        "mm": 1
       },
       {
         "district": "北區",
@@ -85,7 +85,7 @@
     "temperature": [
       {
         "station": "京士柏",
-        "c": 25
+        "c": 24
       },
       {
         "station": "香港天文台",
@@ -97,11 +97,11 @@
       },
       {
         "station": "打鼓嶺",
-        "c": 25
+        "c": 24
       },
       {
         "station": "流浮山",
-        "c": 24
+        "c": 25
       },
       {
         "station": "大埔",
@@ -117,7 +117,7 @@
       },
       {
         "station": "將軍澳",
-        "c": 25
+        "c": 24
       },
       {
         "station": "西貢",
@@ -141,19 +141,19 @@
       },
       {
         "station": "荃灣可觀",
-        "c": 23
+        "c": 24
       },
       {
         "station": "荃灣城門谷",
-        "c": 24
+        "c": 25
       },
       {
         "station": "香港公園",
-        "c": 24
+        "c": 25
       },
       {
         "station": "筲箕灣",
-        "c": 25
+        "c": 24
       },
       {
         "station": "九龍城",
@@ -195,20 +195,18 @@
     "humidity": [
       {
         "station": "香港天文台",
-        "percent": 78
+        "percent": 65
       }
     ],
     "uv": [],
-    "warningMessage": [
-      "強烈季候風信號現正生效。"
-    ],
+    "warningMessage": "",
     "icon": [
-      62
+      76
     ]
   },
   "tides": {
     "source": "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HLT&station=<code>&year=<year>&month=<month>&rformat=json",
-    "fetchedAt": "2026-11-07T20:22:33.121Z",
+    "fetchedAt": "2026-11-08T20:39:40.924Z",
     "stations": {
       "QUB": {
         "name": "鰂魚涌",
