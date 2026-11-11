@@ -12,7 +12,7 @@ import {
   MAX_WEBSITE_TRANSIT_SNAPSHOT_BYTES,
 } from '../lib/transit-snapshot.mjs';
 
-const expectedSites = Array.from({ length: 108 }, (_, index) => ({
+const expectedSites = Array.from({ length: 151 }, (_, index) => ({
   id: `camp-${String(index + 1).padStart(3, '0')}`,
   name: `測試營地 ${index + 1}`,
   lat: 22.3,
@@ -69,12 +69,12 @@ function makePoc(overrides = {}) {
       gmb: { sourceUrl: TRANSIT_FEED_URLS.gmb, latestSourceUpdate: '2026-10-30' },
     },
     quality: {
-      processedCampsites: 108,
-      expectedCampsites: 108,
+      processedCampsites: 151,
+      expectedCampsites: 151,
       allCampsitesProcessed: true,
     },
     summary: {
-      campsiteCount: 108,
+      campsiteCount: 151,
       uniqueBusStopCount: 8216,
       uniqueGmbStopCount: 4779,
       coverageWithinMeters: {
@@ -87,10 +87,10 @@ function makePoc(overrides = {}) {
   };
 }
 
-test('POC → website snapshot: 108/108 coverage and only compact bus/GMB stop data', () => {
+test('POC → website snapshot: 151/151 coverage and only compact bus/GMB stop data', () => {
   const snapshot = createWebsiteTransitSnapshot(makePoc(), expectedSites);
-  assert.equal(snapshot.campsites.length, 108);
-  assert.equal(snapshot.summary.campsiteCount, 108);
+  assert.equal(snapshot.campsites.length, 151);
+  assert.equal(snapshot.summary.campsiteCount, 151);
   assert.equal(snapshot.campsites[0].id, expectedSites[0].id);
   assert.equal(snapshot.campsites[0].bus[0].distanceM, 350);
   assert.equal(snapshot.campsites[0].bus[0].routes[0].routeNameC, '94');
@@ -151,7 +151,7 @@ test('publisher writes the website snapshot as compact JSON below the file-size 
 test('publisher fails closed for incomplete POC coverage, wrong feed, or invalid coordinates', () => {
   const incomplete = makePoc();
   incomplete.campsites.pop();
-  assert.throws(() => createWebsiteTransitSnapshot(incomplete, expectedSites), /all 108 campsites/);
+  assert.throws(() => createWebsiteTransitSnapshot(incomplete, expectedSites), /all 151 campsites/);
 
   const wrongSource = makePoc();
   wrongSource.sources.bus.sourceUrl = 'https://example.com/bus.json';
@@ -164,8 +164,19 @@ test('publisher fails closed for incomplete POC coverage, wrong feed, or invalid
 
 test('website snapshot is checked against the current campsite IDs and size limits', () => {
   const snapshot = createWebsiteTransitSnapshot(makePoc(), expectedSites);
-  assert.equal(validateWebsiteTransitSnapshot(snapshot, expectedSites).campsites.length, 108);
+  assert.equal(validateWebsiteTransitSnapshot(snapshot, expectedSites).campsites.length, 151);
   assert.equal(validateWebsiteTransitSnapshot(null, expectedSites), null);
+
+  // Newly added data.csv sites may await the next transit-poc CI run while existing >=100 sites remain valid.
+  const pendingNewSites = structuredClone(snapshot);
+  pendingNewSites.campsites = pendingNewSites.campsites.slice(0, 108);
+  pendingNewSites.summary.campsiteCount = 108;
+  assert.equal(validateWebsiteTransitSnapshot(pendingNewSites, expectedSites).campsites.length, 108);
+
+  const tooFewSites = structuredClone(snapshot);
+  tooFewSites.campsites = tooFewSites.campsites.slice(0, 99);
+  tooFewSites.summary.campsiteCount = 99;
+  assert.throws(() => validateWebsiteTransitSnapshot(tooFewSites, expectedSites), /between 100 and 151/);
 
   const wrongIds = structuredClone(snapshot);
   wrongIds.campsites[0].id = 'unknown-camp';

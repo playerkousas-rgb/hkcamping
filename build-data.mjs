@@ -113,8 +113,8 @@ if (existsSync(OCF_PATH)) {
 }
 
 /**
- * 該區天氣配對（v1.10.0：改用營地座標）
- * v1.2.0–v1.9.2 用「地區名關鍵字」，會撞名（大嶼山大浪灣 → 筲箕灣）同唔一致
+ * 該區天氣配對（改用營地座標）
+ * 舊版用「地區名關鍵字」，會撞名（大嶼山大浪灣 → 筲箕灣）同唔一致
  * （東涌配荃灣，但屯門更近）。而家一律「座標 → 直線最近站」，距離寫埋落資料俾前端顯示。
  * 仍然係「就近站參考」，唔係營地實測；前端必須標明。
  */
@@ -124,9 +124,12 @@ function stationFor(lat, lng) {
 }
 
 const RAIN_ALIAS = {
-  '北區': '北區', '大埔區': '大埔', '西貢區': '西貢', '沙田區': '沙田',
-  '荃灣區': '荃灣', '元朗區': '元朗', '屯門區': '屯門',
-  '離島區': '離島區', '東區': '東區', '南區': '南區',
+  '中西區': '中西區', '東區': '東區', '南區': '南區', '灣仔區': '灣仔',
+  '油尖旺區': '油尖旺', '深水埗區': '深水埗', '九龍城區': '九龍城',
+  '黃大仙區': '黃大仙', '觀塘區': '觀塘',
+  '葵青區': '葵青', '荃灣區': '荃灣', '屯門區': '屯門', '元朗區': '元朗',
+  '北區': '北區', '大埔區': '大埔', '沙田區': '沙田', '西貢區': '西貢',
+  '離島區': '離島區',
 };
 
 /**
@@ -138,23 +141,27 @@ const TIDE_RULES = [
   // 西貢東／糧船灣／萬宜 → 高流灣
   ['浪茄', 'KLW'], ['白腊', 'KLW'], ['鹹田', 'KLW'], ['大浪西', 'KLW'],
   ['萬宜', 'KLW'], ['糧船灣', 'KLW'], ['西貢東', 'KLW'], ['曝罟', 'KLW'],
+  ['赤徑', 'KLW'],
   ['大浪灣', 'SPW'],
-  // 吐露港／大埔／沙田／馬鞍山 → 大埔滘
+  // 吐露港／大埔／沙田／馬鞍山／印洲塘 → 大埔滘
   ['東平洲', 'TPK'], ['船灣', 'TPK'], ['大美督', 'TPK'], ['荔枝莊', 'TPK'],
   ['汀角', 'TPK'], ['馬鞍山', 'TPK'], ['烏溪沙', 'TPK'], ['海下', 'TPK'],
-  ['灣仔半島', 'TPK'], ['猴塘溪', 'TPK'], ['大灘', 'TPK'], ['黃石', 'TPK'],
+  ['白沙澳', 'TPK'], ['灣仔半島', 'TPK'], ['猴塘溪', 'TPK'], ['大灘', 'TPK'], ['黃石', 'TPK'],
+  ['荔枝窩', 'TPK'],
   // 后海灣／元朗／屯門 → 尖鼻咀
   ['大棠', 'TBT'], ['田夫仔', 'TBT'], ['河背', 'TBT'], ['大欖', 'TBT'],
-  // 大嶼山西／南 → 大澳／石壁／赤鱲角東
+  ['流浮山', 'TBT'],
+  // 大嶼山西／南／馬灣 → 大澳／石壁／赤鱲角東
   ['大澳', 'TAO'], ['煎魚灣', 'TAO'], ['牙鷹角', 'TAO'], ['萬丈布', 'TAO'],
   ['狗嶺涌', 'TAO'], ['昂坪', 'TAO'],
   ['石壁', 'SPW'], ['籮箕灣', 'SPW'], ['芝麻灣', 'SPW'], ['十塱', 'SPW'],
-  ['塘福', 'SPW'], ['下長沙', 'SPW'], ['貝澳', 'SPW'], ['南山', 'CCH'],
-  ['東涌', 'CLK'], ['䃟石灣', 'CLK'], ['白富田', 'CLK'], ['石欖洲', 'CLK'],
+  ['塘福', 'SPW'], ['下長沙', 'SPW'], ['貝澳', 'SPW'], ['水口', 'SPW'], ['南山', 'CCH'],
+  ['東涌', 'CLK'], ['䃟石灣', 'CLK'], ['白富田', 'CLK'], ['石欖洲', 'CLK'], ['馬灣', 'CLK'],
   // 長洲／南丫／坪洲 → 長洲
   ['長洲', 'CCH'], ['南丫', 'CCH'], ['坪洲', 'CCH'], ['梅窩', 'CCH'],
   // 維港兩岸 → 鰂魚涌
   ['柴灣', 'QUB'], ['筲箕灣', 'QUB'], ['赤柱', 'QUB'], ['聖士提反', 'QUB'],
+  ['摩星嶺', 'QUB'],
 ];
 function tideStationFor(obj) {
   for (const [kw, code] of TIDE_RULES) if (obj.area.includes(kw)) return code;
@@ -198,7 +205,7 @@ const records = dataRows.map((cols) => {
     throw new Error(`「${obj.name}」priceSource 無效：${priceSource}`);
   }
 
-  // v1.10.0：配站全部用座標（唔再用區名關鍵字）
+  // 配站全部用營地座標（唔再用區名關鍵字）
   const wStation = stationFor(lat, lng);   // → 天文台 rhrread 氣溫站（中文名）
   const oStation = ocfStationFor(lat, lng); // → OCF 分區站（代號，例 CCH）
 
@@ -219,10 +226,10 @@ const records = dataRows.map((cols) => {
     countryPark: afcd?.countryPark || null,
     waterSource: afcd?.waterSource || null,
     tentSpace: afcd?.tentSpace || null,
-    // v1.9.0：裝備要求（全自備／場地提供）同最近補給點（未核實就留空，唔亂填）
+    // 裝備要求（全自備／場地提供）同最近補給點（未核實就留空，唔亂填）
     gear: obj.gear || '',
     supply: obj.supply || '',
-    // v1.10.0：該區天氣／潮汐配對（營地座標 → 直線最近站，唔係營地實測）
+    // 該區天氣／潮汐配對（營地座標 → 直線最近站，唔係營地實測）
     weatherStation: wStation.name,
     weatherKm: round1(wStation.km),
     rainDistrict: RAIN_ALIAS[obj.district] || null,
@@ -340,6 +347,45 @@ function slimOcf(src) {
   };
 }
 
+function slimTransit(src) {
+  if (!src || typeof src !== 'object') return src;
+  const slimStop = (s) => {
+    const out = {
+      companyCode: s.companyCode,
+      lat: Number.isFinite(s.lat) ? Number(s.lat.toFixed(6)) : s.lat,
+      lng: Number.isFinite(s.lng) ? Number(s.lng.toFixed(6)) : s.lng,
+      distanceM: Number.isFinite(s.distanceM) ? Math.round(s.distanceM) : s.distanceM,
+      routes: (s.routes || []).map((r) => {
+        const ro = {};
+        if (r.companyCode && r.companyCode !== s.companyCode) ro.companyCode = r.companyCode;
+        if (r.routeNameC) ro.routeNameC = r.routeNameC;
+        else if (r.routeNameE) ro.routeNameE = r.routeNameE;
+        else if (r.routeId) ro.routeId = r.routeId;
+        if (r.originC) ro.originC = r.originC;
+        if (r.destinationC) ro.destinationC = r.destinationC;
+        return ro;
+      }),
+    };
+    if (s.nameC) out.nameC = s.nameC;
+    else if (s.nameE) out.nameE = s.nameE;
+    else if (s.stopId) out.stopId = s.stopId;
+    if (s.routesTruncated) out.routesTruncated = true;
+    return out;
+  };
+  return {
+    generatedAt: src.generatedAt,
+    sources: src.sources,
+    campsites: (src.campsites || []).map((c) => {
+      const item = { id: c.id };
+      const bus = (c.bus || []).slice(0, 3).map(slimStop);
+      const gmb = (c.gmb || []).slice(0, 3).map(slimStop);
+      if (bus.length) item.bus = bus;
+      if (gmb.length) item.gmb = gmb;
+      return item;
+    }),
+  };
+}
+
 const compact = (v) => JSON.stringify(v);
 
 const output =
@@ -356,7 +402,7 @@ const transitOutput =
   '// 此檔案由 build-data.mjs 自動產生，請勿直接編輯。\n' +
   `// 官方巴士／專線小巴站點資料：${transit?.campsites.length ?? 0} 個營地\n` +
   '// 運輸署 route-stop GeoJSON；只表示直線距離，不含步行路線或即時 ETA。\n\n' +
-  'window.CAMP_TRANSIT = ' + compact(transit) + ';\n';
+  'window.CAMP_TRANSIT = ' + compact(slimTransit(transit)) + ';\n';
 
 // --check：只比較、唔寫檔，畀 guard / CI 用（F14 / S12）
 if (process.argv.includes('--check')) {

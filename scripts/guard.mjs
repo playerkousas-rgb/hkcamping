@@ -37,10 +37,11 @@ const files = allFiles();
 
 /* ---------- 1. 必要檔（G1 / 部署合約） ---------- */
 const REQUIRED = [
-  'README.md', 'AUTOMATION.md', 'GITHUB-SETUP.md', 'HANDOVER-STATUS.md', 'PROGRESS.md', 'VERSIONS.md',
+  'README.md', 'AGENTS.md', 'SCOPE.md', 'GLOSSARY.md', 'CONTRIBUTING.md', 'CHANGELOG.md',
+  'AUTOMATION.md', 'GITHUB-SETUP.md', 'HANDOVER-STATUS.md', 'PROGRESS.md', 'VERSIONS.md',
   'data.csv', 'data.js', 'build-data.mjs', 'build-site.mjs', 'package.json',
   'index.html', 'styles.css', 'app.js',
-  '.gitignore', '.vercelignore', 'vercel.json',
+  '.env.example', '.gitignore', '.vercelignore', 'vercel.json',
   '.github/workflows/sync-data.yml', '.github/workflows/sync-had.yml',
   '.github/workflows/guard.yml', '.github/workflows/transit-poc.yml', '.github/PULL_REQUEST_TEMPLATE.md',
   'scripts/guard.mjs', 'scripts/smoke.test.mjs',
@@ -151,12 +152,13 @@ try {
     [daily.includes('workflow_dispatch') && monthly.includes('workflow_dispatch'), '兩條都可手動觸發'],
     [daily.includes('contents: write') && monthly.includes('contents: write'), 'contents: write 權限'],
     [monthly.includes('data/auto/had-') && !monthly.includes('git add data.csv'), '月更唔碰 data.csv'],
-    [guardYml.includes('scripts/guard.mjs'), 'guard CI 存在'],
+    [guardYml.includes('scripts/guard.mjs') && guardYml.includes('npm test') && guardYml.includes('npm run ui'),
+      'guard CI 跑齊 guard、全套單元測試與 UI 實測'],
     [daily.includes('tools-sync-conditions.mjs') && daily.includes('conditions.json'),
       '每日 sync 有該區天氣／潮汐'],
     [daily.includes('tools-sync-ocf.mjs') && daily.includes('ocf-forecast.json'),
       '每日 sync 有 OCF 九日預報'],
-    [transitWorkflow.includes('schedule:') && transitWorkflow.includes('actions/upload-artifact@v4'),
+    [transitWorkflow.includes('schedule:') && transitWorkflow.includes('actions/upload-artifact@'),
       '交通快照定期執行並保留診斷 artifact'],
     [transitWorkflow.includes('node scripts/publish-transit.mjs')
       && transitWorkflow.includes('git push origin "HEAD:${GITHUB_REF_NAME}"'),
@@ -168,8 +170,8 @@ try {
       && read('vercel.json').includes('"source": "/transit.js"'),
       '官方交通快照 fail-closed 建置、部署及 revalidate 快取'],
     [read('scripts/smoke.test.mjs').includes('transit.js')
-      && read('scripts/transit-publish.test.mjs').includes('108/108 coverage'),
-      '交通前端 smoke／108 個營地發布測試存在'],
+      && read('scripts/transit-publish.test.mjs').includes('151/151 coverage'),
+      '交通前端 smoke／151 個營地發布測試存在'],
   ];
   const failed = checks.filter(([pass]) => !pass).map(([, name]) => name);
   failed.length ? bad('workflow 合約', failed.join('; ')) : ok('workflow 合約', `${checks.length} 項全過`);
@@ -216,7 +218,7 @@ try {
   const withStation = sites.filter((x) => x.weatherStation && x.rainDistrict).length;
   const withTide = sites.filter((x) => x.tideStation).length;
   const checks = [
-    [withStation === 108, `108 筆都有就近氣象站（現 ${withStation}）`],
+    [withStation === 151, `151 筆都有就近氣象站（現 ${withStation}）`],
     [withTide > 0, `沿岸營地有潮汐站（${withTide} 筆）`],
     [cond && cond.districtWeather?.rainfall?.length === 18, 'conditions 有 18 區雨量'],
     [cond && cond.districtWeather?.temperature?.length > 20, 'conditions 有氣溫站'],
@@ -226,7 +228,7 @@ try {
   ];
   const failed = checks.filter(([p]) => !p).map(([, n]) => n);
   failed.length ? bad('該區天氣／潮汐／日光', failed.join('; '))
-    : ok('該區天氣／潮汐／日光', `108 區站配對／${withTide} 潮汐／8 站快照／日光公式`);
+    : ok('該區天氣／潮汐／日光', `151 區站配對／${withTide} 潮汐／8 站快照／日光公式`);
 } catch (e) {
   bad('該區天氣／潮汐／日光', e.message);
 }
@@ -245,7 +247,7 @@ try {
   const firstSt = Object.values(ocf?.stations || {})[0];
   const days = firstSt?.daily?.length || 0;
   const checks = [
-    [mapped === 108, `108 筆營地都配對到 OCF 站（現 ${mapped}）`],
+    [mapped === 151, `151 筆營地都配對到 OCF 站（現 ${mapped}）`],
     [stationCount >= 10, `OCF 快照有 ≥10 站（現 ${stationCount}）`],
     [days >= 9, `每站有 ≥9 日預報（現 ${days}）`],
     [firstSt?.daily?.some((d) => d.rainPct !== null), '至少一站有降雨概率'],
@@ -256,7 +258,7 @@ try {
   ];
   const failed = checks.filter(([p]) => !p).map(([, n]) => n);
   failed.length ? bad('OCF 九日分區預報', failed.join('; '))
-    : ok('OCF 九日分區預報', `108 配對／${stationCount} 站／${days} 日／官方免責`);
+    : ok('OCF 九日分區預報', `151 配對／${stationCount} 站／${days} 日／官方免責`);
 } catch (e) {
   bad('OCF 九日分區預報', e.message);
 }
@@ -388,13 +390,13 @@ try {
   }
   if (!app.includes('function gearBadge')) problems.push('app.js 冇 gearBadge');
   if (!app.includes('function supplyLine')) problems.push('app.js 冇 supplyLine');
-  /* v1.9.1：用戶實測「撳完補給見唔到營地位置」＋「OR 會派中環超市」→ 呢兩條規則要守住 */
+  /* 用戶實測「撳完補給見唔到營地位置」＋「OR 會派中環超市」→ 呢兩條規則要守住 */
   if (!/google\.com\/maps\/search/.test(app)) problems.push('補給冇地圖搜尋連結');
   if (!/google\.com\/maps\/place/.test(app)) problems.push('補給格冇「營地位置」連結（用地圖 place 網址釘住營地）');
   if (/'超級市場 OR 士多'/.test(app)) problems.push('補給 query 仲有「OR」（Google 唔認，會派錯城市）');
   const supplyFn = app.split('function supplyLine')[1] || '';
   if (!/s\.area/.test(supplyFn)) problems.push('補給 query 冇用地區名錨定位置');
-  /* v1.9.2：鄉郊士多好多被 Google 標做 restaurant（例：發記士多 → Fat Kee Store & Restaurant） */
+  /* 鄉郊士多好多被 Google 標做 restaurant（例：發記士多 → Fat Kee Store & Restaurant） */
   if (!/餐廳/.test(supplyFn)) problems.push('補給 query 冇「餐廳」（鄉郊士多好多兼做食肆，只搜士多會漏）');
   if (/商鋪/.test(supplyFn)) problems.push('補給 query 用咗「商鋪」—— Google 冇呢個分類，只會派市區商場');
 
@@ -439,7 +441,7 @@ try {
   if (tlw && tlw.ocfStation === 'SKW') problems.push('大嶼山大浪灣又配咗筲箕灣（撞名回歸）');
 
   if (problems.length) results.push({ pass: false, name: '天氣站用地標座標配對', detail: problems.join('; ') });
-  else ok('天氣站用地標座標配對', `108 筆全部「座標最近」；最遠 OCF ${maxOcf} km／氣溫站 ${maxW} km`);
+  else ok('天氣站用地標座標配對', `151 筆全部「座標最近」；最遠 OCF ${maxOcf} km／氣溫站 ${maxW} km`);
 } catch (e) {
   results.push({ pass: false, name: '天氣站用地標座標配對', detail: (e.message || '').toString().slice(0, 160) });
 }
@@ -525,7 +527,10 @@ try {
     }
   }
 
-  // dist 一定要有圖（Vercel 部署嘅係 dist）
+  // G11：icons/ 只放 PNG／ICO，唔放 SVG；dist 一定要有圖（Vercel 部署嘅係 dist）
+  const svgIcons = existsSync(join(ROOT, 'icons'))
+    ? readdirSync(join(ROOT, 'icons')).filter((f) => /\.svg$/i.test(f)) : [];
+  if (svgIcons.length) problems.push(`icons/ 唔准放 SVG（G11）：${svgIcons.join(', ')}`);
   const distIcons = existsSync(join(ROOT, 'dist', 'icons'))
     ? readdirSync(join(ROOT, 'dist', 'icons')).length : 0;
   if (distIcons < 8) problems.push(`dist/icons 得 ${distIcons} 個檔（要先 npm run build:site）`);
@@ -534,6 +539,46 @@ try {
   else ok('App icon／favicon', `${checked} 個尺寸全對；manifest ${(mf?.icons || []).length} 個 icon（含 maskable）；dist 有 ${distIcons} 個圖`);
 } catch (e) {
   results.push({ pass: false, name: 'App icon／favicon', detail: (e.message || '').toString().slice(0, 160) });
+}
+
+/* ---------- 19. 真理倉對齊：Actions 釘 SHA（A16）／禁散裝版號註解（F15）／SEO＋SRI ---------- */
+try {
+  const problems = [];
+  const wfDir = join(ROOT, '.github', 'workflows');
+  const wfFiles = existsSync(wfDir) ? readdirSync(wfDir).filter((f) => /\.ya?ml$/.test(f)) : [];
+  let actionCount = 0;
+  for (const f of wfFiles) {
+    const lines = read(`.github/workflows/${f}`).split('\n');
+    lines.forEach((line, idx) => {
+      const m = /^\s*-?\s*uses:\s*['"]?([^'"\s#]+)/.exec(line);
+      if (!m) return;
+      const ref = m[1];
+      if (ref.startsWith('./') || ref.startsWith('../')) return;
+      actionCount += 1;
+      const pinned = ref.startsWith('docker://')
+        ? /@sha256:[0-9a-f]{64}$/.test(ref)
+        : /@[0-9a-f]{40}$/.test(ref);
+      if (!pinned) problems.push(`A16：${f}:${idx + 1} ${ref} 未釘 40-hex commit SHA`);
+      else if (!ref.startsWith('docker://') && !/#\s*v\d+\.\d+/.test(line)) {
+        problems.push(`A16：${f}:${idx + 1} 缺 # vX.Y.Z 版號註解（Dependabot 需要）`);
+      }
+    });
+  }
+  const codeFiles = files.filter((f) => /\.(js|mjs|cjs)$/.test(f));
+  const f15Re = /(\/\/|\/\*|\*)\s*v\d+\.\d+(\.\d+)?\b/;
+  for (const f of codeFiles) {
+    if (f15Re.test(read(f))) problems.push(`F15：${f} 有行內散裝版號註解`);
+  }
+  const htmlTxt = read('index.html');
+  if (!/<link\s+rel="canonical"\s+href="https:\/\/[^"]+"/.test(htmlTxt)) problems.push('SEO：index.html 缺 canonical link');
+  if (!/<script\s+type="application\/ld\+json">/.test(htmlTxt)) problems.push('GEO：index.html 缺 JSON-LD 結構化資料');
+  if ((htmlTxt.match(/unpkg\.com\/leaflet@[^"]+"[^>]*integrity="sha256-/g) || []).length < 2) {
+    problems.push('A：Leaflet CSS/JS CDN 缺 SHA-256 SRI integrity');
+  }
+  if (problems.length) bad('A16／F15／SEO／SRI 守護', problems.join('; '));
+  else ok('A16／F15／SEO／SRI 守護', `${actionCount} 個外部 Action 全釘 SHA；${codeFiles.length} 個 code 檔無散裝版號；canonical＋JSON-LD＋SRI 齊`);
+} catch (e) {
+  bad('A16／F15／SEO／SRI 守護', (e.message || '').toString().slice(0, 160));
 }
 
 /* ---------- 總結 ---------- */

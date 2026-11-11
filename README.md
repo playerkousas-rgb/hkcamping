@@ -13,10 +13,10 @@
 
 - ⛺ **漁農自然護理署（漁護署）41 個郊野公園指定露營地點**（官方完整名單，全部免費）
 - 🏛 **康樂及文化事務署（康文署）6 個場地**：4 個度假營（麥理浩夫人度假村、鯉魚門公園、西貢戶外康樂中心、曹公潭戶外康樂中心）+ 貝澳營地 + 創興水上活動中心露營區
-- 🤝 **30 個 NGO 營地／營舍**（28 列宿營 + 基維爾營地、女童軍博康營地 2 列露營）：保良局、救世軍、青年會（YMCA/YWCA）、青協、童軍、女童軍、明愛、小童群益會、傷健協會、遊樂場協會、青年獎勵計劃、浸信會、神託會、突破、紅十字會、外展訓練學校等
-- 🏕 **4 個私人 Glamping** 及 🛖 **27 列民宿/渡假屋**：21 個持牌賓館經營者（牌照事務處名單，含牌照號碼）、5 個分區導覽列，及 1 個坪洲合規提示列
+- 🤝 **59 個青年旅舍、NGO、制服團體及公營青年營地／營舍**（54 列宿營 + 基維爾營地、女童軍博康營地、沙田童軍中心、港青南丫島戶外中心、馬鞍山福音營等露營列）：香港青年旅舍協會（HKYHA 全線 7 間，含美荷樓）、青年廣場 Y 旅舍、民安隊（大灘／圓墩）、童軍、女童軍、少年領袖團、保良局、救世軍、中華基督教青年會／港青／女青年會、青協、明愛、鮑思高慈幼會、佛聯會、循道衛理、協進會、信義會、靈實協會（靈風雅舍）、浸信會、神託會、小童群益會、傷健協會、遊樂場協會、青年獎勵計劃、突破、紅十字會、外展訓練學校、綠匯學苑及馬灣太陽村莊
+- 🏕 **5 個私人 Glamping／露營車營地**（含第 349 章持牌之打鼓嶺世外桃源 `H/6756` 及長洲西園 `H/6668`，另 3 間早期種子列標示合規提示）及 🛖 **40 列鄉郊體驗村／民宿／渡假屋**：34 個第 349 章持牌處所／經營者（含荔枝窩客家生活體驗村、馬灣 1868 臨海度假屋、大澳文物酒店及大嶼山／南丫島／長洲持牌渡假屋）、5 個分區導覽列，及 1 個坪洲合規提示列
 
-合共 **108 筆**（41 + 6 + 30 + 4 + 27；`data.js` 分類為露營 45、宿營 32、Glamping 4、民宿 27）。
+合共 **151 筆**（41 + 6 + 59 + 5 + 40；`data.js` 分類為露營 47、宿營 59、Glamping 5、民宿 40）。網頁頂部設有「🪪 收錄準則」面板，公開列明為何未持第 349 章牌照之元朗／大嶼山私營露營車及純草地營不作收錄。
 **核心功能係幫童軍搵場、比較營地、規劃活動**：分區地圖（Leaflet + OpenStreetMap）、類型／地區／營運機構／收費／交通／設施／訊號篩選、全文搜尋、價格／巴士／專線小巴最近站排序，以及最多 3 個營地並列比較。卡片內的官方站點與路線資料可展開查看；比較表以香港場地資料為主，清楚標示未核實約價、不同計價單位及未有資料欄位。
 
 原有天氣、潮汐、訊號、交通、水源、裝備及預訂等資料**全部保留**，支援童軍活動前一站規劃；不全面照搬 GoCampingHK 的附加內容。新增或需持續更新的資料必須有官方來源，並能由 API 或 GitHub Actions 自動抓取、驗證及更新。
@@ -30,23 +30,23 @@
 | **未來九日該區預報**（12 站降雨概率／溫度／天氣） | 天文台 [自動分區天氣預報 OCF](https://maps.weather.gov.hk/ocf/help_e.html) 嘅 <code>maps.weather.gov.hk/ocf/dat/&lt;code&gt;.xml</code>（檔名 .xml、內容係 JSON），每日更新兩次；見 `tools-sync-ocf.mjs` |
 | 康文署 4 度假營營費與地址 | [康文署度假營官方網頁](https://www.lcsd.gov.hk/tc/camp/) |
 | NGO 營舍名單、地址、設施、座標 | [康文署資助非政府機構營舍頁面](https://www.lcsd.gov.hk/tc/camp/sngocc.html) 及各機構官網 |
-| 持牌賓館/渡假屋名單、座標、牌照號碼 | [牌照事務處持牌酒店及賓館名單](https://www.hadla.gov.hk/psi/licensed-hotels-and-guesthouses/)（CSDI LLHG 圖層，月更，見 `tools-sync-had.mjs`） |
+| 持牌賓館/渡假屋及青年旅舍會社名單、座標、牌照／證書號碼 | [牌照事務處持牌酒店及賓館名單](https://www.hadla.gov.hk/psi/licensed-hotels-and-guesthouses/)（CSDI `LLHG` 圖層）及第 376 章合格證明書會社（CSDI `CLUB` 圖層，月更，見 `tools-sync-had.mjs`） |
 | **該區實況天氣**（18 區雨量 + 27 站氣溫） | 天文台 [`weather.php?dataType=rhrread`](https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc)，每小時更新，見 `tools-sync-conditions.mjs` |
 | **潮汐高低潮**（8 站全年預測） | 天文台 [`opendata.php?dataType=HLT`](https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HLT&station=QUB&year=2026&month=10&rformat=json)，每年更新，HKO 已計好唔使自己估 |
-| **官方巴士／專線小巴站、路線、站點座標** | 運輸署[公共交通路線及票價 GeoJSON](https://data.gov.hk/en-data/dataset/hk-td-tis_23-routes-fares-geojson) `JSON_BUS.json`／`JSON_GMB.json`；GitHub Actions 每週驗證全部 108 個營地並自動發布 `data/auto/transit.json`／`transit.js`；距離只係直線，不是步行路線或 ETA |
+| **官方巴士／專線小巴站、路線、站點座標** | 運輸署[公共交通路線及票價 GeoJSON](https://data.gov.hk/en-data/dataset/hk-td-tis_23-routes-fares-geojson) `JSON_BUS.json`／`JSON_GMB.json`；GitHub Actions 每週驗證全部 151 個營地並自動發布 `data/auto/transit.json`／`transit.js`；距離只係直線，不是步行路線或 ETA |
 | **日出／日落時間** | 純 JS 天文公式（`app.js` 嘅 `sunTimesHKT()`，NOAA/SunCalc），零 API；已用天文台 [`SRS`](https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=SRS&year=2026&rformat=json) 五個錨點驗證，最大誤差 3 分鐘 |
 | 絕大部分營地經緯度 | OpenStreetMap（經 Nominatim 查詢的 camp_site 點位，見 `geocache.json`） |
 | 小部分無 OSM 點位者 | 按官方地址定位（已在 `tools-geocode*.mjs` 註明），誤差約數百米 |
 
 > ### ⚠️ 收費可信度（2026-10-27 起）
 >
-> `data.csv` 嘅 `priceSource` 欄將 108 筆分成三類，前端會直接顯示出嚟：
+> `data.csv` 嘅 `priceSource` 欄將 151 筆分成三類，前端會直接顯示出嚟：
 >
 > | priceSource | 筆數 | 前端顯示 | 意思 |
 > |---|---:|---|---|
 > | `free` | 41 | `免費` | 漁護署官方指定營地，全部免費（惟荃錦營地須喺「郊野營人」系統預約） |
-> | `estimate` | 44 | **`約 $120 每人每晚起`** + 橙色警句 | 康文署／NGO／Glamping／分區民宿嘅收費，**未逐筆向官方核實**，落訂前必須上官網或打電話確認 |
-> | `enquiry` | 23 | `面議／電話查詢` | 持牌民宿經營者，資料庫**刻意唔報假價**；持牌狀態每月由 `tools-sync-had.mjs` 自動覆核 |
+> | `estimate` | 44 | **`約 $120 每人每晚起`** + 橙色警句 | 康文署／早期 NGO／Glamping／分區民宿嘅收費，**未逐筆向官方核實**，落訂前必須上官網或打電話確認 |
+> | `enquiry` | 66 | `面議／電話查詢` | 持牌民宿／露營車／體驗村經營者、YHA 青年旅舍及新增 NGO／制服團體營舍，資料庫**刻意唔報假價**；持牌／會社證狀態每月由 `tools-sync-had.mjs` 自動覆核 |
 >
 > 即使係康文署有官方收費表嘅 6 筆，喺未逐筆核實前都一律標「約」。
 > 另外 `priceUnit` 有「每人每晚起／每營位每晚／每間每晚起／每人每課程起」等唔同單位，
@@ -83,9 +83,9 @@
 - **唔用** `data/auto/ocf-forecast.json` 自己帶嘅座標 —— 佢將「西貢」寫成 22.436,114.085，
   其實係「石崗」嘅位置（差 20 公里），用咗會令大棠、河背配去西貢。
 - 天文台另有「**昂坪**」站（22.259, 113.913），但只有氣溫、冇降雨概率，所以唔參加落雨配對。
-- guard 第 17 項每次都會重算一次，確認 108 筆都係「座標最近」。
+- guard 第 17 項每次都會重算一次，確認 151 筆都係「座標最近」。
 >
-> 「營地 → 就近站」配對同 v1.2.0 嘅潮汐／實況站一樣係人工策展（`build-data.mjs`），
+> 氣象站同 OCF 分區站現已全部按經緯度直線最近自動配對（`lib/stations.mjs`），只有沿岸潮汐站仍按海灣 `area` 規則配對（`build-data.mjs`）；
 > 山區同外島同站點可以有明顯差異；正式活動前請再上天文台確認。
 
 ### 🌡 該區天氣・🌊 潮汐・🌇 日光（v1.2.0）
@@ -96,8 +96,7 @@
 2. **今日日光** — 日出／日落 HKT + 「建議幾點前紮營」（用純 JS 天文公式按日期計，任何年份都用得）。
 3. **潮汐** — 就近潮汐站嘅今日／週末高低潮時間同高度（HKO 官方 `HLT` 預測，唔係自己估）。
 
-> ⚠️ **「就近站」唔係營地實測**：`build-data.mjs` 按 `district` + `area` 關鍵字配對
-> 最近嘅自動氣象站／潮汐站。山區氣溫可以比市區站低幾度；東平洲、西貢東等冇潮汐站嘅地方
+> ⚠️ **「就近站」唔係營地實測**：`build-data.mjs` 以營地座標計 Haversine 直線最近自動氣象站／OCF 分區站，並按 `district` 配 18 區雨量、按沿岸 `area` 配就近潮汐站。山區氣溫可以比市區站低幾度；東平洲、西貢東等冇潮汐站嘅地方
 > 用大埔滘／高流灣代替，潮差同時間可以有偏差。面板已標明「就近站」，
 > **正式活動前請再上天文台分區天氣／潮汐預報確認**。
 >
@@ -340,15 +339,15 @@ npm run guard     # 第 14 項「資料一致性」會自動跑上面嗰個
 | **S1** `api/` 零 runtime 依賴 | 冇 `api/`，亦冇任何 serverless function | `dependencies` 空白 ✅ |
 | **S2** `.vercelignore` | 擋 `.git/`、`.github/`、`scripts/`、`*.md`、`tools-*.mjs`、`geocache.json`、HAD 大快照 | 上傳面只剩 build 需要嘅檔 ✅ |
 | **S3** `package.json` 極簡 | 零 dependencies；`vercel.json` 已加 `installCommand: npm install --include=dev`（build 階段唔會缺 devDeps） | ✅ |
-| **S4** 只部署最終產物 | `framework: null`、`outputDirectory: dist`、`build-site.mjs` 只抄 5 個核心檔（含 `transit.js`）及 manifest／robots／icons | `dist/` 只含靜態部署產物 ✅ |
+| **S4** 只部署最終產物 | `framework: null`、`outputDirectory: dist`、`build-site.mjs` 只抄 7 個根檔（含 `transit.js`、`manifest.webmanifest`、`robots.txt`）及 `icons/` 9 個圖標 | `dist/` 只含 16 個靜態部署產物 ✅ |
 | **S5** 死重零容忍 | `npm run slim` 掃 `*.bak/*.tmp/*.old/*.log/*.zip` 等 | 現時 **0 個** ✅ |
-| **S6** 圖片／媒體 | 全站零圖片（emoji ＋ Leaflet CDN），冇大圖要壓 | N/A ✅ |
+| **S6** 圖片／媒體 | 全站只有 `icons/` 9 個 PNG／ICO 圖標（共約 244 KB，全部 `<500KB`，禁 SVG G11），營地卡片零相片 | ✅ |
 | **S7** CI 硬攔體積 | guard 檢 `dist < 5MB`、單檔 `<1MB`，另加**自家預算** `data.js < 250KB`、`dist < 1MB` | 每次 build 由 guard 自動驗收 ✅ |
 | **S8** 部署衛生 | Production branch = `main`、關閉非 main preview、retention 7 日（Dashboard 設定，見 [GITHUB-SETUP.md](GITHUB-SETUP.md)） | ⚠️ 要人手撳 |
 | **S9** 上載面配額 | 冇上載功能 | N/A ✅ |
 | **S10** Git 瘦身 | `.gitignore` 擋 `node_modules/`、`dist/`、`.env*`、binary；單檔 <1MB | 最大檔 `had-guesthouses.json` 783.9KB（未部署，只做月更報告） ✅ |
 | **S11** payload 瘦身 | **v1.5.0 重點**：`data.js` 只嵌入前端真正用嘅部分 | 見下 ✅ |
-| **S12** 自動化守護 | `guard.mjs` 18 項 ＋ `guard.yml`（push／PR／每週一）＋ `npm test` 32 個；交通 workflow 另跑 A–X UI tests | ✅ |
+| **S12** 自動化守護 | `guard.mjs` 19 項 ＋ `guard.yml`（push／PR／每週一跑齊 guard、全套 `npm test`、`npm run audit` 及 `npm run ui`；Actions 全釘 40-hex SHA A16） | ✅ |
 
 ### S11 實際做咗乜（v1.5.0，data.js 396KB → 128KB）
 
@@ -376,13 +375,13 @@ npm run slim     # 瘦身報告：最重 10 個檔、dist 逐檔、gzip、預算
 |---|---|---|
 | **Git ＋ GitHub** | 唯一真理來源、版本歷史、PR 審查、`guard.yml` CI 閘 | ✅ 用（`main` ＋ `arena/*` 工作分支） |
 | **GitHub Actions** | 每日營地／天氣同步、每月持牌賓館、每週官方巴士／小巴快照發布；`guard.yml` push／PR／每週一 | ✅ 用（公開 repo，免費額度） |
-| **Scout Admin（Apps Script）** | 全站唯一對外寫入：卡片「✏️ 報料」→ 同圖書館／支部／專章系統**同一個接收端**，後台多一個「營地資料庫」膠囊 | ⚪ 用（同其他系統共用，v1.7.1 起） |
-| **Vercel** | 靜態托管（`hkg1`）、`vercel.json` headers、`build-site.mjs` 產 `dist/`、**Web Analytics 入站人次** | ✅ 用（Framework = Other、Output = dist） |
-| **Node.js（零 runtime dependencies）** | `build-data.mjs` 將 CSV＋官方快照砌成 `data.js`／`transit.js`；`build-site.mjs` 出 5 個核心部署檔；`guard.mjs`／測試本機＋CI 同一條 | ✅ 用（`engines: >=18`，`dependencies` 空白） |
-| **Leaflet ＋ OpenStreetMap** | 地圖、pin、popup、fitBounds | ✅ 用（CDN，非 npm 依賴） |
+| **Scout Admin（Apps Script）** | 右下角共用回報浮鈕（一行 `widget.js`，`data-app="營地資料庫"`）→ 本站零自寫表單、零 `fetch`，意見送入共用後台膠囊 | ⚪ 用（同其他系統共用，v1.7.2 起） |
+| **Vercel** | 靜態托管（`hkg1`）、`vercel.json` headers（含 HSTS）、`build-site.mjs` 產 `dist/`、**Web Analytics 入站人次** | ✅ 用（Framework = Other、Output = dist） |
+| **Node.js（零 runtime dependencies）** | `build-data.mjs` 將 CSV＋官方快照砌成 `data.js`／`transit.js`；`build-site.mjs` 出 16 個靜態部署檔；`guard.mjs`／測試本機＋CI 同一條 | ✅ 用（`engines: >=18`，`dependencies` 空白） |
+| **Leaflet ＋ OpenStreetMap** | 地圖、pin、popup、fitBounds（附 SHA-256 SRI `integrity`） | ✅ 用（CDN，非 npm 依賴） |
 | **香港官方 open data** | 漁護署 CSDI、天文台 `fnd`／`rhrread`／`HLT`／`SRS`／OCF、牌照事務處 LLHG、運輸署 `JSON_BUS`／`JSON_GMB` | ✅ 用（keyless；無第三方天氣／交通資料 API） |
 | **Notion（CSV／資料庫）** | — | ❌ 不作資料維護後台：本專案更新不得依賴多人手動協作 |
-| **Google Apps Script（Sheet 當 DB）** | — | ❌ 唔適用：本專案零後端、零寫入面，冇需要 GAS |
+| **Google Apps Script（Sheet 當 DB）** | — | ❌ 唔適用：本專案自身零後端、零自建寫入 API，只外掛共用回報 widget |
 | **Supabase（Postgres／Auth／RLS）** | — | ❌ 未用：冇登入、冇用戶資料；不規劃眾包作資料來源 |
 | **Gemini／Canvas** | — | ❌ 唔適用：冇生成圖／prompt，W2／W3 水印唔適用 |
 
@@ -409,7 +408,7 @@ GoCampingHK **不是本項目的營地資料來源**。只把它引用／標示�
 
 本 APP 主要為童軍服務：營地比較與活動規劃同樣重要；保留天氣、交通、潮汐、水源、裝備、預訂等原有資料，讓隊伍一站規劃活動。新增內容須同時符合童軍用途、官方來源及自動化維護要求；沒有可靠自動更新路徑就不加入。不得加入 GoCampingHK 的主觀營地難度標籤、營友經驗、人氣或評分，也不以眾包或人工覆核作更新機制。
 
-| 項目 | 香港版現況（v1.14.2） | 原則 |
+| 項目 | 香港版現況（v1.16.0） | 原則 |
 |---|---|---|
 | 官方資料來源 | ✅ 漁護署、康文署、天文台、牌照事務處及場地／機構官方來源；來源表見上文 | GoCampingHK 只作尋找原始官方來源的線索，不直接採用其資料 |
 | 自動化維護門檻 | 既有 GitHub Actions 已同步部分官方資料；新增資料須先具備自動同步與驗證流程 | 優先官方 API／開放數據；若只提供官方網頁，須可由 GitHub Actions 定期穩定抓取、驗證及更新；不能自動維護就不加入 |
@@ -423,11 +422,12 @@ GoCampingHK **不是本項目的營地資料來源**。只把它引用／標示�
 
 ```
 hk-camp-database/
-├── data.csv              # 現有靜態基礎資料（歷史人工策展；新資料不得依賴人工維護）
-├── build-data.mjs        # CSV ＋ weather.json → data.js（零依賴，支援 --check）
-├── build-site.mjs        # 部署 build：rebuild data.js + 只抄 4 個檔入 dist/
-├── data.js               # 自動產生，網站實際讀取的資料
-├── vercel.json / .vercelignore / .gitignore  # 部署與 Git 衛生設定
+├── AGENTS.md / SCOPE.md / GLOSSARY.md / CONTRIBUTING.md / CHANGELOG.md / docs/  # 治理與術語導覽
+├── data.csv              # 現有靜態基礎資料（21 欄；新資料不得依賴人工維護）
+├── build-data.mjs        # CSV ＋ 官方快照 → data.js ＋ transit.js（零依賴，支援 --check）
+├── build-site.mjs        # 部署 build：rebuild + 抄 7 個根檔與 icons/ 9 個圖標入 dist/
+├── data.js / transit.js  # 自動產生，網站實際讀取的資料與交通快照
+├── .env.example / vercel.json / .vercelignore / .gitignore  # 部署與 Git 衛生設定
 ├── data/auto/            # 機器快照層（GitHub Actions 定時更新，勿手改）
 │   ├── afcd-campsites.json   漁護署 41 營地官方數據（CSDI，連水源/營位規模）
 │   ├── afcd-diff-report.md   官方數據與 data.csv 嘅差異報告
@@ -436,15 +436,17 @@ hk-camp-database/
 │   ├── had-candidates.json   鄉郊渡假類候選（27 經營者／50 處所）
 │   ├── had-diff-report.md    賓館月更報告＋民宿合規警示＋營舍持牌名單
 │   ├── conditions.json       該區實況天氣（18 區雨量 + 27 站氣溫）＋ 8 潮汐站高低潮
-│   └── ocf-forecast.json     OCF 自動分區九日預報（12 站 × 10 日）
+│   ├── ocf-forecast.json     OCF 自動分區九日預報（12 站 × 10 日）
+│   └── transit.json          運輸署巴士／專線小巴最近站點驗證快照（每週自動發布）
 ├── tools-sync-afcd.mjs  # CSDI 營地同步 + 差異檢查
 ├── tools-sync-weather.mjs # 天文台天氣快照
 ├── tools-sync-had.mjs   # 持牌賓館月更同步（CSDI＋HAD CSV，只出快照唔改 data.csv）
 ├── tools-sync-conditions.mjs # 該區天氣（rhrread）＋潮汐（HLT 8 站）每日同步
 ├── tools-sync-ocf.mjs   # 天文台 OCF 自動分區九日預報（12 站）每日同步
-├── .github/workflows/sync-data.yml # 每日 00:30 HKT 自動同步（cron '30 16 * * *' UTC）
-├── .github/workflows/sync-had.yml  # 每月 2 號 01:15 HKT 月更（cron '15 17 1 * *' UTC）
-├── .github/workflows/guard.yml # push / PR / 每週一跑 guard（S12 / F14）
+├── .github/workflows/sync-data.yml   # 每日 00:30 HKT 自動同步（cron '30 16 * * *' UTC）
+├── .github/workflows/sync-had.yml    # 每月 2 號 01:15 HKT 月更（cron '15 17 1 * *' UTC）
+├── .github/workflows/transit-poc.yml # 每週一 02:17 HKT 官方交通快照抓取、驗證與發布
+├── .github/workflows/guard.yml       # push / PR / 每週一跑 guard＋test＋audit＋ui（Actions 全釘 SHA）
 ├── .github/PULL_REQUEST_TEMPLATE.md / .github/dependabot.yml
 ├── scripts/guard.mjs     # 本機 + CI 同一條守護檢查（S/F/A/W/V/G）
 ├── scripts/smoke.test.mjs # 模擬 DOM 前端啟動測試（零依賴）
@@ -496,6 +498,8 @@ node build-data.mjs --check   # 只驗收 data.js 同 data.csv／weather.json �
 | signal | 手機訊號：良好 / 一般 / 微弱 / 無 | 微弱 |
 | lat, lng | 緯度、經度（優先採用 OSM camp_site 點位） | 22.4616,114.3422 |
 | summary | 一至兩句簡介（避免用半形逗號） | — |
+| gear | 裝備要求：`全自備`（全部露營場地）或 `場地提供`（宿營／Glamping／民宿） | 全自備 / 場地提供 |
+| supply | 已核實之鄰近補給提示；未核實一律留空，由前端地圖搜尋入口補位 | 附近宗教機構士多 |
 
 ## 本機預覽
 
@@ -521,22 +525,22 @@ python3 -m http.server 8000 --bind 0.0.0.0
 | 來源 | `data-app="營地資料庫"` → 後台多一個「營地資料庫」膠囊，一眼分到邊個系統 |
 | payload | 用 admin 本身嗰套（`SCOUT_ADMIN.md §〇`），本專案唔自己定 |
 | 本專案負責 | **乜都唔使**：冇表單、冇 fetch、冇後端、冇 key |
-| 斷網／被封 | widget 載入唔到＝右下角乜都唔出，**網站照用**（108 張卡照樣渲染） |
+| 斷網／被封 | widget 載入唔到＝右下角乜都唔出，**網站照用**（151 張卡照樣渲染） |
 
 > **點解唔自己寫表單**：每多一套表單，後台就多一種睇法。用戶（你）講得好準——
 > 來源膠囊已經夠分辨，寧願全站用同一個介面。
 >
 > 之前 v1.7.0–v1.7.1 試過自寫 GAS 同自寫表單，兩版都刪走咗。現有回報按鈕只把意見交到共用 Scout Admin；回報不會自動成為營地事實，也不是資料更新流程或人工核查的保證。不得以眾包資料替代官方來源。
 
-### 用邊啲身份測（`npm run ui` A–X）
+### 用邊啲身份測（`npm run ui` A–Y）
 
 **情境類（A–H）**
 
 | 段 | 身份／情境 | 具體驗乜 |
 |---|---|---|
-| A | 斷網用戶 | 108 張卡照出、頁尾版權版號、Console 零 error |
+| A | 斷網用戶 | 151 張卡照出、頁尾版權版號、Console 零 error |
 | B | 無痕／私隱模式用戶 | `localStorage` 一掂就 throw 都撳到收藏、足跡 |
-| C | 要篩選嘅用戶 | 廁所 32／旱廁 16／旱廁卡有 🕳 |
+| C | 要篩選嘅用戶 | 廁所 41／旱廁 16／旱廁卡有 🕳 |
 | D | 手機用戶（375px） | viewport、手機斷點、chip 識換行 |
 | E | 想回報嘅用戶 | widget 有嵌、來源「營地資料庫」、本站零表單 |
 | F | 關咗 JavaScript | `<noscript>` 提示 + 直接開 `data.csv` |
@@ -547,33 +551,34 @@ python3 -m http.server 8000 --bind 0.0.0.0
 
 | 段 | 身份 | 佢最關心 | 而家撳得到嗎 |
 |---|---|---|---|
-| I | 程序員查 BUG | 有冇重複 id、undefined、座標飛咗 | ✅ 64 個 id 唯一、108 筆座標全在香港 |
+| I | 程序員查 BUG | 有冇重複 id、undefined、座標飛咗 | ✅ 151 個 id 唯一、151 筆座標全在香港 |
 | J | 網頁工程師看 UI | 字級亂、inline style、設計變數 | ✅ 14 個變數、14 級字級、0 inline |
 | K | 外國到訪的人 | 知唔知呢個站係咩 | ⚠️ 有英文一句 + `lang="en"`；**介面仍中文，未做 i18n** |
 | L | 小孩 | 撳得中嗎、會唔會彈窗嚇親 | ✅ 手機主要觸控目標 ≥48px、冇自動彈窗 |
-| M | 家庭用戶 | 有冇廁所、免費、檯凳 | ✅ 48 張卡標廁所／旱廁（分得開）、有免費標示 |
+| M | 家庭用戶 | 有冇廁所、免費、檯凳 | ✅ 57 張卡標廁所／旱廁（分得開）、有免費標示 |
 | N | 遠足人士 | 點去、有冇水、有冇訊號 | ✅ 每張卡有既有交通方式、水源、訊號、官方地圖；另有官方站點參考 |
 | O | 童軍 | 幾多人、點申請 | ✅ 營位數、預訂／官方連結、所屬機構 |
 | P | 團體 | 夠唔夠大 | ✅ 營位規模篩選：多於 50 → 5 個場、20–50 → 5 個 |
 | Q | **露營新手／家長** | 要唔要自己帶裝備？邊度補給？ | ✅ `gear` 篩選、每張卡有補給與營地位置入口；6 個場列已核實補給點 |
-| R | 天氣規劃 | 天氣站配得近唔近 | ✅ 108 個營地按座標配就近天文台／OCF 站，顯示直線距離 |
+| R | 天氣規劃 | 天氣站配得近唔近 | ✅ 151 個營地按座標配就近天文台／OCF 站，顯示直線距離 |
 | S | 手機使用者 | 可唔可以加到主畫面／分享連結有冇圖 | ✅ PWA manifest、iOS／Android 圖示、OG 預覽 |
 | T | 團體／策劃者 | 點搵同一機構旗下場地、點樣比較候選 | ✅ 營運機構篩選；最多 3 個營地比較 16 項香港實用資料 |
 | U | 童軍策劃者 | 站名、路線、距離、資料來源同限制 | ✅ 交通明細可展開／收合；標明直線距離、非步行可達、非即時 ETA |
 | V | 手機單手用戶 | 長頁面點返頂、點快篩／排序 | ✅ 頁頂／頁底、開篩選、巴士／小巴最近站排序；側欄焦點與桌面排序同步 |
 | W | 程序員／維護者 | 舊快照會唔會扮最新？自動更新有冇人工步驟？ | ✅ 超過 10 日顯示警告；自動驗證、提交網站快照；不依賴人工覆核 |
 | X | 天氣規劃／手機單手用戶 | 天氣資訊可否收合？頁底四掣及回報入口會否互相遮擋？ | ✅ 三個天氣區塊可收合；四掣固定貼底，48px 回報入口另留位置並避開 safe area |
+| Y | 查私人營地／露營車嘅營友與領袖 | 點解搵唔到部分元朗／大嶼山私營場？有冇收錄準則？ | ✅ 頂部 `#scopePanel` 列明第 349 章牌照與消委會查核原因；搜尋空白提示一鍵展開說明 |
 
 > 呢個站**冇帳號、冇分旅團／區／支部** —— 所有人睇同一個版本。
-> A–X 共 24 個測試情境；U–X 覆蓋交通 UI、新鮮度提示、自動發布、天氣收合及手機頁底快速列。
+> A–Y 共 25 個測試情境；U–Y 覆蓋交通 UI、新鮮度提示、自動發布、天氣收合、手機頁底快速列及私營場地收錄合規說明。
 
 ## 品質守護（commit 前跑）
 
 ```bash
-npm run guard       # guard 靜態守護（含交通快照自動發布、fail-closed 建置與快取標頭）
-npm test            # 32 個 smoke／POC／快照測試，含 108 個營地發布驗證及 16 項比較欄位
-npm run build:site  # 產生 dist/（5 個核心檔 + icons，體積由 guard 驗收）
-npm run ui          # 207 項 A–X 情境實測（先 npm i -D jsdom@^26）；CI 使用暫時安裝，不加入網站依賴
+npm run guard       # guard 靜態守護（19 項，含交通快照自動發布、A16/SEO/SRI、fail-closed 建置與快取標頭）
+npm test            # 34 個 smoke／POC／快照測試，含 151 個營地發布驗證、收錄準則面板及 16 項比較欄位
+npm run build:site  # 產生 dist/（7 個核心檔 + icons，體積由 guard 驗收）
+npm run ui          # 215 項 A–Y 情境實測（先 npm i -D jsdom@^26）；CI 使用暫時安裝，不加入網站依賴
 ```
 
 ### 「程序員」同「一般用戶」兩種檢測（v1.6.2）
@@ -584,7 +589,7 @@ npm run ui          # 207 項 A–X 情境實測（先 npm i -D jsdom@^26）；C
 
 | 角度 | 邊個做 | 點跑 | 守乜 |
 |---|---|---|---|
-| **程序員** | 自動、CI 必跑 | `npm run guard`（18 項）、`npm test`（32 項） | 資料本身有冇矛盾、版號四處有冇同步、交通來源／快照／部署合約 |
+| **程序員** | 自動、CI 必跑 | `npm run guard`（19 項）、`npm test`（33 項） | 資料本身有冇矛盾、版號四處有冇同步、交通來源／快照／部署合約 |
 | **一般用戶** | 本機可手動；CI 自動跑 | `npm i -D jsdom@^26 && npm run ui`（207 項，A–X 24 段；交通 workflow 暫時安裝 jsdom） | 見下面「用邊啲身份測」 |
 
 **兩個都係 build／測試期先跑，網站本身仍然係零 runtime dependency，`dist/` 一個 byte 都冇多。**
@@ -642,6 +647,9 @@ npm run ui          # 207 項 A–X 情境實測（先 npm i -D jsdom@^26）；C
 - [x] **手機快速導覽**（v1.14.0）：固定頁頂／頁底、篩選及排序入口，排序可按最近官方巴士／小巴站
 - [x] **手機按鈕易用性**（v1.14.1）：主要觸控目標至少 48px；篩選全屏面板有遮罩及固定完成／重設；排序使用大選項底部面板；收藏／足跡狀態可見並可報讀
 - [x] **天氣區塊收合＋頁底操作列避讓**（v1.14.2）：週末天氣、九日預報、週末降雨排行可各自收合；手機四個快捷掣固定貼底並預留 safe area，回報 widget 縮成 48px 圓形掣、與快捷列並排不遮擋
+- [x] **治理架構、供應鏈安全、SEO/GEO 與連結衛生強化**（v1.14.3）：補齊 `AGENTS.md`／`SCOPE.md`／`GLOSSARY.md`／`CONTRIBUTING.md`／`CHANGELOG.md`／`docs/`，9 處 GitHub Actions 全釘 40-hex SHA（A16），清走散裝行內版號註解（F15），補齊 `canonical`／JSON-LD／Leaflet SRI／HSTS，修正 `a14` 漁護署連結與 6 筆 NGO HTTPS 連結，並查明 YHA 第 376 章（CSDI `CLUB`）自動化來源
+- [x] **補齊香港青年旅舍全線 7 間及全港活躍 NGO／制服團體／公營青年營地**（v1.15.0）：`data.csv` 由 108 擴充至 136 筆（新增 `n31`–`n58`，全數 HTTPS 官方連結與 `enquiry` 查詢價），`tools-sync-had.mjs` 接入 CSDI 第 376 章 `CLUB` 月更核對，並排除及記錄已停辦／重建或內部專用場地
+- [x] **補齊官方第 349 章持牌露營車／體驗村／鄉郊民宿及網頁公開未收錄原因**（v1.16.0）：全庫重掃 CSDI `LLHG` 補入 15 筆持牌處所（`g05` 世外桃源露營車、`n59` 靈風雅舍、`b28` 荔枝窩客家生活體驗村、`b29` 馬灣 1868 臨海度假屋及大嶼山／南丫島持牌渡假屋，總數 136 → 151 筆），修正 `g02 西園` 海上座標並為 `g01/g03/g04` 加合規提示，升級 `tools-sync-had.mjs` 關鍵字，加入 `slimTransit` 瘦身，並於網頁增設 `#scopePanel` 列明元朗／大嶼山無牌私營場地未收錄原因
 
 ## 免責聲明
 

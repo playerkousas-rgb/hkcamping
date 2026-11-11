@@ -52,8 +52,13 @@ for (const r of records) {
   }
 }
 
-/* ---------- 2. 康文署連結：唔可以用舊 CLPSS 預訂入口（會轉駁到其他頁） ---------- */
+/* ---------- 2. 官方營地連結：漁護署路徑與康文署 SmartPLAY ---------- */
 for (const r of records) {
+  if (r.id.startsWith('a')) {
+    if (!r.infoUrl.includes('afcd.gov.hk/tc_chi/country/cou_vis/cou_vis_cam/')) {
+      err(`${r.id} ${r.name}：漁護署 infoUrl 路徑異常（漏 cou_vis 或指錯頁：${r.infoUrl}）`);
+    }
+  }
   if (r.id.startsWith('l')) {
     if (r.bookingUrl && !r.bookingUrl.includes('smartplay.lcsd.gov.hk')) {
       err(`${r.id} ${r.name}：康文署 bookingUrl 應為 SmartPLAY（現 ${r.bookingUrl}）`);

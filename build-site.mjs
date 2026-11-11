@@ -16,9 +16,9 @@ import { fileURLToPath } from 'node:url';
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, 'dist');
 const FILES = ['index.html', 'styles.css', 'app.js', 'data.js', 'transit.js', 'manifest.webmanifest', 'robots.txt'];
-// v1.11.0：App Icon／favicon 全套（iOS 主畫面、Android 安裝、瀏覽器分頁、分享預覽）
+// App Icon／favicon 全套（G11：icons/ 只准放 PNG／ICO，唔放 SVG）
 const ICON_DIR = 'icons';
-const ICON_FILES = readdirSync(join(ROOT, ICON_DIR)).filter((f) => /\.(png|ico|svg)$/i.test(f));
+const ICON_FILES = readdirSync(join(ROOT, ICON_DIR)).filter((f) => /\.(png|ico)$/i.test(f));
 
 execFileSync(process.execPath, [join(ROOT, 'build-data.mjs')], {
   cwd: ROOT,

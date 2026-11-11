@@ -7,7 +7,8 @@
   <meta name="description" content="香港營地、宿營營舍、Glamping 與民宿資料庫，按分區、費用、營運機構、交通、設施比較；配合天氣及準備資訊，支援童軍活動規劃。" />
   <meta name="author" content="SCOUT SYSTEM" />
   <meta name="copyright" content="© SCOUT SYSTEM" />
-  <meta name="version" content="1.14.2" />
+  <meta name="version" content="1.16.0" />
+  <link rel="canonical" href="https://hkcamping.vercel.app/" />
 
   <!-- v1.11.0：App Icon／favicon（iOS 加入主畫面、Android 安裝、瀏覽器分頁、分享預覽都要有圖） -->
   <link rel="icon" href="/icons/favicon.ico" sizes="any" />
@@ -25,9 +26,10 @@
 
   <!-- 分享預覽（WhatsApp／Signal／Facebook 貼連結時出圖，唔會得白板）-->
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://hkcamping.vercel.app/" />
   <meta property="og:site_name" content="香港露營・宿營・民宿資料庫" />
   <meta property="og:title" content="香港露營・宿營・民宿資料庫｜童軍營地比較與活動規劃" />
-  <meta property="og:description" content="比較 108 個香港營地、宿營營舍、Glamping 與民宿，支援童軍規劃活動；按分區、營運機構、收費、交通及設施篩選。" />
+  <meta property="og:description" content="比較 151 個香港營地、宿營營舍、青年旅舍、持牌露營車、Glamping 與持牌鄉郊民宿，支援童軍規劃活動；按分區、營運機構、收費、交通及設施篩選。" />
   <meta property="og:image" content="https://hkcamping.vercel.app/icons/og-image.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -35,7 +37,35 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:image" content="https://hkcamping.vercel.app/icons/og-image.png" />
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://hkcamping.vercel.app/#website",
+        "url": "https://hkcamping.vercel.app/",
+        "name": "香港露營・宿營・民宿資料庫",
+        "inLanguage": "zh-HK",
+        "publisher": { "@type": "Organization", "name": "SCOUT SYSTEM" }
+      },
+      {
+        "@type": "Dataset",
+        "@id": "https://hkcamping.vercel.app/#dataset",
+        "name": "香港露營・宿營・民宿資料庫",
+        "description": "比較 151 個香港指定露營地點、宿營營舍、青年旅舍、持牌露營車／Glamping 與持牌鄉郊民宿，整合漁護署、康文署、天文台、牌照事務處及運輸署官方開放數據，支援童軍活動規劃。",
+        "url": "https://hkcamping.vercel.app/",
+        "inLanguage": "zh-HK",
+        "isAccessibleForFree": true,
+        "creator": { "@type": "Organization", "name": "SCOUT SYSTEM" },
+        "spatialCoverage": { "@type": "Place", "name": "Hong Kong" }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -48,9 +78,9 @@
       <img class="brand-logo" src="/icons/icon-192.png" width="56" height="56"
            alt="" aria-hidden="true" decoding="async" />
       <div>
-        <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.14.2</span></h1>
+        <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.16.0</span></h1>
         <p class="tagline">漁護署營地 ・ Glamping ・ 宿營營舍 ・ 離島渡假屋 — 搵營地、plan 活動一站看清</p>
-        <p class="tagline-en" lang="en">Hong Kong campsite database for Scouts — compare 108 sites and plan activities with location, fees, access and facilities.</p>
+        <p class="tagline-en" lang="en">Hong Kong campsite database for Scouts — compare 151 sites and plan activities with location, fees, access and facilities.</p>
       </div>
     </div>
     <div class="header-stats" id="headerStats"></div>
@@ -166,6 +196,39 @@
       </section>
     </div>
     <p class="prep-disclaimer">以上係通用提醒，唔係個別場地嘅官方條款；官方水源／營位規模數據來自漁護署 CSDI 快照，其餘以場地公佈為準。</p>
+  </details>
+</div>
+
+<div class="container">
+  <details class="prep-panel scope-panel" id="scopePanel">
+    <summary>🪪 收錄準則 ＋ 點解元朗／大嶼山部分私人營地或露營車無收錄？ <span class="prep-hint">（撳開睇：牌照處查核、童軍保險與合規原因）</span></summary>
+    <div class="prep-grid">
+      <section>
+        <h3>✅ 本庫收錄邊幾類場地？（151 個）</h3>
+        <ul>
+          <li><b>政府指定營地及度假營（47 個）</b>：漁護署 41 個郊野公園指定露營地點、康文署 6 個度假營（官方開放數據同步）。</li>
+          <li><b>公營、制服團體、NGO 及青年旅舍（59 個）</b>：民青局、童軍、女童軍、民安隊、少年領袖團、保良局、青協、YMCA/YWCA、明愛、救世軍、古蹟活化營舍，以及持第 376 章會社合格證明書之 <b>HKYHA 全線 7 間青年旅舍</b>。</li>
+          <li><b>持牌露營車／體驗村／鄉郊民宿（45 個）</b>：對照<a href="https://www.hadla.gov.hk/tc/hotels/index.html" target="_blank" rel="noopener">民政事務總署牌照事務處名單 ↗</a>，包括打鼓嶺<b>世外桃源 Park Nature Hillside（H/6756）</b>、長洲<b>西園（H/6668）</b>、沙頭角<b>荔枝窩客家生活體驗村</b>、<b>馬灣 1868 臨海度假屋</b>及大嶼山／南丫島／長洲持牌渡假屋（另含坪洲無牌警示及 3 間標示合規提示之早期 Glamping 種子列）。</li>
+        </ul>
+      </section>
+      <section>
+        <h3>🚫 點解網上訂到嘅私人營地／露營車好多無收錄？</h3>
+        <ul>
+          <li><b>「網上訂到／康樂地帶」≠「持有第 349 章賓館牌照」</b>：<a href="https://www.consumer.org.hk/tc/article/572-private-camping-sites/572-private-camping-sites-regulations" target="_blank" rel="noopener">消委會《選擇》月刊第 572 期 ↗</a>向牌照事務處及規劃署查核全港 22 個私營場地（元朗 10 間、大嶼山 6 間），<b>近九成並無持有賓館（度假營）牌照</b>，約四成更涉違例發展；截至最新牌照處名單，元朗及大嶼山仍未有獲發第 349 章牌照之私營露營車場地。</li>
+          <li><b>童軍及團體活動保險合規風險</b>：無牌場地普遍未公開披露千萬第三者責任保險或欠 24 小時駐場職員，不符合童軍／學校團體活動安全與保險要求。</li>
+          <li><b>純草地營無官方名冊且結業頻繁</b>：只租草地／車位由營友自備帳篷雖毋須領第 349 章牌照，但無政府開放數據可自動追蹤存廢；疫後約三成私營場（如大嶼山海迎灘、元朗舊 Park Nature、牧緣田里、白泥部落 Glamping 等）已結業或搬遷。</li>
+        </ul>
+      </section>
+      <section>
+        <h3>🔄 2026 新指引與自動月更機制</h3>
+        <ul>
+          <li>牌照事務處已於 <b>2026 年 6 月底</b>公布優化版<a href="https://www.info.gov.hk/gia/general/202606/29/P2026062900237.htm" target="_blank" rel="noopener">《申請賓館（度假營）牌照指引》↗</a>（涵蓋建築物營地、露營車營地及帳幕營地），放寬偏遠營地消防通道及水源替代方案。</li>
+          <li>本系統<b>每月自動同步 CSDI 持牌賓館及會社合格證明書數據</b>；一旦元朗、大嶼山或新界任何私人營地／露營車正式獲發牌照，月更報告即會自動捕獲並納入審核。</li>
+          <li>庫內少量早期收錄但未見於第 349 章名單之私人 Glamping 種子場地，已於卡片簡介誠實標示合規提示；團體預訂前務必自行查核牌照與第三者保險。</li>
+        </ul>
+      </section>
+    </div>
+    <p class="prep-disclaimer">法例參考：根據香港《旅館業條例》（第 349 章），提供少於連續 28 天之收費住宿（包括露營車及固定帳幕營地）須領有牌照，無牌經營屬刑事罪行；純出租空地供自攜帳篷則不受該條例規管，惟仍須符合城規會土地用途及地政總署地契條款。</p>
   </details>
 </div>
 
@@ -323,13 +386,14 @@
     <div class="empty-state" id="emptyState" hidden>
       <p>😮 沒有符合條件的營地</p>
       <button class="btn-primary" id="emptyClear">清除篩選重試</button>
+      <p class="empty-hint">搵緊元朗／大嶼山私人營地或露營車？本庫只收錄公營、NGO、青年旅舍及第 349 章持牌處所，未持牌或純草地私營場地不作收錄。<a href="#scopePanel" id="emptyOpenScope">查看未收錄原因 ↑</a></p>
     </div>
   </main>
 </div>
 
 <footer class="site-footer" id="pageBottom" tabindex="-1">
   <div class="container">
-    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.14.2</span></p>
+    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.16.0</span></p>
     <p>地圖由 Leaflet + OpenStreetMap 提供 · 天氣數據由香港天文台提供</p>
     <p class="visit-line"><span id="visitCount">👣 入站人次統計中…</span></p>
   </div>
@@ -384,7 +448,8 @@
   </section>
 </div>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 <!-- 全站入站人次：Vercel Web Analytics，喺 Vercel Dashboard → Analytics 撳 Enable 後生效。
      本機／非 Vercel host 會 404，瀏覽器會靜靜跳過，唔影響任何功能；零 cookie、零 secret。 -->
 <script defer src="/_vercel/insights/script.js"></script>
@@ -392,7 +457,7 @@
   <div class="noscript-note">
     <b>呢個網站要開 JavaScript 先睇到營地名單。</b><br />
     瀏覽器設定 → 私隱／安全性 → 允許 JavaScript，再重新載入。
-    原始資料仍然可以直接睇：<code>data.csv</code>（108 個營地，Excel 開得）。
+    原始資料仍然可以直接睇：<code>data.csv</code>（151 個營地，Excel 開得）。
   </div>
 </noscript>
 <script src="data.js"></script>

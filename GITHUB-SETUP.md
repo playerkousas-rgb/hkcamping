@@ -11,22 +11,24 @@
 | 本地路徑 | `/home/user/hkcamping/`（Arena workspace，連 `.git`） |
 | Remote | `https://github.com/playerkousas-rgb/hkcamping.git` |
 | 可見性 | **Public**（公開 repo → Actions 分鐘無限） |
-| Default branch | `main`；今次 Arena 工作分支 `arena/31d2c3e0-hkcamping`（上一輪 `arena/b909a4c2-hkcamping` 已合併） |
-| 基準 commit | `dd5be13`（PR #5 合併點）；最初上傳為 `254a7c6`（23 個檔） |
+| Default branch | `main`；今次 Arena 工作分支 `arena/e92c5717-hkcamping` |
+| 基準 commit | `c9e8dee`（`main` 最新每日官方同步）；最初上傳為 `254a7c6`（23 個檔） |
 | 交接修補 | PR [#1](https://github.com/playerkousas-rgb/hkcamping/pull/1) 已合併（merge commit `1727ba1`），P0–P3 四個 commit 落咗 `main` |
 | 登入 | `gh auth status` = `playerkousas-rgb`，Git HTTPS 已配置，唔使 device flow／PAT |
-| 內容 | 108 筆營地、19 欄 `data.csv`、`data/auto/` 七份快照、前端三件套、五支同步腳本 |
+| 內容 | 151 筆營地、21 欄 `data.csv`、`data/auto/` 快照／報告、前端三件套、五支同步腳本＋交通發布腳本 |
 
 **已完成**：GitHub repo 建立、全部檔案推上 main、專案資料合約建立。
-**2026-10-27 修補**：補回 `.github/workflows/` 兩條 workflow（之前只喺文件提及，repo 入面冇），
+**2026-10-27～10-31 修補**：補回 `.github/workflows/` 四條 workflow（全部外部 `uses:` 已於 v1.14.3 釘死 40-hex commit SHA，A16），
 並令 `build-data.mjs` 輸出去除時間戳，等每日同步唔會製造假變更。
 
-## 二、兩條 workflow（P0 已交付）
+## 二、四條 workflow（全部已上線並釘死 SHA）
 
 | 檔案 | 觸發 | 做乜 | 寫入 |
 |---|---|---|---|
 | `.github/workflows/sync-data.yml` | cron `30 16 * * *` UTC＝每日 00:30 HKT＋`workflow_dispatch` | AFCD 41 營地快照／差異報告＋天文台警告／九天預報＋18 區實況／8 站潮汐＋OCF 12 站九日預報＋rebuild | `data/auto/afcd-*`、`weather.json`、`conditions.json`、`ocf-forecast.json`、`data.js` |
-| `.github/workflows/sync-had.yml` | cron `15 17 1 * *` UTC＝每月 2 號 01:15 HKT＋`workflow_dispatch` | CSDI LLHG ＋ HAD CSV 持牌賓館月更 | `data/auto/had-*`，**唔碰 `data.csv`** |
+| `.github/workflows/sync-had.yml` | cron `15 17 1 * *` UTC＝每月 2 號 01:15 HKT＋`workflow_dispatch` | CSDI LLHG ＋ HAD CSV 持牌賓館 ＋ CSDI CLUB 青年旅舍會社證月更 | `data/auto/had-*`，**唔碰 `data.csv`** |
+| `.github/workflows/transit-poc.yml` | cron `17 18 * * 0` UTC＝每週一 02:17 HKT＋`workflow_dispatch`＋相關路徑 push/PR | 先同步 `data.js`，再拉運輸署巴士／專線小巴 GeoJSON 全量配對、驗證 151/151 並發布緊湊快照（保留 30 日診斷 artifact） | `data/auto/transit.json`、`transit.js`（PR 只驗證唔 push） |
+| `.github/workflows/guard.yml` | push／pull_request／每週一 11:17 HKT | 跑 `guard.mjs`、`npm test`、`npm run audit` 及 `npm run ui` | 只讀（`contents: read`） |
 
 - 兩條都係 `permissions: contents: write`，有實質變更先 commit（bot `hk-camp-bot`），無變更靜默。
 - 三支同步腳本 fail-closed：fetch 失敗 → `exit 1`，保留舊快照，Actions 顯示紅燈。
@@ -52,14 +54,14 @@ gh run list -R playerkousas-rgb/hkcamping --limit 5
 
 ## 三、專案關鍵合約（改動前必讀）
 
-- 編輯源：`data.csv`（108 筆，19 欄）＋ `data/auto/weather.json` ＋ `data/auto/conditions.json` ＋ `data/auto/ocf-forecast.json`
-  → `node build-data.mjs` → `data.js`（前端讀 `window.CAMPSITES`／`CAMP_WEATHER`／`CAMP_CONDITIONS`／`CAMP_OCF`；全部嵌入快照，唔使 fetch）。
+- 編輯源：`data.csv`（108 筆，21 欄）＋ `data/auto/{weather,conditions,ocf-forecast,transit}.json`
+  → `node build-data.mjs` → `data.js` ＋ `transit.js`（前端讀 `window.CAMPSITES`／`CAMP_WEATHER`／`CAMP_CONDITIONS`／`CAMP_OCF`／`CAMP_TRANSIT`；全部嵌入快照，唔使 fetch）。
 - **OCF 九日預報**（v1.3.0）：`tools-sync-ocf.mjs` 抓 `maps.weather.gov.hk/ocf/dat/<code>.xml`（12 個站，檔名 .xml 但內容係 JSON）。
   呢個 endpoint 唔喺官方 open data API 文檔，係 OCF 網頁產品嘅資料檔；腳本 fail-closed（成功站點 < 8 就保留舊快照）。
   站點 code 實測有效：TKL／TPO／SEK／SHA／TWN／LFS／TUN／CCH／SKW／HKS／JKB／HKO；**CLK／WCH／CLC／PNG 已證實 404，唔好加**。
   TWN（荃灣）同 SKW（筲箕灣）官方只提供溫度、冇降雨概率，前端顯示「降雨概率 —」。
-- `build-data.mjs` 亦會按 `district`／`area` 配對 `weatherStation`／`rainDistrict`／`tideStation` 落每筆營地
-  （**就近站，唔係營地實測**）；改 `data.csv` 嘅 area 名時要檢查配對仲啱唔啱。
+- `build-data.mjs` 按營地座標計 Haversine 直線最近站配對 `weatherStation`／`ocfStation`（`lib/stations.mjs`），並按 `district` 配 `rainDistrict`、按沿岸 `area` 配 `tideStation`
+  （**全部屬就近站參考，唔係營地實測**）；改 `data.csv` 座標或沿岸 `area` 名時要檢查配對仲啱唔啱。
 - 日出日落係 `app.js` 嘅 `sunTimesHKT()` 純 JS 天文公式，零 API；已用 HKO 官方 SRS 2026 驗證（誤差 ≤3 分鐘）。
 - `price: null`＝面議／電話查詢（**唔係免費**；免費係 `0`）。
 - `priceSource` 係 v1.1.0 加嘅收費可信度欄：`free`（官方免費 41）／`estimate`（約數未核實 44，前端顯示「約 $」）／`enquiry`（面議 23）／`official`（已核實）。**未核實一律 `estimate`**，唔好靜靜改做 `official`。
@@ -72,10 +74,10 @@ gh run list -R playerkousas-rgb/hkcamping --limit 5
 ## 四、Vercel 部署設定（P1）
 
 `vercel.json` 已定案：`framework: null`、`buildCommand: node build-site.mjs`、
-`outputDirectory: dist`、`cleanUrls: true`、`regions: ["hkg1"]`、保安 headers。
-`build-site.mjs` 會 rebuild `data.js` 再把 **4 個檔**（index／styles／app／data）抄入 `dist/`，
-輸出約 256KB（含天氣／實況／OCF 快照）；`.vercelignore` 擋 `.git/`、`.github/`、`scripts/`、`*.md`、`tools-*.mjs`、
-`geocache.json` 同兩份大 HAD 快照 → 只保留 build 需要嘅 `data/auto/weather.json`。
+`outputDirectory: dist`、`cleanUrls: true`、`regions: ["hkg1"]`、保安 headers（含 HSTS）。
+`build-site.mjs` 會 rebuild `data.js`／`transit.js` 再把 **7 個根檔＋`icons/` 9 個圖標（共 16 個檔）**抄入 `dist/`，
+輸出約 963KB（遠低於自家 1MB 預算與 S7 5MB 硬上限）；`.vercelignore` 擋 `.git/`、`.github/`、`scripts/`、`*.md`、`tools-*.mjs`、
+`geocache.json` 同兩份大 HAD／AFCD 快照 → 只保留 build 需要嘅官方快照。
 
 **Dashboard / Git Import 設定**（Framework Preset 選 **Other** 時覆寫）：
 
@@ -84,19 +86,18 @@ gh run list -R playerkousas-rgb/hkcamping --limit 5
 | Framework Preset | Other |
 | Build Command | `node build-site.mjs`（或留空，直接用已 commit 嘅 `data.js`） |
 | Output Directory | `dist`（若 Build Command 留空則填 `.`） |
-| Install Command | 留空／`npm install`（零 dependencies） |
+| Install Command | `npm install --include=dev`（零依賴，已寫入 `vercel.json`） |
 | Root Directory | `.` |
 
 每次 push 到 `main` 自動部署；Preview 建議只開 main、retention 7 日（S8）。
 
-### 實測狀態（2026-10-28）
+### 實測狀態（2026-11-11 覆核）
 
 | 項目 | 實測結果 | 判斷 |
 |---|---|---|
 | Vercel 專案 | `hkcamping`（team `team_zEECl1SNjWNQVbtX5e81VBFO`）已接 GitHub | ✅ Git Import 已完成 |
-| Build | 合併 commit `413b725` 嘅部署狀態 = **success / Ready** | ✅ 建置正常（`node build-site.mjs` → dist 4 檔） |
-| `hkcamping.vercel.app` | **404 DEPLOYMENT_NOT_FOUND** | ⚠️ 未有 production 部署指向此網域 |
-| `hkcamping-git-main-…vercel.app` 等 | 全部跳去 **Vercel 登入頁**（Protected Deployment） | ⚠️ Deployment Protection 開住 |
+| Build | `node build-site.mjs` → `dist/` 16 檔（963KB） | ✅ 建置正常 |
+| `https://hkcamping.vercel.app/` | **200 OK 公開可開**（已載入最新每日天氣同每週交通快照） | ✅ Production 網域已生效 |
 
 **要在 Dashboard 撳兩下（Arena 連接口 token 係 `limited: true`，改唔到專案設定）**：
 

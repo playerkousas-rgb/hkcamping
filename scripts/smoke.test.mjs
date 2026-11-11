@@ -20,6 +20,7 @@ class FakeEl {
     this._html = '';
     this.textContent = '';
     this.hidden = false;
+    this.open = false;
     this.style = {};
     this.attrs = {};
     this.value = '';
@@ -88,11 +89,11 @@ function boot(seed = {}, opts = {}) {
   return { sandbox, doc, store };
 }
 
-test('data.js 載入 108 筆，前端啟動無例外', () => {
+test('data.js 載入 151 筆，前端啟動無例外', () => {
   const { sandbox, doc } = boot();
-  assert.equal(sandbox.CAMPSITES.length, 108);
-  assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>108<\/b> 個結果/);
-  assert.equal(doc.getElementById('cardGrid').children.length, 108);
+  assert.equal(sandbox.CAMPSITES.length, 151);
+  assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>151<\/b> 個結果/);
+  assert.equal(doc.getElementById('cardGrid').children.length, 151);
 });
 
 test('v1.14.0：官方巴士／小巴站點、路線、直線距離與來源說明', () => {
@@ -147,7 +148,7 @@ test('約數標記：44 筆有銀碼卡片顯示「約」+ 警句，免費／面
   assert.equal(free.length, 41);
   assert.ok(free.every((c) => !c.innerHTML.includes('約數 · 未逐筆核實')));
   const enquiry = cards.filter((c) => c.innerHTML.includes('面議／電話查詢'));
-  assert.equal(enquiry.length, 23);
+  assert.equal(enquiry.length, 66);
   assert.ok(enquiry.every((c) => !c.innerHTML.includes('約數 · 未逐筆核實')));
 });
 
@@ -171,8 +172,8 @@ test('v1.2.0：該區天氣／潮汐／日出日落公式', () => {
   const A = sandbox.CAMPSITES;
   // 每個營地都有就近氣象站 + 雨量區
   assert.ok(A.every((x) => x.weatherStation && x.rainDistrict));
-  // 75 個沿岸營地有潮汐站（其餘 null）
-  assert.equal(A.filter((x) => x.tideStation).length, 75);
+  // 109 個沿岸營地有潮汐站（其餘 null）
+  assert.equal(A.filter((x) => x.tideStation).length, 109);
   // conditions 快照：18 區雨量、27 站氣溫、8 潮汐站
   const C = sandbox.CAMP_CONDITIONS;
   assert.equal(C.districtWeather.rainfall.length, 18);
@@ -219,7 +220,7 @@ test('v1.3.0：官方 OCF 分區預報（對每日同步穩健，唔鎖死某一
   const O = sandbox.CAMP_OCF;
   assert.equal(Object.keys(O.stations).length, 12);
   assert.ok(O.notes.includes('未經人手修訂'));
-  // 108 筆全部配對到有效站
+  // 136 筆全部配對到有效站
   assert.ok(A.every((x) => x.ocfStation && O.stations[x.ocfStation]));
 
   // 每站日數：OCF 官方每日出 9–10 日，遇截數可能得 9 日 → 用下限，唔用 == 10
@@ -354,7 +355,7 @@ test('無天氣快照時天氣列自動隱藏（fail-closed）', () => {
   vm.runInContext(readFileSync(join(ROOT, 'app.js'), 'utf8'), sandbox, { filename: 'app.js' });
   assert.equal(doc.getElementById('weatherBar').hidden, true);
   assert.equal(doc.getElementById('weekendWeatherPanel').hidden, true);
-  assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>108<\/b> 個結果/);
+  assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>151<\/b> 個結果/);
 });
 
 test('v1.4.0：週末唔落雨排行用 OCF 官方站，按降雨概率升序', () => {
@@ -387,7 +388,7 @@ test('v1.4.0：我的足跡由 localStorage 讀取，卡片有「去過」徽章
   assert.match(visited[0].innerHTML, /2026-10-20/);
   // 未去過嘅卡片：徽章容器仍然 hidden，唔會顯示
   const notVisited = cards.filter((c) => c.innerHTML.includes('class="foot-btn "'));
-  assert.equal(notVisited.length, 107);
+  assert.equal(notVisited.length, 150);
   assert.ok(notVisited.every((c) => c.innerHTML.includes('foot-line" hidden')));
 });
 
@@ -467,11 +468,11 @@ test('v1.6.1：旱廁同沖水廁所分開 — 篩選獨立、數量正確、卡
   const dry = A.filter((s) => s.facilities.includes('旱廁'));
   const flush = A.filter((s) => s.facilities.includes('廁所'));
   assert.equal(dry.length, 16, '旱廁應為 16 筆');
-  assert.equal(flush.length, 32, '沖水廁所應為 32 筆');
+  assert.equal(flush.length, 41, '沖水廁所應為 41 筆');
   assert.equal(A.filter((s) => s.facilities.includes('旱廁') && s.facilities.includes('廁所')).length, 0,
     '冇營地可以同時係旱廁同沖水廁所');
 
-  assert.equal(chipCount('廁所'), 32, '「廁所」chip 只可以計沖水廁所');
+  assert.equal(chipCount('廁所'), 41, '「廁所」chip 只可以計沖水廁所');
   assert.equal(chipCount('旱廁'), 16, '「旱廁」要係獨立 chip');
 
   // 卡片：旱廁要有警告樣式，沖水廁所係普通樣式
@@ -479,7 +480,7 @@ test('v1.6.1：旱廁同沖水廁所分開 — 篩選獨立、數量正確、卡
   const dryCards = cards.filter((c) => c.innerHTML.includes('🕳 旱廁（無沖水）'));
   const flushCards = cards.filter((c) => c.innerHTML.includes('🚻 沖水廁所'));
   assert.equal(dryCards.length, 16);
-  assert.equal(flushCards.length, 32);
+  assert.equal(flushCards.length, 41);
   assert.match(dryCards[0].innerHTML, /prep-badge warn" title="旱廁/);
   assert.ok(!flushCards.some((c) => c.innerHTML.includes('旱廁')));
 });
@@ -492,7 +493,7 @@ test('v1.6.1：獨立浴室（民宿私人）同浴室（營地公用）分開',
   assert.ok(names.includes('浴室'));
   assert.ok(names.includes('獨立浴室'));
   assert.equal(A.filter((s) => s.facilities.includes('浴室')).length, 1);
-  assert.equal(A.filter((s) => s.facilities.includes('獨立浴室')).length, 5);
+  assert.equal(A.filter((s) => s.facilities.includes('獨立浴室')).length, 12);
   // 民宿嘅私人浴室唔應該被當成營地公用浴室
   assert.ok(A.filter((s) => s.facilities.includes('獨立浴室'))
     .every((s) => s.type === '民宿'));
@@ -533,7 +534,7 @@ test('v1.13.0：營運機構篩選 + 最多 3 個營地比較', () => {
 
   doc.getElementById('clearAll').click();
   const cards = doc.getElementById('cardGrid').children;
-  assert.equal(cards.length, 108);
+  assert.equal(cards.length, 151);
   const compareButtons = cards.slice(0, 4).map((card) => card.querySelector('.compare-toggle'));
   compareButtons[0].click();
   assert.equal(doc.getElementById('compareBar').hidden, false);
@@ -557,4 +558,48 @@ test('v1.13.0：營運機構篩選 + 最多 3 個營地比較', () => {
   doc.getElementById('compareClear').click();
   assert.equal(doc.getElementById('compareBar').hidden, true);
   assert.equal(doc.getElementById('comparePanel').hidden, true);
+});
+
+test('A16／SEO／SRI／AFCD 連結衛生守護', () => {
+  const { sandbox } = boot();
+  const afcdSites = sandbox.CAMPSITES.filter((s) => s.id.startsWith('a'));
+  assert.equal(afcdSites.length, 41);
+  for (const site of afcdSites) {
+    assert.match(site.infoUrl, /^https:\/\/www\.afcd\.gov\.hk\/tc_chi\/country\/cou_vis\/cou_vis_cam\//,
+      `${site.id} 漁護署連結路徑必須包含 /cou_vis/`);
+  }
+
+  const html = readFileSync(join(ROOT, 'index.html'), 'utf8');
+  assert.match(html, /<link\s+rel="canonical"\s+href="https:\/\/hkcamping\.vercel\.app\/"\s*\/>/);
+  assert.match(html, /<script\s+type="application\/ld\+json">/);
+  const jsonLdMatch = html.match(/<script\s+type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  assert.ok(jsonLdMatch, 'JSON-LD 區塊存在');
+  const jsonLd = JSON.parse(jsonLdMatch[1]);
+  assert.ok(Array.isArray(jsonLd['@graph']) && jsonLd['@graph'].length >= 2, 'JSON-LD 應包含 WebSite 與 Dataset');
+  assert.equal((html.match(/unpkg\.com\/leaflet@1\.9\.4\/dist\/leaflet\.(css|js)"[\s\S]*?integrity="sha256-/g) || []).length, 2,
+    'Leaflet CSS 與 JS 均須具備 SHA-256 SRI integrity');
+
+  for (const wf of ['guard.yml', 'sync-data.yml', 'sync-had.yml', 'transit-poc.yml']) {
+    const txt = readFileSync(join(ROOT, '.github', 'workflows', wf), 'utf8');
+    const uses = [...txt.matchAll(/^\s*-?\s*uses:\s*([^\s#]+)/gm)].map((m) => m[1]);
+    assert.ok(uses.length >= 2, `${wf} 應有外部 action uses`);
+    for (const ref of uses) {
+      assert.match(ref, /@[0-9a-f]{40}$/, `${wf} 嘅 ${ref} 必須釘死 40-hex commit SHA`);
+    }
+  }
+});
+
+test('網頁列明私人營地／露營車收錄準則及未收錄原因，空白狀態可一鍵展開說明', () => {
+  const html = readFileSync(join(ROOT, 'index.html'), 'utf8');
+  assert.match(html, /id="scopePanel"/, 'index.html 必須設有 #scopePanel 收錄準則面板');
+  assert.match(html, /消委會《選擇》月刊第 572 期/, '必須引用消委會及牌照處查核原因');
+  assert.match(html, /第 349 章/, '必須列明《旅館業條例》第 349 章牌照門檻');
+  assert.match(html, /id="emptyOpenScope"/, '搜尋無結果時提供 #emptyOpenScope 查看未收錄原因');
+
+  const { sandbox, doc } = boot();
+  assert.ok(sandbox.CAMPSITES.some((s) => s.id === 'g05' && s.summary.includes('H/6756')),
+    '已收錄持牌露營車營地世外桃源 Park Nature Hillside (H/6756)');
+  assert.equal(doc.getElementById('scopePanel').open, false);
+  doc.getElementById('emptyOpenScope').click();
+  assert.equal(doc.getElementById('scopePanel').open, true, '撳 #emptyOpenScope 應自動展開 #scopePanel');
 });
