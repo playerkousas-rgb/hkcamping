@@ -352,32 +352,37 @@ function slimTransit(src) {
   const slimStop = (s) => {
     const out = {
       companyCode: s.companyCode,
-      stopId: s.stopId,
-      nameC: s.nameC,
-      nameE: s.nameE,
-      lat: s.lat,
-      lng: s.lng,
-      distanceM: s.distanceM,
+      lat: Number.isFinite(s.lat) ? Number(s.lat.toFixed(6)) : s.lat,
+      lng: Number.isFinite(s.lng) ? Number(s.lng.toFixed(6)) : s.lng,
+      distanceM: Number.isFinite(s.distanceM) ? Math.round(s.distanceM) : s.distanceM,
       routes: (s.routes || []).map((r) => {
-        const ro = { routeNameC: r.routeNameC, originC: r.originC, destinationC: r.destinationC };
+        const ro = {};
         if (r.companyCode && r.companyCode !== s.companyCode) ro.companyCode = r.companyCode;
-        if (r.routeId && r.routeId !== r.routeNameC) ro.routeId = r.routeId;
-        if (r.routeNameE && r.routeNameE !== r.routeNameC) ro.routeNameE = r.routeNameE;
-        if (r.originE) ro.originE = r.originE;
-        if (r.destinationE) ro.destinationE = r.destinationE;
+        if (r.routeNameC) ro.routeNameC = r.routeNameC;
+        else if (r.routeNameE) ro.routeNameE = r.routeNameE;
+        else if (r.routeId) ro.routeId = r.routeId;
+        if (r.originC) ro.originC = r.originC;
+        if (r.destinationC) ro.destinationC = r.destinationC;
         return ro;
       }),
     };
+    if (s.nameC) out.nameC = s.nameC;
+    else if (s.nameE) out.nameE = s.nameE;
+    else if (s.stopId) out.stopId = s.stopId;
     if (s.routesTruncated) out.routesTruncated = true;
     return out;
   };
   return {
-    ...src,
-    campsites: (src.campsites || []).map((c) => ({
-      id: c.id,
-      bus: (c.bus || []).map(slimStop),
-      gmb: (c.gmb || []).map(slimStop),
-    })),
+    generatedAt: src.generatedAt,
+    sources: src.sources,
+    campsites: (src.campsites || []).map((c) => {
+      const item = { id: c.id };
+      const bus = (c.bus || []).slice(0, 3).map(slimStop);
+      const gmb = (c.gmb || []).slice(0, 3).map(slimStop);
+      if (bus.length) item.bus = bus;
+      if (gmb.length) item.gmb = gmb;
+      return item;
+    }),
   };
 }
 
