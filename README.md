@@ -13,10 +13,11 @@
 
 - ⛺ **漁農自然護理署（漁護署）41 個郊野公園指定露營地點**（官方完整名單，全部免費）
 - 🏛 **康樂及文化事務署（康文署）6 個場地**：4 個度假營（麥理浩夫人度假村、鯉魚門公園、西貢戶外康樂中心、曹公潭戶外康樂中心）+ 貝澳營地 + 創興水上活動中心露營區
+- 🚙 **14 個私營露營（自攜營帳草地／車中泊）場地**（獨立 `私營露營` 分類，依第 349 章指引第 1.9 段豁免賓館牌照之活躍草地營，分標「規劃准許」2 間與「合規提示」12 間）
 - 🤝 **59 個青年旅舍、NGO、制服團體及公營青年營地／營舍**（54 列宿營 + 基維爾營地、女童軍博康營地、沙田童軍中心、港青南丫島戶外中心、馬鞍山福音營等露營列）：香港青年旅舍協會（HKYHA 全線 7 間，含美荷樓）、青年廣場 Y 旅舍、民安隊（大灘／圓墩）、童軍、女童軍、少年領袖團、保良局、救世軍、中華基督教青年會／港青／女青年會、青協、明愛、鮑思高慈幼會、佛聯會、循道衛理、協進會、信義會、靈實協會（靈風雅舍）、浸信會、神託會、小童群益會、傷健協會、遊樂場協會、青年獎勵計劃、突破、紅十字會、外展訓練學校、綠匯學苑及馬灣太陽村莊
 - 🏕 **5 個私人 Glamping／露營車營地**（含第 349 章持牌之打鼓嶺世外桃源 `H/6756` 及長洲西園 `H/6668`，另 3 間早期種子列標示合規提示）及 🛖 **40 列鄉郊體驗村／民宿／渡假屋**：34 個第 349 章持牌處所／經營者（含荔枝窩客家生活體驗村、馬灣 1868 臨海度假屋、大澳文物酒店及大嶼山／南丫島／長洲持牌渡假屋）、5 個分區導覽列，及 1 個坪洲合規提示列
 
-合共 **151 筆**（41 + 6 + 59 + 5 + 40；`data.js` 分類為露營 47、宿營 59、Glamping 5、民宿 40）。網頁頂部設有「🪪 收錄準則」面板，公開列明為何未持第 349 章牌照之元朗／大嶼山私營露營車及純草地營不作收錄。
+合共 **165 筆**（41 + 6 + 14 + 59 + 5 + 40；`data.js` 分類為露營 47、私營露營 14、宿營 59、Glamping 5、民宿 40）。網頁頂部設有「🪪 收錄準則」面板，公開列明私人土地「三閘口」合規要求，以及為何未持第 349 章牌照之私人固定露營車／圓拱屋及已結業／停約場地不作收錄。
 **核心功能係幫童軍搵場、比較營地、規劃活動**：分區地圖（Leaflet + OpenStreetMap）、類型／地區／營運機構／收費／交通／設施／訊號篩選、全文搜尋、價格／巴士／專線小巴最近站排序，以及最多 3 個營地並列比較。卡片內的官方站點與路線資料可展開查看；比較表以香港場地資料為主，清楚標示未核實約價、不同計價單位及未有資料欄位。
 
 原有天氣、潮汐、訊號、交通、水源、裝備及預訂等資料**全部保留**，支援童軍活動前一站規劃；不全面照搬 GoCampingHK 的附加內容。新增或需持續更新的資料必須有官方來源，並能由 API 或 GitHub Actions 自動抓取、驗證及更新。
@@ -33,19 +34,19 @@
 | 持牌賓館/渡假屋及青年旅舍會社名單、座標、牌照／證書號碼 | [牌照事務處持牌酒店及賓館名單](https://www.hadla.gov.hk/psi/licensed-hotels-and-guesthouses/)（CSDI `LLHG` 圖層）及第 376 章合格證明書會社（CSDI `CLUB` 圖層，月更，見 `tools-sync-had.mjs`） |
 | **該區實況天氣**（18 區雨量 + 27 站氣溫） | 天文台 [`weather.php?dataType=rhrread`](https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc)，每小時更新，見 `tools-sync-conditions.mjs` |
 | **潮汐高低潮**（8 站全年預測） | 天文台 [`opendata.php?dataType=HLT`](https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HLT&station=QUB&year=2026&month=10&rformat=json)，每年更新，HKO 已計好唔使自己估 |
-| **官方巴士／專線小巴站、路線、站點座標** | 運輸署[公共交通路線及票價 GeoJSON](https://data.gov.hk/en-data/dataset/hk-td-tis_23-routes-fares-geojson) `JSON_BUS.json`／`JSON_GMB.json`；GitHub Actions 每週驗證全部 151 個營地並自動發布 `data/auto/transit.json`／`transit.js`；距離只係直線，不是步行路線或 ETA |
+| **官方巴士／專線小巴站、路線、站點座標** | 運輸署[公共交通路線及票價 GeoJSON](https://data.gov.hk/en-data/dataset/hk-td-tis_23-routes-fares-geojson) `JSON_BUS.json`／`JSON_GMB.json`；GitHub Actions 每週驗證全部 165 個營地並自動發布 `data/auto/transit.json`／`transit.js`；距離只係直線，不是步行路線或 ETA |
 | **日出／日落時間** | 純 JS 天文公式（`app.js` 嘅 `sunTimesHKT()`，NOAA/SunCalc），零 API；已用天文台 [`SRS`](https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=SRS&year=2026&rformat=json) 五個錨點驗證，最大誤差 3 分鐘 |
 | 絕大部分營地經緯度 | OpenStreetMap（經 Nominatim 查詢的 camp_site 點位，見 `geocache.json`） |
 | 小部分無 OSM 點位者 | 按官方地址定位（已在 `tools-geocode*.mjs` 註明），誤差約數百米 |
 
 > ### ⚠️ 收費可信度（2026-10-27 起）
 >
-> `data.csv` 嘅 `priceSource` 欄將 151 筆分成三類，前端會直接顯示出嚟：
+> `data.csv` 嘅 `priceSource` 欄將 165 筆分成三類，前端會直接顯示出嚟：
 >
 > | priceSource | 筆數 | 前端顯示 | 意思 |
 > |---|---:|---|---|
 > | `free` | 41 | `免費` | 漁護署官方指定營地，全部免費（惟荃錦營地須喺「郊野營人」系統預約） |
-> | `estimate` | 44 | **`約 $120 每人每晚起`** + 橙色警句 | 康文署／早期 NGO／Glamping／分區民宿嘅收費，**未逐筆向官方核實**，落訂前必須上官網或打電話確認 |
+> | `estimate` | 58 | **`約 $120 每人每晚起`** + 橙色警句 | 康文署／早期 NGO／私營草地露營（`p01`–`p14`）／Glamping／分區民宿嘅起始參考收費，落訂前必須上官網或預約頁確認平日／週末收費 |
 > | `enquiry` | 66 | `面議／電話查詢` | 持牌民宿／露營車／體驗村經營者、YHA 青年旅舍及新增 NGO／制服團體營舍，資料庫**刻意唔報假價**；持牌／會社證狀態每月由 `tools-sync-had.mjs` 自動覆核 |
 >
 > 即使係康文署有官方收費表嘅 6 筆，喺未逐筆核實前都一律標「約」。

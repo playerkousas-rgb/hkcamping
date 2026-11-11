@@ -89,11 +89,11 @@ function boot(seed = {}, opts = {}) {
   return { sandbox, doc, store };
 }
 
-test('data.js 載入 151 筆，前端啟動無例外', () => {
+test('data.js 載入 165 筆，前端啟動無例外', () => {
   const { sandbox, doc } = boot();
-  assert.equal(sandbox.CAMPSITES.length, 151);
-  assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>151<\/b> 個結果/);
-  assert.equal(doc.getElementById('cardGrid').children.length, 151);
+  assert.equal(sandbox.CAMPSITES.length, 165);
+  assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>165<\/b> 個結果/);
+  assert.equal(doc.getElementById('cardGrid').children.length, 165);
 });
 
 test('v1.14.0：官方巴士／小巴站點、路線、直線距離與來源說明', () => {
@@ -138,11 +138,11 @@ test('雙版號同頁尾版權（V1 / W1）', () => {
   assert.equal(doc.getElementById('appVersion').textContent, pkgVersion);
 });
 
-test('約數標記：44 筆有銀碼卡片顯示「約」+ 警句，免費／面議唔會', () => {
+test('約數標記：58 筆有銀碼卡片顯示「約」+ 警句，免費／面議唔會', () => {
   const { doc } = boot();
   const cards = doc.getElementById('cardGrid').children;
   const approx = cards.filter((c) => c.innerHTML.includes('約數 · 未逐筆核實'));
-  assert.equal(approx.length, 44);
+  assert.equal(approx.length, 58);
   assert.match(approx[0].innerHTML, /約 \$/);
   const free = cards.filter((c) => c.innerHTML.includes('>免費<'));
   assert.equal(free.length, 41);
@@ -164,7 +164,7 @@ test('官方 CSDI 水源／營位徽章淨係出現喺 41 筆漁護署營地', (
   assert.equal(small.length, 31);          // CSDI: 31 個少於 20 營位
   const afcd = sandbox.CAMPSITES.filter((x) => x.operator === '漁農自然護理署');
   assert.ok(afcd.every((x) => x.waterSource && x.tentSpace && x.countryPark));
-  assert.equal(sandbox.CAMPSITES.filter((x) => x.priceSource === 'estimate').length, 44);
+  assert.equal(sandbox.CAMPSITES.filter((x) => x.priceSource === 'estimate').length, 58);
 });
 
 test('v1.2.0：該區天氣／潮汐／日出日落公式', () => {
@@ -172,8 +172,8 @@ test('v1.2.0：該區天氣／潮汐／日出日落公式', () => {
   const A = sandbox.CAMPSITES;
   // 每個營地都有就近氣象站 + 雨量區
   assert.ok(A.every((x) => x.weatherStation && x.rainDistrict));
-  // 109 個沿岸營地有潮汐站（其餘 null）
-  assert.equal(A.filter((x) => x.tideStation).length, 109);
+  // 112 個沿岸營地有潮汐站（其餘 null）
+  assert.equal(A.filter((x) => x.tideStation).length, 112);
   // conditions 快照：18 區雨量、27 站氣溫、8 潮汐站
   const C = sandbox.CAMP_CONDITIONS;
   assert.equal(C.districtWeather.rainfall.length, 18);
@@ -355,7 +355,7 @@ test('無天氣快照時天氣列自動隱藏（fail-closed）', () => {
   vm.runInContext(readFileSync(join(ROOT, 'app.js'), 'utf8'), sandbox, { filename: 'app.js' });
   assert.equal(doc.getElementById('weatherBar').hidden, true);
   assert.equal(doc.getElementById('weekendWeatherPanel').hidden, true);
-  assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>151<\/b> 個結果/);
+  assert.match(doc.getElementById('resultCount').innerHTML, /共 <b>165<\/b> 個結果/);
 });
 
 test('v1.4.0：週末唔落雨排行用 OCF 官方站，按降雨概率升序', () => {
@@ -388,7 +388,7 @@ test('v1.4.0：我的足跡由 localStorage 讀取，卡片有「去過」徽章
   assert.match(visited[0].innerHTML, /2026-10-20/);
   // 未去過嘅卡片：徽章容器仍然 hidden，唔會顯示
   const notVisited = cards.filter((c) => c.innerHTML.includes('class="foot-btn "'));
-  assert.equal(notVisited.length, 150);
+  assert.equal(notVisited.length, 164);
   assert.ok(notVisited.every((c) => c.innerHTML.includes('foot-line" hidden')));
 });
 
@@ -468,11 +468,11 @@ test('v1.6.1：旱廁同沖水廁所分開 — 篩選獨立、數量正確、卡
   const dry = A.filter((s) => s.facilities.includes('旱廁'));
   const flush = A.filter((s) => s.facilities.includes('廁所'));
   assert.equal(dry.length, 16, '旱廁應為 16 筆');
-  assert.equal(flush.length, 41, '沖水廁所應為 41 筆');
+  assert.equal(flush.length, 55, '沖水廁所應為 55 筆');
   assert.equal(A.filter((s) => s.facilities.includes('旱廁') && s.facilities.includes('廁所')).length, 0,
     '冇營地可以同時係旱廁同沖水廁所');
 
-  assert.equal(chipCount('廁所'), 41, '「廁所」chip 只可以計沖水廁所');
+  assert.equal(chipCount('廁所'), 55, '「廁所」chip 只可以計沖水廁所');
   assert.equal(chipCount('旱廁'), 16, '「旱廁」要係獨立 chip');
 
   // 卡片：旱廁要有警告樣式，沖水廁所係普通樣式
@@ -480,7 +480,7 @@ test('v1.6.1：旱廁同沖水廁所分開 — 篩選獨立、數量正確、卡
   const dryCards = cards.filter((c) => c.innerHTML.includes('🕳 旱廁（無沖水）'));
   const flushCards = cards.filter((c) => c.innerHTML.includes('🚻 沖水廁所'));
   assert.equal(dryCards.length, 16);
-  assert.equal(flushCards.length, 41);
+  assert.equal(flushCards.length, 55);
   assert.match(dryCards[0].innerHTML, /prep-badge warn" title="旱廁/);
   assert.ok(!flushCards.some((c) => c.innerHTML.includes('旱廁')));
 });
@@ -534,7 +534,7 @@ test('v1.13.0：營運機構篩選 + 最多 3 個營地比較', () => {
 
   doc.getElementById('clearAll').click();
   const cards = doc.getElementById('cardGrid').children;
-  assert.equal(cards.length, 151);
+  assert.equal(cards.length, 165);
   const compareButtons = cards.slice(0, 4).map((card) => card.querySelector('.compare-toggle'));
   compareButtons[0].click();
   assert.equal(doc.getElementById('compareBar').hidden, false);
@@ -603,3 +603,31 @@ test('網頁列明私人營地／露營車收錄準則及未收錄原因，空�
   doc.getElementById('emptyOpenScope').click();
   assert.equal(doc.getElementById('scopePanel').open, true, '撳 #emptyOpenScope 應自動展開 #scopePanel');
 });
+
+test('私營露營獨立分類、車中泊篩選及兩級合規提示徽章（規劃准許 vs 合規提示）', () => {
+  const { sandbox, doc } = boot();
+  const privateCamps = sandbox.CAMPSITES.filter((s) => s.type === '私營露營');
+  assert.equal(privateCamps.length, 14, '應收錄 14 個活躍私營自攜草地／車中泊營地');
+  assert.ok(privateCamps.every((s) => s.gear === '全自備' && s.booking === true && s.bookingUrl),
+    '私營露營必須為全自備裝備且具備活躍預訂連結');
+
+  const typeChips = doc.getElementById('typeChips').children;
+  const privChip = typeChips.find((c) => c.innerHTML.startsWith('私營露營 '));
+  assert.ok(privChip, '類型篩選必須有獨立「私營露營」chip');
+  assert.match(privChip.innerHTML, /chip-count">14/);
+
+  privChip.click();
+  const cards = doc.getElementById('cardGrid').children;
+  assert.equal(cards.length, 14);
+  const approvedCards = cards.filter((c) => c.innerHTML.includes('✅ 規劃准許（康樂地帶）'));
+  const caveatCards = cards.filter((c) => c.innerHTML.includes('⚠️ 豁免賓館牌・城規及第三者保險待核實'));
+  assert.equal(approvedCards.length, 2, '禾田喜山與營喜野外露營標示「規劃准許」');
+  assert.equal(caveatCards.length, 12, '其餘 12 間私營草地標示「城規及第三者保險待核實」');
+
+  const tagChips = doc.getElementById('tagChips').children;
+  const carChip = tagChips.find((c) => c.innerHTML.startsWith('車中泊 '));
+  assert.ok(carChip, '設施與特色篩選支援「車中泊」');
+  carChip.click();
+  assert.equal(doc.getElementById('cardGrid').children.length, 11, '11 間私營露營支援車中泊');
+});
+

@@ -6,7 +6,7 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.16.0';
+  const APP_VERSION = '1.17.0';
 
   // 每週由運輸署官方 route-stop GeoJSON 自動更新；本地快照不可當作即時 ETA。
   const TRANSIT = (window.CAMP_TRANSIT && typeof window.CAMP_TRANSIT === 'object')
@@ -43,6 +43,7 @@
 
   const TYPE_META = {
     '露營': { color: '#2e7d32', short: '露' },
+    '私營露營': { color: '#00695c', short: '私' },
     'Glamping': { color: '#ef6c00', short: 'G' },
     '宿營': { color: '#1565c0', short: '宿' },
     '民宿': { color: '#6a1b9a', short: '民' },
@@ -610,6 +611,20 @@
     return `<div class="prep-badges">${parts.join('')}</div>`;
   }
 
+  function complianceBadge(s) {
+    const tags = Array.isArray(s.tags) ? s.tags : [];
+    if (tags.includes('規劃准許')) {
+      return '<div class="prep-badges"><span class="prep-badge" title="消委會《選擇》第572期引述規劃署確認屬「康樂」地帶（經常准許）；純自攜營帳／車中泊草地豁免第349章賓館牌照，惟團體活動前仍請向場地核實第三者責任保險">✅ 規劃准許（康樂地帶）・豁免賓館牌・請核實保險</span></div>';
+    }
+    if (s.type === '私營露營' && tags.includes('合規提示')) {
+      return '<div class="prep-badges"><span class="prep-badge warn" title="純自攜營帳／車中泊草地豁免第349章賓館牌照，惟城規許可、地契條款及千萬第三者責任保險無政府公開名冊核實，童軍／學校團體預訂前請先向場地確認">⚠️ 豁免賓館牌・城規及第三者保險待核實</span></div>';
+    }
+    if (tags.includes('合規提示')) {
+      return '<div class="prep-badges"><span class="prep-badge warn" title="未見於民政事務總署第349章持牌賓館名單，團體預訂前請先核實牌照與第三者責任保險">⚠️ 未見於第349章持牌名單・請核實保險</span></div>';
+    }
+    return '';
+  }
+
   const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (ch) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
   })[ch]);
@@ -880,6 +895,7 @@
         ${s.priceSource === 'estimate'
           ? '<div class="price-caveat">約數 · 未逐筆核實，落訂前請向場地官網／電話確認</div>' : ''}
         ${toiletBadge(s)}
+        ${complianceBadge(s)}
         <div class="prep-badges">${gearBadge(s)}</div>
         ${supplyLine(s)}
         ${prepBadges(s)}

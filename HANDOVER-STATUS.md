@@ -17,7 +17,8 @@
 | P6 | v1.14.2 天氣面板可收合、四掣貼底並避讓回報 | ✅ 207 項 A–X UI 驗收；三個天氣區塊原生收合，回報 widget 與快速列並排不遮擋 | 已完成 |
 | P7 | v1.14.3 對齊真理倉最新規則：Actions 40-hex SHA 釘選（A16）、清 F15 散裝版號、補治理檔與 `.env.example`、canonical＋JSON-LD＋SRI＋HSTS、修 `a14` 漁護署壞連結＋6 條 HTTPS、記錄 YHA 第 376 章 CSDI `CLUB` 自動化路徑 | ✅ `readme` `guard` 0 FAIL、`seo_check` 0 WARN、本倉 `guard` 19/19、`test` 33/33、`ui` 207/207 | 本批 |
 | P8 | v1.15.0 補齊 YHA 全線 7 間青年旅舍及 21 個已驗證活躍 NGO／制服團體／公營青年營地（`n31`–`n58`，108 → 136 筆），接入 CSDI 第 376 章 `CLUB` 月更，擴充 18 區雨量與潮汐配對，解除新場地與 `transit.json` 建置互鎖 | ✅ `guard` 19/19、`test` 33/33、`audit` 0 ERROR、`ui` 207/207 | 本批 |
-| P9 | v1.16.0 全庫重掃牌照事務處 `LLHG` 補入 15 筆第 349 章持牌露營車／體驗村／古蹟營舍／鄉郊民宿（`g05`、`n59`、`b28`–`b40`，136 → 151 筆），修正 `g02 西園` 海上座標並為 `g01/g03/g04` 加合規提示，升級 `tools-sync-had.mjs` 關鍵字，`build-data.mjs` 新增 `slimTransit`（`dist` 降至 924.8 KB），並於網頁增設 `#scopePanel` 公開列明無牌私營場地未收錄原因 | ✅ `guard` 19/19、`test` 34/34、`audit` 0 ERROR、`ui` 215/215 | 本批 |
+| P9 | v1.16.0 全庫重掃牌照事務處 `LLHG` 補入 15 筆第 349 章持牌露營車／體驗村／古蹟營舍／鄉郊民宿（`g05`、`n59`、`b28`–`b40`，136 → 151 筆），修正 `g02 西園` 海上座標並為 `g01/g03/g04` 加合規提示，升級 `tools-sync-had.mjs` 關鍵字，`build-data.mjs` 新增 `slimTransit`（`dist` 降至 924.8 KB），並於網頁增設 `#scopePanel` 公開列明無牌私營場地未收錄原因 | ✅ `guard` 19/19、`test` 34/34、`audit` 0 ERROR、`ui` 215/215 | `a72bbc6` |
+| P10 | v1.17.0 新增獨立第 5 類「私營露營」（`p01`–`p14` 共 14 筆活躍自攜營帳草地／車中泊，151 → 165 筆），卡片增設兩級合規提示徽章（`規劃准許` vs `合規提示`），更新 `#scopePanel` 私人農地三閘口說明並記錄展能運動村清拆及已停約私營場地 | ✅ 本批驗收全綠 | 本批 |
 
 **合併狀態**：PR [#1](https://github.com/playerkousas-rgb/hkcamping/pull/1) 已於 2026-10-27 合併入 `main`
 （merge commit `1727ba1`），PR #4（文件更新）亦已合併。`gh workflow list` 確認三條 workflow 全部 `active`；
