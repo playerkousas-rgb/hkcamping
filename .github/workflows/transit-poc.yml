@@ -47,16 +47,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
+      # A16：外部 Actions 釘死 40-hex commit SHA，保留版號註解供 Dependabot 識別
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '20'
 
       - name: Install ephemeral browser simulator for A–W UI tests
         run: npm install --no-save --no-package-lock jsdom@^26
+
+      - name: Sync data.js from data.csv before matching campsites
+        run: node build-data.mjs
 
       - name: Run transit parser/publisher tests before network requests
         run: node --test scripts/transit-poc.test.mjs scripts/transit-publish.test.mjs
@@ -102,7 +106,7 @@ jobs:
 
       - name: Publish diagnostics and compact website snapshot
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: transit-snapshot-${{ github.run_number }}
           path: |

@@ -15,16 +15,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      # A16：外部 Actions 釘死 40-hex commit SHA，保留版號註解供 Dependabot 識別
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: '20'
 
-      - name: Guard（S / F / A / W / V / G）
+      - name: Guard（S / F / A / W / V / G / A16 / F15 / SEO）
         run: node scripts/guard.mjs --ci
 
-      - name: 前端 smoke test（無瀏覽器模擬 DOM）
-        run: node --test scripts/smoke.test.mjs
+      - name: 全套單元與合約測試（smoke ＋ transit parser／publisher）
+        run: npm test
+
+      - name: 資料一致性掃描（用詞／AFCD・康文署連結／NO_MERGE）
+        run: npm run audit
+
+      - name: 安裝臨時 DOM 模擬器並跑 A–Y 多身份 UI 實測
+        run: |
+          npm install --no-save --no-package-lock jsdom@^26
+          npm run ui

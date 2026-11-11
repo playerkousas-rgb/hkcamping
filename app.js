@@ -6,7 +6,7 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.14.2';
+  const APP_VERSION = '1.16.0';
 
   // 每週由運輸署官方 route-stop GeoJSON 自動更新；本地快照不可當作即時 ETA。
   const TRANSIT = (window.CAMP_TRANSIT && typeof window.CAMP_TRANSIT === 'object')
@@ -1131,6 +1131,17 @@
     };
     document.getElementById('clearAll').addEventListener('click', clearAll);
     document.getElementById('emptyClear').addEventListener('click', clearAll);
+    const emptyOpenScope = document.getElementById('emptyOpenScope');
+    const scopePanel = document.getElementById('scopePanel');
+    if (emptyOpenScope && scopePanel) {
+      emptyOpenScope.addEventListener('click', (e) => {
+        e.preventDefault();
+        scopePanel.open = true;
+        if (typeof scopePanel.scrollIntoView === 'function') {
+          scopePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
 
     // 比較清單：最多 3 個，只存喺目前頁面記憶體，重新載入即清空。
     document.getElementById('compareSelected').addEventListener('click', (e) => {

@@ -12,11 +12,12 @@ data/auto/                ← 機器專用，Actions 定時更新；禁止手動
   ├─ afcd-diff-report.md    同既有資料的自動差異報告
   ├─ weather.json           天文台警告 + 九天預報（含週末降雨概率）
   ├─ had-guesthouses.json   牌照處持牌酒店賓館快照（CSDI LLHG 圖層，含座標）
+  ├─ had-yha-clubs.json     牌照處第 376 章青年旅舍合格證明書會社快照（CSDI CLUB 圖層，月更）
   ├─ had-candidates.json    由官方持牌資料機器篩出的候選（不經人工提升入庫）
   ├─ had-diff-report.md     自動差異／資料完整性報告
   ├─ conditions.json        該區實況＋潮汐站高低潮（每日）
   ├─ ocf-forecast.json      天文台 OCF 分區九日預報（每日）
-  └─ transit.json           運輸署巴士／專線小巴站點快照（每週；通過 108/108 驗證後自動發布）
+  └─ transit.json           運輸署巴士／專線小巴站點快照（每週；通過 151/151 驗證後自動發布）
 
 data.csv                  ← 現有靜態基礎資料（歷史上有人工策展；不作新增資料的維護模式）
         ↓ build-data.mjs
@@ -38,7 +39,7 @@ data.csv                  ← 現有靜態基礎資料（歷史上有人工策�
 | 漁護署 41 營地名稱/座標/郊野公園 | ✅ 全自動 | CSDI GeoJSON `afcd_rcd_1635133060194_82554` | 每日 |
 | 營地水源類型、營位規模（少於20/20-50/多於50） | ✅ 全自動 | 同上，`SOURCE_OF_WATER` / `TENT_SPACE` 欄位；營位級別須標明為官方估算 | 每日 |
 | AFCD 個別營地路線／設施／適合對象／地圖 | 🟡 待證明可穩定自動解析 | 漁護署 41 個官方營地詳情頁及其官方地圖 | 只有在 Actions 可驗證 41/41 完整解析、自動更新及 fail-closed 後才加入；不可人工逐頁維護 |
-| 營地附近官方巴士／小巴站與路線 | ✅ 全自動端到端發布（v1.14.0） | 運輸署雙週 `JSON_BUS.json` + `JSON_GMB.json` route-stop GeoJSON；[測試與限制](TRANSPORT-API-FEASIBILITY.md) | 每週抓取、驗證 108 個營地、自動更新 `data/auto/transit.json`／`transit.js` 並提交網站來源；診斷 artifact 保留 30 日 |
+| 營地附近官方巴士／小巴站與路線 | ✅ 全自動端到端發布（v1.14.0） | 運輸署雙週 `JSON_BUS.json` + `JSON_GMB.json` route-stop GeoJSON；[測試與限制](TRANSPORT-API-FEASIBILITY.md) | 每週抓取、驗證全部 151 個營地、自動更新 `data/auto/transit.json`／`transit.js` 並提交網站來源；診斷 artifact 保留 30 日 |
 | 巴士／小巴即時 ETA | 🟡 API smoke test 成功；瀏覽器接入未驗 | 運輸署 GMB、KMB/LWB；城巴及 NLB 官方 API | GMB/KMB/城巴 ETA 約每分鐘；CORS、條款及數值化限流未確認；GHA 不可保證即時 |
 | 港鐵即時 ETA／站點配對 | 🟡 ETA API smoke test 成功；未具備營地配對資料 | MTR Next Train API；MTR 車站 CSV 與 LandsD 地理資料另待驗 | 列車 ETA 每 10 秒；CSV 本輪 HTTP 500，車站座標、CORS 與條款未驗 |
 | 郊野設施/山徑臨時關閉 | ✅ 全自動 | CSDI「Closed Facilities」圖層（舊 dataset ID 已 404，需在 CSDI portal 重新搜尋新 ID） | 每日 |
@@ -50,6 +51,7 @@ data.csv                  ← 現有靜態基礎資料（歷史上有人工策�
 | SmartPLAY 度假營空位/預訂 | ❌ 無可用官方即時 API | 只連官方預訂頁，不抓內部 endpoint、不顯示即時空位、不設人手日曆提醒 | 不提供未能自動維護的空位資料 |
 | NGO 營舍收費/設施 | 🟡 個別官網待自動化驗證 | 各機構官方網站 | 只在 Actions 能可靠解析並自動更新時納入；否則只連官方頁，不新增需人工核查的欄位 |
 | 持牌賓館／渡假屋（合規民宿庫） | ✅ 全自動 | CSDI `had_rcd_1639475170528_37262` 圖層 **LLHG**（含座標）＋ HAD CSV 補牌照號，月更 | 每月 |
+| 香港青年旅舍（HKYHA）7 間處所 | ✅ 已全數收錄並接入自動核對（v1.15.0） | ① 6 間郊野／露營旅舍（白沙澳、赤徑白普理堂、昂坪戴維斯、施樂園、摩星嶺、大美督白普理）屬《會社（房產安全）條例》（第 376 章）合格證明書處所，載於 CSDI `had_rcd_1639474881869_90085` 圖層 **CLUB**（含座標、18 區、`C/...` 證號，`tools-sync-had.mjs` 月更輸出 `had-yha-clubs.json`）；② 美荷樓（`H/4765`，深水埗）載於第 349 章 **LLHG**。收費統一標 `enquiry` 連往官方頁，交通由 `transit-poc.yml` 自動配對 | 每月（CSDI）＋ 每週（TD 交通） |
 | **入站人次**（本站統計） | ✅ 全自動 | Vercel Web Analytics（`/_vercel/insights/script.js`，無 cookie）；頁尾本機累計用 `localStorage` | 即時（Dashboard） |
 | 民宿候選加入前端 | 🟡 尚未完成自動納入 | `had-candidates.json` 由官方牌照資料生成 | 不經人工挑選；只有可由明確規則自動驗證的記錄才可自動納入，否則不展示 |
 | 無牌平台房源（Airbnb 等） | ❌ 不收錄 | 第349章無牌經營風險；資料庫民宿分類只收持牌處所 | — |
@@ -74,15 +76,15 @@ data.csv                  ← 現有靜態基礎資料（歷史上有人工策�
 |---|---|
 | `tools-sync-afcd.mjs` | 抓 CSDI 41 營地 → 快照 + 對照 data.csv 出差異報告（名稱缺失、座標漂移 >100m） |
 | `tools-sync-weather.mjs` | 抓天文台警告與九天預報，順手衍生週末降雨風險清單 |
-| `tools-sync-had.mjs` | 抓 CSDI LLHG 1,807 間持牌處所 ＋ HAD CSV 補牌號 → 全庫快照、鄉郊候選、合規報告 |
+| `tools-sync-had.mjs` | 抓 CSDI LLHG 持牌處所 ＋ HAD CSV 補牌號 ＋ CSDI 第 376 章 `CLUB` 會社合格證明書 → 全庫快照、YHA 會社證快照、鄉郊候選及合規報告 |
 | `.github/workflows/sync-data.yml` | 每日 00:30 HKT 跑 AFCD＋天氣同步 + rebuild，有變更先 commit，無變更靜默 |
-| `.github/workflows/sync-had.yml` | 每月 2 號 01:15 HKT 跑持牌賓館月更，只 commit `had-*` 三個檔，唔碰 data.csv |
+| `.github/workflows/sync-had.yml` | 每月 2 號 01:15 HKT 跑持牌賓館及青年旅舍會社證月更，只 commit `had-*` 四個檔，唔碰 data.csv |
 | `data/auto/` | 機器快照目錄（已含首次實測產出） |
 | `build-data.mjs` 官方欄位 join | v1.1.0 起：按營地名稱把 `afcd-campsites.json` 嘅 `waterSource`／`tentSpace`／`countryPark` 嵌入 41 筆營地（41/41 配對成功）；呢啲係**官方客觀數據**，同 `price` 嘅人手約數分開處理 |
 | `tools-sync-conditions.mjs` | **v1.2.0 新增**：每日抓 `rhrread`（18 區雨量 + 27 站氣溫）＋ `HLT`（8 站當月＋下月高低潮）→ `data/auto/conditions.json`。`build-data.mjs` 按 `district`/`area` 配對就近氣象站同潮汐站落每筆營地 |
 | `app.js` `sunTimesHKT()` | **v1.2.0 新增**：純 JS 天文公式（NOAA/SunCalc）計日出日落，零 API、任何年份、`file://` 都用得；已用 HKO 官方 SRS 2026 五個錨點驗證，最大誤差 3 分鐘 |
 | `tools-sync-ocf.mjs` | **v1.3.0 新增**：每日抓天文台「自動分區天氣預報」(OCF) 12 個站嘅未來 9–10 日預報（`maps.weather.gov.hk/ocf/dat/<code>.xml`，檔名 .xml 但內容係 JSON）→ `data/auto/ocf-forecast.json`。多模型共識 + 本地觀測校正，每日更新兩次；**電腦自動生成、未經人手修訂**，UI 已標明 |
-| `scripts/transit-poc.mjs` + `scripts/transit-poc-core.mjs` + `scripts/publish-transit.mjs` + `.github/workflows/transit-poc.yml` | 每週抓運輸署巴士／GMB route-stop GeoJSON，對 108 個營地計最近站與直線距離；`lib/transit-snapshot.mjs` 驗證官方來源、完整營地覆蓋、座標／資料大小後，自動更新 `data/auto/transit.json`、重建 `transit.js` 並 commit/push。原始 feed／JSON／Markdown 診斷只作 30 日 artifact；缺檔、來源錯誤或資料不完整即 fail-closed，不需人工覆核 |
+| `scripts/transit-poc.mjs` + `scripts/transit-poc-core.mjs` + `scripts/publish-transit.mjs` + `.github/workflows/transit-poc.yml` | 每週（及 `data.csv` 變更時）抓運輸署巴士／GMB route-stop GeoJSON，對全部 151 個營地計最近站與直線距離；`lib/transit-snapshot.mjs` 驗證官方來源、完整營地覆蓋、座標／資料大小後，自動更新 `data/auto/transit.json`、重建 `transit.js` 並 commit/push。原始 feed／JSON／Markdown 診斷只作 30 日 artifact；缺檔、來源錯誤或資料不完整即 fail-closed，不需人工覆核 |
 | `app.js` + `index.html` + `styles.css` 交通 UI | 卡片原生展開／收合最近巴士／小巴站、路線、地圖及資料時間；每種交通最多顯示最近 2 個站、每站最多列 5 條官方路線，超出路線數會提示。比較表增加附近站點，支援按站名／路線搜尋及最近站排序。手機固定快速列提供頁頂／篩選／排序／頁底；距離與 ETA 限制在 UI 明示 |
 | `app.js` `renderWeekendRank()` | **v1.4.0 新增**：用同一個 OCF 快照計本週末（六／日）各分區站最高降雨概率，排「週末唔落雨排行」；地圖 pin 嘅降雨圓點亦改用所屬分區站，唔再全港一個數 |
 | `app.js` 我的足跡 | **v1.4.0 新增**：`localStorage` `hkcamp_footprints`（`{id:{first,last}}`），卡片一撳標記／取消，側欄可篩選／清除；無帳號、無上傳 |

@@ -288,6 +288,8 @@ code {
 .prep-panel > summary::before { content: '▸ '; color: var(--orange-600); }
 .prep-panel[open] > summary::before { content: '▾ '; }
 .prep-panel > summary:hover { background: var(--green-100); }
+.scope-panel > summary { background: linear-gradient(90deg, var(--orange-100), #fff); }
+.scope-panel > summary:hover { background: var(--orange-100); }
 .prep-hint { font-weight: 400; font-size: 0.8rem; color: var(--muted); }
 .prep-grid {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -556,6 +558,11 @@ code {
   border: 1px dashed var(--line);
 }
 .empty-state p { font-size: 1.05rem; margin-top: 0; }
+.empty-state .empty-hint {
+  font-size: 0.85rem; color: var(--muted); max-width: 540px;
+  margin: 14px auto 0; line-height: 1.6;
+}
+.empty-state .empty-hint a { color: var(--blue-700); font-weight: 600; }
 
 /* ===== Mobile filter button ===== */
 .filter-toggle {
@@ -578,7 +585,7 @@ code {
 }
 .site-footer p { margin: 4px 0; }
 .site-footer code { background: rgba(255,255,255,0.12); color: #fff; }
-.visit-line { margin-top: 10px !important; color: rgba(255,255,255,0.9); }
+.site-footer .visit-line { margin-top: 10px; color: rgba(255,255,255,0.9); }
 
 /* ===== 週末唔落雨排行（v1.4.0） ===== */
 .rank-panel { margin: 0 0 18px; }

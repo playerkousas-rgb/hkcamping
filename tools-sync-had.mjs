@@ -25,23 +25,32 @@ const GEOJSON_URL =
   '?dataset_id=had_rcd_1639475170528_37262&format=geojson&layer_name=LLHG';
 const CSV_URL =
   'https://www.hadla.gov.hk/psi/licensed-hotels-and-guesthouses/licensed_hotels_and_guesthouses.csv';
+const CLUB_GEOJSON_URL =
+  'https://portal.csdi.gov.hk/csdi-webpage/file-api' +
+  '?dataset_id=had_rcd_1639474881869_90085&format=geojson&layer_name=CLUB';
+const YHA_CLUB_RE =
+  /青年旅舍|施樂園|白普理堂|白沙澳|昂坪|戴維斯|摩星嶺|YOUTH HOSTEL|SZE LOK YUEN|BRADBURY HALL|BRADBURY JOCKEY CLUB/i;
 
-const RURAL_DISTRICTS = new Set(['離島', '西貢', '大埔', '北區', '荃灣', '屯門', '元朗', '沙田', '葵青']);
-const LEISURE_RE = /渡假|度假|民宿|露營|營地|營舍|旅舍|村屋/;
+const RURAL_DISTRICTS = new Set(['離島', '西貢', '大埔', '北區', '荃灣', '屯門', '元朗', '沙田', '葵青', '新界']);
+const LEISURE_RE =
+  /渡假|度假|民宿|露營|營地|營舍|旅舍|村屋|體驗村|太陽村莊|世外桃源|綠洲|海悠居|歸田園居|浪濤軒|碧海軒|天青|華軒|靈風雅舍|文物酒店|\b(RESORT|LODGE|OASIS|INN|B\s*&\s*B|BANYAN|RE\.LAMMA|CARAVAN|GLAMPING|CAMP|HILLSIDE|COTTAGE)\b/i;
 
 // 地址 → 細區（對應資料庫 area 欄位用詞）
 const AREA_RULES = [
   ['長洲', ['長洲']],
-  ['南丫島', ['南丫', '榕樹灣', '索罟灣']],
+  ['南丫島', ['南丫', '榕樹灣', '索罟灣', '洪聖爺']],
   ['大澳', ['大澳']],
   ['梅窩／銀礦灣', ['梅窩', '銀礦灣', '銀鑛灣']],
   ['坪洲', ['坪洲']],
   ['貝澳', ['貝澳']],
+  ['水口', ['水口']],
   ['東涌', ['東涌']],
   ['昂坪', ['昂坪']],
   ['塘福', ['塘福']],
   ['大嶼山其他', ['大嶼山', '大嶼']],
-  ['西貢', ['西貢']],
+  ['馬灣', ['馬灣']],
+  ['沙頭角／荔枝窩', ['沙頭角', '荔枝窩']],
+  ['西貢', ['西貢', '將軍澳']],
   ['大埔', ['大埔']],
   ['北區', ['粉嶺', '上水', '沙頭角', '打鼓嶺']],
   ['元朗', ['元朗', '錦田', '八鄉', '大棠']],
@@ -104,6 +113,38 @@ for (const line of csvLines) {
   }
 }
 
+/* ---------- 2b. 抓 CSDI 會社合格證明書 GeoJSON（第376章 CLUB，核對 YHA 郊野旅舍） ---------- */
+console.log('抓取 CSDI 持合格證明書會社 GeoJSON（layer=CLUB）…');
+const clubRes = await fetch(CLUB_GEOJSON_URL, { headers: { 'User-Agent': 'hk-camp-db-sync/1.0' } });
+if (!clubRes.ok) {
+  console.error(`❌ CSDI CLUB 回應 ${clubRes.status}，終止（保留舊快照）`);
+  process.exit(1);
+}
+const clubGeo = await clubRes.json();
+if (!Array.isArray(clubGeo?.features) || clubGeo.features.length < 100) {
+  console.error('❌ CSDI CLUB features 異常偏少，fail-closed 終止（保留舊快照）');
+  process.exit(1);
+}
+const yhaClubs = clubGeo.features
+  .map((f) => {
+    const p = f.properties || {};
+    const lat = Number(p.LATITUDE);
+    const lng = Number(p.LONGITUDE);
+    return {
+      objectId: p.OBJECTID,
+      certNo: (p.NSEARCH06_TC || p.NSEARCH06_EN || '').trim(),
+      name: (p.NAME_TC || '').trim(),
+      nameEn: (p.NAME_EN || '').trim(),
+      address: (p.ADDRESS_TC || '').trim(),
+      district: (p.SEARCH01_TC || '').trim(),
+      phone: (p.NSEARCH02_TC || '').trim(),
+      lat: Number.isFinite(lat) ? lat : null,
+      lng: Number.isFinite(lng) ? lng : null,
+      lastUpdate: p.LASTUPDATE || '',
+    };
+  })
+  .filter((x) => YHA_CLUB_RE.test(`${x.name} ${x.nameEn} ${x.address}`));
+
 /* ---------- 3. 正規化 ---------- */
 const all = geo.features.map((f) => {
   const p = f.properties;
@@ -140,13 +181,31 @@ const snapshot = {
 writeFileSync(join(AUTO_DIR, 'had-guesthouses.json'), JSON.stringify(snapshot, null, 2));
 console.log(`✅ 全庫快照 data/auto/had-guesthouses.json（${all.length} 間，${snapshot.withLicenceNo} 間有牌照號碼）`);
 
-/* ---------- 4. 候選清單（鄉郊區＋渡假類名稱，剔除大型酒店） ---------- */
-const HOTEL_RE = /酒店/;
+writeFileSync(
+  join(AUTO_DIR, 'had-yha-clubs.json'),
+  JSON.stringify(
+    {
+      source: CLUB_GEOJSON_URL,
+      fetchedAt: snapshot.fetchedAt,
+      totalClubFeatures: clubGeo.features.length,
+      yhaMatchedCount: yhaClubs.length,
+      clubs: yhaClubs,
+    },
+    null,
+    2
+  )
+);
+console.log(`✅ YHA 會社證快照 data/auto/had-yha-clubs.json（全港會社 ${clubGeo.features.length} 間，配對青年旅舍 ${yhaClubs.length} 間）`);
+
+/* ---------- 4. 候選清單（鄉郊區＋渡假類中英名稱，剔除大型酒店及市中心商廈賓館） ---------- */
+const HOTEL_RE = /(?<!文物)酒店|賓館|AIRPORT|HKIA|HEADLAND|GTA HOUSE/i;
+const URBAN_STREET_RE = /沙咀道|四陂坊|街市街|同樂街|擊壤路|新樂街|廣福道|運頭角里|佐敦道/;
 const candidates = all.filter(
   (x) =>
     RURAL_DISTRICTS.has(x.district) &&
-    LEISURE_RE.test(x.name) &&
-    !HOTEL_RE.test(x.name) &&
+    LEISURE_RE.test(`${x.name} ${x.nameEn}`) &&
+    !HOTEL_RE.test(`${x.name} ${x.nameEn}`) &&
+    !URBAN_STREET_RE.test(x.address) &&
     x.lat !== null
 );
 // 同名經營者通常持有多個單位牌照（每牌一處所），分組方便人工審閱
@@ -206,8 +265,13 @@ const areaCoverage = minsuRows.map((r) => {
 // 5b. 營舍/渡假村機構係咪同時持旅館牌照（合規加分項）
 // 先剝走機構通稱前綴，用獨有名字部份配對，避免「保良局賽馬會」兩營地撞名
 const ORG_PREFIX_RE =
-  /^(香港|保良局|賽馬會|救世軍|香港中華基督教青年會|香港基督教女青年會|香港青年協會|香港童軍總會|香港女童軍總會|香港明愛|香港小童群益會|香港傷健協會|香港遊樂場協會|香港青年獎勵計劃|香港浸信會聯會|香港神託會|突破機構|香港紅十字會|香港外展訓練學校|女青年會|青年會|青協|明愛|童軍總會|女童軍總會)+/;
-const distinctive = (name) => name.replace(/[（(].*?[）)]/g, '').replace(ORG_PREFIX_RE, '').trim();
+  /^(香港|保良局|賽馬會|救世軍|香港中華基督教青年會|香港基督教女青年會|香港基督教青年會|香港青年協會|香港童軍總會|香港女童軍總會|香港明愛|香港小童群益會|香港傷健協會|香港遊樂場協會|香港青年獎勵計劃|香港浸信會聯會|香港神託會|突破機構|香港紅十字會|香港外展訓練學校|鮑思高慈幼會|香港佛教聯合會|香港少年領袖團|香港基督教循道衛理聯合教會|香港基督教協進會|基督教香港信義會|基督教靈實協會|嘉道理農場暨植物園|香港青年旅舍協會|YHA\s*|女青年會|青年會|青協|港青|明愛|童軍總會|女童軍總會|女童軍)+/;
+const distinctive = (name) =>
+  name
+    .replace(/[（(].*?[）)]/g, '')
+    .replace(/([\u4e00-\u9fff])\s+[A-Za-z0-9 &.,'-]+$/, '$1')
+    .replace(ORG_PREFIX_RE, '')
+    .trim();
 const orgLicensed = dataRows
   .filter((r) => r.type === '宿營' || r.type === 'Glamping')
   .map((r) => {
@@ -261,6 +325,13 @@ const lines = [
   ...(orgLicensed.length
     ? ['| 資料庫名稱 | 持牌名稱 | 牌照號碼 |', '|---|---|---|',
        ...orgLicensed.map((x) => `| ${x.ourName} | ${x.licensedName} | ${x.licenceNo} |`)]
+    : ['_今次無配對到_']),
+  '',
+  '## 香港青年旅舍（第376章《會社（房產安全）條例》合格證明書處所）',
+  '',
+  ...(yhaClubs.length
+    ? ['| 會社名稱 | 分區 | 證明書號碼 | 座標 |', '|---|---|---|---|',
+       ...yhaClubs.map((c) => `| ${c.name} | ${c.district} | ${c.certNo || '—'} | ${c.lat},${c.lng} |`)]
     : ['_今次無配對到_']),
   '',
   '## 候選明細（按經營者分組，每牌＝一個持牌處所）',
