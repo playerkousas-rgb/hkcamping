@@ -170,8 +170,8 @@ try {
       && read('vercel.json').includes('"source": "/transit.js"'),
       '官方交通快照 fail-closed 建置、部署及 revalidate 快取'],
     [read('scripts/smoke.test.mjs').includes('transit.js')
-      && read('scripts/transit-publish.test.mjs').includes('151/151 coverage'),
-      '交通前端 smoke／151 個營地發布測試存在'],
+      && read('scripts/transit-publish.test.mjs').includes('165/165 coverage'),
+      '交通前端 smoke／165 個營地發布測試存在'],
   ];
   const failed = checks.filter(([pass]) => !pass).map(([, name]) => name);
   failed.length ? bad('workflow 合約', failed.join('; ')) : ok('workflow 合約', `${checks.length} 項全過`);
@@ -218,7 +218,7 @@ try {
   const withStation = sites.filter((x) => x.weatherStation && x.rainDistrict).length;
   const withTide = sites.filter((x) => x.tideStation).length;
   const checks = [
-    [withStation === 151, `151 筆都有就近氣象站（現 ${withStation}）`],
+    [withStation === 165, `165 筆都有就近氣象站（現 ${withStation}）`],
     [withTide > 0, `沿岸營地有潮汐站（${withTide} 筆）`],
     [cond && cond.districtWeather?.rainfall?.length === 18, 'conditions 有 18 區雨量'],
     [cond && cond.districtWeather?.temperature?.length > 20, 'conditions 有氣溫站'],
@@ -228,7 +228,7 @@ try {
   ];
   const failed = checks.filter(([p]) => !p).map(([, n]) => n);
   failed.length ? bad('該區天氣／潮汐／日光', failed.join('; '))
-    : ok('該區天氣／潮汐／日光', `151 區站配對／${withTide} 潮汐／8 站快照／日光公式`);
+    : ok('該區天氣／潮汐／日光', `165 區站配對／${withTide} 潮汐／8 站快照／日光公式`);
 } catch (e) {
   bad('該區天氣／潮汐／日光', e.message);
 }
@@ -247,7 +247,7 @@ try {
   const firstSt = Object.values(ocf?.stations || {})[0];
   const days = firstSt?.daily?.length || 0;
   const checks = [
-    [mapped === 151, `151 筆營地都配對到 OCF 站（現 ${mapped}）`],
+    [mapped === 165, `165 筆營地都配對到 OCF 站（現 ${mapped}）`],
     [stationCount >= 10, `OCF 快照有 ≥10 站（現 ${stationCount}）`],
     [days >= 9, `每站有 ≥9 日預報（現 ${days}）`],
     [firstSt?.daily?.some((d) => d.rainPct !== null), '至少一站有降雨概率'],
@@ -258,7 +258,7 @@ try {
   ];
   const failed = checks.filter(([p]) => !p).map(([, n]) => n);
   failed.length ? bad('OCF 九日分區預報', failed.join('; '))
-    : ok('OCF 九日分區預報', `151 配對／${stationCount} 站／${days} 日／官方免責`);
+    : ok('OCF 九日分區預報', `165 配對／${stationCount} 站／${days} 日／官方免責`);
 } catch (e) {
   bad('OCF 九日分區預報', e.message);
 }
@@ -383,10 +383,10 @@ try {
     const empty = rows.filter((r) => !r[iGear]).length;
     if (empty) problems.push(`${empty} 筆冇 gear 值`);
     const wrong = rows.filter((r) => {
-      const isCamp = r[iType] === '露營';
+      const isCamp = r[iType] === '露營' || r[iType] === '私營露營';
       return isCamp ? r[iGear] !== '全自備' : r[iGear] !== '場地提供';
     }).length;
-    if (wrong) problems.push(`${wrong} 筆 gear 同類型唔一致（露營＝全自備，其餘＝場地提供）`);
+    if (wrong) problems.push(`${wrong} 筆 gear 同類型唔一致（露營／私營露營＝全自備，其餘＝場地提供）`);
   }
   if (!app.includes('function gearBadge')) problems.push('app.js 冇 gearBadge');
   if (!app.includes('function supplyLine')) problems.push('app.js 冇 supplyLine');
@@ -441,7 +441,7 @@ try {
   if (tlw && tlw.ocfStation === 'SKW') problems.push('大嶼山大浪灣又配咗筲箕灣（撞名回歸）');
 
   if (problems.length) results.push({ pass: false, name: '天氣站用地標座標配對', detail: problems.join('; ') });
-  else ok('天氣站用地標座標配對', `151 筆全部「座標最近」；最遠 OCF ${maxOcf} km／氣溫站 ${maxW} km`);
+  else ok('天氣站用地標座標配對', `165 筆全部「座標最近」；最遠 OCF ${maxOcf} km／氣溫站 ${maxW} km`);
 } catch (e) {
   results.push({ pass: false, name: '天氣站用地標座標配對', detail: (e.message || '').toString().slice(0, 160) });
 }

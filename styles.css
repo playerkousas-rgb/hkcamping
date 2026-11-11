@@ -5,6 +5,7 @@
   --green-100: #e3f2e5;
   --orange-600: #ef6c00;
   --orange-100: #fff0e1;
+  --teal-700: #00695c;
   --blue-700: #1565c0;
   --purple-700: #6a1b9a;
   --ink: #20271f;
@@ -517,6 +518,7 @@ code {
   padding: 3px 10px; border-radius: 999px; white-space: nowrap;
 }
 .type-露營 { background: var(--green-700); }
+.type-私營露營 { background: var(--teal-700); }
 .type-Glamping { background: var(--orange-600); }
 .type-宿營 { background: var(--blue-700); }
 .type-民宿 { background: var(--purple-700); }

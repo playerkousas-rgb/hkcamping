@@ -3,9 +3,9 @@
  * ui-check.mjs — README A–X 使用者／維護情境實測（對照真理倉 docs/17 §1 角度⑥ ＋ STEP 8）
  *
  * 檢查項目：
- *   A. 斷網都開到（CDN 攞唔到 Leaflet 都唔可以死）／151 張卡／頁尾 © SCOUT SYSTEM + 版號
+ *   A. 斷網都開到（CDN 攞唔到 Leaflet 都唔可以死）／165 張卡／頁尾 © SCOUT SYSTEM + 版號
  *   B. 私隱模式（localStorage 一掂就 throw）／撳收藏、撳足跡都唔可以死
- *   C. 篩選真係撳得（廁所 41 ／ 旱廁 16 分開、旱廁卡有警示）
+ *   C. 篩選真係撳得（廁所 55 ／ 旱廁 16 分開、旱廁卡有警示）
  *   D. 手機：viewport／斷點／chip 識換行
  *   T. 營運機構篩選、比較 2–3 個場地、移除／清空同最多 3 個限制
  *   U–X. 童軍交通規劃、手機快速導覽、舊快照提示、天氣面板收合及自動發布合約
@@ -121,7 +121,7 @@ console.log('\n【A】一般用戶 — 斷網都開到、睇到資料、頁尾�
   const { dom, caught } = await boot();
   const d = dom.window.document;
   const cards = d.querySelectorAll('#cardGrid .card');
-  eq(cards.length, 151, `卡片渲染 ${cards.length} 張`);
+  eq(cards.length, 165, `卡片渲染 ${cards.length} 張`);
 
   const footer = d.querySelector('footer')?.textContent || d.body.textContent;
   /© SCOUT SYSTEM/.test(footer) ? ok('頁尾有 © SCOUT SYSTEM') : bad('頁尾冇 © SCOUT SYSTEM');
@@ -144,7 +144,7 @@ console.log('\n【B】一般用戶 — 私隱模式／無痕（localStorage 一�
 {
   const { dom, caught } = await boot({ privateMode: true });
   const d = dom.window.document;
-  eq(d.querySelectorAll('#cardGrid .card').length, 151, '私隱模式照樣渲染全部卡片（app 冇停擺）');
+  eq(d.querySelectorAll('#cardGrid .card').length, 165, '私隱模式照樣渲染全部卡片（app 冇停擺）');
 
   const fav = d.querySelector('#cardGrid .fav-btn');
   let err = null;
@@ -175,7 +175,7 @@ console.log('\n【C】一般用戶 — 篩選真係撳得（廁所 vs 旱廁）'
 
   if (toilet) {
     toilet.click();
-    eq(d.querySelectorAll('#cardGrid .card').length, 41, '撳「廁所」只剩沖水廁所');
+    eq(d.querySelectorAll('#cardGrid .card').length, 55, '撳「廁所」只剩沖水廁所');
     toilet.click();
   }
   if (pit) {
@@ -211,7 +211,7 @@ console.log('\n【E】一般用戶 — 回報交畀 Scout Admin widget（本站�
   const { dom } = await boot();
   const d = dom.window.document;
   eq(d.querySelectorAll('#cardGrid [data-action="report"]').length, 0, '卡片冇多餘報料掣');
-  eq(d.querySelectorAll('#cardGrid .card').length, 151, 'widget 載入失敗都唔影響 151 張卡');
+  eq(d.querySelectorAll('#cardGrid .card').length, 165, 'widget 載入失敗都唔影響 165 張卡');
   dom.window.close();
 }
 
@@ -296,8 +296,8 @@ console.log('\n【H】老花／大字／對比度');
     !/undefined|NaN/.test(allHtml) ? ok('卡片文字冇 undefined／NaN') : bad('卡片文字出現 undefined／NaN');
     const sandbox = dom.window;
     const S = sandbox.CAMPSITES;
-    eq(S.length, 151, '資料 151 筆');
-    eq(new Set(S.map((x) => x.id)).size, 151, 'id 全部唯一');
+    eq(S.length, 165, '資料 165 筆');
+    eq(new Set(S.map((x) => x.id)).size, 165, 'id 全部唯一');
     const outOfRange = S.filter((x) => !(22.1 < x.lat && x.lat < 22.6 && 113.8 < x.lng && x.lng < 114.5));
     eq(outOfRange.length, 0, '全部座標喺香港範圍（唔會飛咗去格陵蘭）');
   }
@@ -322,7 +322,7 @@ console.log('\n【H】老花／大字／對比度');
     const en = d.querySelector('.tagline-en');
     en ? ok('標題有英文一句講清楚呢個站係咩') : bad('外國訪客完全唔知呢個站做咩');
     eq(en?.getAttribute('lang'), 'en', '英文段落標咗 lang="en"（報讀器會轉英文）');
-    /151/.test(en?.textContent || '') ? ok('英文有寫 151 個營地') : bad('英文冇寫數量');
+    /165/.test(en?.textContent || '') ? ok('英文有寫 165 個營地') : bad('英文冇寫數量');
     ok('限制：全站介面仍以中文為主 —— 外國訪客睇得到資料，但撳落去係中文（已知，未做 i18n）');
   }
 
@@ -350,7 +350,7 @@ console.log('\n【H】老花／大字／對比度');
   console.log('\n【N】遠足人士');
   {
     const withTransport = cards.filter((c) => /transport-line/.test(c.innerHTML)).length;
-    eq(withTransport, 151, '每張卡都寫咗點去（交通方式）');
+    eq(withTransport, 165, '每張卡都寫咗點去（交通方式）');
     /📶 訊號/.test(allHtml) ? ok('有手機訊號（山上有冇網）') : bad('冇訊號資訊');
     /🚰|溪澗|洗手間/.test(allHtml) ? ok('有水源標示（補水）') : bad('冇水源資訊');
     /官方地圖/.test(allHtml) ? ok('有官方地圖定位連結') : bad('冇地圖連結');
@@ -393,10 +393,10 @@ console.log('\n【Q】露營新手／家長 — 要唔要自己帶裝備？邊�
   const cards = [...d.querySelectorAll('#cardGrid .card')];
   const allHtml = cards.map((c) => c.innerHTML).join('\n');
 
-  eq(cards.filter((c) => /🎒 裝備全自備/.test(c.innerHTML)).length, 47, '47 張卡標「裝備全自備」（全部露營）');
+  eq(cards.filter((c) => /🎒 裝備全自備/.test(c.innerHTML)).length, 61, '61 張卡標「裝備全自備」（47 公營／NGO 露營 ＋ 14 私營露營）');
   eq(cards.filter((c) => /🛏 有房有床/.test(c.innerHTML)).length, 104, '104 張卡標「有房有床」（宿營／民宿／Glamping）');
-  eq(d.querySelectorAll('.supply-line').length, 151, '每張卡都有「補給」入口');
-  eq(d.querySelectorAll('.supply-line .supply-pin').length, 151, '每張卡都有「📍 營地位置」（v1.9.1 修：唔會唔知營地喺邊）');
+  eq(d.querySelectorAll('.supply-line').length, 165, '每張卡都有「補給」入口');
+  eq(d.querySelectorAll('.supply-line .supply-pin').length, 165, '每張卡都有「📍 營地位置」（v1.9.1 修：唔會唔知營地喺邊）');
 
   const line = d.querySelector('.supply-line');
   const search = line?.querySelector('.supply-search');
@@ -425,7 +425,7 @@ console.log('\n【Q】露營新手／家長 — 要唔要自己帶裝備？邊�
       const m = href.match(/place\/([\d.]+),([\d.]+)/);
       return !m || !sites.some((s) => `${s.lat},${s.lng}` === `${m[1]},${m[2]}`);
     }).length;
-    eq(badPins, 0, '151 個「營地位置」都同自己嗰個營地座標一致（唔會釘錯場）');
+    eq(badPins, 0, '165 個「營地位置」都同自己嗰個營地座標一致（唔會釘錯場）');
 
     const badArea = cards.filter((c) => {
       const href = decodeURIComponent(c.querySelector('.supply-search')?.getAttribute('href') || '');
@@ -434,7 +434,7 @@ console.log('\n【Q】露營新手／家長 — 要唔要自己帶裝備？邊�
       const area = site ? String(site.area || '').replace(/^.*?·\s*/, '').trim() : '';
       return !area || !href.includes(area);
     }).length;
-    eq(badArea, 0, '151 條搜尋都帶住自己嗰個地區名（唔會派去中環）');
+    eq(badArea, 0, '165 條搜尋都帶住自己嗰個地區名（唔會派去中環）');
   }
 
   const chips = [...d.querySelectorAll('#gearChips .chip')];
@@ -442,7 +442,7 @@ console.log('\n【Q】露營新手／家長 — 要唔要自己帶裝備？邊�
   const selfChip = chips.find((c) => /全自備/.test(c.textContent));
   if (selfChip) {
     selfChip.click();
-    eq(d.querySelectorAll('#cardGrid .card').length, 47, '撳「全自備」→ 47 個場');
+    eq(d.querySelectorAll('#cardGrid .card').length, 61, '撳「全自備」→ 61 個場');
     selfChip.click();
   }
   dom.window.close();
@@ -454,8 +454,8 @@ console.log('\n【R】天氣站配對 — 用營地座標（唔再用區名關�
   const d = dom.window.document;
   const sites = dom.window.CAMPSITES || [];
 
-  eq(sites.filter((s) => Number.isFinite(s.ocfKm) && Number.isFinite(s.weatherKm)).length, 151,
-    '151 筆都有「直線距離」記錄（km）');
+  eq(sites.filter((s) => Number.isFinite(s.ocfKm) && Number.isFinite(s.weatherKm)).length, 165,
+    '165 筆都有「直線距離」記錄（km）');
   eq(sites.filter((s) => !(s.ocfKm <= 35)).length, 0, '冇營地要搵到 35 km 以外先有預報站');
 
   const tlw = sites.find((s) => s.name.includes('大浪灣') && s.district === '離島區');
@@ -526,7 +526,7 @@ console.log('\n【T】搜尋同比較 — 營運機構篩選／最多 3 個營�
   }
 
   const buttons = [...d.querySelectorAll('#cardGrid .compare-toggle')];
-  eq(buttons.length, 151, '151 張卡都有比較掣');
+  eq(buttons.length, 165, '165 張卡都有比較掣');
   const firstCard = d.querySelector('#cardGrid .card');
   const favorite = firstCard?.querySelector('.fav-btn');
   favorite?.click();

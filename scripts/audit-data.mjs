@@ -140,8 +140,8 @@ for (const r of records) {
   if (r.priceSource === 'official' && p === null) err(`${r.id}：official 但 price 空`);
   if (r.booking === '否' && r.bookingUrl) err(`${r.id}：booking=否 但有 bookingUrl`);
   if (r.booking === '是' && !r.bookingUrl && !r.infoUrl) err(`${r.id}：booking=是 但完全冇連結`);
-  if (!['露營', '宿營', 'Glamping', '民宿'].includes(r.type)) err(`${r.id}：type「${r.type}」唔在四類之內`);
-  if (r.type === '露營' && list(r.facilities).some((f) => f.includes('冷氣'))) {
+  if (!['露營', '私營露營', '宿營', 'Glamping', '民宿'].includes(r.type)) err(`${r.id}：type「${r.type}」唔在五類之內`);
+  if ((r.type === '露營' || r.type === '私營露營') && list(r.facilities).some((f) => f.includes('冷氣'))) {
     err(`${r.id}：露營場地唔應該有冷氣設施（${list(r.facilities).filter((f) => f.includes('冷氣')).join('、')}）`);
   }
   const lat = Number(r.lat), lng = Number(r.lng);

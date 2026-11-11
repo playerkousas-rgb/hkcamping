@@ -78,9 +78,9 @@ test('parses official-style route-stop features and merges routes by operator/st
   assert.ok(parsed.stops.some((stop) => stop.stopId === 'C-1' && stop.routes[0].routeId === '88'));
 });
 
-test('automatically matches all 151 current camps, reports nearest modes and straight-line distance', () => {
+test('automatically matches all 165 current camps, reports nearest modes and straight-line distance', () => {
   const campsites = loadCampsites();
-  assert.equal(campsites.length, 151);
+  assert.equal(campsites.length, 165);
   const namShan = campsites.find((camp) => camp.id === 'a27');
   assert.equal(namShan.name, '南山營地');
 
@@ -98,8 +98,8 @@ test('automatically matches all 151 current camps, reports nearest modes and str
   ], 'gmb');
 
   const poc = buildTransitPoc({ busFeed: bus, gmbFeed: gmb, campsites, generatedAt: '2026-10-31T00:00:00Z' });
-  assert.equal(poc.quality.processedCampsites, 151);
-  assert.equal(poc.quality.expectedCampsites, 151);
+  assert.equal(poc.quality.processedCampsites, 165);
+  assert.equal(poc.quality.expectedCampsites, 165);
   assert.equal(poc.quality.allCampsitesProcessed, true);
   const result = poc.campsites.find((camp) => camp.id === 'a27');
   assert.equal(result.nearest.bus[0].stopId, '9');
@@ -109,7 +109,7 @@ test('automatically matches all 151 current camps, reports nearest modes and str
   assert.equal(poc.summary.coverageWithinMeters.bus['500'] >= 1, true);
 
   const markdown = renderTransitPocMarkdown(poc);
-  assert.match(markdown, /151\/151/);
+  assert.match(markdown, /165\/165/);
   assert.match(markdown, /直線距離/);
   assert.match(markdown, /\| a27 \| 南山營地 \|/);
 });
