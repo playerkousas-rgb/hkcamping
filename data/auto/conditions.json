@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-11-11T22:53:23.080Z",
+  "fetchedAt": "2026-11-12T22:21:36.902Z",
   "districtWeather": {
     "source": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc",
-    "updateTime": "2026-11-12T06:02:00+08:00",
-    "recordTime": "2026-11-12T06:00:00+08:00",
+    "updateTime": "2026-11-13T06:02:00+08:00",
+    "recordTime": "2026-11-13T06:00:00+08:00",
     "rainfallPeriod": {
-      "start": "2026-11-12T04:45:00+08:00",
-      "end": "2026-11-12T05:45:00+08:00"
+      "start": "2026-11-13T04:45:00+08:00",
+      "end": "2026-11-13T05:45:00+08:00"
     },
     "rainfall": [
       {
@@ -85,128 +85,128 @@
     "temperature": [
       {
         "station": "京士柏",
-        "c": 22
+        "c": 23
       },
       {
         "station": "香港天文台",
-        "c": 23
+        "c": 24
       },
       {
         "station": "黃竹坑",
-        "c": 23
+        "c": 25
       },
       {
         "station": "打鼓嶺",
-        "c": 15
+        "c": 22
       },
       {
         "station": "流浮山",
-        "c": 19
+        "c": 22
       },
       {
         "station": "大埔",
-        "c": 20
+        "c": 23
       },
       {
         "station": "沙田",
-        "c": 20
+        "c": 23
       },
       {
         "station": "屯門",
-        "c": 20
+        "c": 23
       },
       {
         "station": "將軍澳",
-        "c": 21
+        "c": 23
       },
       {
         "station": "西貢",
-        "c": 22
+        "c": 23
       },
       {
         "station": "長洲",
-        "c": 22
+        "c": 24
       },
       {
         "station": "赤鱲角",
-        "c": 22
+        "c": 25
       },
       {
         "station": "青衣",
-        "c": 22
+        "c": 24
       },
       {
         "station": "石崗",
-        "c": 20
+        "c": 23
       },
       {
         "station": "荃灣可觀",
-        "c": 20
+        "c": 22
       },
       {
         "station": "荃灣城門谷",
-        "c": 21
+        "c": 23
       },
       {
         "station": "香港公園",
-        "c": 22
+        "c": 24
       },
       {
         "station": "筲箕灣",
-        "c": 23
+        "c": 24
       },
       {
         "station": "九龍城",
-        "c": 21
+        "c": 23
       },
       {
         "station": "跑馬地",
-        "c": 23
+        "c": 24
       },
       {
         "station": "黃大仙",
-        "c": 22
+        "c": 24
       },
       {
         "station": "赤柱",
-        "c": 22
-      },
-      {
-        "station": "觀塘",
-        "c": 22
-      },
-      {
-        "station": "深水埗",
-        "c": 21
-      },
-      {
-        "station": "啟德跑道公園",
         "c": 23
       },
       {
+        "station": "觀塘",
+        "c": 23
+      },
+      {
+        "station": "深水埗",
+        "c": 24
+      },
+      {
+        "station": "啟德跑道公園",
+        "c": 24
+      },
+      {
         "station": "元朗公園",
-        "c": 18
+        "c": 22
       },
       {
         "station": "大美督",
-        "c": 21
+        "c": 23
       }
     ],
     "humidity": [
       {
         "station": "香港天文台",
-        "percent": 77
+        "percent": 81
       }
     ],
     "uv": [],
     "warningMessage": "",
     "icon": [
-      51
+      60
     ]
   },
   "tides": {
     "source": "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HLT&station=<code>&year=<year>&month=<month>&rformat=json",
-    "fetchedAt": "2026-11-11T22:53:23.080Z",
+    "fetchedAt": "2026-11-12T22:21:36.902Z",
     "stations": {
       "QUB": {
         "name": "鰂魚涌",
