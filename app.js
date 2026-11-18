@@ -6,7 +6,7 @@
   //   data-app="營地資料庫" 會令後台多一個同名膠囊。所以 app.js 依然係零 fetch、零表單。
   const SITES = Array.isArray(window.CAMPSITES) ? window.CAMPSITES : [];
   // 雙版號：package.json / index.html meta / 本常數 / VERSIONS.md 四處要同步（V1）
-  const APP_VERSION = '1.17.0';
+  const APP_VERSION = '1.18.0';
 
   // 每週由運輸署官方 route-stop GeoJSON 自動更新；本地快照不可當作即時 ETA。
   const TRANSIT = (window.CAMP_TRANSIT && typeof window.CAMP_TRANSIT === 'object')
@@ -1769,8 +1769,58 @@
     if (foot) foot.textContent = APP_VERSION;
   }
 
+  /* ---------- SG18：一鍵回跳主站讚好／收藏（零寫死網址，未載入閘門時保持隱藏） ---------- */
+  function initStoreSupport() {
+    const gate = window.ScoutStoreGate;
+    if (!gate || typeof gate.getAppStoreUrl !== 'function') return;
+    const url = gate.getAppStoreUrl('hkcamping');
+    if (!url) return;
+    const top = document.getElementById('storeSupportTop');
+    const bar = document.getElementById('storeSupportBar');
+    const foot = document.getElementById('storeSupportFoot');
+    const lead = document.getElementById('storeSupportLead');
+    const syncLang = () => {
+      const root = document.documentElement;
+      const langAttr =
+        (root && ((root.getAttribute && (root.getAttribute('data-lang') || root.getAttribute('lang'))) || root.lang)) || '';
+      const isEn = String(langAttr).toLowerCase().startsWith('en');
+      const aria = isEn
+        ? 'Like or save this app on SCOUT APP STORE (opens in new tab)'
+        : '前往主站讚好或收藏此程式（開新分頁）';
+      if (top) {
+        top.textContent = isEn ? '❤️ Like / Save' : '❤️ 讚好／收藏';
+        top.setAttribute('aria-label', aria);
+        top.setAttribute('title', aria);
+      }
+      if (lead) {
+        lead.textContent = isEn ? 'Found this campsite database useful? Support it on' : '覺得營地資料庫幫到手？去主站俾個';
+      }
+      if (foot) {
+        foot.textContent = isEn ? '❤️ Like / ⭐ Save' : '❤️ 讚好 ／ ⭐ 收藏';
+        foot.setAttribute('aria-label', aria);
+        foot.setAttribute('title', aria);
+      }
+    };
+    if (top) {
+      top.href = url;
+      top.hidden = false;
+    }
+    if (foot) {
+      foot.href = url;
+      if (bar) bar.hidden = false;
+    }
+    syncLang();
+    if (typeof MutationObserver === 'function' && document.documentElement) {
+      new MutationObserver(syncLang).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['lang', 'data-lang'],
+      });
+    }
+  }
+
   /* ---------- 啟動 ---------- */
   renderVersion();
+  initStoreSupport();
   initVisitCounter();
   renderWeather();
   renderForecastRegionOptions();

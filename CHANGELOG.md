@@ -2,6 +2,17 @@
 
 本檔記錄近期結構與治理變更摘要；完整逐版功能與規則對照表（`v0.1.0` 起）集中維護於單一來源 [VERSIONS.md](VERSIONS.md)，避免雙重記載。
 
+## [1.18.0] - 2026-11-18
+
+### Added
+- **SCOUT APP STORE 準入白名單閘門（SG1–SG19）**：原封不動引入真理倉 `store_gate_v1.0.js` 並納入 `build-site.mjs` 發佈清單（`dist/store_gate_v1.0.js`），於 `index.html` `<head>` 最頂啟用 `mode: 'entry-gate'`、`portalIds: ['appstore']`、`silentPortalIds: ['library']`、`allowStandalone: true`、`autoRedirectSeconds: 0`（保留 `localStorage` 最愛／足跡與主畫面 PWA，直開網址顯示單一 APP STORE 入口提示卡，通告圖書館連結靜默放行）。
+- **一鍵回跳主站「❤️ 讚好／收藏」（SG18）**：於頂欄右上角（`#storeSupportTop`）及頁尾（`#storeSupportBar`）增設常駐非阻塞回跳連結，動態呼叫 `ScoutStoreGate.getAppStoreUrl('hkcamping')` 開新分頁定位主站詳情卡（零寫死網址、零主站資料庫直連、閘門未載入時維持 `hidden`），並加入 `@media print` 列印隱藏規則。
+- **自動化白名單與 G11 守護**：新增 `scripts/store-gate.test.mjs`、`scripts/ui-check.mjs` Z 段情境及 `scripts/guard.mjs` 第 20 項白名單合約守護，並升級第 18 項 G11 圖標守護（`og-image.png`、`favicon.ico` 16/32/48、9 檔 ≤260 KB、`<head>` PNG `type="image/png"`）。
+
+### Fixed
+- **G11 圖標標記（`docs/33 §7`）**：補齊 `index.html` `<link rel="apple-touch-icon" type="image/png" sizes="180x180" ...>` 之 `type="image/png"` 屬性。
+- **README 紀律對齊（`docs/47`）**：修正 `README.md`、`SCOPE.md` 及 `HANDOVER-STATUS.md` 內殘留之舊筆數（108／151 → 165）與白名單入口說明，確保所有敘述與自動化檢查一致。
+
 ## [1.17.0] - 2026-11-11
 
 ### Added

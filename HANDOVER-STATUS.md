@@ -18,7 +18,8 @@
 | P7 | v1.14.3 對齊真理倉最新規則：Actions 40-hex SHA 釘選（A16）、清 F15 散裝版號、補治理檔與 `.env.example`、canonical＋JSON-LD＋SRI＋HSTS、修 `a14` 漁護署壞連結＋6 條 HTTPS、記錄 YHA 第 376 章 CSDI `CLUB` 自動化路徑 | ✅ `readme` `guard` 0 FAIL、`seo_check` 0 WARN、本倉 `guard` 19/19、`test` 33/33、`ui` 207/207 | 本批 |
 | P8 | v1.15.0 補齊 YHA 全線 7 間青年旅舍及 21 個已驗證活躍 NGO／制服團體／公營青年營地（`n31`–`n58`，108 → 136 筆），接入 CSDI 第 376 章 `CLUB` 月更，擴充 18 區雨量與潮汐配對，解除新場地與 `transit.json` 建置互鎖 | ✅ `guard` 19/19、`test` 33/33、`audit` 0 ERROR、`ui` 207/207 | 本批 |
 | P9 | v1.16.0 全庫重掃牌照事務處 `LLHG` 補入 15 筆第 349 章持牌露營車／體驗村／古蹟營舍／鄉郊民宿（`g05`、`n59`、`b28`–`b40`，136 → 151 筆），修正 `g02 西園` 海上座標並為 `g01/g03/g04` 加合規提示，升級 `tools-sync-had.mjs` 關鍵字，`build-data.mjs` 新增 `slimTransit`（`dist` 降至 924.8 KB），並於網頁增設 `#scopePanel` 公開列明無牌私營場地未收錄原因 | ✅ `guard` 19/19、`test` 34/34、`audit` 0 ERROR、`ui` 215/215 | `a72bbc6` |
-| P10 | v1.17.0 新增獨立第 5 類「私營露營」（`p01`–`p14` 共 14 筆活躍自攜營帳草地／車中泊，151 → 165 筆），卡片增設兩級合規提示徽章（`規劃准許` vs `合規提示`），更新 `#scopePanel` 私人農地三閘口說明並記錄展能運動村清拆及已停約私營場地 | ✅ 本批驗收全綠 | 本批 |
+| P10 | v1.17.0 新增獨立第 5 類「私營露營」（`p01`–`p14` 共 14 筆活躍自攜營帳草地／車中泊，151 → 165 筆），卡片增設兩級合規提示徽章（`規劃准許` vs `合規提示`），更新 `#scopePanel` 私人農地三閘口說明並記錄展能運動村清拆及已停約私營場地 | ✅ `f6cbd93` | `f6cbd93` |
+| P11 | v1.18.0 接入 SCOUT APP STORE 準入白名單閘門（`store_gate_v1.0.js`，`entry-gate`、`portalIds: ['appstore']`、`silentPortalIds: ['library']`、`allowStandalone: true`、`autoRedirectSeconds: 0`）及 SG18 一鍵回跳主站「❤️ 讚好／收藏」（`?app=hkcamping`）；補齊 G11 `apple-touch-icon` `type="image/png"`、新增 `store-gate.test.mjs`＋`ui-check.mjs` Z 段＋`guard.mjs` 第 20 項守護，並對齊 `docs/47` README 紀律 | ✅ 本批驗收全綠（真機實測待合併部署後補驗） | 本批 |
 
 **合併狀態**：PR [#1](https://github.com/playerkousas-rgb/hkcamping/pull/1) 已於 2026-10-27 合併入 `main`
 （merge commit `1727ba1`），PR #4（文件更新）亦已合併。`gh workflow list` 確認三條 workflow 全部 `active`；
@@ -80,6 +81,7 @@
 | **A 安全** | 純靜態、無登入、無寫入面、無 server、零 secret；入站人次用 Vercel Web Analytics（無 cookie／無第三方 tracker），頁面顯示嘅本機次數唔上傳；`vercel.json` 加 nosniff／frame／referrer／permissions headers。**例外**：A3–A10（session／RLS／超管／限流）唔適用，因為冇身份同可寫 API；已喺本檔寫明 | ✅（例外已申報） |
 | **W 版權** | `index.html` meta `copyright` ＋頁尾 `© SCOUT SYSTEM`。**例外**：本專案無 AI 生成圖，W2/W3 隱形水印唔適用；OSM／天文台／通訊辦數據只做連結同署名，不轉載版權圖層 | ✅（例外已申報） |
 | **V 雙版號** | 多檔站無單一 `app_vX.Y.html`，改用 `package.json`／meta／`APP_VERSION`／`VERSIONS.md` 四處對照，guard 自動驗 | ✅ |
+| **SG 白名單入口** | 原封不動掛載 `store_gate_v1.0.js`（`entry-gate`、`portalIds: ['appstore']`、`silentPortalIds: ['library']`、`allowStandalone: true`、`autoRedirectSeconds: 0`）＋ SG18 `getAppStoreUrl('hkcamping')` 一鍵回跳主站，保留 `localStorage` 與 PWA standalone，零 308 永久轉址 | ✅ |
 
 其他：**G** Conventional Commits、PR template、dependabot、`.gitignore` 已就位；
 **VL** `framework:null` + `outputDirectory:dist` + headers + `hkg1` 已就位。
@@ -87,13 +89,12 @@
 ## 四、驗收結果（本機）
 
 ```bash
-npm run guard     # 19/19 全綠；含 A16 Actions 釘 SHA、F15 無散裝版號、SEO/SRI 及 transit 合約守護
-npm test          # 33/33 通過：smoke、A16/SEO/AFCD 連結衛生、交通 parser／publisher、108 個營地快照驗證
+npm run guard     # 20/20 全綠；含 SG1–SG19 白名單、G11 圖標 type/sizes、A16 Actions 釘 SHA、F15 無散裝版號、SEO/SRI 及 transit 合約守護
+npm test          # 41/41 通過：smoke、SG1–SG19 白名單閘門、A16/SEO/AFCD 連結衛生、交通 parser／publisher、165 個營地快照驗證
 npm run audit     # 0 ERROR（WARN 2 項：香港遊樂場協會 camp.hkpa.hk 經實測未支援 HTTPS，如實保留 http）
-npm run ui        # 207/207 通過：A–X 24 個情境，含天氣區塊收合及回報／頁底快捷列避讓
-npm run build:site  # dist/ 7 個根檔 + 9 個 icons，guard 驗收總體積 <1MB
+npm run ui        # 241/241 通過：A–Z 26 個情境，含白名單閘門、SG18 回跳掣、天氣區塊收合及回報／頁底快捷列避讓
+npm run build:site  # dist/ 8 個根檔 + 9 個 icons，guard 驗收總體積 <1MB
 npm run dev       # http://localhost:8000 本機預覽（已 bind 0.0.0.0，Arena live preview 用得到）
-# 實測 HTTP：/ /index.html /styles.css /app.js /data.js 全部 200；交通由 transit.js 嵌入，瀏覽器無需 fetch
 ```
 
 > **網絡限制**：Arena sandbox 只可以連 github／npm／pypi，`tools-sync-*.mjs` 喺本機實測係

@@ -2,19 +2,30 @@
 <html lang="zh-Hant-HK">
 <head>
   <meta charset="UTF-8" />
+  <script src="/store_gate_v1.0.js"></script>
+  <script>
+    initStoreGate({
+      appKey: 'hkcamping',
+      mode: 'entry-gate',
+      portalIds: ['appstore'],
+      silentPortalIds: ['library'],
+      allowStandalone: true,
+      autoRedirectSeconds: 0
+    });
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>香港露營・宿營・民宿資料庫｜童軍營地比較與活動規劃</title>
   <meta name="description" content="香港營地、宿營營舍、Glamping 與民宿資料庫，按分區、費用、營運機構、交通、設施比較；配合天氣及準備資訊，支援童軍活動規劃。" />
   <meta name="author" content="SCOUT SYSTEM" />
   <meta name="copyright" content="© SCOUT SYSTEM" />
-  <meta name="version" content="1.17.0" />
+  <meta name="version" content="1.18.0" />
   <link rel="canonical" href="https://hkcamping.vercel.app/" />
 
   <!-- v1.11.0：App Icon／favicon（iOS 加入主畫面、Android 安裝、瀏覽器分頁、分享預覽都要有圖） -->
   <link rel="icon" href="/icons/favicon.ico" sizes="any" />
   <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
   <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/icons/apple-touch-icon.png" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <meta name="theme-color" content="#1B4D28" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -72,20 +83,25 @@
 
 <a class="skip-link" href="#mainContent">跳去主要內容</a>
 
-<header class="site-header" id="pageTop" tabindex="-1">
-  <div class="container header-inner">
-    <div class="header-brand">
-      <img class="brand-logo" src="/icons/icon-192.png" width="56" height="56"
-           alt="" aria-hidden="true" decoding="async" />
-      <div>
-        <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.17.0</span></h1>
-        <p class="tagline">漁護署營地 ・ 私營草地露營 ・ Glamping ・ 宿營營舍 ・ 離島渡假屋 — 搵營地、plan 活動一站看清</p>
-        <p class="tagline-en" lang="en">Hong Kong campsite database for Scouts — compare 165 sites and plan activities with location, fees, access and facilities.</p>
+  <header class="site-header" id="pageTop" tabindex="-1">
+    <div class="container header-inner">
+      <div class="header-top">
+        <div class="header-brand">
+          <img class="brand-logo" src="/icons/icon-192.png" width="56" height="56"
+               alt="" aria-hidden="true" decoding="async" />
+          <div>
+            <h1>香港露營・宿營・民宿資料庫 <span class="badge-demo" id="versionBadge">v1.18.0</span></h1>
+            <p class="tagline">漁護署營地 ・ 私營草地露營 ・ Glamping ・ 宿營營舍 ・ 離島渡假屋 — 搵營地、plan 活動一站看清</p>
+            <p class="tagline-en" lang="en">Hong Kong campsite database for Scouts — compare 165 sites and plan activities with location, fees, access and facilities.</p>
+          </div>
+        </div>
+        <a id="storeSupportTop" class="support-btn" target="_blank" rel="noopener" hidden
+           aria-label="前往主站讚好或收藏此程式（開新分頁）"
+           title="前往主站讚好或收藏此程式（開新分頁）">❤️ 讚好／收藏</a>
       </div>
+      <div class="header-stats" id="headerStats"></div>
     </div>
-    <div class="header-stats" id="headerStats"></div>
-  </div>
-</header>
+  </header>
 
 <div class="safety-banner">
   <div class="container">
@@ -394,7 +410,12 @@
 
 <footer class="site-footer" id="pageBottom" tabindex="-1">
   <div class="container">
-    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.17.0</span></p>
+    <p id="storeSupportBar" class="support-bar" hidden>
+      <span id="storeSupportLead">覺得營地資料庫幫到手？去主站俾個</span>
+      <a id="storeSupportFoot" target="_blank" rel="noopener"
+         aria-label="前往主站讚好或收藏此程式（開新分頁）">❤️ 讚好 ／ ⭐ 收藏</a>
+    </p>
+    <p>香港營地資料庫 · © SCOUT SYSTEM · v<span id="appVersion">1.18.0</span></p>
     <p>地圖由 Leaflet + OpenStreetMap 提供 · 天氣數據由香港天文台提供</p>
     <p class="visit-line"><span id="visitCount">👣 入站人次統計中…</span></p>
   </div>

@@ -40,11 +40,11 @@ const REQUIRED = [
   'README.md', 'AGENTS.md', 'SCOPE.md', 'GLOSSARY.md', 'CONTRIBUTING.md', 'CHANGELOG.md',
   'AUTOMATION.md', 'GITHUB-SETUP.md', 'HANDOVER-STATUS.md', 'PROGRESS.md', 'VERSIONS.md',
   'data.csv', 'data.js', 'build-data.mjs', 'build-site.mjs', 'package.json',
-  'index.html', 'styles.css', 'app.js',
+  'index.html', 'store_gate_v1.0.js', 'styles.css', 'app.js',
   '.env.example', '.gitignore', '.vercelignore', 'vercel.json',
   '.github/workflows/sync-data.yml', '.github/workflows/sync-had.yml',
   '.github/workflows/guard.yml', '.github/workflows/transit-poc.yml', '.github/PULL_REQUEST_TEMPLATE.md',
-  'scripts/guard.mjs', 'scripts/smoke.test.mjs',
+  'scripts/guard.mjs', 'scripts/smoke.test.mjs', 'scripts/store-gate.test.mjs',
   'scripts/transit-poc.mjs', 'scripts/transit-poc-core.mjs', 'scripts/transit-poc.test.mjs',
   'scripts/publish-transit.mjs', 'scripts/transit-publish.test.mjs', 'lib/transit-snapshot.mjs', 'transit.js',
   'tools-sync-conditions.mjs', 'tools-sync-ocf.mjs',
@@ -299,7 +299,7 @@ try {
   const distLine = out.split('\n').find((l) => l.includes('dist 合計'));
   const dataJs = statSync(join(ROOT, 'data.js')).size;
   let dist = 0;
-  for (const f of ['index.html', 'styles.css', 'app.js', 'data.js', 'transit.js']) {
+  for (const f of ['index.html', 'store_gate_v1.0.js', 'styles.css', 'app.js', 'data.js', 'transit.js']) {
     dist += statSync(join(ROOT, 'dist', f)).size;
   }
   const js = read('data.js');
@@ -488,23 +488,67 @@ try {
     return [buf.readUInt32BE(16), buf.readUInt32BE(20)];
   };
   const expect = {
-    'icons/apple-touch-icon.png': 180,
-    'icons/icon-192.png': 192,
-    'icons/icon-512.png': 512,
-    'icons/icon-maskable-192.png': 192,
-    'icons/icon-maskable-512.png': 512,
-    'icons/favicon-16.png': 16,
-    'icons/favicon-32.png': 32,
+    'icons/apple-touch-icon.png': [180, 180],
+    'icons/icon-192.png': [192, 192],
+    'icons/icon-512.png': [512, 512],
+    'icons/icon-maskable-192.png': [192, 192],
+    'icons/icon-maskable-512.png': [512, 512],
+    'icons/favicon-16.png': [16, 16],
+    'icons/favicon-32.png': [32, 32],
+    'icons/og-image.png': [1200, 630],
   };
   let checked = 0;
-  for (const [f, n] of Object.entries(expect)) {
+  let iconBytes = 0;
+  for (const [f, [ew, eh]] of Object.entries(expect)) {
     if (!existsSync(join(ROOT, f))) continue;
     try {
+      const buf = readFileSync(join(ROOT, f));
+      iconBytes += buf.length;
       const [w, h] = sizeOf(f);
-      if (w !== n || h !== n) problems.push(`${f} 尺寸 ${w}×${h}（應為 ${n}×${n}）`);
+      if (w !== ew || h !== eh) problems.push(`${f} 尺寸 ${w}×${h}（應為 ${ew}×${eh}）`);
+      if (f === 'icons/icon-512.png' && buf.length < 40 * 1024) {
+        problems.push(`${f} 只有 ${(buf.length / 1024).toFixed(1)} KB < 40 KB（G11）`);
+      }
       checked += 1;
     } catch (e) {
       problems.push(`${f} 讀唔到尺寸（${e.message}）`);
+    }
+  }
+  if (existsSync(join(ROOT, 'icons/favicon.ico'))) {
+    const icoBuf = readFileSync(join(ROOT, 'icons/favicon.ico'));
+    iconBytes += icoBuf.length;
+    if (icoBuf.length < 6 || icoBuf.readUInt16LE(0) !== 0 || icoBuf.readUInt16LE(2) !== 1) {
+      problems.push('icons/favicon.ico 唔係有效 ICO（G11）');
+    } else {
+      const cnt = icoBuf.readUInt16LE(4);
+      const have = new Set();
+      for (let i = 0; i < cnt && 6 + i * 16 + 1 < icoBuf.length; i += 1) {
+        have.add(icoBuf[6 + i * 16] || 256);
+      }
+      for (const sz of [16, 32, 48]) {
+        if (!have.has(sz)) problems.push(`icons/favicon.ico 缺 ${sz}px 內嵌圖（要 16/32/48，G11）`);
+      }
+    }
+  }
+  if (iconBytes > 260 * 1024) {
+    problems.push(`G11：icons/ 9 檔總體積 ${Math.round(iconBytes / 1024)} KB > 260 KB（docs/33 §8）`);
+  }
+  const linkRe = /<link\b[^>]*>/gi;
+  let linkMatch;
+  while ((linkMatch = linkRe.exec(html))) {
+    const tag = linkMatch[0];
+    const relM = /rel\s*=\s*["']([^"']*)["']/i.exec(tag);
+    if (!relM) continue;
+    const rels = relM[1].toLowerCase().split(/\s+/);
+    const isApple = rels.includes('apple-touch-icon');
+    const isIcon = rels.includes('icon');
+    if (!isApple && !isIcon) continue;
+    const href = (/href\s*=\s*["']([^"']*)["']/i.exec(tag) || [])[1] || '';
+    if (isApple && !/\bsizes\s*=/i.test(tag)) {
+      problems.push(`G11：index.html apple-touch-icon 缺 sizes（${href}）`);
+    }
+    if (/\.png(\?|#|$)/i.test(href) && !/\btype\s*=\s*["']image\/png["']/i.test(tag)) {
+      problems.push(`G11：index.html PNG 圖標缺 type="image/png"（${href}，docs/33 §7）`);
     }
   }
 
@@ -579,6 +623,80 @@ try {
   else ok('A16／F15／SEO／SRI 守護', `${actionCount} 個外部 Action 全釘 SHA；${codeFiles.length} 個 code 檔無散裝版號；canonical＋JSON-LD＋SRI 齊`);
 } catch (e) {
   bad('A16／F15／SEO／SRI 守護', (e.message || '').toString().slice(0, 160));
+}
+
+/* ---------- 20. SG1–SG19 App Store 準入白名單閘門與回跳主站合約 ---------- */
+try {
+  const html = read('index.html');
+  const app = read('app.js');
+  const css = read('styles.css');
+  const gateJs = read('store_gate_v1.0.js');
+  const distGate = existsSync(join(ROOT, 'dist', 'store_gate_v1.0.js'))
+    ? readFileSync(join(ROOT, 'dist', 'store_gate_v1.0.js'), 'utf8')
+    : '';
+  const vercelCfg = read('vercel.json');
+  const problems = [];
+
+  if (!gateJs.includes('function initStoreGate') || !gateJs.includes('function getAppStoreUrl')) {
+    problems.push('store_gate_v1.0.js 缺 initStoreGate 或 getAppStoreUrl');
+  }
+  if (distGate !== gateJs) {
+    problems.push('dist/store_gate_v1.0.js 未同步（請執行 npm run build:site）');
+  }
+  const idxCharset = html.indexOf('<meta charset="UTF-8"');
+  const idxGateSrc = html.indexOf('<script src="/store_gate_v1.0.js"></script>');
+  const idxGateInit = html.indexOf('initStoreGate(');
+  const idxTitle = html.indexOf('<title>');
+  if (idxCharset < 0 || idxGateSrc <= idxCharset || idxGateInit <= idxGateSrc || idxGateInit >= idxTitle) {
+    problems.push('SG3：store_gate_v1.0.js 與 initStoreGate 必須位於 <meta charset="UTF-8"> 之後、<title> 之前');
+  }
+  const initBlock = html.slice(Math.max(0, idxGateInit), Math.max(0, idxTitle));
+  const mustCfg = [
+    [/appKey\s*:\s*['"]hkcamping['"]/, "appKey: 'hkcamping'"],
+    [/mode\s*:\s*['"]entry-gate['"]/, "mode: 'entry-gate'"],
+    [/portalIds\s*:\s*\[\s*['"]appstore['"]\s*\]/, "portalIds: ['appstore']"],
+    [/silentPortalIds\s*:\s*\[\s*['"]library['"]\s*\]/, "silentPortalIds: ['library']"],
+    [/allowStandalone\s*:\s*true/, 'allowStandalone: true'],
+    [/autoRedirectSeconds\s*:\s*0/, 'autoRedirectSeconds: 0'],
+  ];
+  for (const [re, label] of mustCfg) {
+    if (!re.test(initBlock)) problems.push(`SG19：initStoreGate 缺 ${label}`);
+  }
+  if (/['"](member|district|gemini)['"]/.test(initBlock)) {
+    problems.push('SG17：A 組嚴禁自行加入 member／district／gemini 入口');
+  }
+  if (/supportNudge\s*:/.test(initBlock) || /enableSupportNudge/.test(html + app)) {
+    problems.push('SG18：已加回跳掣時唔准同時開 supportNudge');
+  }
+  if (/scoutappstore\.vercel\.app/i.test(html) || /scoutappstore\.vercel\.app/i.test(app)) {
+    problems.push('SG18：index.html／app.js 嚴禁寫死主站網址，必須用 ScoutStoreGate.getAppStoreUrl');
+  }
+  if (/supabase|bump_hearts|bump_stars/i.test(html + app)) {
+    problems.push('SG18：嚴禁直連主站 Supabase 或呼叫 bump_hearts／bump_stars');
+  }
+  if (!/id="storeSupportTop"[^>]*target="_blank"[^>]*rel="noopener"[^>]*hidden/.test(html)) {
+    problems.push('SG18：index.html 缺預設 hidden 之 #storeSupportTop（target="_blank" rel="noopener"）');
+  }
+  if (!app.includes("getAppStoreUrl('hkcamping')")) {
+    problems.push("SG18：app.js 未透過 getAppStoreUrl('hkcamping') 產生回跳網址");
+  }
+  if (!/\.support-btn\[hidden\][\s\S]*?display:\s*none/.test(css)) {
+    problems.push('SG18：styles.css 缺 .support-btn[hidden] { display: none } 防 display:inline-flex 蓋過 hidden');
+  }
+  if (!/@media\s+print[\s\S]*?\.support-btn[\s\S]*?display:\s*none/.test(css)) {
+    problems.push('SG18：styles.css 缺 @media print 隱藏 .support-btn');
+  }
+  if (/"permanent"\s*:\s*true/.test(vercelCfg)) {
+    problems.push('SG4：vercel.json 嚴禁設定 permanent: true（308 永久快取陷阱）');
+  }
+  if (!vercelCfg.includes('"/store_gate_v1.0.js"')) {
+    problems.push('vercel.json 缺 /store_gate_v1.0.js 快取驗證標頭');
+  }
+
+  if (problems.length) bad('SG1–SG19 白名單閘門與回跳主站', problems.join('; '));
+  else ok('SG1–SG19 白名單閘門與回跳主站', "entry-gate／portalIds:['appstore']／silent:['library']／SG18 getAppStoreUrl('hkcamping')");
+} catch (e) {
+  bad('SG1–SG19 白名單閘門與回跳主站', (e.message || '').toString().slice(0, 160));
 }
 
 /* ---------- 總結 ---------- */

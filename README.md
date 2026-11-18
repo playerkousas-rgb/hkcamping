@@ -84,7 +84,7 @@
 - **唔用** `data/auto/ocf-forecast.json` 自己帶嘅座標 —— 佢將「西貢」寫成 22.436,114.085，
   其實係「石崗」嘅位置（差 20 公里），用咗會令大棠、河背配去西貢。
 - 天文台另有「**昂坪**」站（22.259, 113.913），但只有氣溫、冇降雨概率，所以唔參加落雨配對。
-- guard 第 17 項每次都會重算一次，確認 151 筆都係「座標最近」。
+- guard 第 17 項每次都會重算一次，確認 165 筆都係「座標最近」。
 >
 > 氣象站同 OCF 分區站現已全部按經緯度直線最近自動配對（`lib/stations.mjs`），只有沿岸潮汐站仍按海灣 `area` 規則配對（`build-data.mjs`）；
 > 山區同外島同站點可以有明顯差異；正式活動前請再上天文台確認。
@@ -187,15 +187,15 @@ guard 第 18 項會**自己讀 PNG 的 IHDR**（唔靠 ImageMagick，CI 都用�
 
 | 值 | 意思 | 幾多筆 |
 |---|---|---:|
-| `全自備` | 帳篷、睡袋、煮食器具、食水全部自己帶（漁護署指定露營地點就係咁） | **45**（全部「露營」類） |
-| `場地提供` | 有房間／床位，唔使自己帶營具 | **63**（宿營／民宿／Glamping） |
+| `全自備` | 帳篷、睡袋、煮食器具、食水全部自己帶（漁護署指定露營地點及私營草地／車中泊） | **61**（47 公營／NGO 露營 ＋ 14 私營露營） |
+| `場地提供` | 有房間／床位，唔使自己帶營具 | **104**（宿營 59／民宿 40／Glamping 5） |
 
 > 冇第三個值。好似「有冇被鋪／毛巾／煮食爐」呢啲**每間場都唔同**，我哋唔會統一一刀切講死，
 > 卡片會寫「實際提供咩要問場地」。
 
 ### 最近補給點 —— 大部分故意唔填
 
-`supply` 欄**只有 6 筆有值**，其餘 102 筆留空。原因：**官方（漁護署／康文署／民政署）
+`supply` 欄**只有 6 筆有值**，其餘 159 筆留空。原因：**官方（漁護署／康文署／民政署）
 冇「最近超市喺邊」嘅數據**，而自己估就違反「唔可以報假料」嘅原則。
 
 **有值嘅 6 筆**全部係我哋自己簡介已經寫住、有文字依據嘅：
@@ -449,13 +449,14 @@ hk-camp-database/
 ├── .github/workflows/transit-poc.yml # 每週一 02:17 HKT 官方交通快照抓取、驗證與發布
 ├── .github/workflows/guard.yml       # push / PR / 每週一跑 guard＋test＋audit＋ui（Actions 全釘 SHA）
 ├── .github/PULL_REQUEST_TEMPLATE.md / .github/dependabot.yml
-├── scripts/guard.mjs     # 本機 + CI 同一條守護檢查（S/F/A/W/V/G）
+├── scripts/guard.mjs     # 本機 + CI 同一條守護檢查（S/F/A/W/V/G/G11/SG）
 ├── scripts/smoke.test.mjs # 模擬 DOM 前端啟動測試（零依賴）
+├── scripts/store-gate.test.mjs # SG1–SG19 白名單閘門與回跳主站單元測試（零依賴）
 ├── VERSIONS.md           # 雙版號登記表
 ├── HANDOVER-STATUS.md    # 交接體檢對照
 ├── tools-geocode*.mjs    # Nominatim 地理編碼腳本（三個批次，建檔時用）
 ├── geocache.json         # 地理編碼快取（含 OSM 點位來源）
-├── index.html / styles.css / app.js
+├── index.html / store_gate_v1.0.js / styles.css / app.js
 └── package.json
 ```
 
@@ -481,9 +482,9 @@ node build-data.mjs --check   # 只驗收 data.js 同 data.csv／weather.json �
 
 | 欄位 | 說明 | 範例 |
 |---|---|---|
-| id | 唯一編號：a=漁護署、l=康文署、n=NGO、g=Glamping、b=民宿 | a06 / l03 / n12 |
+| id | 唯一編號：a=漁護署、l=康文署、n=NGO、p=私營露營、g=Glamping、b=民宿 | a06 / l03 / n12 / p01 |
 | name | 營地名稱 | 灣仔南營地 |
-| type | 露營 / Glamping / 宿營 / 民宿 | 露營 |
+| type | 露營 / 私營露營 / Glamping / 宿營 / 民宿 | 露營 |
 | operator | 營運機構 | 漁農自然護理署 / 香港童軍總會 |
 | district | 香港十八區分區 | 西貢區 |
 | area | 細部地點 | 西貢海下灣仔半島 |
@@ -499,7 +500,7 @@ node build-data.mjs --check   # 只驗收 data.js 同 data.csv／weather.json �
 | signal | 手機訊號：良好 / 一般 / 微弱 / 無 | 微弱 |
 | lat, lng | 緯度、經度（優先採用 OSM camp_site 點位） | 22.4616,114.3422 |
 | summary | 一至兩句簡介（避免用半形逗號） | — |
-| gear | 裝備要求：`全自備`（全部露營場地）或 `場地提供`（宿營／Glamping／民宿） | 全自備 / 場地提供 |
+| gear | 裝備要求：`全自備`（全部露營及私營露營場地）或 `場地提供`（宿營／Glamping／民宿） | 全自備 / 場地提供 |
 | supply | 已核實之鄰近補給提示；未核實一律留空，由前端地圖搜尋入口補位 | 附近宗教機構士多 |
 
 ## 本機預覽
@@ -510,7 +511,16 @@ npm run dev
 python3 -m http.server 8000 --bind 0.0.0.0
 ```
 
-然後瀏覽器開 `http://localhost:8000`（直接雙擊 index.html 也可以，資料走 data.js 而非 fetch）。
+然後瀏覽器開 `http://localhost:8000`（注意：已啟用 SCOUT APP STORE 準入白名單閘門，直打網址會先見到主站入口提示卡；本機驗證放行可用 `curl -H "Referer: https://scoutappstore.vercel.app/"` 或執行 `npm test`／`npm run ui`）。
+
+## APP STORE 準入白名單與主站回跳（v1.18.0 · SG1–SG19）
+
+對照真理倉 `docs/50-app-store-whitelist-and-shutdown.md` 與 `docs/51-whitelist-rollout-list.md`（A 組）：
+
+- **模式與參數**：`appKey: 'hkcamping'`、`mode: 'entry-gate'`（頂層跳板白名單，不使用 `<iframe>`）、`portalIds: ['appstore']`、`silentPortalIds: ['library']`（SG19：通告圖書館連結有 Referer 即靜默放行，攔截提示卡只顯示單一「前往 APP STORE」按鈕）、`allowStandalone: true`、`autoRedirectSeconds: 0`（停低顯示提示卡，不秒跳）、`supportNudge` 關閉。
+- **實際發佈根目錄**：Vercel `outputDirectory` 為 `dist`（`vercel.json` 執行 `node build-site.mjs`）；`store_gate_v1.0.js` 由真理倉原封不動收錄於倉根目錄並由 `build-site.mjs` 同步輸出至 `dist/store_gate_v1.0.js`，配 `Cache-Control: public, max-age=0, must-revalidate` 確保緊急關站或規則更新即時生效，絕不使用 308 永久轉址（SG4）。
+- **一鍵回跳主站讚好／收藏（SG18）**：頂欄右上角 `#storeSupportTop` 及頁尾 `#storeSupportBar` 動態呼叫 `ScoutStoreGate.getAppStoreUrl('hkcamping')` 開新分頁回跳 `https://scoutappstore.vercel.app/?app=hkcamping`（slug 核實自 `website/migrations/20261116-app-slug-seed.sql`）；零寫死主站網址、零直連主站 Supabase、閘門未載入時維持 `hidden`，列印時由 `@media print` 自動隱藏。
+- **本機儲存與 PWA 安裝須知（SG2／SG7）**：本機只用 `localStorage` 存輕量篩選標記（`hkcamp_favourites`、`hkcamp_footprints`）與瀏覽器到訪計數（`hkcamp_visits`），無雲端帳號；首次安裝手機主畫面捷徑時，請先由 SCOUT APP STORE 進入本站再用瀏覽器選單「加入主畫面」，之後點主畫面圖示直開會以 `standalone` 模式自動放行。此閘門屬前端入口引導，並非身分驗證或資料存取控制。
 
 ## 回報（v1.7.2 — 一行 widget，本站零表單）
 
@@ -526,42 +536,42 @@ python3 -m http.server 8000 --bind 0.0.0.0
 | 來源 | `data-app="營地資料庫"` → 後台多一個「營地資料庫」膠囊，一眼分到邊個系統 |
 | payload | 用 admin 本身嗰套（`SCOUT_ADMIN.md §〇`），本專案唔自己定 |
 | 本專案負責 | **乜都唔使**：冇表單、冇 fetch、冇後端、冇 key |
-| 斷網／被封 | widget 載入唔到＝右下角乜都唔出，**網站照用**（151 張卡照樣渲染） |
+| 斷網／被封 | widget 載入唔到＝右下角乜都唔出，**網站照用**（165 張卡照樣渲染） |
 
 > **點解唔自己寫表單**：每多一套表單，後台就多一種睇法。用戶（你）講得好準——
 > 來源膠囊已經夠分辨，寧願全站用同一個介面。
 >
 > 之前 v1.7.0–v1.7.1 試過自寫 GAS 同自寫表單，兩版都刪走咗。現有回報按鈕只把意見交到共用 Scout Admin；回報不會自動成為營地事實，也不是資料更新流程或人工核查的保證。不得以眾包資料替代官方來源。
 
-### 用邊啲身份測（`npm run ui` A–Y）
+### 用邊啲身份測（`npm run ui` A–Z）
 
 **情境類（A–H）**
 
 | 段 | 身份／情境 | 具體驗乜 |
 |---|---|---|
-| A | 斷網用戶 | 151 張卡照出、頁尾版權版號、Console 零 error |
+| A | 斷網用戶 | 165 張卡照出、頁尾版權版號、Console 零 error |
 | B | 無痕／私隱模式用戶 | `localStorage` 一掂就 throw 都撳到收藏、足跡 |
-| C | 要篩選嘅用戶 | 廁所 41／旱廁 16／旱廁卡有 🕳 |
+| C | 要篩選嘅用戶 | 廁所 55／旱廁 16／旱廁卡有 🕳 |
 | D | 手機用戶（375px） | viewport、手機斷點、chip 識換行 |
 | E | 想回報嘅用戶 | widget 有嵌、來源「營地資料庫」、本站零表單 |
 | F | 關咗 JavaScript | `<noscript>` 提示 + 直接開 `data.csv` |
 | G | 鍵盤／螢幕報讀 | lang、焦點框、skip link、可操作元素全部有名 |
 | H | 老花／大字 | 全 rem、正文 13.79:1、次要文字 4.71:1 |
 
-**真人身份／主要任務類（I–X）**
+**真人身份／主要任務類（I–Z）**
 
 | 段 | 身份 | 佢最關心 | 而家撳得到嗎 |
 |---|---|---|---|
-| I | 程序員查 BUG | 有冇重複 id、undefined、座標飛咗 | ✅ 151 個 id 唯一、151 筆座標全在香港 |
-| J | 網頁工程師看 UI | 字級亂、inline style、設計變數 | ✅ 14 個變數、14 級字級、0 inline |
+| I | 程序員查 BUG | 有冇重複 id、undefined、座標飛咗 | ✅ 165 個 id 唯一、165 筆座標全在香港 |
+| J | 網頁工程師看 UI | 字級亂、inline style、設計變數 | ✅ 15 個變數、16 級字級、0 inline |
 | K | 外國到訪的人 | 知唔知呢個站係咩 | ⚠️ 有英文一句 + `lang="en"`；**介面仍中文，未做 i18n** |
 | L | 小孩 | 撳得中嗎、會唔會彈窗嚇親 | ✅ 手機主要觸控目標 ≥48px、冇自動彈窗 |
-| M | 家庭用戶 | 有冇廁所、免費、檯凳 | ✅ 57 張卡標廁所／旱廁（分得開）、有免費標示 |
+| M | 家庭用戶 | 有冇廁所、免費、檯凳 | ✅ 71 張卡標廁所／旱廁（分得開）、有免費標示 |
 | N | 遠足人士 | 點去、有冇水、有冇訊號 | ✅ 每張卡有既有交通方式、水源、訊號、官方地圖；另有官方站點參考 |
 | O | 童軍 | 幾多人、點申請 | ✅ 營位數、預訂／官方連結、所屬機構 |
 | P | 團體 | 夠唔夠大 | ✅ 營位規模篩選：多於 50 → 5 個場、20–50 → 5 個 |
 | Q | **露營新手／家長** | 要唔要自己帶裝備？邊度補給？ | ✅ `gear` 篩選、每張卡有補給與營地位置入口；6 個場列已核實補給點 |
-| R | 天氣規劃 | 天氣站配得近唔近 | ✅ 151 個營地按座標配就近天文台／OCF 站，顯示直線距離 |
+| R | 天氣規劃 | 天氣站配得近唔近 | ✅ 165 個營地按座標配就近天文台／OCF 站，顯示直線距離 |
 | S | 手機使用者 | 可唔可以加到主畫面／分享連結有冇圖 | ✅ PWA manifest、iOS／Android 圖示、OG 預覽 |
 | T | 團體／策劃者 | 點搵同一機構旗下場地、點樣比較候選 | ✅ 營運機構篩選；最多 3 個營地比較 16 項香港實用資料 |
 | U | 童軍策劃者 | 站名、路線、距離、資料來源同限制 | ✅ 交通明細可展開／收合；標明直線距離、非步行可達、非即時 ETA |
@@ -569,17 +579,18 @@ python3 -m http.server 8000 --bind 0.0.0.0
 | W | 程序員／維護者 | 舊快照會唔會扮最新？自動更新有冇人工步驟？ | ✅ 超過 10 日顯示警告；自動驗證、提交網站快照；不依賴人工覆核 |
 | X | 天氣規劃／手機單手用戶 | 天氣資訊可否收合？頁底四掣及回報入口會否互相遮擋？ | ✅ 三個天氣區塊可收合；四掣固定貼底，48px 回報入口另留位置並避開 safe area |
 | Y | 查私人營地／露營車嘅營友與領袖 | 點解搵唔到部分元朗／大嶼山私營場？有冇收錄準則？ | ✅ 頂部 `#scopePanel` 列明第 349 章牌照與消委會查核原因；搜尋空白提示一鍵展開說明 |
+| Z | 由主站／圖書館／直打網址／PWA 進入嘅用家 | 入口白名單有冇攔直打、放行主站與圖書館、支援回跳讚好／收藏？ | ✅ 主站與圖書館放行、直打只出 1 粒 APP STORE 掣、PWA standalone 放行、SG18 回跳 `?app=hkcamping` |
 
 > 呢個站**冇帳號、冇分旅團／區／支部** —— 所有人睇同一個版本。
-> A–Y 共 25 個測試情境；U–Y 覆蓋交通 UI、新鮮度提示、自動發布、天氣收合、手機頁底快速列及私營場地收錄合規說明。
+> A–Z 共 26 個測試情境；U–Z 覆蓋交通 UI、新鮮度提示、自動發布、天氣收合、手機頁底快速列、私營場地收錄合規說明及 SG1–SG19 準入白名單閘門。
 
 ## 品質守護（commit 前跑）
 
 ```bash
-npm run guard       # guard 靜態守護（19 項，含交通快照自動發布、A16/SEO/SRI、fail-closed 建置與快取標頭）
-npm test            # 34 個 smoke／POC／快照測試，含 151 個營地發布驗證、收錄準則面板及 16 項比較欄位
-npm run build:site  # 產生 dist/（7 個核心檔 + icons，體積由 guard 驗收）
-npm run ui          # 215 項 A–Y 情境實測（先 npm i -D jsdom@^26）；CI 使用暫時安裝，不加入網站依賴
+npm run guard       # guard 靜態守護（20 項，含 SG1–SG19 白名單、G11 圖標 type/sizes、A16/F15/SEO/SRI 及交通合約）
+npm test            # 41 個 smoke／閘門／POC／快照測試，含 165 個營地發布驗證、SG1–SG19 閘門與 16 項比較欄位
+npm run build:site  # 產生 dist/（8 個核心檔 + 9 個 icons，體積由 guard 驗收 < 1 MB）
+npm run ui          # 241 項 A–Z 情境實測（先 npm i --no-save --no-package-lock jsdom@^26）；CI 自動暫時安裝跑齊
 ```
 
 ### 「程序員」同「一般用戶」兩種檢測（v1.6.2）
@@ -590,14 +601,14 @@ npm run ui          # 215 項 A–Y 情境實測（先 npm i -D jsdom@^26）；C
 
 | 角度 | 邊個做 | 點跑 | 守乜 |
 |---|---|---|---|
-| **程序員** | 自動、CI 必跑 | `npm run guard`（19 項）、`npm test`（33 項） | 資料本身有冇矛盾、版號四處有冇同步、交通來源／快照／部署合約 |
-| **一般用戶** | 本機可手動；CI 自動跑 | `npm i -D jsdom@^26 && npm run ui`（207 項，A–X 24 段；交通 workflow 暫時安裝 jsdom） | 見下面「用邊啲身份測」 |
+| **程序員** | 自動、CI 必跑 | `npm run guard`（20 項）、`npm test`（41 項） | 資料本身有冇矛盾、版號四處有冇同步、SG1–SG19 白名單／交通來源／快照／部署合約 |
+| **一般用戶** | 本機可手動；CI 自動跑 | `npm i --no-save --no-package-lock jsdom@^26 && npm run ui`（241 項，A–Z 26 段；CI 自動暫時安裝 jsdom） | 見上面「用邊啲身份測」（含本機模擬閘門；iOS／Android 真機加主畫面需於正式網域另行實測） |
 
-**兩個都係 build／測試期先跑，網站本身仍然係零 runtime dependency，`dist/` 一個 byte 都冇多。**
+**兩個都係 build／測試期先跑，網站本身仍然係零 runtime dependency，`dist/` 無任何外部 npm 套件。**
 
 `npm run ui` 用 jsdom 模擬真瀏覽器：斷開所有 CDN（模擬斷網）、令 `localStorage` 一掂就拋錯（模擬無痕視窗），
-再真係 `.click()` 篩選 chip、展開交通詳情、排序及開關手機側欄。**v1.6.2 就係呢個測試捉到 `saveFavs` 冇包 try/catch**——
-私隱模式下一撳「收藏」會令成個 app 停擺。jsdom 只供本機／CI 測試，不會進入 `dist/` 或網站 runtime；CI 以 `--no-save --no-package-lock` 暫時安裝。唔想本機裝都跑得 `guard` 同 `test`，但 CI 仍會自動跑 A–X。
+再真係 `.click()` 篩選 chip、展開交通詳情、排序、開關手機側欄及驗證白名單閘門。**v1.6.2 就係呢個測試捉到 `saveFavs` 冇包 try/catch**——
+私隱模式下一撳「收藏」會令成個 app 停擺。jsdom 只供本機／CI 測試，不會進入 `dist/` 或網站 runtime；CI 以 `--no-save --no-package-lock` 暫時安裝。唔想本機裝都跑得 `guard` 同 `test`，但 CI 仍會自動跑 A–Z。
 
 > 守護有冇用，要證明佢捉得到。每次改完跑三個**變異測試**（故意整壞再還原）：
 > ① 把「旱廁」編入廁所分組 ② `index.html` 版號改細一版 ③ 刪走頁尾 `© SCOUT SYSTEM`
@@ -621,7 +632,7 @@ npm run ui          # 215 項 A–Y 情境實測（先 npm i -D jsdom@^26）；C
    `index.html` 已嵌入 `/_vercel/insights/script.js`，開啟後就有全站訪客／瀏覽量；
    頁尾顯示嘅「你第 N 次到訪」係本機累計，唔會上傳任何個人資料
 
-`build-site.mjs` 只會輸出 5 個核心檔（含 `transit.js`）以及 manifest／robots／icons 入 `dist/`；`.vercelignore` 擋走工具、文件同內部診斷資料。交通快照以 revalidate 標頭避免長期快取舊資料。
+`build-site.mjs` 只會輸出 6 個核心 JS/HTML/CSS 檔（含 `store_gate_v1.0.js` 及 `transit.js`）以及 manifest／robots／icons 入 `dist/`；`.vercelignore` 擋走工具、文件同內部診斷資料。閘門腳本與交通快照均設定 `must-revalidate` 標頭，避免長期快取舊資料。
 本機想驗收同一份產物：`npm run build:site` 後用任何 static server 開 `dist/`。
 詳細交接同 Vercel 連接口限制見 [GITHUB-SETUP.md](GITHUB-SETUP.md)。
 
@@ -651,6 +662,8 @@ npm run ui          # 215 項 A–Y 情境實測（先 npm i -D jsdom@^26）；C
 - [x] **治理架構、供應鏈安全、SEO/GEO 與連結衛生強化**（v1.14.3）：補齊 `AGENTS.md`／`SCOPE.md`／`GLOSSARY.md`／`CONTRIBUTING.md`／`CHANGELOG.md`／`docs/`，9 處 GitHub Actions 全釘 40-hex SHA（A16），清走散裝行內版號註解（F15），補齊 `canonical`／JSON-LD／Leaflet SRI／HSTS，修正 `a14` 漁護署連結與 6 筆 NGO HTTPS 連結，並查明 YHA 第 376 章（CSDI `CLUB`）自動化來源
 - [x] **補齊香港青年旅舍全線 7 間及全港活躍 NGO／制服團體／公營青年營地**（v1.15.0）：`data.csv` 由 108 擴充至 136 筆（新增 `n31`–`n58`，全數 HTTPS 官方連結與 `enquiry` 查詢價），`tools-sync-had.mjs` 接入 CSDI 第 376 章 `CLUB` 月更核對，並排除及記錄已停辦／重建或內部專用場地
 - [x] **補齊官方第 349 章持牌露營車／體驗村／鄉郊民宿及網頁公開未收錄原因**（v1.16.0）：全庫重掃 CSDI `LLHG` 補入 15 筆持牌處所（`g05` 世外桃源露營車、`n59` 靈風雅舍、`b28` 荔枝窩客家生活體驗村、`b29` 馬灣 1868 臨海度假屋及大嶼山／南丫島持牌渡假屋，總數 136 → 151 筆），修正 `g02 西園` 海上座標並為 `g01/g03/g04` 加合規提示，升級 `tools-sync-had.mjs` 關鍵字，加入 `slimTransit` 瘦身，並於網頁增設 `#scopePanel` 列明元朗／大嶼山無牌私營場地未收錄原因
+- [x] **新增獨立第 5 類「私營露營」及兩級合規提示徽章**（v1.17.0）：補入 14 間受第 349 章指引第 1.9 段豁免之活躍自攜營帳草地／車中泊場地（`p01`–`p14`，總數 151 → 165 筆），卡片區分「規劃准許」與「合規提示」
+- [x] **接入 SCOUT APP STORE 準入白名單閘門與一鍵回跳主站讚好／收藏**（v1.18.0，SG1–SG19）：掛載 `store_gate_v1.0.js`（`entry-gate`、主站單掣、圖書館靜默放行、PWA standalone 放行）及 SG18 `?app=hkcamping` 回跳連結，並對齊真理倉 G11 圖標與 README 紀律規範
 
 ## 免責聲明
 

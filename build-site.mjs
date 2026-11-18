@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = dirname(fileURLToPath(import.meta.url));
 const DIST = join(ROOT, 'dist');
-const FILES = ['index.html', 'styles.css', 'app.js', 'data.js', 'transit.js', 'manifest.webmanifest', 'robots.txt'];
+const FILES = ['index.html', 'store_gate_v1.0.js', 'styles.css', 'app.js', 'data.js', 'transit.js', 'manifest.webmanifest', 'robots.txt'];
 // App Icon／favicon 全套（G11：icons/ 只准放 PNG／ICO，唔放 SVG）
 const ICON_DIR = 'icons';
 const ICON_FILES = readdirSync(join(ROOT, ICON_DIR)).filter((f) => /\.(png|ico)$/i.test(f));
