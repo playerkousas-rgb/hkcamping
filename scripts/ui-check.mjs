@@ -34,20 +34,33 @@ try {
 }
 const { JSDOM, VirtualConsole, ResourceLoader } = jsdom;
 
-/** 所有 http(s) 一律斷開 → 模擬斷網；本機 file:// 腳本照常載入 */
+/** 所有 http(s) 一律斷開 → 模擬斷網；本機 file:// 及根路徑靜態資源照常載入 */
 class OfflineResourceLoader extends ResourceLoader {
   fetch(url, options) {
     if (/^https?:/i.test(url)) return null;
     if (/^file:/i.test(url)) {
-      try { if (!existsSync(new URL(url))) return null; }
-      catch { return null; }
+      try {
+        const u = new URL(url);
+        if (!existsSync(u)) {
+          const rootCandidate = path.join(ROOT, decodeURIComponent(u.pathname).replace(/^\/+/, ''));
+          if (existsSync(rootCandidate)) return super.fetch(pathToFileURL(rootCandidate).href, options);
+          return null;
+        }
+      } catch { return null; }
     }
     return super.fetch(url, options);
   }
 }
 const offline = new OfflineResourceLoader();
 
-async function boot({ privateMode = false, onFetch = null, transitFixture = null } = {}) {
+async function boot({
+  privateMode = false,
+  onFetch = null,
+  transitFixture = null,
+  referrer = 'https://scoutappstore.vercel.app/',
+  standalone = false,
+  skipStoreGate = false,
+} = {}) {
   const caught = [];
   const vc = new VirtualConsole();
   // 只捉「程式真係拋錯」，唔捉資源載入失敗（斷網本來就載唔到 CDN）
@@ -61,11 +74,16 @@ async function boot({ privateMode = false, onFetch = null, transitFixture = null
 
   const indexPath = path.join(ROOT, 'index.html');
   let html = readFileSync(indexPath, 'utf8');
+  if (skipStoreGate) {
+    html = html
+      .replace('<script src="/store_gate_v1.0.js"></script>', '')
+      .replace(/<script>\s*initStoreGate\([\s\S]*?<\/script>/, '');
+  }
   if (transitFixture) {
     html = html.replace('<script src="transit.js"></script>',
       `<script>window.CAMP_TRANSIT = ${JSON.stringify(transitFixture)};</script>`);
   }
-  const dom = new JSDOM(html, {
+  const jsdomOpts = {
     url: pathToFileURL(indexPath).href,
     runScripts: 'dangerously',
     resources: offline,
@@ -74,13 +92,44 @@ async function boot({ privateMode = false, onFetch = null, transitFixture = null
     beforeParse(win) {
       win.fetch = onFetch ? onFetch : () => Promise.reject(new Error('offline'));
       Object.defineProperty(win.navigator, 'onLine', { get: () => false });
+      if (standalone) {
+        win.matchMedia = (q) => ({
+          matches: q === '(display-mode: standalone)',
+          media: q,
+          addListener() {},
+          removeListener() {},
+          addEventListener() {},
+          removeEventListener() {},
+          dispatchEvent: () => false,
+        });
+      }
       if (privateMode) {
         Object.defineProperty(win, 'localStorage', {
           get() { throw new win.DOMException('The operation is insecure.', 'SecurityError'); },
         });
+        Object.defineProperty(win, 'sessionStorage', {
+          get() { throw new win.DOMException('The operation is insecure.', 'SecurityError'); },
+        });
+      } else {
+        let hasSession = false;
+        try { hasSession = Boolean(win.sessionStorage); } catch { hasSession = false; }
+        if (!hasSession) {
+          const mem = new Map();
+          Object.defineProperty(win, 'sessionStorage', {
+            configurable: true,
+            value: {
+              getItem: (k) => (mem.has(k) ? mem.get(k) : null),
+              setItem: (k, v) => { mem.set(k, String(v)); },
+              removeItem: (k) => { mem.delete(k); },
+              clear: () => { mem.clear(); },
+            },
+          });
+        }
       }
     },
-  });
+  };
+  if (referrer) jsdomOpts.referrer = referrer;
+  const dom = new JSDOM(html, jsdomOpts);
   await new Promise((r) => setTimeout(r, 600));
   return { dom, caught };
 }
@@ -775,5 +824,76 @@ console.log('\n【Y】收錄準則與無牌私營營地／露營車未收錄說�
   dom.window.close();
 }
 
-console.log(`\n=== 身份實測 A–Y：${pass} pass / ${fail} fail ===`);
+console.log('\n【Z】準入白名單閘門（SG1–SG19）與一鍵讚好／收藏回跳（SG18）');
+{
+  // 1. 主站 APP STORE 進入 → 放行、寫入 session 通行證、SG18 掣正常顯示
+  const { dom: domStore, caught: caughtStore } = await boot({ referrer: 'https://scoutappstore.vercel.app/' });
+  const dStore = domStore.window.document;
+  eq(dStore.getElementById('scoutStoreGate'), null, '由 SCOUT APP STORE 進入時唔出攔截卡');
+  eq(domStore.window.sessionStorage.getItem('hkcamping.store_pass'), '1', '寫入 sessionStorage 通行證（重整繼續放行）');
+  const topBtn = dStore.getElementById('storeSupportTop');
+  const footBar = dStore.getElementById('storeSupportBar');
+  const footBtn = dStore.getElementById('storeSupportFoot');
+  eq(topBtn?.hidden, false, 'SG18 頂欄「❤️ 讚好／收藏」常駐顯示');
+  eq(topBtn?.getAttribute('href'), 'https://scoutappstore.vercel.app/?app=hkcamping', 'SG18 頂欄連結用 getAppStoreUrl("hkcamping") 動態生成');
+  eq(topBtn?.getAttribute('target'), '_blank', 'SG18 頂欄連結開新分頁 target="_blank"');
+  (topBtn?.getAttribute('rel') || '').includes('noopener')
+    ? ok('SG18 頂欄連結附 rel="noopener"') : bad('SG18 頂欄連結缺 rel="noopener"');
+  eq(footBar?.hidden, false, 'SG18 頁尾輕量支持列正常顯示');
+  eq(footBtn?.getAttribute('href'), 'https://scoutappstore.vercel.app/?app=hkcamping', 'SG18 頁尾連結同樣指向 ?app=hkcamping');
+  caughtStore.length === 0 ? ok('主站進入流程 Console 零 error')
+    : bad(`主站進入流程 ${caughtStore.length} 個 error`);
+  domStore.window.close();
+
+  // 2. 通告圖書館進入（SG19 silentPortalIds: ['library']）→ 靜默放行
+  const { dom: domLib, caught: caughtLib } = await boot({ referrer: 'https://scout-circulars.vercel.app/' });
+  eq(domLib.window.document.getElementById('scoutStoreGate'), null, '由通告圖書館進入時靜默放行（SG19）');
+  eq(domLib.window.document.querySelectorAll('#cardGrid .card').length, 165, '圖書館進入後正常渲染 165 張營地卡');
+  caughtLib.length === 0 ? ok('圖書館進入流程 Console 零 error')
+    : bad(`圖書館進入流程 ${caughtLib.length} 個 error`);
+  domLib.window.close();
+
+  // 3. 直打網址無 Referer → 攔截、隱藏底頁、提示卡只顯示 1 粒 APP STORE 掣
+  const { dom: domDirect, caught: caughtDirect } = await boot({ referrer: '' });
+  const dDirect = domDirect.window.document;
+  eq(dDirect.documentElement.getAttribute('data-store-gated'), 'missing-whitelist-entry', '直打網址觸發 missing-whitelist-entry 攔截標記');
+  const gateOverlay = dDirect.getElementById('scoutStoreGate');
+  gateOverlay ? ok('直打網址顯示 #scoutStoreGate 白名單提示卡') : bad('直打網址未顯示 #scoutStoreGate');
+  const gateLinks = gateOverlay ? [...gateOverlay.querySelectorAll('a')] : [];
+  eq(gateLinks.length, 1, 'SG19：提示卡只出 1 粒主站按鈕（唔顯示圖書館按鈕）');
+  eq(gateLinks[0]?.getAttribute('href'), 'https://scoutappstore.vercel.app/', '提示卡唯一按鈕指向 SCOUT APP STORE');
+  !/^\s*1\./.test(gateLinks[0]?.textContent || '')
+    ? ok('單一按鈕無多餘 1. 編號前綴') : bad('單一按鈕出現 1. 編號前綴');
+  caughtDirect.length === 0 ? ok('直打攔截流程 Console 零 error')
+    : bad(`直打攔截流程 ${caughtDirect.length} 個 error`);
+  domDirect.window.close();
+
+  // 4. 已加入主畫面之 PWA（display-mode: standalone）→ 無 Referer 亦自動放行
+  const { dom: domPwa, caught: caughtPwa } = await boot({ referrer: '', standalone: true });
+  eq(domPwa.window.document.getElementById('scoutStoreGate'), null, '主畫面獨立視窗 PWA 直開自動放行（allowStandalone: true）');
+  caughtPwa.length === 0 ? ok('PWA standalone 放行流程 Console 零 error')
+    : bad(`PWA standalone 流程 ${caughtPwa.length} 個 error`);
+  domPwa.window.close();
+
+  // 5. ScoutStoreGate 未載入 → SG18 掣保持隱藏（唔出死連）＋ CSS [hidden] 與 @media print 守護
+  const { dom: domNoGate, caught: caughtNoGate } = await boot({ skipStoreGate: true });
+  eq(domNoGate.window.document.getElementById('storeSupportTop')?.hidden, true, 'ScoutStoreGate 未載入時頂欄 SG18 掣保持 hidden');
+  eq(domNoGate.window.document.getElementById('storeSupportBar')?.hidden, true, 'ScoutStoreGate 未載入時頁尾 SG18 列保持 hidden');
+  caughtNoGate.length === 0 ? ok('閘門缺席保護流程 Console 零 error')
+    : bad(`閘門缺席流程 ${caughtNoGate.length} 個 error`);
+  domNoGate.window.close();
+
+  const css = readFileSync(path.join(ROOT, 'styles.css'), 'utf8');
+  /\.support-btn\[hidden\][\s\S]*?display:\s*none/.test(css)
+    ? ok('CSS 明確定義 .support-btn[hidden] { display: none } 防 inline-flex 蓋過 hidden')
+    : bad('CSS 缺 .support-btn[hidden] { display: none }');
+  /\.support-btn\s*\{[^}]*min-height:\s*(4[0-9]|[5-9]\d)px/.test(css)
+    ? ok('SG18 頂欄掣觸控目標高度 ≥40px')
+    : bad('SG18 頂欄掣觸控目標高度不足 40px');
+  /@media\s+print[\s\S]*?\.support-btn[\s\S]*?display:\s*none/.test(css)
+    ? ok('列印模式 @media print 自動隱藏 SG18 掣')
+    : bad('列印模式未隱藏 SG18 掣');
+}
+
+console.log(`\n=== 身份實測 A–Z：${pass} pass / ${fail} fail ===`);
 process.exit(fail ? 1 : 0);
