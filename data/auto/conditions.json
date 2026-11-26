@@ -1,12 +1,12 @@
 {
-  "fetchedAt": "2026-11-25T00:57:52.354Z",
+  "fetchedAt": "2026-11-26T00:33:50.529Z",
   "districtWeather": {
     "source": "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc",
-    "updateTime": "2026-11-25T08:02:00+08:00",
-    "recordTime": "2026-11-25T08:00:00+08:00",
+    "updateTime": "2026-11-26T08:02:00+08:00",
+    "recordTime": "2026-11-26T08:00:00+08:00",
     "rainfallPeriod": {
-      "start": "2026-11-25T06:45:00+08:00",
-      "end": "2026-11-25T07:45:00+08:00"
+      "start": "2026-11-26T06:45:00+08:00",
+      "end": "2026-11-26T07:45:00+08:00"
     },
     "rainfall": [
       {
@@ -105,15 +105,15 @@
       },
       {
         "station": "大埔",
-        "c": 17
+        "c": 16
       },
       {
         "station": "沙田",
-        "c": 17
+        "c": 16
       },
       {
         "station": "屯門",
-        "c": 17
+        "c": 16
       },
       {
         "station": "將軍澳",
@@ -133,15 +133,15 @@
       },
       {
         "station": "青衣",
-        "c": 18
-      },
-      {
-        "station": "石崗",
         "c": 17
       },
       {
-        "station": "荃灣可觀",
+        "station": "石崗",
         "c": 16
+      },
+      {
+        "station": "荃灣可觀",
+        "c": 15
       },
       {
         "station": "荃灣城門谷",
@@ -153,7 +153,7 @@
       },
       {
         "station": "筲箕灣",
-        "c": 17
+        "c": 18
       },
       {
         "station": "九龍城",
@@ -181,11 +181,11 @@
       },
       {
         "station": "啟德跑道公園",
-        "c": 19
+        "c": 18
       },
       {
         "station": "元朗公園",
-        "c": 17
+        "c": 16
       },
       {
         "station": "大美督",
@@ -195,7 +195,7 @@
     "humidity": [
       {
         "station": "香港天文台",
-        "percent": 61
+        "percent": 83
       }
     ],
     "uv": [
@@ -212,7 +212,7 @@
   },
   "tides": {
     "source": "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php?dataType=HLT&station=<code>&year=<year>&month=<month>&rformat=json",
-    "fetchedAt": "2026-11-25T00:57:52.354Z",
+    "fetchedAt": "2026-11-26T00:33:50.529Z",
     "stations": {
       "QUB": {
         "name": "鰂魚涌",
